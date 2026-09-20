@@ -1,0 +1,152 @@
+<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Write a data dictionary with meanings, units, types, and allowed values | Worknote</title><meta name="description" content="Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation."><link rel="canonical" href="https://worknotetips.com/articles/data-dictionary/"><meta property="og:url" content="https://worknotetips.com/articles/data-dictionary/"><meta property="og:title" content="Write a data dictionary with meanings, units, types, and allowed values | Worknote"><meta property="og:description" content="Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation."><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Write a data dictionary with meanings, units, types, and allowed values", "description": "Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation.", "inLanguage": "en", "dateModified": "2026-09-20", "url": "https://worknotetips.com/articles/data-dictionary/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/data-dictionary/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/data-dictionary/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/data-dictionary/"><script type="application/json" id="ui-messages">{"copy":"Copy","copied":"Copied","copySuccess":"Code copied. Run it with the example data first.","copyRetry":"Copy again","copyFailure":"Automatic copying is unavailable. Select the code and copy it manually.","searchCount":"{count} search results"}</script></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Worknote Home"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>Scripts and AI at work</small></span></a><nav aria-label="Main menu"><a href="/" aria-current="page">Tutorials</a><a href="/about/" >About</a><a href="/principles/" >Writing and verification principles</a></nav><details class="language-menu"><summary aria-label="Language">◎ English</summary><nav aria-label="Language"><a href="/articles/data-dictionary/" lang="en" hreflang="en" aria-current="true">English</a><a href="/ko/articles/data-dictionary/" lang="ko" hreflang="ko" >한국어</a></nav></details><a class="header-search" href="/#search" aria-label="Search"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>Search</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="You are here"><a href="/">Tutorials</a><span>/</span><a href="/category/research/">Research and sources</a></nav><header class="article-header"><span class="category-badge research">Research and sources</span><h1>Write a data dictionary with meanings, units, types, and allowed values</h1><p class="article-summary">Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation.</p><div class="article-meta"><span>Content checked 2026.09.20</span><span>Hand-checked example</span></div></header><details class="mobile-toc"><summary>Show contents</summary><nav class="toc" aria-label="In this article"><p>In this article</p><ol><li><a href="#define-the-purpose"><span>01</span>1. Treat the data dictionary as part of the dataset</a></li><li><a href="#create-synthetic-dataset"><span>02</span>2. Create a small synthetic research dataset</a></li><li><a href="#write-the-dictionary"><span>03</span>3. Write the expected data dictionary by hand</a></li><li><a href="#generate-and-validate"><span>04</span>4. Generate the dictionary and validate the dataset</a></li><li><a href="#expected-validation"><span>05</span>5. Compare the expected validation issues</a></li><li><a href="#checks-and-errors"><span>06</span>6. Check that the dictionary and data stay aligned</a></li><li><a href="#limits"><span>07</span>7. Expand the dictionary as the project grows</a></li><li><a href="#verification"><span>08</span>Execution and verification record</a></li><li><a href="#references"><span>09</span>References</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>Who this is for</strong>This guide is for researchers who need a clear column-level description of a dataset that other people can read and check.</p><div><strong>What you need</strong><ul><li>Python 3.12 and a terminal command that starts that version.</li><li>A text editor or spreadsheet program that can save UTF-8 CSV files.</li><li>A working folder where the script can create a new folder beneath outputs.</li><li>Only the Python standard library is required: csv, pathlib, and re.</li></ul></div></div><section id="define-the-purpose"><h2><span class="section-number">01</span>1. Treat the data dictionary as part of the dataset</h2><p>A column name is rarely enough to describe research data. speed could mean vehicle speed, wheel speed, or angular speed. accel could mean longitudinal, lateral, or total acceleration. A data dictionary records the intended meaning so later analysis does not depend on guessing.</p><p>This tutorial records six pieces of information for each column: column name, meaning, unit, data type, allowed values, and an example. The allowed-values field can describe categories, numeric ranges, uniqueness rules, or simple text patterns.</p><aside class="callout"><strong>Units belong in metadata</strong><p>Do not rely on magnitude to infer units. A value of 50 could mean 50 km/h, 50 m/s, 50 N, or something else entirely.</p></aside></section><section id="create-synthetic-dataset"><h2><span class="section-number">02</span>2. Create a small synthetic research dataset</h2><p>The following dataset is synthetic and was written specifically for this article. Save it as test_runs.csv. Four rows follow the intended rules. The fifth row deliberately contains four problems so the dictionary can be used as a validation reference.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="csv code"><code id="code-1-1">run_id,speed_kmh,accel_m_s2,road_surface,test_status
+R001,30,0.5,dry,complete
+R002,50,-1.2,wet,complete
+R003,70,0.0,dry,review
+R004,40,-0.8,wet,complete
+R005,135,fast,snow,done
+</code></pre></div><p>There are 5 rows and 5 columns. R005 has a speed above the allowed range, a nonnumeric acceleration value, an unsupported road-surface category, and an unsupported test-status value. Its run_id itself is valid.</p></section><section id="write-the-dictionary"><h2><span class="section-number">03</span>3. Write the expected data dictionary by hand</h2><p>The dictionary should be understandable without opening the analysis code. Keep the meaning specific enough that another researcher can distinguish the column from similar measurements.</p><div class="table-wrap" role="region" aria-label="Example data table" tabindex="0"><table><thead><tr><th scope="col">column_name</th><th scope="col">meaning</th><th scope="col">unit</th><th scope="col">type</th><th scope="col">allowed_values</th><th scope="col">example</th></tr></thead><tbody><tr><td>run_id</td><td>Unique identifier for one test run</td><td></td><td>string</td><td>R followed by exactly 3 digits; unique</td><td>R001</td></tr><tr><td>speed_kmh</td><td>Vehicle speed at the start of the record</td><td>km/h</td><td>integer</td><td>0 to 120 inclusive</td><td>50</td></tr><tr><td>accel_m_s2</td><td>Longitudinal acceleration</td><td>m/s^2</td><td>float</td><td>-5.0 to 5.0 inclusive</td><td>-1.2</td></tr><tr><td>road_surface</td><td>Road-surface condition used for the test</td><td></td><td>category</td><td>dry;wet</td><td>wet</td></tr><tr><td>test_status</td><td>Review state of the test record</td><td></td><td>category</td><td>complete;review</td><td>complete</td></tr></tbody></table></div><p>An empty unit is intentional for identifiers and categorical labels because they are dimensionless metadata, not measured physical quantities. The type field describes the intended data representation rather than whatever a spreadsheet happens to infer automatically.</p></section><section id="generate-and-validate"><h2><span class="section-number">04</span>4. Generate the dictionary and validate the dataset</h2><p>Save the following script as data_dictionary_check.py. The column specification is written once in SPEC. The script exports that specification as data_dictionary.csv and checks each row against the same rules. The original test_runs.csv is read only.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="python code"><code id="code-3-1">import csv
+import re
+from pathlib import Path
+
+SOURCE = Path(&quot;test_runs.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;data_dictionary_result&quot;
+DICTIONARY = OUTPUT_DIR / &quot;data_dictionary.csv&quot;
+ISSUES = OUTPUT_DIR / &quot;validation_issues.csv&quot;
+
+SPEC = [
+    {
+        &quot;column_name&quot;: &quot;run_id&quot;,
+        &quot;meaning&quot;: &quot;Unique identifier for one test run&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;allowed_values&quot;: &quot;R followed by exactly 3 digits; unique&quot;,
+        &quot;example&quot;: &quot;R001&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;speed_kmh&quot;,
+        &quot;meaning&quot;: &quot;Vehicle speed at the start of the record&quot;,
+        &quot;unit&quot;: &quot;km/h&quot;,
+        &quot;type&quot;: &quot;integer&quot;,
+        &quot;allowed_values&quot;: &quot;0 to 120 inclusive&quot;,
+        &quot;example&quot;: &quot;50&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;accel_m_s2&quot;,
+        &quot;meaning&quot;: &quot;Longitudinal acceleration&quot;,
+        &quot;unit&quot;: &quot;m/s^2&quot;,
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;allowed_values&quot;: &quot;-5.0 to 5.0 inclusive&quot;,
+        &quot;example&quot;: &quot;-1.2&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;road_surface&quot;,
+        &quot;meaning&quot;: &quot;Road-surface condition used for the test&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;category&quot;,
+        &quot;allowed_values&quot;: &quot;dry;wet&quot;,
+        &quot;example&quot;: &quot;wet&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;test_status&quot;,
+        &quot;meaning&quot;: &quot;Review state of the test record&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;category&quot;,
+        &quot;allowed_values&quot;: &quot;complete;review&quot;,
+        &quot;example&quot;: &quot;complete&quot;,
+    },
+]
+
+
+def issue(row_number, column, value, problem):
+    return {
+        &quot;row_number&quot;: row_number,
+        &quot;column_name&quot;: column,
+        &quot;value&quot;: value,
+        &quot;issue&quot;: problem,
+    }
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    expected_columns = [item[&quot;column_name&quot;] for item in SPEC]
+    issues = []
+    seen_run_ids = set()
+    row_count = 0
+
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames != expected_columns:
+            raise ValueError(
+                f&quot;Header mismatch. Expected {expected_columns}, got {reader.fieldnames}.&quot;
+            )
+
+        for row_number, row in enumerate(reader, start=2):
+            row_count += 1
+
+            run_id = row[&quot;run_id&quot;].strip()
+            if re.fullmatch(r&quot;R[0-9]{3}&quot;, run_id) is None:
+                issues.append(issue(row_number, &quot;run_id&quot;, run_id, &quot;PATTERN_ERROR&quot;))
+            elif run_id in seen_run_ids:
+                issues.append(issue(row_number, &quot;run_id&quot;, run_id, &quot;DUPLICATE_VALUE&quot;))
+            seen_run_ids.add(run_id)
+
+            try:
+                speed = int(row[&quot;speed_kmh&quot;])
+            except ValueError:
+                issues.append(issue(row_number, &quot;speed_kmh&quot;, row[&quot;speed_kmh&quot;], &quot;TYPE_ERROR&quot;))
+            else:
+                if not 0 &lt;= speed &lt;= 120:
+                    issues.append(issue(row_number, &quot;speed_kmh&quot;, row[&quot;speed_kmh&quot;], &quot;OUT_OF_RANGE&quot;))
+
+            try:
+                accel = float(row[&quot;accel_m_s2&quot;])
+            except ValueError:
+                issues.append(issue(row_number, &quot;accel_m_s2&quot;, row[&quot;accel_m_s2&quot;], &quot;TYPE_ERROR&quot;))
+            else:
+                if not -5.0 &lt;= accel &lt;= 5.0:
+                    issues.append(issue(row_number, &quot;accel_m_s2&quot;, row[&quot;accel_m_s2&quot;], &quot;OUT_OF_RANGE&quot;))
+
+            if row[&quot;road_surface&quot;] not in {&quot;dry&quot;, &quot;wet&quot;}:
+                issues.append(issue(row_number, &quot;road_surface&quot;, row[&quot;road_surface&quot;], &quot;ALLOWED_VALUE_ERROR&quot;))
+
+            if row[&quot;test_status&quot;] not in {&quot;complete&quot;, &quot;review&quot;}:
+                issues.append(issue(row_number, &quot;test_status&quot;, row[&quot;test_status&quot;], &quot;ALLOWED_VALUE_ERROR&quot;))
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+
+    dictionary_fields = [
+        &quot;column_name&quot;, &quot;meaning&quot;, &quot;unit&quot;, &quot;type&quot;, &quot;allowed_values&quot;, &quot;example&quot;
+    ]
+    with DICTIONARY.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=dictionary_fields)
+        writer.writeheader()
+        writer.writerows(SPEC)
+
+    issue_fields = [&quot;row_number&quot;, &quot;column_name&quot;, &quot;value&quot;, &quot;issue&quot;]
+    with ISSUES.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=issue_fields)
+        writer.writeheader()
+        writer.writerows(issues)
+
+    print(f&quot;Rows checked: {row_count}.&quot;)
+    print(f&quot;Dictionary columns: {len(SPEC)}.&quot;)
+    print(f&quot;Validation issues: {len(issues)}.&quot;)
+    print(f&quot;Output folder: {OUTPUT_DIR.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-validation"><h2><span class="section-number">05</span>5. Compare the expected validation issues</h2><p>Only R005 should produce issues. Because the CSV header is row 1, R005 is physical CSV row 6. Four issue rows should be written.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="csv code"><code id="code-4-1">row_number,column_name,value,issue
+6,speed_kmh,135,OUT_OF_RANGE
+6,accel_m_s2,fast,TYPE_ERROR
+6,road_surface,snow,ALLOWED_VALUE_ERROR
+6,test_status,done,ALLOWED_VALUE_ERROR
+</code></pre></div><p>The expected console output below was derived by hand from the synthetic dataset and script. It is not a captured execution log.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="text code"><code id="code-4-3">Rows checked: 5.
+Dictionary columns: 5.
+Validation issues: 4.
+Output folder: outputs/data_dictionary_result</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>6. Check that the dictionary and data stay aligned</h2><ul><li>Confirm that every dataset column has exactly one dictionary row.</li><li>Check that physical units are explicit for measured quantities.</li><li>Confirm that categorical allowed values use the same spelling and capitalization as the dataset.</li><li>Review every validation issue instead of automatically deleting bad rows.</li><li>Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous dictionary and report.</li></ul><div class="table-wrap" role="region" aria-label="Example data table" tabindex="0"><table><thead><tr><th scope="col">Problem</th><th scope="col">What to check</th></tr></thead><tbody><tr><td>A new dataset column has no dictionary entry</td><td>Update the dictionary before analysis so the meaning and unit are documented.</td></tr><tr><td>The same concept appears with different units</td><td>Use separate columns or standardize units explicitly; do not rely on memory.</td></tr><tr><td>Category labels drift over time</td><td>Define allowed values and document intentional additions such as a new road condition.</td></tr><tr><td>Spreadsheet changes integer IDs into numbers</td><td>Store identifiers as strings when leading zeros or patterns are meaningful.</td></tr><tr><td>Validation passes but meaning is wrong</td><td>Structural checks cannot detect an incorrect scientific definition or mislabeled sensor channel.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>7. Expand the dictionary as the project grows</h2><p>A practical research data dictionary often needs more than the six fields shown here. Depending on the project, add source system, sensor location, coordinate direction, sampling rate, nullable status, precision, calculation method, valid range, missing-value code, and responsible owner.</p><p>Allowed values should reflect scientific meaning rather than simply the minimum and maximum currently observed. If speed values happen to range from 30 to 70 km/h in one file, that does not automatically mean 30 to 70 is the valid engineering range.</p><p>Version the dictionary together with the dataset or analysis code. If a column definition, unit, sign convention, or category changes, record when the change happened. A data dictionary is most useful when it describes the exact version of the data being analyzed.</p></section><section id="verification"><h2>Execution and verification record</h2><p>2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib, re · no execution</p><ul><li>Manually counted 5 synthetic rows and 5 dataset columns.</li><li>Manually checked that R001 through R004 satisfy the stated dictionary rules.</li><li>Identified four issues in R005: speed 135 above the 0-120 range, accel value fast not numeric, road_surface snow not allowed, and test_status done not allowed.</li><li>Confirmed that R005 itself matches the run_id pattern R followed by three digits.</li><li>Manually derived physical CSV row 6 for all four R005 validation issues.</li><li>Inspected the script for exact-header checking, unique run IDs, numeric range checks, categorical checks, output collision protection, and preservation of the original CSV.</li></ul><div class="verification-limits"><strong>Verification limits</strong><ul><li>The code was not executed by the author of this response; no dictionary or validation CSV was created.</li><li>The synthetic ranges and categories are exercise-specific and are not general automotive engineering limits.</li><li>Scientific meaning, sensor calibration, coordinate conventions, missing-value policies, and metadata versioning were not automatically validated.</li><li>The official documentation URLs were provided from known documentation locations but were not checked live.</li></ul></div><p><a href="/principles/">Site-wide writing and verification principles</a></p></section><section id="references"><h2>References</h2><p>The explanations and examples were written for this site. See the official sources below for the related behavior and concepts.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Official Python 3.12 documentation · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/re.html" target="_blank" rel="noopener noreferrer">Official Python 3.12 documentation · re <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Official Python 3.12 documentation · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>Read next</h2><a href="/category/research/">All articles on this topic <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="manage a reference list in csv and check duplicate or missing dois keep a small research reference list in csv, normalize doi text for comparison, and generate a review file for duplicate and missing doi values. the workflow preserves the original csv and does not claim that a doi is valid merely because it is present. python doi research" data-category="research"><div class="card-top"><span class="category-badge research">Research and sources</span><span class="article-number">34</span></div><h3><a href="/articles/reference-list-csv/">Manage a reference list in CSV and check duplicate or missing DOIs</a></h3><p>Keep a small research reference list in CSV, normalize DOI text for comparison, and generate a review file for duplicate and missing DOI values. The workflow preserves the original CSV and does not claim that a DOI is valid merely because it is present.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>DOI</span><span>Research</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="record source, reference date, and units when collecting public data instead of collecting only a title and url, record the reference date, publication date, access date, units, and terms of use in one row. includes a csv template and checklist that need no code. data & research source records reference date csv template" data-category="research"><div class="card-top"><span class="category-badge research">Research and sources</span><span class="article-number">13</span></div><h3><a href="/articles/source-ledger/">Record source, reference date, and units when collecting public data</a></h3><p>Instead of collecting only a title and URL, record the reference date, publication date, access date, units, and terms of use in one row. Includes a CSV template and checklist that need no code.</p><div class="card-bottom"><div class="tags"><span>File automation</span><span>Source records</span><span>Reference date</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="check response counts, missing answers, and duplicates before tallying a survey csv separate duplicate ids from blank answers in 10 synthetic responses. state the denominator of valid responses and save counts and percentages per option, plus exclusion reasons, to a new file. python surveys data checks denominator csv" data-category="research"><div class="card-top"><span class="category-badge research">Research and sources</span><span class="article-number">14</span></div><h3><a href="/articles/survey-summary/">Check response counts, missing answers, and duplicates before tallying a survey CSV</a></h3><p>Separate duplicate IDs from blank answers in 10 synthetic responses. State the denominator of valid responses and save counts and percentages per option, plus exclusion reasons, to a new file.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>Surveys</span><span>Data checks</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="In this article"><p>In this article</p><ol><li><a href="#define-the-purpose"><span>01</span>1. Treat the data dictionary as part of the dataset</a></li><li><a href="#create-synthetic-dataset"><span>02</span>2. Create a small synthetic research dataset</a></li><li><a href="#write-the-dictionary"><span>03</span>3. Write the expected data dictionary by hand</a></li><li><a href="#generate-and-validate"><span>04</span>4. Generate the dictionary and validate the dataset</a></li><li><a href="#expected-validation"><span>05</span>5. Compare the expected validation issues</a></li><li><a href="#checks-and-errors"><span>06</span>6. Check that the dictionary and data stay aligned</a></li><li><a href="#limits"><span>07</span>7. Expand the dictionary as the project grows</a></li><li><a href="#verification"><span>08</span>Execution and verification record</a></li><li><a href="#references"><span>09</span>References</a></li></ol></nav><div class="aside-note">Run copied code with the example data first. Check the results before using it with real files.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/">Worknote<span>Try it, check it, and record what you find.</span></a><nav aria-label="Site information"><a href="/about/">About</a><a href="/principles/">Writing and verification principles</a><a href="/privacy/">Privacy notice</a><a href="/rights/">Using these materials</a></nav></div><p>Free practical tutorials · Download example data and code from each article.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

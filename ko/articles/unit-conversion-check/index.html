@@ -1,0 +1,113 @@
+<!doctype html><html lang="ko" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>자동차 시험 데이터의 km/h, m/s, g, m/s² 단위를 변환하고 검증하기 | Worknote</title><meta name="description" content="합성 차량 속도와 가속도 데이터를 일관된 SI 단위로 변환한 뒤 역변환하여 계산을 확인합니다. 원본 CSV는 그대로 유지하고 변환된 데이터는 새 출력 폴더에 저장합니다."><link rel="canonical" href="https://worknotetips.com/ko/articles/unit-conversion-check/"><meta property="og:url" content="https://worknotetips.com/ko/articles/unit-conversion-check/"><meta property="og:title" content="자동차 시험 데이터의 km/h, m/s, g, m/s² 단위를 변환하고 검증하기 | Worknote"><meta property="og:description" content="합성 차량 속도와 가속도 데이터를 일관된 SI 단위로 변환한 뒤 역변환하여 계산을 확인합니다. 원본 CSV는 그대로 유지하고 변환된 데이터는 새 출력 폴더에 저장합니다."><meta property="og:locale" content="ko_KR"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "자동차 시험 데이터의 km/h, m/s, g, m/s² 단위를 변환하고 검증하기", "description": "합성 차량 속도와 가속도 데이터를 일관된 SI 단위로 변환한 뒤 역변환하여 계산을 확인합니다. 원본 CSV는 그대로 유지하고 변환된 데이터는 새 출력 폴더에 저장합니다.", "inLanguage": "ko", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ko/articles/unit-conversion-check/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/unit-conversion-check/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/unit-conversion-check/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/unit-conversion-check/"><script type="application/json" id="ui-messages">{"copy":"복사","copied":"복사 완료","copySuccess":"코드를 복사했습니다. 예제 데이터로 먼저 실행하세요.","copyRetry":"다시 복사","copyFailure":"자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.","searchCount":"검색 결과 {count}개"}</script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ko/" aria-label="워크노트 홈"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a href="/ko/" aria-current="page">튜토리얼</a><a href="/ko/about/" >사이트 소개</a><a href="/ko/principles/" >작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/unit-conversion-check/" lang="en" hreflang="en" >English</a><a href="/ko/articles/unit-conversion-check/" lang="ko" hreflang="ko" aria-current="true">한국어</a></nav></details><a class="header-search" href="/ko/#search" aria-label="검색"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>검색</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="현재 위치"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/automotive/">자동차·데이터 실무</a></nav><header class="article-header"><span class="category-badge automotive">자동차·데이터 실무</span><h1>자동차 시험 데이터의 km/h, m/s, g, m/s² 단위를 변환하고 검증하기</h1><p class="article-summary">합성 차량 속도와 가속도 데이터를 일관된 SI 단위로 변환한 뒤 역변환하여 계산을 확인합니다. 원본 CSV는 그대로 유지하고 변환된 데이터는 새 출력 폴더에 저장합니다.</p><div class="article-meta"><span>내용 확인 2026.09.20</span><span>손으로 확인한 예제</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-conversions"><span>01</span>1. 데이터를 처리하기 전에 변환식부터 정하기</a></li><li><a href="#create-synthetic-data"><span>02</span>2. 작은 합성 시험 데이터 만들기</a></li><li><a href="#calculate-by-hand"><span>03</span>3. 예상 변환값을 손으로 계산하기</a></li><li><a href="#convert-and-check"><span>04</span>4. CSV를 변환하고 역변환으로 확인하기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 변환 파일과 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 독립적으로 확인하고 자주 발생하는 오류 찾기</a></li><li><a href="#limits"><span>07</span>7. 실제 시험 데이터에 적용하기 전 한계 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께 맞아요</strong>속도와 가속도 단위가 섞인 차량 또는 시험 데이터를 분석하기 전에 간단한 단위 변환과 검증을 수행하려는 사람을 위한 안내입니다.</p><div><strong>준비할 것</strong><ul><li>Python 3.12와 해당 버전을 실행하는 터미널 명령이 준비되어 있어야 합니다.</li><li>UTF-8 CSV와 Python 파일을 저장할 수 있는 텍스트 편집기가 필요합니다.</li><li>스크립트가 outputs 아래에 새 폴더를 만들 수 있는 작업 폴더가 필요합니다.</li><li>Python 표준 라이브러리인 csv, math, pathlib만 사용합니다.</li></ul></div></div><section id="define-the-conversions"><h2><span class="section-number">01</span>1. 데이터를 처리하기 전에 변환식부터 정하기</h2><p>이 예제에서는 속도를 m/s, 가속도를 m/s²로 통일합니다. 1 km는 1000 m이고 1시간은 3600초이므로 km/h 값을 3.6으로 나누면 m/s가 됩니다. 반대로 m/s에 3.6을 곱하면 km/h가 됩니다.</p><p>가속도는 관례적인 표준중력 값 g0 = 9.80665 m/s²를 사용합니다. g 단위의 값에 9.80665를 곱하면 m/s²가 됩니다. 반대로 m/s²를 9.80665로 나누면 g 단위가 됩니다.</p><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">변환</th><th scope="col">계산식</th></tr></thead><tbody><tr><td>km/h → m/s</td><td>km/h ÷ 3.6</td></tr><tr><td>m/s → km/h</td><td>m/s × 3.6</td></tr><tr><td>g → m/s²</td><td>g × 9.80665</td></tr><tr><td>m/s² → g</td><td>m/s² ÷ 9.80665</td></tr></tbody></table></div><aside class="callout"><strong>열 이름에 단위를 남기기</strong><p>9.8이라는 숫자만으로는 단위를 알 수 없습니다. 이후 스크립트가 km/h, m/s, g, m/s² 중 무엇인지 추측하지 않도록 열 이름이나 데이터 사전에 단위를 기록하세요.</p></aside></section><section id="create-synthetic-data"><h2><span class="section-number">02</span>2. 작은 합성 시험 데이터 만들기</h2><p>아래 데이터는 이 글을 위해 작성한 합성 데이터입니다. unit_test_data.csv로 저장하세요. 속도는 손으로 변환하기 쉬운 값을 사용하고, 가속도에는 양수, 음수, 소수 g 값을 포함했습니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-1-1">sample_id,speed_kmh,accel_g
+T001,0,0
+T002,36,1
+T003,72,-0.5
+T004,90,0.25
+T005,108,-1.25
+</code></pre></div><p>레코드는 5개입니다. 음수 가속도는 변환 후에도 음수로 유지됩니다. 단위 변환은 단위만 바꾸며 부호를 바꾸지 않습니다. 이 데이터는 수치 예제일 뿐 특정 차량 거동이나 센서를 나타내는 값이 아닙니다.</p></section><section id="calculate-by-hand"><h2><span class="section-number">03</span>3. 예상 변환값을 손으로 계산하기</h2><p>속도 변환은 직접 계산할 수 있습니다. 예를 들어 72 km/h ÷ 3.6 = 20 m/s이고, 90 km/h ÷ 3.6 = 25 m/s입니다. 다시 변환하면 20 × 3.6 = 72 km/h, 25 × 3.6 = 90 km/h가 됩니다.</p><p>가속도는 1 g가 9.80665 m/s²입니다. -0.5 g는 -4.903325 m/s², 0.25 g는 2.4516625 m/s², -1.25 g는 -12.2583125 m/s²가 됩니다.</p><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">sample_id</th><th scope="col">speed_kmh</th><th scope="col">예상 speed_m_s</th><th scope="col">accel_g</th><th scope="col">예상 accel_m_s2</th></tr></thead><tbody><tr><td>T001</td><td>0</td><td>0.000000</td><td>0</td><td>0.000000</td></tr><tr><td>T002</td><td>36</td><td>10.000000</td><td>1</td><td>9.806650</td></tr><tr><td>T003</td><td>72</td><td>20.000000</td><td>-0.5</td><td>-4.903325</td></tr><tr><td>T004</td><td>90</td><td>25.000000</td><td>0.25</td><td>2.451663</td></tr><tr><td>T005</td><td>108</td><td>30.000000</td><td>-1.25</td><td>-12.258313</td></tr></tbody></table></div><p>표의 가속도 값은 소수점 이하 6자리로 표시했습니다. 실제 계산에서는 이미 반올림된 출력 문자열을 다시 사용하지 말고 9.80665의 전체 값을 사용해야 합니다.</p></section><section id="convert-and-check"><h2><span class="section-number">04</span>4. CSV를 변환하고 역변환으로 확인하기</h2><p>다음 스크립트를 unit_conversion_check.py로 저장하세요. 원본 값을 읽고 두 종류의 정방향 변환을 수행한 뒤 다시 원래 단위로 역변환하여 작은 수치 허용오차 안에서 일치하는지 확인합니다. 원본 CSV는 다시 저장하지 않습니다.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="python 코드"><code id="code-3-1">import csv
+import math
+from pathlib import Path
+
+SOURCE = Path(&quot;unit_test_data.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;unit_conversion_result&quot;
+OUTPUT = OUTPUT_DIR / &quot;converted_test_data.csv&quot;
+STANDARD_GRAVITY = 9.80665
+TOLERANCE = 1e-12
+
+
+def kmh_to_ms(value: float) -&gt; float:
+    return value / 3.6
+
+
+def ms_to_kmh(value: float) -&gt; float:
+    return value * 3.6
+
+
+def g_to_ms2(value: float) -&gt; float:
+    return value * STANDARD_GRAVITY
+
+
+def ms2_to_g(value: float) -&gt; float:
+    return value / STANDARD_GRAVITY
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    output_rows = []
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        required = {&quot;sample_id&quot;, &quot;speed_kmh&quot;, &quot;accel_g&quot;}
+        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
+            raise ValueError(&quot;CSV is missing a required column.&quot;)
+
+        seen_ids = set()
+        for row in reader:
+            sample_id = row[&quot;sample_id&quot;].strip()
+            if not sample_id:
+                raise ValueError(&quot;sample_id must not be blank.&quot;)
+            if sample_id in seen_ids:
+                raise ValueError(f&quot;Duplicate sample_id: {sample_id}&quot;)
+            seen_ids.add(sample_id)
+
+            speed_kmh = float(row[&quot;speed_kmh&quot;])
+            accel_g = float(row[&quot;accel_g&quot;])
+            speed_ms = kmh_to_ms(speed_kmh)
+            accel_ms2 = g_to_ms2(accel_g)
+            speed_roundtrip = ms_to_kmh(speed_ms)
+            accel_roundtrip = ms2_to_g(accel_ms2)
+
+            speed_ok = math.isclose(
+                speed_kmh, speed_roundtrip,
+                rel_tol=TOLERANCE, abs_tol=TOLERANCE
+            )
+            accel_ok = math.isclose(
+                accel_g, accel_roundtrip,
+                rel_tol=TOLERANCE, abs_tol=TOLERANCE
+            )
+            if not speed_ok or not accel_ok:
+                raise RuntimeError(f&quot;Round-trip check failed: {sample_id}&quot;)
+
+            output_rows.append({
+                &quot;sample_id&quot;: sample_id,
+                &quot;speed_kmh&quot;: f&quot;{speed_kmh:g}&quot;,
+                &quot;speed_m_s&quot;: f&quot;{speed_ms:.6f}&quot;,
+                &quot;speed_roundtrip_kmh&quot;: f&quot;{speed_roundtrip:.6f}&quot;,
+                &quot;accel_g&quot;: f&quot;{accel_g:g}&quot;,
+                &quot;accel_m_s2&quot;: f&quot;{accel_ms2:.6f}&quot;,
+                &quot;accel_roundtrip_g&quot;: f&quot;{accel_roundtrip:.6f}&quot;,
+                &quot;roundtrip_check&quot;: &quot;PASS&quot;,
+            })
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    fields = [
+        &quot;sample_id&quot;, &quot;speed_kmh&quot;, &quot;speed_m_s&quot;, &quot;speed_roundtrip_kmh&quot;,
+        &quot;accel_g&quot;, &quot;accel_m_s2&quot;, &quot;accel_roundtrip_g&quot;, &quot;roundtrip_check&quot;
+    ]
+    with OUTPUT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(output_rows)
+
+    print(f&quot;Converted records: {len(output_rows)}.&quot;)
+    print(f&quot;Round-trip checks passed: {len(output_rows)}.&quot;)
+    print(f&quot;Standard gravity used: {STANDARD_GRAVITY} m/s^2.&quot;)
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>5. 예상 변환 파일과 비교하기</h2><p>모든 행은 역변환 후 원래 속도와 가속도로 돌아와야 합니다. 아래에는 소수점 이하 6자리로 표시한 예상 결과가 있습니다. 내부 계산은 문자열로 서식화하기 전의 부동소수점 값을 사용합니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-4-1">sample_id,speed_kmh,speed_m_s,speed_roundtrip_kmh,accel_g,accel_m_s2,accel_roundtrip_g,roundtrip_check
+T001,0,0.000000,0.000000,0,0.000000,0.000000,PASS
+T002,36,10.000000,36.000000,1,9.806650,1.000000,PASS
+T003,72,20.000000,72.000000,-0.5,-4.903325,-0.500000,PASS
+T004,90,25.000000,90.000000,0.25,2.451663,0.250000,PASS
+T005,108,30.000000,108.000000,-1.25,-12.258313,-1.250000,PASS
+</code></pre></div><p>아래 예상 콘솔 출력은 합성 데이터와 스크립트를 바탕으로 손으로 도출한 결과이며 실제 실행 로그가 아닙니다.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-4-3">Converted records: 5.
+Round-trip checks passed: 5.
+Standard gravity used: 9.80665 m/s^2.
+Output: outputs/unit_conversion_result/converted_test_data.csv</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>6. 독립적으로 확인하고 자주 발생하는 오류 찾기</h2><ul><li>36 km/h를 직접 확인합니다. 36 ÷ 3.6 = 10 m/s입니다.</li><li>108 km/h를 직접 확인합니다. 108 ÷ 3.6 = 30 m/s입니다.</li><li>-0.5 g를 직접 확인합니다. -0.5 × 9.80665 = -4.903325 m/s²입니다.</li><li>단위 변환 과정에서 부호가 그대로 유지되는지 확인합니다.</li><li>5개 행 모두 roundtrip_check가 PASS인지 확인합니다.</li><li>OUTPUT_DIR을 바꾸지 않고 다시 실행합니다. 기존 결과를 교체하지 않고 FileExistsError로 중단되어야 합니다.</li></ul><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">문제</th><th scope="col">확인할 사항</th></tr></thead><tbody><tr><td>속도가 약 3.6배 차이남</td><td>m/s 값을 km/h로 잘못 처리했거나 그 반대인지 확인하세요.</td></tr><tr><td>가속도가 약 9.8배 차이남</td><td>g와 m/s²를 혼동했는지 확인하세요.</td></tr><tr><td>음수 가속도가 양수로 바뀜</td><td>분석에서 크기만 필요한 경우가 아니라면 절댓값을 적용하지 마세요.</td></tr><tr><td>예상하지 못한 반올림 차이</td><td>계산에는 충분한 정밀도를 유지하고 표시나 내보내기 단계에서만 반올림하세요.</td></tr><tr><td>역변환은 통과하지만 원본 단위 라벨이 틀림</td><td>수학적으로 가역적인 변환은 원본의 잘못된 단위 표기를 탐지할 수 없습니다.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>7. 실제 시험 데이터에 적용하기 전 한계 이해하기</h2><p>단위 변환이 정상적으로 끝났다는 것은 계산과 선언된 단위가 내부적으로 일관된다는 뜻일 뿐입니다. 원본 센서가 제대로 교정되었는지, 단위 라벨이 정확했는지, 기록된 값이 의도한 물리량을 나타내는지는 증명하지 않습니다.</p><p>여기서는 g 변환에 관례적인 표준중력 9.80665 m/s²를 사용합니다. 실제 지역의 중력가속도는 이 관례적인 기준과 다를 수 있습니다. 많은 공학 데이터에서는 g를 정규화된 가속도 단위로 사용하므로 어떤 기준을 사용했는지 문서화해야 합니다.</p><p>실제 차량 시험 데이터에는 휠 속도, 차량 속도, 회전속도, 힘, 압력, 온도 등 여러 단위가 함께 있을 수 있습니다. 각 채널의 물리 차원을 데이터 사전에 기록하고 그에 맞게 변환하세요. 숫자의 크기만 보고 단위를 추정해서는 안 됩니다.</p></section><section id="verification"><h2>실행·검증 기록</h2><p>2026-09-20 · 예제 수동 검토 · 대상: Python 3.12 · 표준 라이브러리: csv, math, pathlib · 실행하지 않음</p><ul><li>5개의 속도를 각각 0, 10, 20, 25, 30 m/s로 수동 변환했습니다.</li><li>가속도 값은 1 g = 9.80665 m/s²를 사용해 수동 계산했습니다.</li><li>-0.5 g = -4.903325 m/s², 0.25 g = 2.4516625 m/s², -1.25 g = -12.2583125 m/s²임을 표시 반올림 전에 확인했습니다.</li><li>속도 역변환은 m/s에 3.6을 곱해 원래 값으로 돌아오는지 수동 확인했습니다.</li><li>필수 열, 중복 sample_id, 역변환 비교, 출력 충돌 방지, 원본 CSV 보존 로직을 코드로 검토했습니다.</li><li>예상 CSV와 콘솔 출력을 손으로 도출했습니다.</li></ul><div class="verification-limits"><strong>검증 한계</strong><ul><li>이 응답의 작성자는 코드를 실행하지 않았으며, 변환 CSV를 실제로 만들지 않았습니다.</li><li>센서 교정, 메타데이터 정확성, 실제 지역 중력가속도, 계측 시스템의 단위 라벨은 시험하지 않았습니다.</li><li>이 예제에서는 km/h, m/s, g, m/s²만 다룹니다.</li><li>공식 문서 URL은 알려진 문서 위치를 사용했지만 실시간으로 접속해 확인하지 않았습니다.</li></ul></div><p><a href="/ko/principles/">사이트 전체 작성·검증 원칙</a></p></section><section id="references"><h2>참고 출처</h2><p>설명과 예제는 직접 작성했습니다. 관련 동작과 개념은 아래 공식 자료에서 확인할 수 있습니다.</p><ul class="references"><li><a href="https://www.bipm.org/en/publications/si-brochure" target="_blank" rel="noopener noreferrer">BIPM · 국제단위계 SI Brochure <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/math.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · math <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/automotive/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="이동평균으로 합성 센서 데이터를 평활화하고 지연 확인하기 합성 가속도 데이터에 3샘플 후행 이동평균을 적용하고 모든 필터 값을 손으로 검증하며, 필터의 1샘플 정렬 지연을 명시적으로 확인합니다. 원본 csv는 변경하지 않고 처리 결과를 새 폴더에 저장합니다. python 센서 필터링" data-category="automotive"><div class="card-top"><span class="category-badge automotive">자동차·데이터 실무</span><span class="article-number">31</span></div><h3><a href="/ko/articles/moving-average-filter/">이동평균으로 합성 센서 데이터를 평활화하고 지연 확인하기</a></h3><p>합성 가속도 데이터에 3샘플 후행 이동평균을 적용하고 모든 필터 값을 손으로 검증하며, 필터의 1샘플 정렬 지연을 명시적으로 확인합니다. 원본 CSV는 변경하지 않고 처리 결과를 새 폴더에 저장합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>센서</span><span>필터링</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="fft로 합성 진동 신호의 지배 주파수 찾기 알려진 2 hz 성분을 가진 합성 진동 신호에 numpy fft를 적용하고 주파수 bin을 확인한 뒤 검출된 지배 주파수가 입력값과 일치하는지 검증합니다. 원본 csv는 유지하고 스펙트럼은 새 출력 폴더에 저장합니다. python fft 진동" data-category="automotive"><div class="card-top"><span class="category-badge automotive">자동차·데이터 실무</span><span class="article-number">33</span></div><h3><a href="/ko/articles/fft-dominant-frequency/">FFT로 합성 진동 신호의 지배 주파수 찾기</a></h3><p>알려진 2 Hz 성분을 가진 합성 진동 신호에 NumPy FFT를 적용하고 주파수 bin을 확인한 뒤 검출된 지배 주파수가 입력값과 일치하는지 검증합니다. 원본 CSV는 유지하고 스펙트럼은 새 출력 폴더에 저장합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>FFT</span><span>진동</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="시험 csv의 시간축과 단위를 먼저 확인하기 설명용 합성 데이터에서 단위, 누락값, 유한수, 시간 중복·역행을 확인하고 점검 결과와 그래프를 저장합니다. 자동차 시험 시간축 단위 확인 설명용 합성 데이터" data-category="automotive"><div class="card-top"><span class="category-badge automotive">자동차·데이터 실무</span><span class="article-number">10</span></div><h3><a href="/ko/articles/test-data-check/">시험 CSV의 시간축과 단위를 먼저 확인하기</a></h3><p>설명용 합성 데이터에서 단위, 누락값, 유한수, 시간 중복·역행을 확인하고 점검 결과와 그래프를 저장합니다.</p><div class="card-bottom"><div class="tags"><span>자동차 시험</span><span>시간축</span><span>단위 확인</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="여러 시험 조건을 같은 시간축에서 비교하기 세 개의 설명용 합성 csv를 검증한 뒤, 같은 시간 표본과 가속도 단위를 쓰는 곡선을 한 그래프에 겹쳐 그립니다. 시험 결과 비교 동일 시간축 가속도 설명용 합성 데이터" data-category="automotive"><div class="card-top"><span class="category-badge automotive">자동차·데이터 실무</span><span class="article-number">11</span></div><h3><a href="/ko/articles/compare-test-results/">여러 시험 조건을 같은 시간축에서 비교하기</a></h3><p>세 개의 설명용 합성 CSV를 검증한 뒤, 같은 시간 표본과 가속도 단위를 쓰는 곡선을 한 그래프에 겹쳐 그립니다.</p><div class="card-bottom"><div class="tags"><span>시험 결과 비교</span><span>동일 시간축</span><span>가속도</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-conversions"><span>01</span>1. 데이터를 처리하기 전에 변환식부터 정하기</a></li><li><a href="#create-synthetic-data"><span>02</span>2. 작은 합성 시험 데이터 만들기</a></li><li><a href="#calculate-by-hand"><span>03</span>3. 예상 변환값을 손으로 계산하기</a></li><li><a href="#convert-and-check"><span>04</span>4. CSV를 변환하고 역변환으로 확인하기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 변환 파일과 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 독립적으로 확인하고 자주 발생하는 오류 찾기</a></li><li><a href="#limits"><span>07</span>7. 실제 시험 데이터에 적용하기 전 한계 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav><div class="aside-note">복사한 코드는 예제 데이터로 먼저 실행하세요. 결과를 확인한 뒤 실제 파일에 적용하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>무료 실무 튜토리얼 · 예제 데이터와 코드는 각 글에서 내려받을 수 있습니다.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

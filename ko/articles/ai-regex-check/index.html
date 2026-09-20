@@ -1,0 +1,101 @@
+<!doctype html><html lang="ko" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI가 작성한 정규표현식을 일치·불일치 예제로 검증하기 | Worknote</title><meta name="description" content="AI가 만든 정규표현식을 완성된 규칙이 아니라 초안으로 취급합니다. 작은 합성 테스트 표를 만들고 예상 결과와 실제 매칭 결과를 비교한 뒤, 수정된 패턴과 검토 보고서를 확인합니다."><link rel="canonical" href="https://worknotetips.com/ko/articles/ai-regex-check/"><meta property="og:url" content="https://worknotetips.com/ko/articles/ai-regex-check/"><meta property="og:title" content="AI가 작성한 정규표현식을 일치·불일치 예제로 검증하기 | Worknote"><meta property="og:description" content="AI가 만든 정규표현식을 완성된 규칙이 아니라 초안으로 취급합니다. 작은 합성 테스트 표를 만들고 예상 결과와 실제 매칭 결과를 비교한 뒤, 수정된 패턴과 검토 보고서를 확인합니다."><meta property="og:locale" content="ko_KR"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "AI가 작성한 정규표현식을 일치·불일치 예제로 검증하기", "description": "AI가 만든 정규표현식을 완성된 규칙이 아니라 초안으로 취급합니다. 작은 합성 테스트 표를 만들고 예상 결과와 실제 매칭 결과를 비교한 뒤, 수정된 패턴과 검토 보고서를 확인합니다.", "inLanguage": "ko", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ko/articles/ai-regex-check/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/ai-regex-check/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/ai-regex-check/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/ai-regex-check/"><script type="application/json" id="ui-messages">{"copy":"복사","copied":"복사 완료","copySuccess":"코드를 복사했습니다. 예제 데이터로 먼저 실행하세요.","copyRetry":"다시 복사","copyFailure":"자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.","searchCount":"검색 결과 {count}개"}</script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ko/" aria-label="워크노트 홈"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a href="/ko/" aria-current="page">튜토리얼</a><a href="/ko/about/" >사이트 소개</a><a href="/ko/principles/" >작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/ai-regex-check/" lang="en" hreflang="en" >English</a><a href="/ko/articles/ai-regex-check/" lang="ko" hreflang="ko" aria-current="true">한국어</a></nav></details><a class="header-search" href="/ko/#search" aria-label="검색"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>검색</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="현재 위치"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/ai/">AI 업무 활용</a></nav><header class="article-header"><span class="category-badge ai">AI 업무 활용</span><h1>AI가 작성한 정규표현식을 일치·불일치 예제로 검증하기</h1><p class="article-summary">AI가 만든 정규표현식을 완성된 규칙이 아니라 초안으로 취급합니다. 작은 합성 테스트 표를 만들고 예상 결과와 실제 매칭 결과를 비교한 뒤, 수정된 패턴과 검토 보고서를 확인합니다.</p><div class="article-meta"><span>내용 확인 2026.09.20</span><span>손으로 확인한 예제</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-rule"><span>01</span>1. 정규식을 시험하기 전에 요구사항부터 작성하기</a></li><li><a href="#create-synthetic-cases"><span>02</span>2. 합성 테스트 사례 만들기</a></li><li><a href="#predict-the-results"><span>03</span>3. AI 패턴이 틀릴 사례를 먼저 예상하기</a></li><li><a href="#run-the-checker"><span>04</span>4. 예상 결과와 실제 매칭을 자동으로 비교하기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 보고서 확인하기</a></li><li><a href="#checks-and-common-errors"><span>06</span>6. 경계 사례를 추가하고 흔한 실수 확인하기</a></li><li><a href="#limits"><span>07</span>7. 정규식 테스트가 증명하지 못하는 것 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께 맞아요</strong>AI를 이용해 정규표현식 초안을 만들고, 실제 사용 전에 알려진 일치·불일치 사례로 패턴을 검증하려는 사람을 위한 안내입니다.</p><div><strong>준비할 것</strong><ul><li>Python 3.12와 해당 버전을 실행하는 터미널 명령이 준비되어 있어야 합니다.</li><li>UTF-8 CSV와 Python 파일을 저장할 수 있는 텍스트 편집기가 필요합니다.</li><li>스크립트가 outputs 아래에 새 폴더를 만들 수 있는 작업 폴더가 필요합니다.</li><li>Python 표준 라이브러리인 csv, pathlib, re만 사용합니다.</li></ul></div></div><section id="define-the-rule"><h2><span class="section-number">01</span>1. 정규식을 시험하기 전에 요구사항부터 작성하기</h2><p>사내 업무 ID의 형식이 WK-YYYY-NNNN이라고 가정합니다. 접두사는 대문자 WK여야 하고, 연도는 2000부터 2099까지여야 하며, 구분자는 하이픈이어야 합니다. 마지막 부분은 정확히 4개의 ASCII 숫자로 구성되어야 합니다.</p><p>AI가 WK-\d{4}-\d{4}라는 패턴을 제안했다고 가정해 보겠습니다. 겉보기에는 적절하지만 연도에 숫자 4개만 요구할 뿐 2000-2099 범위를 강제하지 않습니다. 바로 실제 데이터에 적용하는 대신 정답을 알고 있는 예제로 시험하는 것이 안전합니다.</p><aside class="callout"><strong>겉모양이 아니라 요구사항을 시험하기</strong><p>정규식은 그럴듯해 보여도 하나의 경계 조건을 놓칠 수 있습니다. 먼저 허용 형식을 자연어로 적고, 각 조건을 깨뜨리는 사례를 테스트 데이터에 포함하세요.</p></aside></section><section id="create-synthetic-cases"><h2><span class="section-number">02</span>2. 합성 테스트 사례 만들기</h2><p>아래 데이터는 이 글을 위해 작성한 합성 데이터입니다. regex_cases.csv로 저장하세요. 일치해야 하는 문자열 3개와 일치하면 안 되는 문자열 7개가 들어 있습니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-1-1">case_id,value,should_match
+C001,WK-2026-0001,yes
+C002,WK-2000-0042,yes
+C003,WK-2099-9999,yes
+C004,WK-1999-0001,no
+C005,wk-2026-0001,no
+C006,WK-2026-001,no
+C007,WK-2026-00001,no
+C008,WK-2026_0001,no
+C009,&quot; WK-2026-0001&quot;,no
+C010,WK-20A6-0001,no
+</code></pre></div><p>허용 연도의 양쪽 경계, 범위를 벗어난 연도, 소문자 접두사, 짧고 긴 번호 필드, 잘못된 구분자, 앞쪽 공백, 연도 안의 비숫자 문자를 포함했습니다. 정규식을 실행하기 전에 사람이 직접 분류할 수 있을 정도로 작은 데이터입니다.</p></section><section id="predict-the-results"><h2><span class="section-number">03</span>3. AI 패턴이 틀릴 사례를 먼저 예상하기</h2><p>AI 패턴 WK-\d{4}-\d{4}는 C001, C002, C003을 받아들여야 합니다. C005부터 C010은 구조가 맞지 않으므로 거부해야 합니다. 하지만 C004의 1999도 숫자 4개이므로 이 패턴은 C004까지 잘못 받아들입니다.</p><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">사례</th><th scope="col">예상</th><th scope="col">AI 패턴</th><th scope="col">결과</th></tr></thead><tbody><tr><td>C001</td><td>MATCH</td><td>MATCH</td><td>PASS</td></tr><tr><td>C002</td><td>MATCH</td><td>MATCH</td><td>PASS</td></tr><tr><td>C003</td><td>MATCH</td><td>MATCH</td><td>PASS</td></tr><tr><td>C004</td><td>NO MATCH</td><td>MATCH</td><td>FAIL</td></tr><tr><td>C005</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr><tr><td>C006</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr><tr><td>C007</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr><tr><td>C008</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr><tr><td>C009</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr><tr><td>C010</td><td>NO MATCH</td><td>NO MATCH</td><td>PASS</td></tr></tbody></table></div><p>수정 패턴은 WK-20[0-9]{2}-[0-9]{4}입니다. 앞의 20으로 연도를 2000부터 2099까지로 제한하고, [0-9]로 의도한 숫자 집합을 명시합니다. 스크립트에서는 전체 문자열이 패턴에 맞아야 하므로 fullmatch를 사용합니다.</p></section><section id="run-the-checker"><h2><span class="section-number">04</span>4. 예상 결과와 실제 매칭을 자동으로 비교하기</h2><p>다음 스크립트를 ai_regex_check.py로 저장하세요. AI가 제안한 패턴과 수정된 패턴을 모두 시험하고, 각 사례의 결과를 CSV 보고서로 저장합니다. 기존 출력 폴더는 재사용하지 않습니다.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="python 코드"><code id="code-3-1">import csv
+import re
+from pathlib import Path
+
+SOURCE = Path(&quot;regex_cases.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;regex_check_result&quot;
+REPORT = OUTPUT_DIR / &quot;regex_check.csv&quot;
+
+AI_PATTERN = re.compile(r&quot;WK-\d{4}-\d{4}&quot;)
+REVISED_PATTERN = re.compile(r&quot;WK-20[0-9]{2}-[0-9]{4}&quot;)
+
+
+def parse_expected(value: str) -&gt; bool:
+    normalized = value.strip().lower()
+    if normalized == &quot;yes&quot;:
+        return True
+    if normalized == &quot;no&quot;:
+        return False
+    raise ValueError(f&quot;Expected yes or no, got: {value!r}&quot;)
+
+
+def label(value: bool) -&gt; str:
+    return &quot;MATCH&quot; if value else &quot;NO MATCH&quot;
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    results = []
+    ai_failures = 0
+    revised_failures = 0
+
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        required = {&quot;case_id&quot;, &quot;value&quot;, &quot;should_match&quot;}
+        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
+            raise ValueError(&quot;CSV is missing a required column.&quot;)
+
+        for row_number, row in enumerate(reader, start=2):
+            expected = parse_expected(row[&quot;should_match&quot;])
+            text = row[&quot;value&quot;]
+            ai_actual = AI_PATTERN.fullmatch(text) is not None
+            revised_actual = REVISED_PATTERN.fullmatch(text) is not None
+            ai_pass = ai_actual == expected
+            revised_pass = revised_actual == expected
+
+            if not ai_pass:
+                ai_failures += 1
+            if not revised_pass:
+                revised_failures += 1
+
+            results.append({
+                &quot;case_id&quot;: row[&quot;case_id&quot;],
+                &quot;value&quot;: text,
+                &quot;expected&quot;: label(expected),
+                &quot;ai_actual&quot;: label(ai_actual),
+                &quot;ai_test&quot;: &quot;PASS&quot; if ai_pass else &quot;FAIL&quot;,
+                &quot;revised_actual&quot;: label(revised_actual),
+                &quot;revised_test&quot;: &quot;PASS&quot; if revised_pass else &quot;FAIL&quot;,
+            })
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    fields = [
+        &quot;case_id&quot;, &quot;value&quot;, &quot;expected&quot;, &quot;ai_actual&quot;, &quot;ai_test&quot;,
+        &quot;revised_actual&quot;, &quot;revised_test&quot;
+    ]
+    with REPORT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(results)
+
+    print(f&quot;Cases: {len(results)}.&quot;)
+    print(f&quot;AI pattern failures: {ai_failures}.&quot;)
+    print(f&quot;Revised pattern failures: {revised_failures}.&quot;)
+    print(f&quot;Report: {REPORT.as_posix()}&quot;)
+
+    if revised_failures:
+        raise RuntimeError(&quot;Revised pattern still fails one or more tests.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-3-2" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-3-2">python ai_regex_check.py</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>5. 예상 보고서 확인하기</h2><p>테스트 사례는 10개입니다. AI 패턴은 C004 하나에서 실패해야 하고, 수정된 패턴은 10개 사례를 모두 통과해야 합니다.</p><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">항목</th><th scope="col">예상값</th></tr></thead><tbody><tr><td>전체 사례</td><td>10</td></tr><tr><td>AI 패턴 실패</td><td>1</td></tr><tr><td>수정 패턴 실패</td><td>0</td></tr><tr><td>AI 실패 사례</td><td>C004</td></tr><tr><td>수정 패턴 통과 사례</td><td>10</td></tr></tbody></table></div><p>아래 예상 콘솔 출력은 테스트 표와 스크립트를 바탕으로 손으로 도출한 결과입니다. 실제 실행 로그가 아닙니다.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-4-3">Cases: 10.
+AI pattern failures: 1.
+Revised pattern failures: 0.
+Report: outputs/regex_check_result/regex_check.csv</code></pre></div></section><section id="checks-and-common-errors"><h2><span class="section-number">06</span>6. 경계 사례를 추가하고 흔한 실수 확인하기</h2><ul><li>이 예제의 2000과 2099처럼 허용 범위의 최솟값과 최댓값을 포함하세요.</li><li>1999처럼 경계 바로 바깥의 값도 하나 이상 포함하세요.</li><li>잘못된 대소문자, 구분자, 필드 길이, 공백, 비정상 문자를 시험하세요.</li><li>필드 전체가 규칙에 맞아야 한다면 fullmatch를 사용하세요.</li><li>OUTPUT_DIR을 바꾸지 않고 다시 실행합니다. 이전 보고서를 덮어쓰지 않고 FileExistsError로 중단되어야 합니다.</li></ul><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">실수</th><th scope="col">문제가 되는 이유</th></tr></thead><tbody><tr><td>일치해야 하는 문자열만 시험</td><td>너무 느슨한 정규식도 음성 사례를 넣기 전에는 맞는 것처럼 보일 수 있습니다.</td></tr><tr><td>AI 패턴을 사용하면서 요구사항을 다시 쓰지 않음</td><td>패턴이 실제로 원한 문제와 조금 다른 문제를 해결할 수 있습니다.</td></tr><tr><td>정상 사례 하나만 확인</td><td>경계, 길이, 대소문자, 구분자 오류가 시험되지 않습니다.</td></tr><tr><td>필드 전체 규칙인데 search 사용</td><td>잘못된 전체 문자열 안에서 유효해 보이는 일부 문자열만 발견될 수 있습니다.</td></tr><tr><td>정규식 결과를 본 뒤 기대값 변경</td><td>테스트가 요구사항에 대한 독립적인 기준 역할을 하지 못하게 됩니다.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>7. 정규식 테스트가 증명하지 못하는 것 이해하기</h2><p>10개 테스트를 통과했다는 것은 수정된 패턴이 이 10개의 합성 사례에서 예상대로 동작한다는 뜻일 뿐입니다. 가능한 모든 입력에 대해 정확하다는 수학적 증명은 아닙니다. 새로운 경계나 실패 사례를 발견할 때마다 테스트를 추가해야 합니다.</p><p>정규식은 형식을 검사할 뿐 업무상 사실까지 검증하지 않습니다. WK-2026-1234가 완벽하게 매칭되더라도 실제 데이터베이스에 존재하지 않을 수 있습니다. 존재 여부, 고유성, 권한, 다른 필드와의 관계는 별도 검사가 필요합니다.</p><p>이 작은 예제는 매우 길거나 공격적으로 구성된 입력에서의 성능을 평가하지 않습니다. 더 복잡한 AI 생성 패턴을 신뢰되지 않은 텍스트를 처리하는 서비스에 적용할 때는 정확성뿐 아니라 실행 시간 특성도 별도로 검토해야 합니다.</p></section><section id="verification"><h2>실행·검증 기록</h2><p>2026-09-20 · 예제 수동 검토 · 대상: Python 3.12 · 표준 라이브러리: csv, pathlib, re · 실행하지 않음</p><ul><li>합성 문자열 10개 중 3개를 일치 예상, 7개를 불일치 예상으로 수동 분류했습니다.</li><li>1999가 네 자리 숫자 조건을 만족하므로 AI 패턴이 C004를 받아들인다는 점을 수동 확인했습니다.</li><li>AI 패턴의 실패 사례가 10개 중 정확히 1개임을 수동으로 계산했습니다.</li><li>수정된 20[0-9]{2} 연도 부분이 2000부터 2099까지 허용하고 예제의 1999를 거부하는지 확인했습니다.</li><li>fullmatch 사용, 예상값과 실제값 비교, 출력 충돌 방지, 보고서 생성 로직을 코드로 검토했습니다.</li><li>예상 실패 개수와 콘솔 출력을 손으로 도출했습니다.</li></ul><div class="verification-limits"><strong>검증 한계</strong><ul><li>이 응답의 작성자는 코드를 실행하지 않았으며, Python 정규식 동작이나 파일 시스템 출력을 실제로 시험하지 않았습니다.</li><li>목록에 있는 합성 사례 10개만 수동으로 평가했으며 모든 가능한 입력에 대한 완전한 정확성을 증명하지 않았습니다.</li><li>매우 길거나 공격적으로 구성된 문자열에 대한 성능은 시험하지 않았습니다.</li><li>공식 문서 URL은 알려진 문서 위치를 사용했지만 실시간으로 접속해 확인하지 않았습니다.</li></ul></div><p><a href="/ko/principles/">사이트 전체 작성·검증 원칙</a></p></section><section id="references"><h2>참고 출처</h2><p>설명과 예제는 직접 작성했습니다. 관련 동작과 개념은 아래 공식 자료에서 확인할 수 있습니다.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/re.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · re <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/re.html#re.fullmatch" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · re.fullmatch <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/ai/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="ai가 작성한 sql을 손으로 계산한 sqlite 결과와 비교하기 ai가 만든 sql을 완성된 답이 아니라 초안으로 취급하고, 정답을 알고 있는 작은 sqlite 데이터베이스에서 시험합니다. 실제 데이터에 적용하기 전에 ai 결과를 손으로 계산한 예상 표와 비교합니다. python sqlite ai" data-category="ai"><div class="card-top"><span class="category-badge ai">AI 업무 활용</span><span class="article-number">28</span></div><h3><a href="/ko/articles/ai-sql-check/">AI가 작성한 SQL을 손으로 계산한 SQLite 결과와 비교하기</a></h3><p>AI가 만든 SQL을 완성된 답이 아니라 초안으로 취급하고, 정답을 알고 있는 작은 SQLite 데이터베이스에서 시험합니다. 실제 데이터에 적용하기 전에 AI 결과를 손으로 계산한 예상 표와 비교합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>SQLite</span><span>AI</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="퓨샷 예제로 ai 출력 형식을 일정하게 만들고 자동 검증하기 ai에게 원하는 출력 구조의 예시를 먼저 보여준 뒤, 반환된 json을 실제 사용 전에 자동 검증합니다. 작은 합성 업무 티켓 데이터로 형식 예시와 검증 스크립트를 함께 사용하는 방법을 확인합니다. ai python json" data-category="ai"><div class="card-top"><span class="category-badge ai">AI 업무 활용</span><span class="article-number">29</span></div><h3><a href="/ko/articles/few-shot-output-format/">퓨샷 예제로 AI 출력 형식을 일정하게 만들고 자동 검증하기</a></h3><p>AI에게 원하는 출력 구조의 예시를 먼저 보여준 뒤, 반환된 JSON을 실제 사용 전에 자동 검증합니다. 작은 합성 업무 티켓 데이터로 형식 예시와 검증 스크립트를 함께 사용하는 방법을 확인합니다.</p><div class="card-bottom"><div class="tags"><span>AI</span><span>Python</span><span>JSON</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="ai 요약을 원문과 문장별로 대조하기 ai 요약을 개별 주장 단위로 나누고 각 문장을 구체적인 원문 문장과 연결해 근거가 없는 내용이나 과장된 내용을 찾습니다. 작은 합성 문서로 자연스러운 문장도 근거 검토가 필요한 이유를 확인합니다. ai 요약 검증" data-category="ai"><div class="card-top"><span class="category-badge ai">AI 업무 활용</span><span class="article-number">30</span></div><h3><a href="/ko/articles/ai-summary-source-check/">AI 요약을 원문과 문장별로 대조하기</a></h3><p>AI 요약을 개별 주장 단위로 나누고 각 문장을 구체적인 원문 문장과 연결해 근거가 없는 내용이나 과장된 내용을 찾습니다. 작은 합성 문서로 자연스러운 문장도 근거 검토가 필요한 이유를 확인합니다.</p><div class="card-bottom"><div class="tags"><span>AI</span><span>요약</span><span>검증</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="업무용 스크립트 요청문에 입력·출력·오류 원칙 담기 “자동화해 줘”를 실행 가능한 작업 설명으로 바꿉니다. 민감정보 없는 합성 샘플과 손으로 확인한 기대 결과를 붙여, 팀별 작업 기록 집계 스크립트를 요청하는 문장을 완성합니다. ai 요청문 업무 자동화 입출력 오류 처리" data-category="ai"><div class="card-top"><span class="category-badge ai">AI 업무 활용</span><span class="article-number">07</span></div><h3><a href="/ko/articles/script-prompt/">업무용 스크립트 요청문에 입력·출력·오류 원칙 담기</a></h3><p>“자동화해 줘”를 실행 가능한 작업 설명으로 바꿉니다. 민감정보 없는 합성 샘플과 손으로 확인한 기대 결과를 붙여, 팀별 작업 기록 집계 스크립트를 요청하는 문장을 완성합니다.</p><div class="card-bottom"><div class="tags"><span>AI 요청문</span><span>업무 자동화</span><span>입출력</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-rule"><span>01</span>1. 정규식을 시험하기 전에 요구사항부터 작성하기</a></li><li><a href="#create-synthetic-cases"><span>02</span>2. 합성 테스트 사례 만들기</a></li><li><a href="#predict-the-results"><span>03</span>3. AI 패턴이 틀릴 사례를 먼저 예상하기</a></li><li><a href="#run-the-checker"><span>04</span>4. 예상 결과와 실제 매칭을 자동으로 비교하기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 보고서 확인하기</a></li><li><a href="#checks-and-common-errors"><span>06</span>6. 경계 사례를 추가하고 흔한 실수 확인하기</a></li><li><a href="#limits"><span>07</span>7. 정규식 테스트가 증명하지 못하는 것 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav><div class="aside-note">복사한 코드는 예제 데이터로 먼저 실행하세요. 결과를 확인한 뒤 실제 파일에 적용하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>무료 실무 튜토리얼 · 예제 데이터와 코드는 각 글에서 내려받을 수 있습니다.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

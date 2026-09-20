@@ -1,0 +1,123 @@
+<!doctype html><html lang="ko" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CSV 참고문헌 목록에서 중복 DOI와 누락 DOI 확인하기 | Worknote</title><meta name="description" content="연구 참고문헌을 CSV로 관리하면서 DOI 문자열을 비교용으로 정규화하고, 중복 DOI와 DOI 누락 항목을 검토 파일로 작성합니다. 원본 CSV는 그대로 유지하며 DOI가 적혀 있다는 이유만으로 유효한 DOI라고 판단하지 않습니다."><link rel="canonical" href="https://worknotetips.com/ko/articles/reference-list-csv/"><meta property="og:url" content="https://worknotetips.com/ko/articles/reference-list-csv/"><meta property="og:title" content="CSV 참고문헌 목록에서 중복 DOI와 누락 DOI 확인하기 | Worknote"><meta property="og:description" content="연구 참고문헌을 CSV로 관리하면서 DOI 문자열을 비교용으로 정규화하고, 중복 DOI와 DOI 누락 항목을 검토 파일로 작성합니다. 원본 CSV는 그대로 유지하며 DOI가 적혀 있다는 이유만으로 유효한 DOI라고 판단하지 않습니다."><meta property="og:locale" content="ko_KR"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "CSV 참고문헌 목록에서 중복 DOI와 누락 DOI 확인하기", "description": "연구 참고문헌을 CSV로 관리하면서 DOI 문자열을 비교용으로 정규화하고, 중복 DOI와 DOI 누락 항목을 검토 파일로 작성합니다. 원본 CSV는 그대로 유지하며 DOI가 적혀 있다는 이유만으로 유효한 DOI라고 판단하지 않습니다.", "inLanguage": "ko", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ko/articles/reference-list-csv/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/reference-list-csv/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/reference-list-csv/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/reference-list-csv/"><script type="application/json" id="ui-messages">{"copy":"복사","copied":"복사 완료","copySuccess":"코드를 복사했습니다. 예제 데이터로 먼저 실행하세요.","copyRetry":"다시 복사","copyFailure":"자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.","searchCount":"검색 결과 {count}개"}</script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ko/" aria-label="워크노트 홈"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a href="/ko/" aria-current="page">튜토리얼</a><a href="/ko/about/" >사이트 소개</a><a href="/ko/principles/" >작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/reference-list-csv/" lang="en" hreflang="en" >English</a><a href="/ko/articles/reference-list-csv/" lang="ko" hreflang="ko" aria-current="true">한국어</a></nav></details><a class="header-search" href="/ko/#search" aria-label="검색"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>검색</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="현재 위치"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/research/">자료·리서치</a></nav><header class="article-header"><span class="category-badge research">자료·리서치</span><h1>CSV 참고문헌 목록에서 중복 DOI와 누락 DOI 확인하기</h1><p class="article-summary">연구 참고문헌을 CSV로 관리하면서 DOI 문자열을 비교용으로 정규화하고, 중복 DOI와 DOI 누락 항목을 검토 파일로 작성합니다. 원본 CSV는 그대로 유지하며 DOI가 적혀 있다는 이유만으로 유효한 DOI라고 판단하지 않습니다.</p><div class="article-meta"><span>내용 확인 2026.09.20</span><span>손으로 확인한 예제</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-check"><span>01</span>1. DOI 검사가 무엇을 확인할 수 있는지 정하기</a></li><li><a href="#create-synthetic-list"><span>02</span>2. 합성 참고문헌 목록 만들기</a></li><li><a href="#work-out-expected-results"><span>03</span>3. 예상 문제를 손으로 계산하기</a></li><li><a href="#check-the-reference-list"><span>04</span>4. DOI 문자열을 정규화하고 검토 파일 만들기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 검토 보고서와 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 자동 삭제하지 말고 표시된 행을 검토하기</a></li><li><a href="#limits"><span>07</span>7. DOI 기반 중복 검사의 한계 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께 맞아요</strong>스프레드시트나 CSV로 참고문헌을 관리하면서 중복 항목과 DOI 누락을 간단히 확인하려는 연구자를 위한 안내입니다.</p><div><strong>준비할 것</strong><ul><li>Python 3.12와 해당 버전을 실행하는 터미널 명령이 준비되어 있어야 합니다.</li><li>UTF-8 CSV를 저장할 수 있는 텍스트 편집기 또는 스프레드시트 프로그램이 필요합니다.</li><li>스크립트가 outputs 아래에 새 폴더를 만들 수 있는 작업 폴더가 필요합니다.</li><li>Python 표준 라이브러리인 csv와 pathlib만 사용합니다.</li></ul></div></div><section id="define-the-check"><h2><span class="section-number">01</span>1. DOI 검사가 무엇을 확인할 수 있는지 정하기</h2><p>이 작업은 두 가지 실무 문제를 확인합니다. 참고문헌 행에 DOI 값이 없거나, 단순 텍스트 정규화 후 두 행의 DOI가 같은 경우입니다. DOI 등록기관에 접속하지 않으므로 DOI가 실제로 존재하는지, 정상적으로 연결되는지, 해당 논문에 속하는지까지 증명하지는 않습니다.</p><p>스크립트는 https://doi.org/와 doi: 같은 흔한 접두사를 제거하고 앞뒤 공백을 없앤 뒤 비교를 위해 나머지 DOI 문자열을 소문자로 바꿉니다. 원래 DOI 문자열은 출력 파일에 정규화된 값과 함께 그대로 보존합니다.</p><aside class="callout"><strong>DOI 중복이 곧 삭제 지시는 아님</strong><p>같은 DOI를 가진 두 행은 검토 후보입니다. 어떤 항목을 제거하기 전에 제목, 저자, 버전, 각 행을 유지한 이유를 확인하세요.</p></aside></section><section id="create-synthetic-list"><h2><span class="section-number">02</span>2. 합성 참고문헌 목록 만들기</h2><p>아래 참고문헌 목록은 이 글을 위해 작성한 합성 데이터입니다. DOI 형태의 문자열도 예제용이며 실제 또는 연결 가능한 출판물이라고 제시하는 값이 아닙니다. references.csv로 저장하세요.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-1-1">ref_id,title,year,doi
+R001,Synthetic bracket study,2024,10.0000/demo.alpha
+R002,Synthetic vibration study,2025,10.0000/demo.beta
+R003,Synthetic bracket study copy,2024,https://doi.org/10.0000/demo.alpha
+R004,Synthetic fatigue note,2023,
+R005,Synthetic surrogate study,2026,doi:10.0000/DEMO.GAMMA
+R006,Synthetic optimization study,2026,10.0000/demo.delta
+</code></pre></div><p>참고문헌 행은 6개입니다. DOI 문자열이 있는 행은 5개이고 R004 하나는 DOI가 없습니다. R001과 R003은 표기 방식은 다르지만 정규화하면 같은 값이 됩니다. R005는 대소문자와 doi: 접두사도 비교 전에 정리할 수 있음을 보여줍니다.</p></section><section id="work-out-expected-results"><h2><span class="section-number">03</span>3. 예상 문제를 손으로 계산하기</h2><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">ref_id</th><th scope="col">원본 DOI</th><th scope="col">정규화 DOI</th><th scope="col">예상 문제</th></tr></thead><tbody><tr><td>R001</td><td>10.0000/demo.alpha</td><td>10.0000/demo.alpha</td><td>DUPLICATE_DOI</td></tr><tr><td>R002</td><td>10.0000/demo.beta</td><td>10.0000/demo.beta</td><td>없음</td></tr><tr><td>R003</td><td>https://doi.org/10.0000/demo.alpha</td><td>10.0000/demo.alpha</td><td>DUPLICATE_DOI</td></tr><tr><td>R004</td><td></td><td></td><td>MISSING_DOI</td></tr><tr><td>R005</td><td>doi:10.0000/DEMO.GAMMA</td><td>10.0000/demo.gamma</td><td>없음</td></tr><tr><td>R006</td><td>10.0000/demo.delta</td><td>10.0000/demo.delta</td><td>없음</td></tr></tbody></table></div><p>예상 결과는 참고문헌 6개, DOI 문자열이 있는 행 5개, DOI 누락 행 1개, 두 행이 포함된 중복 DOI 그룹 1개입니다. 정규화 후 비어 있지 않은 DOI 5개에는 서로 다른 값이 4개 있습니다.</p></section><section id="check-the-reference-list"><h2><span class="section-number">04</span>4. DOI 문자열을 정규화하고 검토 파일 만들기</h2><p>다음 스크립트를 reference_list_check.py로 저장하세요. 전체 참고문헌의 정규화 사본과 검토가 필요한 행만 들어 있는 issues.csv를 별도로 작성합니다. 원본 references.csv는 읽기만 합니다.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="python 코드"><code id="code-3-1">import csv
+from pathlib import Path
+
+SOURCE = Path(&quot;references.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;reference_list_result&quot;
+NORMALIZED = OUTPUT_DIR / &quot;normalized_references.csv&quot;
+ISSUES = OUTPUT_DIR / &quot;issues.csv&quot;
+REQUIRED = {&quot;ref_id&quot;, &quot;title&quot;, &quot;year&quot;, &quot;doi&quot;}
+
+
+def normalize_doi(value: str) -&gt; str:
+    text = value.strip()
+    lowered = text.lower()
+    prefixes = (
+        &quot;https://doi.org/&quot;,
+        &quot;http://doi.org/&quot;,
+        &quot;doi:&quot;,
+    )
+    for prefix in prefixes:
+        if lowered.startswith(prefix):
+            text = text[len(prefix):].strip()
+            break
+    return text.lower()
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    rows = []
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames is None or not REQUIRED.issubset(reader.fieldnames):
+            raise ValueError(&quot;CSV is missing a required column.&quot;)
+
+        seen_ids = set()
+        for row in reader:
+            ref_id = row[&quot;ref_id&quot;].strip()
+            if not ref_id:
+                raise ValueError(&quot;ref_id must not be blank.&quot;)
+            if ref_id in seen_ids:
+                raise ValueError(f&quot;Duplicate ref_id: {ref_id}&quot;)
+            seen_ids.add(ref_id)
+
+            rows.append({
+                &quot;ref_id&quot;: ref_id,
+                &quot;title&quot;: row[&quot;title&quot;],
+                &quot;year&quot;: row[&quot;year&quot;],
+                &quot;doi&quot;: row[&quot;doi&quot;],
+                &quot;normalized_doi&quot;: normalize_doi(row[&quot;doi&quot;]),
+            })
+
+    by_doi = {}
+    for row in rows:
+        doi = row[&quot;normalized_doi&quot;]
+        if doi:
+            by_doi.setdefault(doi, []).append(row[&quot;ref_id&quot;])
+
+    duplicate_dois = {
+        doi: ids for doi, ids in by_doi.items() if len(ids) &gt; 1
+    }
+
+    issue_rows = []
+    for row in rows:
+        doi = row[&quot;normalized_doi&quot;]
+        if not doi:
+            issue_rows.append({
+                &quot;ref_id&quot;: row[&quot;ref_id&quot;],
+                &quot;issue&quot;: &quot;MISSING_DOI&quot;,
+                &quot;normalized_doi&quot;: &quot;&quot;,
+                &quot;related_ref_ids&quot;: &quot;&quot;,
+            })
+        elif doi in duplicate_dois:
+            issue_rows.append({
+                &quot;ref_id&quot;: row[&quot;ref_id&quot;],
+                &quot;issue&quot;: &quot;DUPLICATE_DOI&quot;,
+                &quot;normalized_doi&quot;: doi,
+                &quot;related_ref_ids&quot;: &quot;;&quot;.join(duplicate_dois[doi]),
+            })
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+
+    normalized_fields = [&quot;ref_id&quot;, &quot;title&quot;, &quot;year&quot;, &quot;doi&quot;, &quot;normalized_doi&quot;]
+    with NORMALIZED.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=normalized_fields)
+        writer.writeheader()
+        writer.writerows(rows)
+
+    issue_fields = [&quot;ref_id&quot;, &quot;issue&quot;, &quot;normalized_doi&quot;, &quot;related_ref_ids&quot;]
+    with ISSUES.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=issue_fields)
+        writer.writeheader()
+        writer.writerows(issue_rows)
+
+    missing_count = sum(row[&quot;issue&quot;] == &quot;MISSING_DOI&quot; for row in issue_rows)
+    print(f&quot;References checked: {len(rows)}.&quot;)
+    print(f&quot;Missing DOI rows: {missing_count}.&quot;)
+    print(f&quot;Duplicate DOI groups: {len(duplicate_dois)}.&quot;)
+    print(f&quot;Issue rows: {len(issue_rows)}.&quot;)
+    print(f&quot;Output folder: {OUTPUT_DIR.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>5. 예상 검토 보고서와 비교하기</h2><p>issues.csv에는 데이터 행이 3개 있어야 합니다. 정규화된 DOI가 중복되는 R001과 R003, 그리고 DOI가 없는 R004입니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-4-1">ref_id,issue,normalized_doi,related_ref_ids
+R001,DUPLICATE_DOI,10.0000/demo.alpha,R001;R003
+R003,DUPLICATE_DOI,10.0000/demo.alpha,R001;R003
+R004,MISSING_DOI,,
+</code></pre></div><p>아래 예상 콘솔 출력은 합성 목록과 스크립트를 바탕으로 손으로 도출한 결과이며 실제 실행 로그가 아닙니다.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-4-3">References checked: 6.
+Missing DOI rows: 1.
+Duplicate DOI groups: 1.
+Issue rows: 3.
+Output folder: outputs/reference_list_result</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>6. 자동 삭제하지 말고 표시된 행을 검토하기</h2><ul><li>R001과 R003이 같은 DOI 문자열로 정규화되는지 확인합니다.</li><li>R004는 DOI가 없어도 normalized reference list에서 삭제되지 않는지 확인합니다.</li><li>중복 DOI 행을 합치기 전에 논문 제목, 저자, 연도, 출판 정보를 확인합니다.</li><li>DOI 누락 행은 실제로 DOI가 존재하는 출판물인지 확인한 뒤 값을 추가합니다.</li><li>OUTPUT_DIR을 바꾸지 않고 다시 실행합니다. 이전 검토 결과를 교체하지 않고 FileExistsError로 중단되어야 합니다.</li></ul><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">문제</th><th scope="col">확인할 사항</th></tr></thead><tbody><tr><td>같은 논문이 서로 다른 DOI 표기로 입력됨</td><td>비교 전에 흔한 DOI URL과 doi: 접두사를 정규화하세요.</td></tr><tr><td>빈 DOI가 중복으로 처리됨</td><td>DOI 누락 검사와 DOI 중복 그룹화를 분리하세요.</td></tr><tr><td>서로 다른 논문의 제목이 비슷함</td><td>제목 유사성만으로 중복 참고문헌이라고 판단하지 마세요.</td></tr><tr><td>DOI처럼 보이는 문자열이 있음</td><td>값이 존재한다는 사실만으로 유효성을 보장하지 않습니다. 중요한 참고문헌은 신뢰할 수 있는 메타데이터 출처에서 확인하세요.</td></tr><tr><td>기존 검토 결과가 덮어써짐</td><td>이전 검토 기록을 유지할 수 있도록 새로운 출력 폴더를 사용하세요.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>7. DOI 기반 중복 검사의 한계 이해하기</h2><p>DOI 메타데이터가 있는 경우 DOI 비교는 유용하지만 DOI가 없다고 해서 참고문헌이 잘못되었거나 불완전하다는 뜻은 아닙니다. 일부 출판물이나 문서 유형은 DOI가 없을 수 있으며, 오래된 자료는 다른 식별자나 수동 서지 확인이 필요할 수 있습니다.</p><p>이 스크립트는 문자열 정규화만 수행합니다. DOI 링크를 실제로 확인하거나 Crossref 같은 등록기관에 질의하지 않으며, 제목이나 저자 검증, 철회 여부 확인, 서로 다른 DOI가 같은 연구의 다른 버전인지 판정하는 작업도 하지 않습니다.</p><p>실제 연구 데이터베이스에서는 저자, 제목, 연도, 저널, 권호, 페이지, DOI, 자체 reference ID 등을 함께 관리하는 편이 좋습니다. 자동 중복 탐지는 참고문헌 삭제 명령이 아니라 검토 보조 수단으로 사용하세요.</p></section><section id="verification"><h2>실행·검증 기록</h2><p>2026-09-20 · 예제 수동 검토 · 대상: Python 3.12 · 표준 라이브러리: csv, pathlib · 실행하지 않음</p><ul><li>합성 참고문헌 6개, DOI 문자열이 있는 행 5개, DOI 누락 행 1개를 수동으로 확인했습니다.</li><li>R001과 R003이 모두 10.0000/demo.alpha로 정규화됨을 수동으로 확인했습니다.</li><li>R005가 doi:10.0000/DEMO.GAMMA에서 10.0000/demo.gamma로 정규화됨을 확인했습니다.</li><li>비어 있지 않은 DOI 5개에서 서로 다른 정규화 DOI가 4개임을 계산했습니다.</li><li>예상 issue report가 중복 DOI 행 2개와 DOI 누락 행 1개로 구성됨을 수동으로 도출했습니다.</li><li>중복 ref_id 검사, DOI 정규화, 누락과 중복의 별도 처리, 출력 충돌 방지, 원본 CSV 보존 로직을 코드로 검토했습니다.</li></ul><div class="verification-limits"><strong>검증 한계</strong><ul><li>이 응답의 작성자는 코드를 실행하지 않았으며, CSV 출력 파일을 실제로 만들지 않았습니다.</li><li>합성 DOI 형태 문자열은 등록 여부나 실제 연결 여부를 확인하지 않았으며 실제 출판물로 제시하지 않습니다.</li><li>DOI 유효성, 서지 메타데이터 정확성, 제목 유사성, 철회 여부, 관련 논문 버전은 시험하지 않았습니다.</li><li>공식 문서 URL은 알려진 문서 위치를 사용했지만 실시간으로 접속해 확인하지 않았습니다.</li></ul></div><p><a href="/ko/principles/">사이트 전체 작성·검증 원칙</a></p></section><section id="references"><h2>참고 출처</h2><p>설명과 예제는 직접 작성했습니다. 관련 동작과 개념은 아래 공식 자료에서 확인할 수 있습니다.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://www.crossref.org/display-guidelines/" target="_blank" rel="noopener noreferrer">Crossref 문서 · Display guidelines <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/research/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기 분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다. python 메타데이터 연구" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">35</span></div><h3><a href="/ko/articles/data-dictionary/">열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기</a></h3><p>분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>메타데이터</span><span>연구</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="공개자료를 모을 때 출처·기준일·단위를 함께 기록하기 자료명과 url만 모으는 대신 기준일·게시일·확인일·단위·이용조건을 한 행에 기록합니다. 코드 없이 쓰는 csv 템플릿과 체크리스트를 제공합니다. 자료·리서치 출처 기록 기준일 csv 템플릿" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">13</span></div><h3><a href="/ko/articles/source-ledger/">공개자료를 모을 때 출처·기준일·단위를 함께 기록하기</a></h3><p>자료명과 URL만 모으는 대신 기준일·게시일·확인일·단위·이용조건을 한 행에 기록합니다. 코드 없이 쓰는 CSV 템플릿과 체크리스트를 제공합니다.</p><div class="card-bottom"><div class="tags"><span>자료·리서치</span><span>출처 기록</span><span>기준일</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="설문 csv를 집계하기 전에 응답수·누락·중복 점검하기 합성 응답 10행에서 중복 id와 빈 답변을 구분합니다. 유효 응답의 분모를 명시하고 선택지별 개수와 비율, 제외 사유를 새 파일에 남깁니다. python 설문 자료 점검 분모 csv" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">14</span></div><h3><a href="/ko/articles/survey-summary/">설문 CSV를 집계하기 전에 응답수·누락·중복 점검하기</a></h3><p>합성 응답 10행에서 중복 ID와 빈 답변을 구분합니다. 유효 응답의 분모를 명시하고 선택지별 개수와 비율, 제외 사유를 새 파일에 남깁니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>설문</span><span>자료 점검</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-check"><span>01</span>1. DOI 검사가 무엇을 확인할 수 있는지 정하기</a></li><li><a href="#create-synthetic-list"><span>02</span>2. 합성 참고문헌 목록 만들기</a></li><li><a href="#work-out-expected-results"><span>03</span>3. 예상 문제를 손으로 계산하기</a></li><li><a href="#check-the-reference-list"><span>04</span>4. DOI 문자열을 정규화하고 검토 파일 만들기</a></li><li><a href="#expected-output"><span>05</span>5. 예상 검토 보고서와 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 자동 삭제하지 말고 표시된 행을 검토하기</a></li><li><a href="#limits"><span>07</span>7. DOI 기반 중복 검사의 한계 이해하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav><div class="aside-note">복사한 코드는 예제 데이터로 먼저 실행하세요. 결과를 확인한 뒤 실제 파일에 적용하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>무료 실무 튜토리얼 · 예제 데이터와 코드는 각 글에서 내려받을 수 있습니다.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

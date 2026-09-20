@@ -1,0 +1,152 @@
+<!doctype html><html lang="ko" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기 | Worknote</title><meta name="description" content="분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다."><link rel="canonical" href="https://worknotetips.com/ko/articles/data-dictionary/"><meta property="og:url" content="https://worknotetips.com/ko/articles/data-dictionary/"><meta property="og:title" content="열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기 | Worknote"><meta property="og:description" content="분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다."><meta property="og:locale" content="ko_KR"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기", "description": "분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다.", "inLanguage": "ko", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ko/articles/data-dictionary/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/data-dictionary/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/data-dictionary/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/data-dictionary/"><script type="application/json" id="ui-messages">{"copy":"복사","copied":"복사 완료","copySuccess":"코드를 복사했습니다. 예제 데이터로 먼저 실행하세요.","copyRetry":"다시 복사","copyFailure":"자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.","searchCount":"검색 결과 {count}개"}</script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ko/" aria-label="워크노트 홈"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a href="/ko/" aria-current="page">튜토리얼</a><a href="/ko/about/" >사이트 소개</a><a href="/ko/principles/" >작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/data-dictionary/" lang="en" hreflang="en" >English</a><a href="/ko/articles/data-dictionary/" lang="ko" hreflang="ko" aria-current="true">한국어</a></nav></details><a class="header-search" href="/ko/#search" aria-label="검색"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>검색</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="현재 위치"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/research/">자료·리서치</a></nav><header class="article-header"><span class="category-badge research">자료·리서치</span><h1>열 의미, 단위, 자료형, 허용값을 포함한 데이터 사전 만들기</h1><p class="article-summary">분석 전에 데이터셋의 각 열이 무엇을 의미하는지, 어떤 단위와 자료형을 사용하는지, 어떤 값을 허용하는지 문서화합니다. 작은 합성 시험 데이터로 같은 데이터 사전을 간단한 자동 검증에도 사용하는 방법을 확인합니다.</p><div class="article-meta"><span>내용 확인 2026.09.20</span><span>손으로 확인한 예제</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-purpose"><span>01</span>1. 데이터 사전을 데이터셋의 일부로 취급하기</a></li><li><a href="#create-synthetic-dataset"><span>02</span>2. 작은 합성 연구 데이터셋 만들기</a></li><li><a href="#write-the-dictionary"><span>03</span>3. 예상 데이터 사전을 손으로 작성하기</a></li><li><a href="#generate-and-validate"><span>04</span>4. 데이터 사전을 생성하고 데이터셋 검증하기</a></li><li><a href="#expected-validation"><span>05</span>5. 예상 검증 문제와 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 데이터 사전과 실제 데이터가 계속 일치하는지 확인하기</a></li><li><a href="#limits"><span>07</span>7. 프로젝트가 커지면 데이터 사전도 확장하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께 맞아요</strong>다른 연구자도 읽고 검토할 수 있도록 데이터셋의 열 정의를 명확하게 정리하려는 연구자를 위한 안내입니다.</p><div><strong>준비할 것</strong><ul><li>Python 3.12와 해당 버전을 실행하는 터미널 명령이 준비되어 있어야 합니다.</li><li>UTF-8 CSV를 저장할 수 있는 텍스트 편집기 또는 스프레드시트 프로그램이 필요합니다.</li><li>스크립트가 outputs 아래에 새 폴더를 만들 수 있는 작업 폴더가 필요합니다.</li><li>Python 표준 라이브러리인 csv, pathlib, re만 사용합니다.</li></ul></div></div><section id="define-the-purpose"><h2><span class="section-number">01</span>1. 데이터 사전을 데이터셋의 일부로 취급하기</h2><p>열 이름만으로는 연구 데이터를 충분히 설명하기 어렵습니다. speed는 차량 속도일 수도 있고 휠 속도나 각속도일 수도 있습니다. accel도 종방향, 횡방향, 전체 가속도 중 무엇인지 알 수 없습니다. 데이터 사전은 이후 분석자가 의미를 추측하지 않도록 의도한 정의를 기록합니다.</p><p>이 글에서는 각 열에 대해 column name, meaning, unit, data type, allowed values, example의 여섯 가지 정보를 기록합니다. allowed values에는 범주, 수치 범위, 고유성 규칙, 간단한 문자열 패턴 등을 적을 수 있습니다.</p><aside class="callout"><strong>단위는 메타데이터에 명시하기</strong><p>숫자 크기만 보고 단위를 추정하지 마세요. 50이라는 값은 50 km/h, 50 m/s, 50 N 등 전혀 다른 물리량일 수 있습니다.</p></aside></section><section id="create-synthetic-dataset"><h2><span class="section-number">02</span>2. 작은 합성 연구 데이터셋 만들기</h2><p>아래 데이터는 이 글을 위해 작성한 합성 데이터입니다. test_runs.csv로 저장하세요. 처음 네 행은 의도한 규칙을 따르고, 다섯 번째 행에는 데이터 사전을 이용해 검출할 수 있는 문제 네 개를 의도적으로 넣었습니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-1-1">run_id,speed_kmh,accel_m_s2,road_surface,test_status
+R001,30,0.5,dry,complete
+R002,50,-1.2,wet,complete
+R003,70,0.0,dry,review
+R004,40,-0.8,wet,complete
+R005,135,fast,snow,done
+</code></pre></div><p>행은 5개이고 열은 5개입니다. R005에는 허용 범위를 초과한 속도, 숫자가 아닌 가속도, 허용되지 않은 노면 범주, 허용되지 않은 시험 상태가 들어 있습니다. run_id 자체는 정상입니다.</p></section><section id="write-the-dictionary"><h2><span class="section-number">03</span>3. 예상 데이터 사전을 손으로 작성하기</h2><p>데이터 사전은 분석 코드를 열어보지 않아도 이해할 수 있어야 합니다. 비슷한 측정값과 구분할 수 있을 정도로 meaning을 구체적으로 작성하세요.</p><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">column_name</th><th scope="col">meaning</th><th scope="col">unit</th><th scope="col">type</th><th scope="col">allowed_values</th><th scope="col">example</th></tr></thead><tbody><tr><td>run_id</td><td>한 번의 시험 run을 구분하는 고유 식별자</td><td></td><td>string</td><td>R 다음에 정확히 숫자 3개; 고유값</td><td>R001</td></tr><tr><td>speed_kmh</td><td>해당 레코드 시작 시 차량 속도</td><td>km/h</td><td>integer</td><td>0 이상 120 이하</td><td>50</td></tr><tr><td>accel_m_s2</td><td>종방향 가속도</td><td>m/s^2</td><td>float</td><td>-5.0 이상 5.0 이하</td><td>-1.2</td></tr><tr><td>road_surface</td><td>시험에 사용한 노면 조건</td><td></td><td>category</td><td>dry;wet</td><td>wet</td></tr><tr><td>test_status</td><td>시험 레코드의 검토 상태</td><td></td><td>category</td><td>complete;review</td><td>complete</td></tr></tbody></table></div><p>식별자와 범주형 라벨은 물리적 측정량이 아니므로 unit을 비워 두는 것이 의도된 상태입니다. type은 스프레드시트가 자동으로 추정한 형식이 아니라 데이터가 의도한 표현 방식을 의미합니다.</p></section><section id="generate-and-validate"><h2><span class="section-number">04</span>4. 데이터 사전을 생성하고 데이터셋 검증하기</h2><p>다음 스크립트를 data_dictionary_check.py로 저장하세요. 열 정의는 SPEC에 한 번만 작성합니다. 스크립트는 이 정의를 data_dictionary.csv로 내보내고 동일한 규칙으로 각 데이터 행을 검사합니다. 원본 test_runs.csv는 읽기만 합니다.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="python 코드"><code id="code-3-1">import csv
+import re
+from pathlib import Path
+
+SOURCE = Path(&quot;test_runs.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;data_dictionary_result&quot;
+DICTIONARY = OUTPUT_DIR / &quot;data_dictionary.csv&quot;
+ISSUES = OUTPUT_DIR / &quot;validation_issues.csv&quot;
+
+SPEC = [
+    {
+        &quot;column_name&quot;: &quot;run_id&quot;,
+        &quot;meaning&quot;: &quot;Unique identifier for one test run&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;string&quot;,
+        &quot;allowed_values&quot;: &quot;R followed by exactly 3 digits; unique&quot;,
+        &quot;example&quot;: &quot;R001&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;speed_kmh&quot;,
+        &quot;meaning&quot;: &quot;Vehicle speed at the start of the record&quot;,
+        &quot;unit&quot;: &quot;km/h&quot;,
+        &quot;type&quot;: &quot;integer&quot;,
+        &quot;allowed_values&quot;: &quot;0 to 120 inclusive&quot;,
+        &quot;example&quot;: &quot;50&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;accel_m_s2&quot;,
+        &quot;meaning&quot;: &quot;Longitudinal acceleration&quot;,
+        &quot;unit&quot;: &quot;m/s^2&quot;,
+        &quot;type&quot;: &quot;float&quot;,
+        &quot;allowed_values&quot;: &quot;-5.0 to 5.0 inclusive&quot;,
+        &quot;example&quot;: &quot;-1.2&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;road_surface&quot;,
+        &quot;meaning&quot;: &quot;Road-surface condition used for the test&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;category&quot;,
+        &quot;allowed_values&quot;: &quot;dry;wet&quot;,
+        &quot;example&quot;: &quot;wet&quot;,
+    },
+    {
+        &quot;column_name&quot;: &quot;test_status&quot;,
+        &quot;meaning&quot;: &quot;Review state of the test record&quot;,
+        &quot;unit&quot;: &quot;&quot;,
+        &quot;type&quot;: &quot;category&quot;,
+        &quot;allowed_values&quot;: &quot;complete;review&quot;,
+        &quot;example&quot;: &quot;complete&quot;,
+    },
+]
+
+
+def issue(row_number, column, value, problem):
+    return {
+        &quot;row_number&quot;: row_number,
+        &quot;column_name&quot;: column,
+        &quot;value&quot;: value,
+        &quot;issue&quot;: problem,
+    }
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    expected_columns = [item[&quot;column_name&quot;] for item in SPEC]
+    issues = []
+    seen_run_ids = set()
+    row_count = 0
+
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        if reader.fieldnames != expected_columns:
+            raise ValueError(
+                f&quot;Header mismatch. Expected {expected_columns}, got {reader.fieldnames}.&quot;
+            )
+
+        for row_number, row in enumerate(reader, start=2):
+            row_count += 1
+
+            run_id = row[&quot;run_id&quot;].strip()
+            if re.fullmatch(r&quot;R[0-9]{3}&quot;, run_id) is None:
+                issues.append(issue(row_number, &quot;run_id&quot;, run_id, &quot;PATTERN_ERROR&quot;))
+            elif run_id in seen_run_ids:
+                issues.append(issue(row_number, &quot;run_id&quot;, run_id, &quot;DUPLICATE_VALUE&quot;))
+            seen_run_ids.add(run_id)
+
+            try:
+                speed = int(row[&quot;speed_kmh&quot;])
+            except ValueError:
+                issues.append(issue(row_number, &quot;speed_kmh&quot;, row[&quot;speed_kmh&quot;], &quot;TYPE_ERROR&quot;))
+            else:
+                if not 0 &lt;= speed &lt;= 120:
+                    issues.append(issue(row_number, &quot;speed_kmh&quot;, row[&quot;speed_kmh&quot;], &quot;OUT_OF_RANGE&quot;))
+
+            try:
+                accel = float(row[&quot;accel_m_s2&quot;])
+            except ValueError:
+                issues.append(issue(row_number, &quot;accel_m_s2&quot;, row[&quot;accel_m_s2&quot;], &quot;TYPE_ERROR&quot;))
+            else:
+                if not -5.0 &lt;= accel &lt;= 5.0:
+                    issues.append(issue(row_number, &quot;accel_m_s2&quot;, row[&quot;accel_m_s2&quot;], &quot;OUT_OF_RANGE&quot;))
+
+            if row[&quot;road_surface&quot;] not in {&quot;dry&quot;, &quot;wet&quot;}:
+                issues.append(issue(row_number, &quot;road_surface&quot;, row[&quot;road_surface&quot;], &quot;ALLOWED_VALUE_ERROR&quot;))
+
+            if row[&quot;test_status&quot;] not in {&quot;complete&quot;, &quot;review&quot;}:
+                issues.append(issue(row_number, &quot;test_status&quot;, row[&quot;test_status&quot;], &quot;ALLOWED_VALUE_ERROR&quot;))
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+
+    dictionary_fields = [
+        &quot;column_name&quot;, &quot;meaning&quot;, &quot;unit&quot;, &quot;type&quot;, &quot;allowed_values&quot;, &quot;example&quot;
+    ]
+    with DICTIONARY.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=dictionary_fields)
+        writer.writeheader()
+        writer.writerows(SPEC)
+
+    issue_fields = [&quot;row_number&quot;, &quot;column_name&quot;, &quot;value&quot;, &quot;issue&quot;]
+    with ISSUES.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=issue_fields)
+        writer.writeheader()
+        writer.writerows(issues)
+
+    print(f&quot;Rows checked: {row_count}.&quot;)
+    print(f&quot;Dictionary columns: {len(SPEC)}.&quot;)
+    print(f&quot;Validation issues: {len(issues)}.&quot;)
+    print(f&quot;Output folder: {OUTPUT_DIR.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-validation"><h2><span class="section-number">05</span>5. 예상 검증 문제와 비교하기</h2><p>문제는 R005에서만 발생해야 합니다. CSV 헤더가 1행이므로 R005는 실제 CSV 6행입니다. 검증 문제는 총 4개가 기록되어야 합니다.</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="csv 코드"><code id="code-4-1">row_number,column_name,value,issue
+6,speed_kmh,135,OUT_OF_RANGE
+6,accel_m_s2,fast,TYPE_ERROR
+6,road_surface,snow,ALLOWED_VALUE_ERROR
+6,test_status,done,ALLOWED_VALUE_ERROR
+</code></pre></div><p>아래 예상 콘솔 출력은 합성 데이터셋과 스크립트를 바탕으로 손으로 도출한 결과이며 실제 실행 로그가 아닙니다.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-4-3">Rows checked: 5.
+Dictionary columns: 5.
+Validation issues: 4.
+Output folder: outputs/data_dictionary_result</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>6. 데이터 사전과 실제 데이터가 계속 일치하는지 확인하기</h2><ul><li>데이터셋의 모든 열에 데이터 사전 행이 정확히 하나씩 있는지 확인합니다.</li><li>측정 물리량에는 단위를 명확하게 적었는지 확인합니다.</li><li>범주형 허용값의 철자와 대소문자가 실제 데이터와 같은지 확인합니다.</li><li>검증 문제를 자동으로 삭제하지 말고 각각 검토합니다.</li><li>OUTPUT_DIR을 바꾸지 않고 다시 실행합니다. 이전 데이터 사전과 검증 보고서를 덮어쓰지 않고 FileExistsError로 중단되어야 합니다.</li></ul><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">문제</th><th scope="col">확인할 사항</th></tr></thead><tbody><tr><td>새 데이터 열에 데이터 사전 항목이 없음</td><td>분석 전에 데이터 사전을 업데이트해 의미와 단위를 기록하세요.</td></tr><tr><td>같은 개념이 서로 다른 단위로 존재</td><td>열을 분리하거나 단위를 명시적으로 통일하세요. 기억에 의존하지 마세요.</td></tr><tr><td>시간이 지나며 범주 라벨이 바뀜</td><td>허용값을 정의하고 새로운 노면 조건 같은 의도된 추가 항목을 문서화하세요.</td></tr><tr><td>스프레드시트가 정수형 ID로 바꿈</td><td>앞자리 0이나 문자열 패턴이 중요하면 식별자를 string으로 관리하세요.</td></tr><tr><td>검증은 통과하지만 의미가 틀림</td><td>구조 검사는 잘못된 과학적 정의나 잘못 붙은 센서 채널 이름을 자동으로 찾지 못합니다.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>7. 프로젝트가 커지면 데이터 사전도 확장하기</h2><p>실제 연구 데이터 사전에는 여기서 사용한 여섯 필드보다 더 많은 정보가 필요할 수 있습니다. 프로젝트에 따라 source system, sensor location, coordinate direction, sampling rate, nullable 여부, 정밀도, 계산 방법, valid range, missing-value code, 담당자 등을 추가하세요.</p><p>허용값은 현재 파일에서 우연히 관찰된 최솟값과 최댓값이 아니라 과학적 의미를 기준으로 정의해야 합니다. 한 파일의 speed가 30에서 70 km/h 사이에만 있다고 해서 자동으로 30에서 70이 공학적 유효 범위가 되는 것은 아닙니다.</p><p>데이터 사전은 데이터셋이나 분석 코드와 함께 버전을 관리하세요. 열 정의, 단위, 부호 규약, 범주가 바뀌면 언제 변경되었는지 기록해야 합니다. 데이터 사전은 실제 분석 중인 데이터 버전을 정확히 설명할 때 가장 유용합니다.</p></section><section id="verification"><h2>실행·검증 기록</h2><p>2026-09-20 · 예제 수동 검토 · 대상: Python 3.12 · 표준 라이브러리: csv, pathlib, re · 실행하지 않음</p><ul><li>합성 데이터가 5개 행과 5개 열로 구성됨을 수동으로 확인했습니다.</li><li>R001부터 R004까지 명시한 데이터 사전 규칙을 만족하는지 손으로 확인했습니다.</li><li>R005에서 speed 135의 범위 초과, accel fast의 숫자형 오류, road_surface snow의 허용값 오류, test_status done의 허용값 오류 등 4개 문제를 확인했습니다.</li><li>R005 자체는 R 다음에 숫자 3개가 오는 run_id 규칙을 만족함을 확인했습니다.</li><li>R005의 네 검증 문제가 실제 CSV 6행에 해당함을 수동으로 도출했습니다.</li><li>정확한 헤더 검사, 고유 run_id, 숫자 범위 검사, 범주 검사, 출력 충돌 방지, 원본 CSV 보존 로직을 코드로 검토했습니다.</li></ul><div class="verification-limits"><strong>검증 한계</strong><ul><li>이 응답의 작성자는 코드를 실행하지 않았으며, 데이터 사전이나 검증 CSV를 실제로 만들지 않았습니다.</li><li>합성 데이터의 범위와 범주는 연습용이며 일반적인 자동차공학 한계값이 아닙니다.</li><li>과학적 의미, 센서 교정, 좌표 규약, 결측치 정책, 메타데이터 버전은 자동으로 검증하지 않았습니다.</li><li>공식 문서 URL은 알려진 문서 위치를 사용했지만 실시간으로 접속해 확인하지 않았습니다.</li></ul></div><p><a href="/ko/principles/">사이트 전체 작성·검증 원칙</a></p></section><section id="references"><h2>참고 출처</h2><p>설명과 예제는 직접 작성했습니다. 관련 동작과 개념은 아래 공식 자료에서 확인할 수 있습니다.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/re.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · re <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12 공식 문서 · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/research/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="csv 참고문헌 목록에서 중복 doi와 누락 doi 확인하기 연구 참고문헌을 csv로 관리하면서 doi 문자열을 비교용으로 정규화하고, 중복 doi와 doi 누락 항목을 검토 파일로 작성합니다. 원본 csv는 그대로 유지하며 doi가 적혀 있다는 이유만으로 유효한 doi라고 판단하지 않습니다. python doi 연구" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">34</span></div><h3><a href="/ko/articles/reference-list-csv/">CSV 참고문헌 목록에서 중복 DOI와 누락 DOI 확인하기</a></h3><p>연구 참고문헌을 CSV로 관리하면서 DOI 문자열을 비교용으로 정규화하고, 중복 DOI와 DOI 누락 항목을 검토 파일로 작성합니다. 원본 CSV는 그대로 유지하며 DOI가 적혀 있다는 이유만으로 유효한 DOI라고 판단하지 않습니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>DOI</span><span>연구</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="공개자료를 모을 때 출처·기준일·단위를 함께 기록하기 자료명과 url만 모으는 대신 기준일·게시일·확인일·단위·이용조건을 한 행에 기록합니다. 코드 없이 쓰는 csv 템플릿과 체크리스트를 제공합니다. 자료·리서치 출처 기록 기준일 csv 템플릿" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">13</span></div><h3><a href="/ko/articles/source-ledger/">공개자료를 모을 때 출처·기준일·단위를 함께 기록하기</a></h3><p>자료명과 URL만 모으는 대신 기준일·게시일·확인일·단위·이용조건을 한 행에 기록합니다. 코드 없이 쓰는 CSV 템플릿과 체크리스트를 제공합니다.</p><div class="card-bottom"><div class="tags"><span>자료·리서치</span><span>출처 기록</span><span>기준일</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="설문 csv를 집계하기 전에 응답수·누락·중복 점검하기 합성 응답 10행에서 중복 id와 빈 답변을 구분합니다. 유효 응답의 분모를 명시하고 선택지별 개수와 비율, 제외 사유를 새 파일에 남깁니다. python 설문 자료 점검 분모 csv" data-category="research"><div class="card-top"><span class="category-badge research">자료·리서치</span><span class="article-number">14</span></div><h3><a href="/ko/articles/survey-summary/">설문 CSV를 집계하기 전에 응답수·누락·중복 점검하기</a></h3><p>합성 응답 10행에서 중복 ID와 빈 답변을 구분합니다. 유효 응답의 분모를 명시하고 선택지별 개수와 비율, 제외 사유를 새 파일에 남깁니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>설문</span><span>자료 점검</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#define-the-purpose"><span>01</span>1. 데이터 사전을 데이터셋의 일부로 취급하기</a></li><li><a href="#create-synthetic-dataset"><span>02</span>2. 작은 합성 연구 데이터셋 만들기</a></li><li><a href="#write-the-dictionary"><span>03</span>3. 예상 데이터 사전을 손으로 작성하기</a></li><li><a href="#generate-and-validate"><span>04</span>4. 데이터 사전을 생성하고 데이터셋 검증하기</a></li><li><a href="#expected-validation"><span>05</span>5. 예상 검증 문제와 비교하기</a></li><li><a href="#checks-and-errors"><span>06</span>6. 데이터 사전과 실제 데이터가 계속 일치하는지 확인하기</a></li><li><a href="#limits"><span>07</span>7. 프로젝트가 커지면 데이터 사전도 확장하기</a></li><li><a href="#verification"><span>08</span>실행·검증 기록</a></li><li><a href="#references"><span>09</span>참고 출처</a></li></ol></nav><div class="aside-note">복사한 코드는 예제 데이터로 먼저 실행하세요. 결과를 확인한 뒤 실제 파일에 적용하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>무료 실무 튜토리얼 · 예제 데이터와 코드는 각 글에서 내려받을 수 있습니다.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

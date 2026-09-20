@@ -1,0 +1,133 @@
+<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Write a changelog entry that tells readers what changed and what to do | Worknote</title><meta name="description" content="Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change."><link rel="canonical" href="https://worknotetips.com/articles/useful-changelog/"><meta property="og:url" content="https://worknotetips.com/articles/useful-changelog/"><meta property="og:title" content="Write a changelog entry that tells readers what changed and what to do | Worknote"><meta property="og:description" content="Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change."><meta property="og:locale" content="en_US"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Write a changelog entry that tells readers what changed and what to do", "description": "Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change.", "inLanguage": "en", "dateModified": "2026-09-20", "url": "https://worknotetips.com/articles/useful-changelog/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/useful-changelog/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/useful-changelog/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/useful-changelog/"><script type="application/json" id="ui-messages">{"copy":"Copy","copied":"Copied","copySuccess":"Code copied. Run it with the example data first.","copyRetry":"Copy again","copyFailure":"Automatic copying is unavailable. Select the code and copy it manually.","searchCount":"{count} search results"}</script></head><body><a class="skip-link" href="#main">Skip to content</a><header class="site-header"><div class="header-inner"><a class="brand" href="/" aria-label="Worknote Home"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>Scripts and AI at work</small></span></a><nav aria-label="Main menu"><a href="/" aria-current="page">Tutorials</a><a href="/about/" >About</a><a href="/principles/" >Writing and verification principles</a></nav><details class="language-menu"><summary aria-label="Language">◎ English</summary><nav aria-label="Language"><a href="/articles/useful-changelog/" lang="en" hreflang="en" aria-current="true">English</a><a href="/ko/articles/useful-changelog/" lang="ko" hreflang="ko" >한국어</a></nav></details><a class="header-search" href="/#search" aria-label="Search"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>Search</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="You are here"><a href="/">Tutorials</a><span>/</span><a href="/category/collaboration/">Team work and collaboration</a></nav><header class="article-header"><span class="category-badge collaboration">Team work and collaboration</span><h1>Write a changelog entry that tells readers what changed and what to do</h1><p class="article-summary">Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change.</p><div class="article-meta"><span>Content checked 2026.09.20</span><span>Hand-checked example</span></div></header><details class="mobile-toc"><summary>Show contents</summary><nav class="toc" aria-label="In this article"><p>In this article</p><ol><li><a href="#define-useful-changelog"><span>01</span>1. Separate the change from the reader&#x27;s action</a></li><li><a href="#create-synthetic-notes"><span>02</span>2. Create synthetic raw release notes</a></li><li><a href="#write-expected-entry"><span>03</span>3. Work out the expected changelog entry by hand</a></li><li><a href="#generate-entry"><span>04</span>4. Generate and validate the changelog entry</a></li><li><a href="#expected-result"><span>05</span>5. Check the expected result</a></li><li><a href="#common-errors"><span>06</span>6. Recognize changelog entries that are technically correct but not useful</a></li><li><a href="#limits"><span>07</span>7. Keep the changelog scoped to user-visible consequences</a></li><li><a href="#verification"><span>08</span>Execution and verification record</a></li><li><a href="#references"><span>09</span>References</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>Who this is for</strong>This guide is for teams that need release notes or project changelogs that tell readers both what changed and what they must do next.</p><div><strong>What you need</strong><ul><li>Python 3.12 and a terminal command that starts that version.</li><li>A text editor that can save UTF-8 JSON and text files.</li><li>A working folder where the script can create a new folder beneath outputs.</li><li>Only the Python standard library is required: json and pathlib.</li></ul></div></div><section id="define-useful-changelog"><h2><span class="section-number">01</span>1. Separate the change from the reader&#x27;s action</h2><p>A changelog entry should answer at least three practical questions: what changed, what the reader needs to do, and how the reader can check that the update worked. A list of implementation details may be accurate but still leave another team member unsure whether any action is required.</p><p>This tutorial uses a small synthetic release with three changes. Each change has an area, a factual description, and a required action. A separate verification list tells the reader what to check after updating.</p><aside class="callout"><strong>Write for the person receiving the change</strong><p>A useful changelog is not a commit log. Internal implementation details belong in the changelog only when they affect how another person uses, configures, validates, or maintains the project.</p></aside></section><section id="create-synthetic-notes"><h2><span class="section-number">02</span>2. Create synthetic raw release notes</h2><p>The following release information is synthetic and was written specifically for this article. Save it as release_notes.json. It describes version 1.4.0 of a fictional CSV export tool.</p><div class="code-block"><div class="code-toolbar"><span>json</span><button type="button" data-copy="code-1-1" aria-label="json code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="json code"><code id="code-1-1">{
+  &quot;version&quot;: &quot;1.4.0&quot;,
+  &quot;date&quot;: &quot;2026-09-20&quot;,
+  &quot;changes&quot;: [
+    {
+      &quot;area&quot;: &quot;Export path&quot;,
+      &quot;change&quot;: &quot;Default CSV export folder changed from reports/ to outputs/reports/.&quot;,
+      &quot;action&quot;: &quot;Update scripts or shortcuts that expect reports/.&quot;
+    },
+    {
+      &quot;area&quot;: &quot;Config key&quot;,
+      &quot;change&quot;: &quot;Configuration key report_dir was renamed to output_dir.&quot;,
+      &quot;action&quot;: &quot;Rename report_dir to output_dir before the next run.&quot;
+    },
+    {
+      &quot;area&quot;: &quot;Validation&quot;,
+      &quot;change&quot;: &quot;Empty customer_id values now stop export instead of being written as blank cells.&quot;,
+      &quot;action&quot;: &quot;Fix blank customer_id values before rerunning failed exports.&quot;
+    }
+  ],
+  &quot;checks&quot;: [
+    &quot;Confirm a test export appears under outputs/reports/.&quot;,
+    &quot;Confirm the configuration uses output_dir.&quot;,
+    &quot;Confirm a row with a blank customer_id stops with a validation error.&quot;
+  ]
+}
+</code></pre></div><p>There are exactly 3 changes, 3 required actions, and 3 verification checks. Because the example is synthetic, these paths, configuration names, and behaviors are demonstration values rather than facts about a real product.</p></section><section id="write-expected-entry"><h2><span class="section-number">03</span>3. Work out the expected changelog entry by hand</h2><p>The entry should begin with the version and date. The change descriptions should stay factual. Required actions should use direct instructions, and verification should be separate so readers can distinguish configuration work from post-update checks.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-2-1" aria-label="text code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="text code"><code id="code-2-1">Version 1.4.0 - 2026-09-20
+
+What changed
+- Export path: Default CSV export folder changed from reports/ to outputs/reports/.
+- Config key: Configuration key report_dir was renamed to output_dir.
+- Validation: Empty customer_id values now stop export instead of being written as blank cells.
+
+What you need to do
+- Update scripts or shortcuts that expect reports/.
+- Rename report_dir to output_dir before the next run.
+- Fix blank customer_id values before rerunning failed exports.
+
+Check after updating
+- Confirm a test export appears under outputs/reports/.
+- Confirm the configuration uses output_dir.
+- Confirm a row with a blank customer_id stops with a validation error.
+</code></pre></div><p>The expected entry contains one heading line, three section headings, and nine bullet lines: three changes, three actions, and three checks. No action is hidden inside a paragraph describing the change.</p></section><section id="generate-entry"><h2><span class="section-number">04</span>4. Generate and validate the changelog entry</h2><p>Save the following script as useful_changelog.py. It validates the synthetic JSON, creates the changelog text, checks the expected section and bullet counts, and writes the result into a new output folder. The original JSON file is read only.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="python code"><code id="code-3-1">import json
+from pathlib import Path
+
+SOURCE = Path(&quot;release_notes.json&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;useful_changelog_result&quot;
+OUTPUT = OUTPUT_DIR / &quot;CHANGELOG_ENTRY.txt&quot;
+
+
+def require_text(value, name):
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f&quot;{name} must be a non-empty string.&quot;)
+    return value.strip()
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source file not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8&quot;) as stream:
+        data = json.load(stream)
+
+    version = require_text(data.get(&quot;version&quot;), &quot;version&quot;)
+    date = require_text(data.get(&quot;date&quot;), &quot;date&quot;)
+    changes = data.get(&quot;changes&quot;)
+    checks = data.get(&quot;checks&quot;)
+
+    if not isinstance(changes, list) or not changes:
+        raise ValueError(&quot;changes must be a non-empty list.&quot;)
+    if not isinstance(checks, list) or not checks:
+        raise ValueError(&quot;checks must be a non-empty list.&quot;)
+
+    change_lines = []
+    action_lines = []
+    for index, item in enumerate(changes, start=1):
+        if not isinstance(item, dict):
+            raise ValueError(f&quot;Change {index} must be an object.&quot;)
+        area = require_text(item.get(&quot;area&quot;), f&quot;change {index} area&quot;)
+        change = require_text(item.get(&quot;change&quot;), f&quot;change {index} description&quot;)
+        action = require_text(item.get(&quot;action&quot;), f&quot;change {index} action&quot;)
+        change_lines.append(f&quot;- {area}: {change}&quot;)
+        action_lines.append(f&quot;- {action}&quot;)
+
+    check_lines = [f&quot;- {require_text(value, &#x27;check&#x27;)}&quot; for value in checks]
+
+    lines = [
+        f&quot;Version {version} - {date}&quot;,
+        &quot;&quot;,
+        &quot;What changed&quot;,
+        *change_lines,
+        &quot;&quot;,
+        &quot;What you need to do&quot;,
+        *action_lines,
+        &quot;&quot;,
+        &quot;Check after updating&quot;,
+        *check_lines,
+    ]
+    text = &quot;\n&quot;.join(lines) + &quot;\n&quot;
+
+    if text.count(&quot;\nWhat changed\n&quot;) != 1:
+        raise RuntimeError(&quot;Missing What changed section.&quot;)
+    if text.count(&quot;\nWhat you need to do\n&quot;) != 1:
+        raise RuntimeError(&quot;Missing action section.&quot;)
+    if text.count(&quot;\nCheck after updating\n&quot;) != 1:
+        raise RuntimeError(&quot;Missing verification section.&quot;)
+
+    bullet_count = sum(line.startswith(&quot;- &quot;) for line in lines)
+    expected_bullets = len(changes) * 2 + len(checks)
+    if bullet_count != expected_bullets:
+        raise RuntimeError(&quot;Unexpected bullet count.&quot;)
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    with OUTPUT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;) as stream:
+        stream.write(text)
+
+    print(f&quot;Changes: {len(changes)}.&quot;)
+    print(f&quot;Required actions: {len(action_lines)}.&quot;)
+    print(f&quot;Verification checks: {len(checks)}.&quot;)
+    print(f&quot;Total bullets: {bullet_count}.&quot;)
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-result"><h2><span class="section-number">05</span>5. Check the expected result</h2><p>For this synthetic release, the script should report three changes, three required actions, three verification checks, and nine bullet lines. The expected console output below was derived by hand and is not an execution log.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-1" aria-label="text code Copy">Copy</button></div><pre tabindex="0" dir="ltr" aria-label="text code"><code id="code-4-1">Changes: 3.
+Required actions: 3.
+Verification checks: 3.
+Total bullets: 9.
+Output: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt</code></pre></div><ul><li>Confirm that each change appears once under What changed.</li><li>Confirm that every change has a corresponding instruction under What you need to do.</li><li>Confirm that verification steps are separated from required actions.</li><li>Confirm that paths and configuration names are copied exactly from the synthetic source notes.</li><li>Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous entry.</li></ul></section><section id="common-errors"><h2><span class="section-number">06</span>6. Recognize changelog entries that are technically correct but not useful</h2><div class="table-wrap" role="region" aria-label="Example data table" tabindex="0"><table><thead><tr><th scope="col">Weak changelog text</th><th scope="col">What is missing</th></tr></thead><tbody><tr><td>Updated export logic</td><td>Readers do not know which behavior changed or whether they need to act.</td></tr><tr><td>Fixed configuration</td><td>The affected key and required replacement are not identified.</td></tr><tr><td>Improved validation</td><td>The new failure condition and effect on users are unclear.</td></tr><tr><td>Various bug fixes</td><td>There is no information about impact, scope, or required checks.</td></tr><tr><td>Please update accordingly</td><td>The action is too vague to execute or verify.</td></tr></tbody></table></div><p>Avoid making the reader reconstruct the change from issue trackers, commits, or chat history. If an update changes a path, key, command, file format, or required input, name the old and new behavior directly.</p></section><section id="limits"><h2><span class="section-number">07</span>7. Keep the changelog scoped to user-visible consequences</h2><p>A changelog entry does not replace technical documentation, migration instructions, test evidence, or version control history. Complex changes may need links to those materials, but the changelog should still summarize the consequence and immediate action.</p><p>Not every internal refactor needs a changelog entry. If behavior, interfaces, dependencies, required inputs, outputs, configuration, or workflow do not change for the reader, detailed implementation notes may belong elsewhere.</p><p>For larger releases, group related changes by area and distinguish required actions from optional recommendations. Preserve older changelog entries instead of rewriting history unless you are correcting a documented error and can record that correction clearly.</p></section><section id="verification"><h2>Execution and verification record</h2><p>2026-09-20 · hand-checked example · target: Python 3.12 · standard library: json, pathlib · no execution</p><ul><li>Manually counted 3 synthetic changes, 3 corresponding required actions, and 3 verification checks.</li><li>Manually derived the expected changelog entry with three named sections.</li><li>Calculated the expected total as 9 bullet lines: 3 changes + 3 actions + 3 checks.</li><li>Checked that the synthetic old and new export paths are reports/ and outputs/reports/ and that the configuration names are report_dir and output_dir.</li><li>Inspected the script for required text validation, section checks, bullet-count validation, output collision protection, and preservation of the source JSON.</li><li>Derived the expected console output by hand.</li></ul><div class="verification-limits"><strong>Verification limits</strong><ul><li>The code was not executed by the author of this response; no changelog file was created.</li><li>The version, paths, configuration keys, and validation behavior are synthetic examples and do not describe a real product.</li><li>The script validates structure but cannot determine whether a human-written change description is complete or accurate.</li><li>The official documentation URLs were provided from known documentation locations but were not checked live.</li></ul></div><p><a href="/principles/">Site-wide writing and verification principles</a></p></section><section id="references"><h2>References</h2><p>The explanations and examples were written for this site. See the official sources below for the related behavior and concepts.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/json.html" target="_blank" rel="noopener noreferrer">Official Python 3.12 documentation · json <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Official Python 3.12 documentation · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>Read next</h2><a href="/category/collaboration/">All articles on this topic <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="set team file-naming rules and check filenames with python define a simple team filename convention, test it on a synthetic folder, and write a review report without renaming or deleting anything. the checker separates structural errors, invalid dates, and unsupported extensions. python files collaboration" data-category="collaboration"><div class="card-top"><span class="category-badge collaboration">Team work and collaboration</span><span class="article-number">36</span></div><h3><a href="/articles/file-naming-rules/">Set team file-naming rules and check filenames with Python</a></h3><p>Define a simple team filename convention, test it on a synthetic folder, and write a review report without renaming or deleting anything. The checker separates structural errors, invalid dates, and unsupported extensions.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>Files</span><span>Collaboration</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="build a project handover checklist with owners, locations, and open issues turn project handover notes into a structured checklist that records what must be transferred, who owns it, where it is stored, and what remains unresolved. a small synthetic example shows how to detect missing owners, locations, and open-issue details before handover. handover checklist python" data-category="collaboration"><div class="card-top"><span class="category-badge collaboration">Team work and collaboration</span><span class="article-number">38</span></div><h3><a href="/articles/project-handover-checklist/">Build a project handover checklist with owners, locations, and open issues</a></h3><p>Turn project handover notes into a structured checklist that records what must be transferred, who owns it, where it is stored, and what remains unresolved. A small synthetic example shows how to detect missing owners, locations, and open-issue details before handover.</p><div class="card-bottom"><div class="tags"><span>Handover</span><span>Checklist</span><span>Python</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="turn meeting notes into an action list with owners, due dates, and done criteria instead of stopping at another summary of the meeting, separate agreed work from open items. turn synthetic meeting notes into a list with owners, due dates, deliverables, and evidence of completion, and write an ai request that assists with the same task. teamwork & collaboration meeting notes action list ai requests" data-category="collaboration"><div class="card-top"><span class="category-badge collaboration">Team work and collaboration</span><span class="article-number">15</span></div><h3><a href="/articles/meeting-actions/">Turn meeting notes into an action list with owners, due dates, and done criteria</a></h3><p>Instead of stopping at another summary of the meeting, separate agreed work from open items. Turn synthetic meeting notes into a list with owners, due dates, deliverables, and evidence of completion, and write an AI request that assists with the same task.</p><div class="card-bottom"><div class="tags"><span>Excel and documents</span><span>Meeting notes</span><span>Action list</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="manage topics, review, and publishing status in google sheets manage each article as one row and separate drafting, review, approval, and publishing. covers importing a local csv, dropdowns, filter views, sharing permissions, and version history, and sets up a flow for manually updating site files after approval. teamwork & collaboration google sheets content management manual publishing" data-category="collaboration"><div class="card-top"><span class="category-badge collaboration">Team work and collaboration</span><span class="article-number">16</span></div><h3><a href="/articles/content-workflow/">Manage topics, review, and publishing status in Google Sheets</a></h3><p>Manage each article as one row and separate drafting, review, approval, and publishing. Covers importing a local CSV, dropdowns, filter views, sharing permissions, and version history, and sets up a flow for manually updating site files after approval.</p><div class="card-bottom"><div class="tags"><span>Excel and documents</span><span>Google Sheets</span><span>Content management</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="In this article"><p>In this article</p><ol><li><a href="#define-useful-changelog"><span>01</span>1. Separate the change from the reader&#x27;s action</a></li><li><a href="#create-synthetic-notes"><span>02</span>2. Create synthetic raw release notes</a></li><li><a href="#write-expected-entry"><span>03</span>3. Work out the expected changelog entry by hand</a></li><li><a href="#generate-entry"><span>04</span>4. Generate and validate the changelog entry</a></li><li><a href="#expected-result"><span>05</span>5. Check the expected result</a></li><li><a href="#common-errors"><span>06</span>6. Recognize changelog entries that are technically correct but not useful</a></li><li><a href="#limits"><span>07</span>7. Keep the changelog scoped to user-visible consequences</a></li><li><a href="#verification"><span>08</span>Execution and verification record</a></li><li><a href="#references"><span>09</span>References</a></li></ol></nav><div class="aside-note">Run copied code with the example data first. Check the results before using it with real files.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/">Worknote<span>Try it, check it, and record what you find.</span></a><nav aria-label="Site information"><a href="/about/">About</a><a href="/principles/">Writing and verification principles</a><a href="/privacy/">Privacy notice</a><a href="/rights/">Using these materials</a></nav></div><p>Free practical tutorials · Download example data and code from each article.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>
