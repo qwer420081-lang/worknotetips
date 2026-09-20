@@ -1,0 +1,188 @@
+<!doctype html><html lang="ko" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>JSON 목록을 CSV로 변환하고 누락 필드 확인하기 | 워크노트</title><meta name="description" content="누락 키·null·빈 문자열을 구분하면서 표로 변환하고 별도 점검 보고서를 만듭니다."><link rel="canonical" href="https://worknotetips.com/ko/articles/json-list-to-csv-missing-fields/"><meta property="og:url" content="https://worknotetips.com/ko/articles/json-list-to-csv-missing-fields/"><meta property="og:title" content="JSON 목록을 CSV로 변환하고 누락 필드 확인하기 | 워크노트"><meta property="og:description" content="누락 키·null·빈 문자열을 구분하면서 표로 변환하고 별도 점검 보고서를 만듭니다."><meta property="og:locale" content="ko_KR"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"JSON 목록을 CSV로 변환하고 누락 필드 확인하기","description":"누락 키·null·빈 문자열을 구분하면서 표로 변환하고 별도 점검 보고서를 만듭니다.","inLanguage":"ko","dateModified":"2026-09-19","url":"https://worknotetips.com/ko/articles/json-list-to-csv-missing-fields/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/json-list-to-csv-missing-fields/"><script type="application/json" id="ui-messages">{"copy":"복사","copied":"복사 완료","copySuccess":"코드를 복사했습니다. 예제 데이터로 먼저 실행하세요.","copyRetry":"다시 복사","copyFailure":"자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.","searchCount":"검색 결과 {count}개"}</script></head><body><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ko/" aria-label="워크노트 홈"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a href="/ko/" aria-current="page">튜토리얼</a><a href="/ko/about/" >사이트 소개</a><a href="/ko/principles/" >작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/json-list-to-csv-missing-fields/" lang="en" hreflang="en" >English</a><a href="/ko/articles/json-list-to-csv-missing-fields/" lang="ko" hreflang="ko" aria-current="true">한국어</a><a href="/ja/articles/json-list-to-csv-missing-fields/" lang="ja" hreflang="ja" >日本語</a><a href="/es/articles/json-list-to-csv-missing-fields/" lang="es" hreflang="es" >Español</a><a href="/pt-BR/articles/json-list-to-csv-missing-fields/" lang="pt-BR" hreflang="pt-BR" >Português</a></nav></details><a class="header-search" href="/ko/#search" aria-label="검색"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>검색</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="현재 위치"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/automation/">스크립트·파일 자동화</a></nav><header class="article-header"><span class="category-badge automation">스크립트·파일 자동화</span><h1>JSON 목록을 CSV로 변환하고 누락 필드 확인하기</h1><p class="article-summary">누락 키·null·빈 문자열을 구분하면서 표로 변환하고 별도 점검 보고서를 만듭니다.</p><div class="article-meta"><span>내용 확인 2026.09.19</span><span>예제 파일 포함</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#purpose"><span>01</span>누락과 빈 값을 구분하는 이유</a></li><li><a href="#input"><span>02</span>연습 데이터 살펴보기</a></li><li><a href="#run"><span>03</span>새 폴더에 결과 만들기</a></li><li><a href="#result"><span>04</span>예상 결과와 비교하기</a></li><li><a href="#code"><span>05</span>전체 코드와 처리 흐름</a></li><li><a href="#verify"><span>06</span>동봉 테스트 실행하기</a></li><li><a href="#errors"><span>07</span>오류 메시지로 원인 찾기</a></li><li><a href="#limits"><span>08</span>사용 범위와 한계</a></li><li><a href="#verification"><span>09</span>실행·검증 기록</a></li><li><a href="#downloads"><span>10</span>직접 실행할 예제 파일</a></li><li><a href="#references"><span>11</span>참고 출처</a></li></ol><a class="toc-download" href="#downloads">↓ 예제 파일 받기</a></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께</strong>JSON 파일을 표로 확인하고 데이터가 빠진 위치를 찾으려는 Python 입문자</p><div><strong>준비사항</strong><ul><li>Python 3.12 이상과 터미널을 준비하세요. 추가 패키지는 필요하지 않습니다.</li><li>ZIP을 풀고 example.py와 sample.json이 있는 폴더에서 터미널을 여세요.</li><li>처음에는 동봉된 가상 품목 데이터만 사용하세요. 원본은 별도로 보관하세요.</li></ul></div></div><section id="purpose"><h2><span class="section-number">01</span>누락과 빈 값을 구분하는 이유</h2><p>JSON에서 키가 없는 상태, 값이 null인 상태, 빈 문자열인 상태는 서로 다릅니다. CSV에서는 모두 빈 칸처럼 보일 수 있으므로 이 예제는 별도의 field_issues.csv에 원래 상태를 기록합니다. 임의의 값으로 보정하지 않습니다.</p><p>기대하는 열은 item, quantity, unit입니다. 0, false, 공백 한 칸은 누락으로 처리하지 않습니다. 키의 존재를 먼저 검사한 다음 값의 상태를 확인합니다.</p></section><section id="input"><h2><span class="section-number">02</span>연습 데이터 살펴보기</h2><div class="code-block"><div class="code-toolbar"><span>json</span><button type="button" data-copy="code-1-0" aria-label="json 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="json 코드"><code id="code-1-0">[
+  {&quot;item&quot;: &quot;가상부품-A&quot;, &quot;quantity&quot;: 3, &quot;unit&quot;: &quot;개&quot;},
+  {&quot;item&quot;: &quot;가상부품-B&quot;, &quot;quantity&quot;: 5},
+  {&quot;item&quot;: &quot;가상부품-C&quot;, &quot;unit&quot;: &quot;개&quot;},
+  {&quot;item&quot;: &quot;가상부품-D&quot;, &quot;quantity&quot;: null, &quot;unit&quot;: &quot;&quot;}
+]</code></pre></div><p>레코드는 4개입니다. 두 번째에는 unit 키가 없고 세 번째에는 quantity 키가 없습니다. 네 번째의 quantity는 null이고 unit은 빈 문자열입니다. 품목 이름과 단위는 실제 입력값이므로 번역본에서도 동일하게 표시합니다.</p></section><section id="run"><h2><span class="section-number">03</span>새 폴더에 결과 만들기</h2><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-2-0" aria-label="bash 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-2-0">python --version
+python example.py sample.json --output-dir outputs</code></pre></div><p>명령의 상대 경로는 현재 터미널 폴더를 기준으로 합니다. 실행 전에 example.py가 있는 폴더로 이동하세요. 출력 폴더는 아직 없어야 하고 그 부모 폴더는 있어야 합니다. 이미 outputs가 있으면 새 이름을 지정하세요.</p><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-2-2" aria-label="bash 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-2-2">python example.py sample.json --output-dir outputs_second</code></pre></div><p>입력 검증을 마친 뒤 새 폴더를 생성합니다. 기존 출력 폴더를 비우거나 덮어쓰지 않으며 입력 JSON을 수정하지 않습니다.</p></section><section id="result"><h2><span class="section-number">04</span>예상 결과와 비교하기</h2><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">파일</th><th scope="col">확인할 내용</th></tr></thead><tbody><tr><td>converted.csv</td><td>헤더 다음에 4개 데이터 행</td></tr><tr><td>field_issues.csv</td><td>missing_key 2개, null 1개, empty_string 1개</td></tr><tr><td>summary.json</td><td>input_rows=4, output_rows=4, reported_issue_cells=4</td></tr></tbody></table></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-3-1" aria-label="text 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-3-1">OK: rows=4; missing_key_cells=2; null_cells=1; empty_string_cells=1; issue_cells=4</code></pre></div><p>점검 수치는 행 수가 아니라 문제가 있는 셀 수입니다. 네 번째 행에 두 문제가 있어 전체 점검 항목은 4개가 됩니다. CSV를 텍스트 편집기로 먼저 확인하세요. 임의 외부 데이터는 스프레드시트에서 자동 해석될 수 있으며 이 코드는 수식 문자열을 정화하지 않습니다.</p></section><section id="code"><h2><span class="section-number">05</span>전체 코드와 처리 흐름</h2><p>JSON 배열 안의 객체만 허용합니다. 중첩 객체·배열, 알 수 없는 열, 중복 JSON 키, NaN·Infinity를 거부합니다. 소수는 Decimal로 읽어 불필요한 이진 부동소수점 변환을 피합니다. 5 MiB보다 큰 입력 파일은 처리하지 않습니다.</p><div class="code-block"><div class="code-toolbar"><span>example.py</span><button type="button" data-copy="code-4-1" aria-label="example.py 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="example.py 코드"><code id="code-4-1">#!/usr/bin/env python3
+&quot;&quot;&quot;Convert a small local JSON array to CSV and a field-issue report.
+
+Target: Python 3.12+, standard library only. No network access.
+All output goes to a NEW directory; existing directories/files are refused.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import csv
+import io
+import json
+import sys
+from decimal import Decimal
+from pathlib import Path
+
+DEFAULT_FIELDS = (&quot;item&quot;, &quot;quantity&quot;, &quot;unit&quot;)
+MAX_INPUT_BYTES = 5 * 1024 * 1024
+ISSUE_FIELDS = (&quot;row_number&quot;, &quot;field&quot;, &quot;issue&quot;)
+
+
+class InputError(ValueError):
+    &quot;&quot;&quot;The input does not satisfy this example&#39;s data contract.&quot;&quot;&quot;
+
+
+def unique_object(pairs: list[tuple[str, object]]) -&gt; dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise InputError(&quot;Duplicate key in a JSON object.&quot;)
+        result[key] = value
+    return result
+
+
+def reject_constant(token: str) -&gt; object:
+    raise InputError(f&quot;Non-standard JSON number: {token}.&quot;)
+
+
+def csv_bytes(fields: tuple[str, ...], rows: list[dict]) -&gt; bytes:
+    buffer = io.StringIO(newline=&quot;&quot;)
+    writer = csv.DictWriter(buffer, fieldnames=fields, lineterminator=&quot;\r\n&quot;)
+    writer.writeheader()
+    writer.writerows(rows)
+    return buffer.getvalue().encode(&quot;utf-8&quot;)
+
+
+def prepare_outputs(source: Path, fields: tuple[str, ...]) -&gt; tuple[dict, dict]:
+    if not fields or len(fields) != len(set(fields)):
+        raise InputError(&quot;--fields must contain at least one unique field name.&quot;)
+    if any(not field.strip() for field in fields):
+        raise InputError(&quot;Field names must not be empty or whitespace-only.&quot;)
+
+    # Read-only, bounded input. Do not modify the source, even on failure.
+    with source.open(&quot;rb&quot;) as stream:
+        raw = stream.read(MAX_INPUT_BYTES + 1)
+    if len(raw) &gt; MAX_INPUT_BYTES:
+        raise InputError(&quot;Input exceeds the example&#39;s 5 MiB limit.&quot;)
+    records = json.loads(
+        raw.decode(&quot;utf-8-sig&quot;),
+        object_pairs_hook=unique_object,
+        parse_float=Decimal,
+        parse_constant=reject_constant,
+    )
+    if not isinstance(records, list):
+        raise InputError(&quot;Top-level JSON value must be an array.&quot;)
+
+    rows: list[dict[str, str]] = []
+    issues: list[dict[str, object]] = []
+    counts = {&quot;missing_key&quot;: 0, &quot;null&quot;: 0, &quot;empty_string&quot;: 0}
+    missing_rows: set[int] = set()
+    allowed = set(fields)
+    for row_number, record in enumerate(records, start=1):
+        if not isinstance(record, dict):
+            raise InputError(f&quot;Record {row_number} must be an object.&quot;)
+        if set(record) - allowed:
+            raise InputError(
+                f&quot;Record {row_number} has unlisted keys; include them in --fields.&quot;
+            )
+        row: dict[str, str] = {}
+        for field in fields:
+            issue = None
+            if field not in record:
+                issue = &quot;missing_key&quot;
+                missing_rows.add(row_number)
+                value = None
+            else:
+                value = record[field]
+                if value is None:
+                    issue = &quot;null&quot;
+                elif value == &quot;&quot;:
+                    issue = &quot;empty_string&quot;
+            if issue is not None:
+                counts[issue] += 1
+                issues.append({&quot;row_number&quot;: row_number, &quot;field&quot;: field, &quot;issue&quot;: issue})
+                row[field] = &quot;&quot;
+            elif isinstance(value, str):
+                row[field] = value
+            elif isinstance(value, bool):
+                row[field] = &quot;true&quot; if value else &quot;false&quot;
+            elif isinstance(value, (int, Decimal)):
+                row[field] = str(value)
+            else:
+                raise InputError(
+                    f&quot;Record {row_number} contains an unsupported nested value.&quot;
+                )
+        rows.append(row)
+
+    summary = {
+        &quot;status&quot;: &quot;complete&quot;,
+        &quot;columns&quot;: list(fields),
+        &quot;input_rows&quot;: len(records),
+        &quot;output_rows&quot;: len(rows),
+        &quot;missing_key_cells&quot;: counts[&quot;missing_key&quot;],
+        &quot;rows_with_missing_keys&quot;: len(missing_rows),
+        &quot;null_cells&quot;: counts[&quot;null&quot;],
+        &quot;empty_string_cells&quot;: counts[&quot;empty_string&quot;],
+        &quot;reported_issue_cells&quot;: len(issues),
+    }
+    # Render and UTF-8-encode EVERYTHING before creating the output directory.
+    # summary.json is written last and serves as a completion record.
+    outputs = {
+        &quot;converted.csv&quot;: csv_bytes(fields, rows),
+        &quot;field_issues.csv&quot;: csv_bytes(ISSUE_FIELDS, issues),
+        &quot;summary.json&quot;: (json.dumps(summary, ensure_ascii=False, indent=2) + &quot;\n&quot;).encode(&quot;utf-8&quot;),
+    }
+    return outputs, summary
+
+
+def main(argv: list[str] | None = None) -&gt; int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(&quot;input&quot;, type=Path, help=&quot;Local UTF-8 JSON file&quot;)
+    parser.add_argument(&quot;--output-dir&quot;, type=Path, required=True, help=&quot;NEW directory; parent must exist&quot;)
+    parser.add_argument(&quot;--fields&quot;, nargs=&quot;+&quot;, default=list(DEFAULT_FIELDS), help=&quot;Expected CSV columns, in order&quot;)
+    args = parser.parse_args(argv)
+    if sys.version_info &lt; (3, 12):
+        print(&quot;E_VERSION: Python 3.12 or newer is required.&quot;, file=sys.stderr)
+        return 2
+    try:
+        outputs, summary = prepare_outputs(args.input, tuple(args.fields))
+    except json.JSONDecodeError as exc:
+        print(f&quot;E_INPUT: Invalid JSON at line {exc.lineno}, column {exc.colno}.&quot;, file=sys.stderr)
+        return 2
+    except (ValueError, ArithmeticError, RecursionError) as exc:
+        print(f&quot;E_INPUT: {exc}&quot;, file=sys.stderr)
+        return 2
+    except OSError as exc:
+        print(f&quot;E_READ: Cannot read input ({exc.__class__.__name__}).&quot;, file=sys.stderr)
+        return 4
+
+    try:
+        args.output_dir.mkdir(exist_ok=False)
+    except FileExistsError:
+        print(&quot;E_OUTPUT_EXISTS: Output path already exists; choose a new directory.&quot;, file=sys.stderr)
+        return 3
+    except OSError as exc:
+        print(f&quot;E_WRITE: Cannot create output directory ({exc.__class__.__name__}).&quot;, file=sys.stderr)
+        return 4
+    try:
+        for name, payload in outputs.items():
+            with (args.output_dir / name).open(&quot;xb&quot;) as stream:
+                stream.write(payload)
+    except OSError as exc:
+        print(
+            f&quot;E_WRITE: Incomplete NEW output directory ({exc.__class__.__name__}); &quot;
+            &quot;do not use its results. Inspect it and choose a new directory.&quot;,
+            file=sys.stderr,
+        )
+        return 4
+    print(
+        f&quot;OK: rows={summary[&#39;output_rows&#39;]}; &quot;
+        f&quot;missing_key_cells={summary[&#39;missing_key_cells&#39;]}; &quot;
+        f&quot;null_cells={summary[&#39;null_cells&#39;]}; &quot;
+        f&quot;empty_string_cells={summary[&#39;empty_string_cells&#39;]}; &quot;
+        f&quot;issue_cells={summary[&#39;reported_issue_cells&#39;]}&quot;
+    )
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</code></pre></div></section><section id="verify"><h2><span class="section-number">06</span>동봉 테스트 실행하기</h2><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-5-0" aria-label="bash 코드 복사">복사</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-5-0">python -B -X utf8 -m unittest -v test_example</code></pre></div><p>테스트는 임시 폴더에서 정상 변환, 누락 구분, 잘못된 입력과 기존 출력 보호를 확인합니다. 22개 테스트의 마지막 결과가 OK인지 확인하세요. 테스트가 통과해도 모든 실제 데이터 형식을 지원한다는 뜻은 아닙니다.</p></section><section id="errors"><h2><span class="section-number">07</span>오류 메시지로 원인 찾기</h2><div class="table-wrap" role="region" aria-label="예제 데이터 표" tabindex="0"><table><thead><tr><th scope="col">메시지</th><th scope="col">확인할 내용</th></tr></thead><tbody><tr><td>E_INPUT</td><td>JSON 형식, 열 이름, 값 형식과 크기를 확인하세요.</td></tr><tr><td>E_OUTPUT_EXISTS</td><td>새 출력 폴더 이름을 지정하세요.</td></tr><tr><td>E_READ</td><td>입력 경로와 읽기 권한을 확인하세요.</td></tr><tr><td>E_WRITE</td><td>쓰기 권한과 디스크 상태를 확인하세요. 불완전한 출력은 사용하지 마세요.</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">08</span>사용 범위와 한계</h2><p>메모리에 입력 전체와 출력 내용을 보관하는 작은 파일용 예제입니다. 중첩 JSON 펼치기, 날짜 변환, 자동 열 추론, 누락값 보정은 하지 않습니다. 오류를 고칠 때는 원본을 복사한 연습 파일에서 시도하세요.</p><p>출력 중 디스크 오류가 나면 일부 파일만 남을 수 있습니다. 성공 메시지와 세 파일의 내용을 함께 확인하세요. 이 예제는 CSV를 여는 스프레드시트의 자동 변환 동작까지 검증하지 않습니다.</p></section><section id="verification"><h2>실행·검증 기록</h2><p>2026-09-19 · Windows 11 · CPython 3.12.14 · 표준 라이브러리</p><ul><li>독립 검토에서 22개 테스트 통과</li><li>본문 코드와 다운로드 코드 일치 확인</li><li>샘플 4행과 점검 4개 확인</li><li>기존 출력 폴더 거부 및 입력 원본 보존 확인</li></ul><div class="verification-limits"><strong>검증 범위의 한계</strong><ul><li>원저자는 Linux·CPython 3.13.5에서 별도 검증했습니다.</li><li>모든 실제 데이터와 스프레드시트 자동 해석을 검증한 것은 아닙니다.</li></ul></div><p><a href="/ko/principles/">사이트 전체의 작성·검증 원칙</a></p></section><section id="downloads" class="download-box"><span class="download-icon" aria-hidden="true">↓</span><div><h2>직접 실행할 예제 파일</h2><p>코드·입력 데이터·실행 안내가 포함되어 있습니다. 압축을 풀고 README.txt부터 읽어 주세요.</p><a class="button" href="/downloads/json-list-to-csv-missing-fields.zip" download="json-list-to-csv-missing-fields.zip">예제 ZIP 다운로드 <span aria-hidden="true">↓</span></a><p class="download-note">직접 작성한 연습 자료 · 원본을 따로 보관한 뒤 실행하세요.</p></div></section><section id="references"><h2>참고 출처</h2><p>설명과 예제는 직접 작성했습니다. 관련 동작과 개념은 아래 공식 자료에서 확인할 수 있습니다.</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/json.html" target="_blank" rel="noopener noreferrer">Python JSON documentation <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python CSV documentation <span aria-hidden="true">↗</span><span class="sr-only"> (새 탭)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/automation/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="폴더 속 파일 목록을 csv로 정리하기 하위 폴더까지 읽어 파일 경로·확장자·크기·수정 시각을 표로 남깁니다. 작은 예제 4개로 시작하고 원본과 기존 결과를 보존합니다. python 파일 정리 csv 입문" data-category="automation"><div class="card-top"><span class="category-badge automation">스크립트·파일 자동화</span><span class="article-number">01</span></div><h3><a href="/ko/articles/file-list-csv/">폴더 속 파일 목록을 CSV로 정리하기</a></h3><p>하위 폴더까지 읽어 파일 경로·확장자·크기·수정 시각을 표로 남깁니다. 작은 예제 4개로 시작하고 원본과 기존 결과를 보존합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>파일 정리</span><span>CSV</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="여러 csv를 합치고 원본 파일명 남기기 열 구조가 같은 csv를 순서대로 합치고 source_file 열을 붙입니다. 쉼표가 있는 품목명, 누락된 열, 기존 출력도 작은 데이터로 확인합니다. python csv 결합 출처 추적 데이터 정리" data-category="automation"><div class="card-top"><span class="category-badge automation">스크립트·파일 자동화</span><span class="article-number">02</span></div><h3><a href="/ko/articles/merge-csv/">여러 CSV를 합치고 원본 파일명 남기기</a></h3><p>열 구조가 같은 CSV를 순서대로 합치고 source_file 열을 붙입니다. 쉼표가 있는 품목명, 누락된 열, 기존 출력도 작은 데이터로 확인합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>CSV 결합</span><span>출처 추적</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="파일명 일괄 변경 전에 미리보기 만들기 바꾸기 전 이름과 새 이름을 표로 확인하고 충돌을 검사합니다. --apply를 명시할 때만 새 폴더에 복사본을 만들어 원본을 남깁니다. python 파일명 미리보기 원본 보존" data-category="automation"><div class="card-top"><span class="category-badge automation">스크립트·파일 자동화</span><span class="article-number">03</span></div><h3><a href="/ko/articles/rename-preview/">파일명 일괄 변경 전에 미리보기 만들기</a></h3><p>바꾸기 전 이름과 새 이름을 표로 확인하고 충돌을 검사합니다. --apply를 명시할 때만 새 폴더에 복사본을 만들어 원본을 남깁니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>파일명</span><span>미리보기</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="파일 복사 전후 sha-256을 비교해 내용 확인하기 이름이나 크기만으로 판단하지 않고 파일 바이트의 해시를 비교해 복사 결과를 점검합니다. python sha-256 파일 검증" data-category="automation"><div class="card-top"><span class="category-badge automation">스크립트·파일 자동화</span><span class="article-number">18</span></div><h3><a href="/ko/articles/file-sha256-compare/">파일 복사 전후 SHA-256을 비교해 내용 확인하기</a></h3><p>이름이나 크기만으로 판단하지 않고 파일 바이트의 해시를 비교해 복사 결과를 점검합니다.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>SHA-256</span><span>파일 검증</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="이 글에서 다루는 내용"><p>이 글에서 다루는 내용</p><ol><li><a href="#purpose"><span>01</span>누락과 빈 값을 구분하는 이유</a></li><li><a href="#input"><span>02</span>연습 데이터 살펴보기</a></li><li><a href="#run"><span>03</span>새 폴더에 결과 만들기</a></li><li><a href="#result"><span>04</span>예상 결과와 비교하기</a></li><li><a href="#code"><span>05</span>전체 코드와 처리 흐름</a></li><li><a href="#verify"><span>06</span>동봉 테스트 실행하기</a></li><li><a href="#errors"><span>07</span>오류 메시지로 원인 찾기</a></li><li><a href="#limits"><span>08</span>사용 범위와 한계</a></li><li><a href="#verification"><span>09</span>실행·검증 기록</a></li><li><a href="#downloads"><span>10</span>직접 실행할 예제 파일</a></li><li><a href="#references"><span>11</span>참고 출처</a></li></ol><a class="toc-download" href="#downloads">↓ 예제 파일 받기</a></nav><div class="aside-note">복사한 코드는 예제 데이터로 먼저 실행하세요. 결과를 확인한 뒤 실제 파일에 적용하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>무료 실무 튜토리얼 · 예제 데이터와 코드는 각 글에서 내려받을 수 있습니다.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>
