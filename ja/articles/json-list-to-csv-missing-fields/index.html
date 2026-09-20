@@ -1,0 +1,188 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>JSONのリストをCSVに変換し、欠落フィールドを確認する | Worknote</title><meta name="description" content="キーの欠落・null・空文字列を区別しながら表に変換し、確認用のレポートを別途作成します。"><link rel="canonical" href="https://worknotetips.com/ja/articles/json-list-to-csv-missing-fields/"><meta property="og:url" content="https://worknotetips.com/ja/articles/json-list-to-csv-missing-fields/"><meta property="og:title" content="JSONのリストをCSVに変換し、欠落フィールドを確認する | Worknote"><meta property="og:description" content="キーの欠落・null・空文字列を区別しながら表に変換し、確認用のレポートを別途作成します。"><meta property="og:locale" content="ja_JP"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"JSONのリストをCSVに変換し、欠落フィールドを確認する","description":"キーの欠落・null・空文字列を区別しながら表に変換し、確認用のレポートを別途作成します。","inLanguage":"ja","dateModified":"2026-09-19","url":"https://worknotetips.com/ja/articles/json-list-to-csv-missing-fields/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="ko" href="https://worknotetips.com/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="en" href="https://worknotetips.com/en/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/json-list-to-csv-missing-fields/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/json-list-to-csv-missing-fields/"><script type="application/json" id="ui-messages">{"copy":"コピー","copied":"コピー完了","copySuccess":"コードをコピーしました。まずサンプルデータで実行してください。","copyRetry":"もう一度コピー","copyFailure":"自動コピーを利用できません。コードを選択して手動でコピーしてください。","searchCount":"検索結果 {count}件"}</script></head><body><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ja/" aria-label="Worknote ホーム"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a href="/ja/" aria-current="page">チュートリアル</a><a href="/ja/about/" >サイトについて</a><a href="/ja/principles/" >執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/json-list-to-csv-missing-fields/" lang="ko" hreflang="ko" >한국어</a><a href="/en/articles/json-list-to-csv-missing-fields/" lang="en" hreflang="en" >English</a><a href="/ja/articles/json-list-to-csv-missing-fields/" lang="ja" hreflang="ja" aria-current="true">日本語</a><a href="/es/articles/json-list-to-csv-missing-fields/" lang="es" hreflang="es" >Español</a><a href="/pt-BR/articles/json-list-to-csv-missing-fields/" lang="pt-BR" hreflang="pt-BR" >Português</a></nav></details><a class="header-search" href="/ja/#search" aria-label="検索"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>検索</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="現在の位置"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/automation/">スクリプト・ファイル自動化</a></nav><header class="article-header"><span class="category-badge automation">スクリプト・ファイル自動化</span><h1>JSONのリストをCSVに変換し、欠落フィールドを確認する</h1><p class="article-summary">キーの欠落・null・空文字列を区別しながら表に変換し、確認用のレポートを別途作成します。</p><div class="article-meta"><span>内容確認 2026.09.19</span><span>サンプルファイル付き</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#purpose"><span>01</span>欠落と空の値を区別する理由</a></li><li><a href="#input"><span>02</span>練習用データを確認する</a></li><li><a href="#run"><span>03</span>新しいフォルダーに結果を作成する</a></li><li><a href="#result"><span>04</span>期待する結果と比較する</a></li><li><a href="#code"><span>05</span>コード全体と処理の流れ</a></li><li><a href="#verify"><span>06</span>同梱のテストを実行する</a></li><li><a href="#errors"><span>07</span>エラーメッセージから原因を探す</a></li><li><a href="#limits"><span>08</span>用途と制限</a></li><li><a href="#verification"><span>09</span>実行・検証の記録</a></li><li><a href="#downloads"><span>10</span>自分で実行するためのサンプルファイル</a></li><li><a href="#references"><span>11</span>参考資料</a></li></ol><a class="toc-download" href="#downloads">↓ サンプルファイルを入手</a></nav></details><div class="reading-content"><p class="translation-note">この翻訳はAIで作成しました。コード、単位、数値は原文と併せて確認してください。各言語のネイティブ話者による校閲は、まだ完了していません。 <a href="/articles/json-list-to-csv-missing-fields/" lang="ko">한국어</a></p><div class="reader-setup"><p><strong>対象読者</strong>JSONファイルを表で確認し、データが欠けている箇所を見つけたいPython初心者</p><div><strong>準備するもの</strong><ul><li>Python 3.12以上とターミナルを用意してください。追加パッケージは不要です。</li><li>ZIPを展開し、example.pyとsample.jsonがあるフォルダーでターミナルを開いてください。</li><li>最初は同梱の架空の品目データだけを使用してください。元のファイルは別に保管してください。</li></ul></div></div><section id="purpose"><h2><span class="section-number">01</span>欠落と空の値を区別する理由</h2><p>JSONでは、キーが存在しない状態、値がnullの状態、空文字列の状態はそれぞれ異なります。CSVではいずれも空欄に見えることがあるため、この例では別のfield_issues.csvに元の状態を記録します。任意の値で補完することはありません。</p><p>想定する列はitem、quantity、unitです。0、false、スペース一つは欠落として扱いません。まずキーの存在を調べ、その後で値の状態を確認します。</p></section><section id="input"><h2><span class="section-number">02</span>練習用データを確認する</h2><div class="code-block"><div class="code-toolbar"><span>json</span><button type="button" data-copy="code-1-0" aria-label="json コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="json 코드"><code id="code-1-0">[
+  {&quot;item&quot;: &quot;가상부품-A&quot;, &quot;quantity&quot;: 3, &quot;unit&quot;: &quot;개&quot;},
+  {&quot;item&quot;: &quot;가상부품-B&quot;, &quot;quantity&quot;: 5},
+  {&quot;item&quot;: &quot;가상부품-C&quot;, &quot;unit&quot;: &quot;개&quot;},
+  {&quot;item&quot;: &quot;가상부품-D&quot;, &quot;quantity&quot;: null, &quot;unit&quot;: &quot;&quot;}
+]</code></pre></div><p>レコードは4件です。二件目にはunitキーがなく、三件目にはquantityキーがありません。四件目のquantityはnullで、unitは空文字列です。品目名と単位は実際の入力値なので、翻訳版でも同じ表記を維持します。</p></section><section id="run"><h2><span class="section-number">03</span>新しいフォルダーに結果を作成する</h2><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-2-0" aria-label="bash コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-2-0">python --version
+python example.py sample.json --output-dir outputs</code></pre></div><p>コマンドの相対パスは、ターミナルの現在のフォルダーを基準とします。実行前にexample.pyがあるフォルダーへ移動してください。出力フォルダーはまだ存在していない必要があり、その親フォルダーは存在している必要があります。outputsがすでにある場合は、新しい名前を指定してください。</p><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-2-2" aria-label="bash コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-2-2">python example.py sample.json --output-dir outputs_second</code></pre></div><p>入力の検証が完了してから新しいフォルダーを作成します。既存の出力フォルダーを空にしたり上書きしたりせず、入力JSONも変更しません。</p></section><section id="result"><h2><span class="section-number">04</span>期待する結果と比較する</h2><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">ファイル</th><th scope="col">確認する内容</th></tr></thead><tbody><tr><td>converted.csv</td><td>ヘッダーの後に4行のデータ</td></tr><tr><td>field_issues.csv</td><td>missing_keyが2件、nullが1件、empty_stringが1件</td></tr><tr><td>summary.json</td><td>input_rows=4, output_rows=4, reported_issue_cells=4</td></tr></tbody></table></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-3-1" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text 코드"><code id="code-3-1">OK: rows=4; missing_key_cells=2; null_cells=1; empty_string_cells=1; issue_cells=4</code></pre></div><p>確認件数は行数ではなく、問題のあるセル数です。四行目には問題が二つあるため、報告される項目は合計4件になります。まずテキストエディターでCSVを確認してください。任意の外部データは表計算ソフトで自動解釈されることがあり、このコードは数式文字列のサニタイズを行いません。</p></section><section id="code"><h2><span class="section-number">05</span>コード全体と処理の流れ</h2><p>JSON配列内のオブジェクトのみを許可します。入れ子のオブジェクト・配列、未知の列、重複するJSONキー、NaN・Infinityは拒否します。小数はDecimalとして読み取り、不要な二進浮動小数点への変換を避けます。5 MiBを超える入力ファイルは処理しません。</p><div class="code-block"><div class="code-toolbar"><span>example.py</span><button type="button" data-copy="code-4-1" aria-label="example.py コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="example.py 코드"><code id="code-4-1">#!/usr/bin/env python3
+&quot;&quot;&quot;Convert a small local JSON array to CSV and a field-issue report.
+
+Target: Python 3.12+, standard library only. No network access.
+All output goes to a NEW directory; existing directories/files are refused.
+&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import argparse
+import csv
+import io
+import json
+import sys
+from decimal import Decimal
+from pathlib import Path
+
+DEFAULT_FIELDS = (&quot;item&quot;, &quot;quantity&quot;, &quot;unit&quot;)
+MAX_INPUT_BYTES = 5 * 1024 * 1024
+ISSUE_FIELDS = (&quot;row_number&quot;, &quot;field&quot;, &quot;issue&quot;)
+
+
+class InputError(ValueError):
+    &quot;&quot;&quot;The input does not satisfy this example&#39;s data contract.&quot;&quot;&quot;
+
+
+def unique_object(pairs: list[tuple[str, object]]) -&gt; dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise InputError(&quot;Duplicate key in a JSON object.&quot;)
+        result[key] = value
+    return result
+
+
+def reject_constant(token: str) -&gt; object:
+    raise InputError(f&quot;Non-standard JSON number: {token}.&quot;)
+
+
+def csv_bytes(fields: tuple[str, ...], rows: list[dict]) -&gt; bytes:
+    buffer = io.StringIO(newline=&quot;&quot;)
+    writer = csv.DictWriter(buffer, fieldnames=fields, lineterminator=&quot;\r\n&quot;)
+    writer.writeheader()
+    writer.writerows(rows)
+    return buffer.getvalue().encode(&quot;utf-8&quot;)
+
+
+def prepare_outputs(source: Path, fields: tuple[str, ...]) -&gt; tuple[dict, dict]:
+    if not fields or len(fields) != len(set(fields)):
+        raise InputError(&quot;--fields must contain at least one unique field name.&quot;)
+    if any(not field.strip() for field in fields):
+        raise InputError(&quot;Field names must not be empty or whitespace-only.&quot;)
+
+    # Read-only, bounded input. Do not modify the source, even on failure.
+    with source.open(&quot;rb&quot;) as stream:
+        raw = stream.read(MAX_INPUT_BYTES + 1)
+    if len(raw) &gt; MAX_INPUT_BYTES:
+        raise InputError(&quot;Input exceeds the example&#39;s 5 MiB limit.&quot;)
+    records = json.loads(
+        raw.decode(&quot;utf-8-sig&quot;),
+        object_pairs_hook=unique_object,
+        parse_float=Decimal,
+        parse_constant=reject_constant,
+    )
+    if not isinstance(records, list):
+        raise InputError(&quot;Top-level JSON value must be an array.&quot;)
+
+    rows: list[dict[str, str]] = []
+    issues: list[dict[str, object]] = []
+    counts = {&quot;missing_key&quot;: 0, &quot;null&quot;: 0, &quot;empty_string&quot;: 0}
+    missing_rows: set[int] = set()
+    allowed = set(fields)
+    for row_number, record in enumerate(records, start=1):
+        if not isinstance(record, dict):
+            raise InputError(f&quot;Record {row_number} must be an object.&quot;)
+        if set(record) - allowed:
+            raise InputError(
+                f&quot;Record {row_number} has unlisted keys; include them in --fields.&quot;
+            )
+        row: dict[str, str] = {}
+        for field in fields:
+            issue = None
+            if field not in record:
+                issue = &quot;missing_key&quot;
+                missing_rows.add(row_number)
+                value = None
+            else:
+                value = record[field]
+                if value is None:
+                    issue = &quot;null&quot;
+                elif value == &quot;&quot;:
+                    issue = &quot;empty_string&quot;
+            if issue is not None:
+                counts[issue] += 1
+                issues.append({&quot;row_number&quot;: row_number, &quot;field&quot;: field, &quot;issue&quot;: issue})
+                row[field] = &quot;&quot;
+            elif isinstance(value, str):
+                row[field] = value
+            elif isinstance(value, bool):
+                row[field] = &quot;true&quot; if value else &quot;false&quot;
+            elif isinstance(value, (int, Decimal)):
+                row[field] = str(value)
+            else:
+                raise InputError(
+                    f&quot;Record {row_number} contains an unsupported nested value.&quot;
+                )
+        rows.append(row)
+
+    summary = {
+        &quot;status&quot;: &quot;complete&quot;,
+        &quot;columns&quot;: list(fields),
+        &quot;input_rows&quot;: len(records),
+        &quot;output_rows&quot;: len(rows),
+        &quot;missing_key_cells&quot;: counts[&quot;missing_key&quot;],
+        &quot;rows_with_missing_keys&quot;: len(missing_rows),
+        &quot;null_cells&quot;: counts[&quot;null&quot;],
+        &quot;empty_string_cells&quot;: counts[&quot;empty_string&quot;],
+        &quot;reported_issue_cells&quot;: len(issues),
+    }
+    # Render and UTF-8-encode EVERYTHING before creating the output directory.
+    # summary.json is written last and serves as a completion record.
+    outputs = {
+        &quot;converted.csv&quot;: csv_bytes(fields, rows),
+        &quot;field_issues.csv&quot;: csv_bytes(ISSUE_FIELDS, issues),
+        &quot;summary.json&quot;: (json.dumps(summary, ensure_ascii=False, indent=2) + &quot;\n&quot;).encode(&quot;utf-8&quot;),
+    }
+    return outputs, summary
+
+
+def main(argv: list[str] | None = None) -&gt; int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(&quot;input&quot;, type=Path, help=&quot;Local UTF-8 JSON file&quot;)
+    parser.add_argument(&quot;--output-dir&quot;, type=Path, required=True, help=&quot;NEW directory; parent must exist&quot;)
+    parser.add_argument(&quot;--fields&quot;, nargs=&quot;+&quot;, default=list(DEFAULT_FIELDS), help=&quot;Expected CSV columns, in order&quot;)
+    args = parser.parse_args(argv)
+    if sys.version_info &lt; (3, 12):
+        print(&quot;E_VERSION: Python 3.12 or newer is required.&quot;, file=sys.stderr)
+        return 2
+    try:
+        outputs, summary = prepare_outputs(args.input, tuple(args.fields))
+    except json.JSONDecodeError as exc:
+        print(f&quot;E_INPUT: Invalid JSON at line {exc.lineno}, column {exc.colno}.&quot;, file=sys.stderr)
+        return 2
+    except (ValueError, ArithmeticError, RecursionError) as exc:
+        print(f&quot;E_INPUT: {exc}&quot;, file=sys.stderr)
+        return 2
+    except OSError as exc:
+        print(f&quot;E_READ: Cannot read input ({exc.__class__.__name__}).&quot;, file=sys.stderr)
+        return 4
+
+    try:
+        args.output_dir.mkdir(exist_ok=False)
+    except FileExistsError:
+        print(&quot;E_OUTPUT_EXISTS: Output path already exists; choose a new directory.&quot;, file=sys.stderr)
+        return 3
+    except OSError as exc:
+        print(f&quot;E_WRITE: Cannot create output directory ({exc.__class__.__name__}).&quot;, file=sys.stderr)
+        return 4
+    try:
+        for name, payload in outputs.items():
+            with (args.output_dir / name).open(&quot;xb&quot;) as stream:
+                stream.write(payload)
+    except OSError as exc:
+        print(
+            f&quot;E_WRITE: Incomplete NEW output directory ({exc.__class__.__name__}); &quot;
+            &quot;do not use its results. Inspect it and choose a new directory.&quot;,
+            file=sys.stderr,
+        )
+        return 4
+    print(
+        f&quot;OK: rows={summary[&#39;output_rows&#39;]}; &quot;
+        f&quot;missing_key_cells={summary[&#39;missing_key_cells&#39;]}; &quot;
+        f&quot;null_cells={summary[&#39;null_cells&#39;]}; &quot;
+        f&quot;empty_string_cells={summary[&#39;empty_string_cells&#39;]}; &quot;
+        f&quot;issue_cells={summary[&#39;reported_issue_cells&#39;]}&quot;
+    )
+    return 0
+
+
+if __name__ == &quot;__main__&quot;:
+    raise SystemExit(main())
+</code></pre></div></section><section id="verify"><h2><span class="section-number">06</span>同梱のテストを実行する</h2><div class="code-block"><div class="code-toolbar"><span>bash</span><button type="button" data-copy="code-5-0" aria-label="bash コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="bash 코드"><code id="code-5-0">python -B -X utf8 -m unittest -v test_example</code></pre></div><p>テストでは一時フォルダーを使用し、正常な変換、欠落の区別、不正な入力、既存の出力の保護を確認します。22個のテストの最終結果がOKであることを確認してください。テストに合格しても、実際のあらゆるデータ形式に対応しているという意味ではありません。</p></section><section id="errors"><h2><span class="section-number">07</span>エラーメッセージから原因を探す</h2><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">メッセージ</th><th scope="col">確認する内容</th></tr></thead><tbody><tr><td>E_INPUT</td><td>JSONの形式、列名、値の型、入力サイズを確認してください。</td></tr><tr><td>E_OUTPUT_EXISTS</td><td>新しい出力フォルダー名を指定してください。</td></tr><tr><td>E_READ</td><td>入力パスと読み取り権限を確認してください。</td></tr><tr><td>E_WRITE</td><td>書き込み権限とディスクの状態を確認してください。不完全な出力は使用しないでください。</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">08</span>用途と制限</h2><p>入力全体と出力内容をメモリに保持する、小さなファイル向けの例です。入れ子のJSONの平坦化、日付変換、列の自動推定、欠損値の補完は行いません。エラーを修正するときは、元のファイルをコピーした練習用ファイルで試してください。</p><p>出力中にディスクエラーが発生すると、一部のファイルだけが残ることがあります。成功メッセージと三つのファイルの内容を併せて確認してください。この例では、CSVを開く表計算ソフトの自動変換動作までは検証していません。</p></section><section id="verification"><h2>実行・検証の記録</h2><p>2026-09-19 · Windows 11 · CPython 3.12.14 · 標準ライブラリ</p><ul><li>独立したレビューで22個のテストに合格</li><li>本文のコードとダウンロード用コードの一致を確認</li><li>サンプル4行と確認項目4件を確認</li><li>既存の出力フォルダーの拒否と入力原本の保持を確認</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><ul><li>原著者はLinux・CPython 3.13.5で別途検証しました。</li><li>実際のすべてのデータや表計算ソフトの自動解釈を検証したわけではありません。</li></ul></div><p><a href="/ja/principles/">サイト全体の執筆・検証方針</a></p></section><section id="downloads" class="download-box"><span class="download-icon" aria-hidden="true">↓</span><div><h2>自分で実行するためのサンプルファイル</h2><p>コード、入力データ、実行手順が含まれています。展開して、まずREADME.txtを読んでください。</p><a class="button" href="/downloads/json-list-to-csv-missing-fields.zip" download="json-list-to-csv-missing-fields.zip">サンプルZIPをダウンロード <span aria-hidden="true">↓</span></a><p class="download-note">サンプルコード、ファイル名、入力キーは原文のままです。翻訳本文のコマンドと確認手順も併せて参照してください。</p><p class="download-note">独自に作成した練習用資料 · 元のファイルを別に保管してから実行してください。</p></div></section><section id="references"><h2>参考資料</h2><p>説明と例は独自に作成しました。関連する動作や概念は、以下の公式資料で確認できます。</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/json.html" target="_blank" rel="noopener noreferrer">PythonのJSONドキュメント <span aria-hidden="true">↗</span><span class="sr-only"> (新しいタブ)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">PythonのCSVドキュメント <span aria-hidden="true">↗</span><span class="sr-only"> (新しいタブ)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/automation/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="フォルダー内のファイル一覧をcsvにまとめる サブフォルダーまで調べ、ファイルのパス、拡張子、サイズ、更新時刻を表に記録します。小さなサンプルファイル4個から始め、元のファイルと既存の結果を保管します。 python ファイル整理 csv 入門" data-category="automation"><div class="card-top"><span class="category-badge automation">スクリプト・ファイル自動化</span><span class="article-number">01</span></div><h3><a href="/ja/articles/file-list-csv/">フォルダー内のファイル一覧をCSVにまとめる</a></h3><p>サブフォルダーまで調べ、ファイルのパス、拡張子、サイズ、更新時刻を表に記録します。小さなサンプルファイル4個から始め、元のファイルと既存の結果を保管します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>ファイル整理</span><span>CSV</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="複数のcsvを結合し、元のファイル名を残す 列構成が同じcsvを順番に結合し、source_file列を追加します。カンマを含む品目名、列の欠落、既存の出力も、小さなデータで確認します。 python csv結合 出典の追跡 データ整理" data-category="automation"><div class="card-top"><span class="category-badge automation">スクリプト・ファイル自動化</span><span class="article-number">02</span></div><h3><a href="/ja/articles/merge-csv/">複数のCSVを結合し、元のファイル名を残す</a></h3><p>列構成が同じCSVを順番に結合し、source_file列を追加します。カンマを含む品目名、列の欠落、既存の出力も、小さなデータで確認します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>CSV結合</span><span>出典の追跡</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="ファイル名を一括変更する前にプレビューする 変更前と変更後の名前を表で確認し、名前の衝突を検査します。--applyを明示したときだけ新しいフォルダーにコピーを作り、元のファイルを残します。 python ファイル名 プレビュー 元のファイルの保全" data-category="automation"><div class="card-top"><span class="category-badge automation">スクリプト・ファイル自動化</span><span class="article-number">03</span></div><h3><a href="/ja/articles/rename-preview/">ファイル名を一括変更する前にプレビューする</a></h3><p>変更前と変更後の名前を表で確認し、名前の衝突を検査します。--applyを明示したときだけ新しいフォルダーにコピーを作り、元のファイルを残します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>ファイル名</span><span>プレビュー</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="ファイルのコピー前後でsha-256を比較し、内容を確認する 名前やサイズだけで判断せず、ファイルのバイト列のハッシュを比較してコピー結果を確認します。 python sha-256 ファイル検証" data-category="automation"><div class="card-top"><span class="category-badge automation">スクリプト・ファイル自動化</span><span class="article-number">07</span></div><h3><a href="/ja/articles/file-sha256-compare/">ファイルのコピー前後でSHA-256を比較し、内容を確認する</a></h3><p>名前やサイズだけで判断せず、ファイルのバイト列のハッシュを比較してコピー結果を確認します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>SHA-256</span><span>ファイル検証</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#purpose"><span>01</span>欠落と空の値を区別する理由</a></li><li><a href="#input"><span>02</span>練習用データを確認する</a></li><li><a href="#run"><span>03</span>新しいフォルダーに結果を作成する</a></li><li><a href="#result"><span>04</span>期待する結果と比較する</a></li><li><a href="#code"><span>05</span>コード全体と処理の流れ</a></li><li><a href="#verify"><span>06</span>同梱のテストを実行する</a></li><li><a href="#errors"><span>07</span>エラーメッセージから原因を探す</a></li><li><a href="#limits"><span>08</span>用途と制限</a></li><li><a href="#verification"><span>09</span>実行・検証の記録</a></li><li><a href="#downloads"><span>10</span>自分で実行するためのサンプルファイル</a></li><li><a href="#references"><span>11</span>参考資料</a></li></ol><a class="toc-download" href="#downloads">↓ サンプルファイルを入手</a></nav><div class="aside-note">コピーしたコードは、まずサンプルデータで実行してください。結果を確認してから実際のファイルに適用してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>無料の実務チュートリアル · 各記事からサンプルデータとコードをダウンロードできます。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a3dfa9fb6afeac13',t:'MTc4OTg5NTA4MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>
