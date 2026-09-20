@@ -1,0 +1,116 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>AI要約を原文と文ごとに照合する | Worknote</title><meta name="description" content="AI要約を個別の主張に分け、それぞれを具体的な原文の文に結び付け、再利用する前に根拠のない表現や言い過ぎた表現を確認します。小さな合成文書を使って、自然に読める要約でも根拠確認が必要な理由を示します。"><link rel="canonical" href="https://worknotetips.com/ja/articles/ai-summary-source-check/"><meta property="og:url" content="https://worknotetips.com/ja/articles/ai-summary-source-check/"><meta property="og:title" content="AI要約を原文と文ごとに照合する | Worknote"><meta property="og:description" content="AI要約を個別の主張に分け、それぞれを具体的な原文の文に結び付け、再利用する前に根拠のない表現や言い過ぎた表現を確認します。小さな合成文書を使って、自然に読める要約でも根拠確認が必要な理由を示します。"><meta property="og:locale" content="ja_JP"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "AI要約を原文と文ごとに照合する", "description": "AI要約を個別の主張に分け、それぞれを具体的な原文の文に結び付け、再利用する前に根拠のない表現や言い過ぎた表現を確認します。小さな合成文書を使って、自然に読める要約でも根拠確認が必要な理由を示します。", "inLanguage": "ja", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ja/articles/ai-summary-source-check/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/ai-summary-source-check/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/ai-summary-source-check/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/ai-summary-source-check/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/ai-summary-source-check/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/ai-summary-source-check/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/ai-summary-source-check/"><script type="application/json" id="ui-messages">{"copy":"コピー","copied":"コピー完了","copySuccess":"コードをコピーしました。まずサンプルデータで実行してください。","copyRetry":"もう一度コピー","copyFailure":"自動コピーを利用できません。コードを選択して手動でコピーしてください。","searchCount":"検索結果 {count}件"}</script></head><body><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ja/" aria-label="Worknote ホーム"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a href="/ja/" aria-current="page">チュートリアル</a><a href="/ja/about/" >サイトについて</a><a href="/ja/principles/" >執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/ai-summary-source-check/" lang="en" hreflang="en">English</a><a href="/ko/articles/ai-summary-source-check/" lang="ko" hreflang="ko">한국어</a><a href="/ja/articles/ai-summary-source-check/" lang="ja" hreflang="ja" aria-current="true">日本語</a><a href="/es/articles/ai-summary-source-check/" lang="es" hreflang="es">Español</a><a href="/pt-BR/articles/ai-summary-source-check/" lang="pt-BR" hreflang="pt-BR">Português</a></nav></details><a class="header-search" href="/ja/#search" aria-label="検索"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>検索</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="現在の位置"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/ai/">AIの業務活用</a></nav><header class="article-header"><span class="category-badge ai">AIの業務活用</span><h1>AI要約を原文と文ごとに照合する</h1><p class="article-summary">AI要約を個別の主張に分け、それぞれを具体的な原文の文に結び付け、再利用する前に根拠のない表現や言い過ぎた表現を確認します。小さな合成文書を使って、自然に読める要約でも根拠確認が必要な理由を示します。</p><div class="article-meta"><span>内容確認 2026.09.20</span><span>サンプルファイル付き</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-check"><span>01</span>要約の各文を1つの主張として扱う</a></li><li><a href="#create-synthetic-source"><span>02</span>合成した原文とAI要約を作成する</a></li><li><a href="#review-by-hand"><span>03</span>要約の各文を原文と比較する</a></li><li><a href="#write-review-csv"><span>04</span>追跡可能なCSVにレビューを記録する</a></li><li><a href="#validate-the-review"><span>05</span>すべての文がレビューされているか確認する</a></li><li><a href="#expected-result"><span>06</span>期待される結果を確認する</a></li><li><a href="#errors-and-limits"><span>07</span>よくある誤りと限界を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav></details><div class="reading-content"><p class="translation-note">この翻訳はAIで作成しました。コード、単位、数値は原文と併せて確認してください。各言語のネイティブ話者による校閲は、まだ完了していません。 <a href="/articles/ai-summary-source-check/" lang="en">English</a></p><div class="reader-setup"><p><strong>対象読者</strong>AIを使ってレポート、メモ、研究資料を要約し、文ごとに追跡可能なレビューを行いたい人向けです。</p><div><strong>準備するもの</strong><ul><li>Python 3.12と、そのバージョンを起動できるターミナルコマンドが必要です。</li><li>UTF-8のテキストファイルとCSVファイルを保存できるテキストエディタが必要です。</li><li>スクリプトがoutputs配下に新しいフォルダを作成できる作業フォルダが必要です。</li><li>必要なのはPython標準ライブラリのcsvとpathlibだけです。</li></ul></div></div><section id="define-the-check"><h2><span class="section-number">01</span>要約の各文を1つの主張として扱う</h2><p>AI要約は文法的に自然でも、原因を変えたり、制約条件を落としたり、原文にない結論を追加したりすることがあります。そのため、実用的なレビューでは各要約文について、どの原文部分がこの文を裏付けているのかを確認します。</p><p>このチュートリアルでは3つの判定を使います。SUPPORTEDは原文がその文を直接裏付けている場合です。PARTIALは文の一部だけが裏付けられているか、重要な条件が欠けている場合です。UNSUPPORTEDは原文がその主張を裏付けていないか、内容と矛盾する場合です。</p><aside class="callout"><strong>自然な文章を根拠として扱わない</strong><p>もっともらしく聞こえること自体は根拠ではありません。レビューでは原文の文IDや、別の明確な原文位置を示してください。</p></aside></section><section id="create-synthetic-source"><h2><span class="section-number">02</span>合成した原文とAI要約を作成する</h2><p>以下の原文と要約は合成データで、このページ専用に作成したものです。最初のブロックをsource.txt、2つ目をai_summary.txtとして保存してください。</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-1-1" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-1-1">S1|The pilot processed 20 test cases.
+S2|Eighteen cases completed successfully.
+S3|Two cases stopped during input validation before the solver started.
+S4|Among the 18 completed cases, the median runtime was 42 seconds.
+S5|The test was performed on one workstation under the same software configuration.
+S6|No production deployment or long-term reliability test was performed.
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-1-2" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-1-2">A1|The pilot processed 20 cases, and 18 completed successfully.
+A2|Two cases failed because the solver crashed.
+A3|The median runtime for completed cases was 42 seconds.
+A4|The results show that the automation is reliable enough for production use.
+</code></pre></div><p>原文は6文、AI要約は4文です。ソフトウェアを使わなくても確認できるよう、数値は意図的に小さくしています。</p></section><section id="review-by-hand"><h2><span class="section-number">03</span>要約の各文を原文と比較する</h2><p>A1はS1とS2で裏付けられます。A2はS3と矛盾します。原文では、2件はsolverが開始する前のinput validationで停止したとあり、solver crashが原因とは書かれていません。A3はS4で直接裏付けられます。A4は根拠の範囲を超えています。S6にはproduction deploymentもlong-term reliability testも実施していないと明記されています。</p><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">要約ID</th><th scope="col">判定</th><th scope="col">根拠</th><th scope="col">理由</th></tr></thead><tbody><tr><td>A1</td><td>SUPPORTED</td><td>S1;S2</td><td>ケース数と成功完了数が原文と一致しています。</td></tr><tr><td>A2</td><td>UNSUPPORTED</td><td>S3</td><td>原文では、停止原因をsolver開始前のinput validationとしています。</td></tr><tr><td>A3</td><td>SUPPORTED</td><td>S4</td><td>完了した18件のmedian runtimeが42秒と記載されています。</td></tr><tr><td>A4</td><td>UNSUPPORTED</td><td>S6</td><td>production readinessはテストされていません。</td></tr></tbody></table></div><p>したがって、期待されるレビュー結果はSUPPORTEDが2文、UNSUPPORTEDが2文です。この4つの合成文ではPARTIAL判定は必要ありません。</p></section><section id="write-review-csv"><h2><span class="section-number">04</span>追跡可能なCSVにレビューを記録する</h2><p>以下をsummary_review.csvとして保存してください。evidence列には段落全文ではなく原文の文IDを記録します。これにより、レビューを簡潔に保ちながら追跡可能性を維持できます。</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-3-1" aria-label="csv コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="csv"><code id="code-3-1">summary_id,verdict,evidence,reason
+A1,SUPPORTED,S1;S2,The case count and successful completions match the source.
+A2,UNSUPPORTED,S3,The source attributes the stops to input validation before solver start.
+A3,SUPPORTED,S4,The 42-second median is stated for the 18 completed cases.
+A4,UNSUPPORTED,S6,Production readiness was not tested.
+</code></pre></div><p>このレビュー自体は人による判断です。次のスクリプトは主張が正しいかどうかを判断しません。各AI要約文に有効な判定が付いているか、引用した原文IDが実際に存在するかを確認します。</p></section><section id="validate-the-review"><h2><span class="section-number">05</span>すべての文がレビューされているか確認する</h2><p>以下のスクリプトをcheck_summary_review.pyとして保存してください。原文、要約、完成したレビューCSVを読み込み、IDと判定を確認し、入力ファイルを変更せずに新しい検証済みレポートを書き出します。</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-4-1" aria-label="python コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-4-1">import csv
+from pathlib import Path
+
+SOURCE = Path(&quot;source.txt&quot;)
+SUMMARY = Path(&quot;ai_summary.txt&quot;)
+REVIEW = Path(&quot;summary_review.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;summary_source_check&quot;
+OUTPUT = OUTPUT_DIR / &quot;validated_review.csv&quot;
+VALID_VERDICTS = {&quot;SUPPORTED&quot;, &quot;PARTIAL&quot;, &quot;UNSUPPORTED&quot;}
+
+
+def read_id_text(path: Path) -&gt; dict[str, str]:
+    result = {}
+    with path.open(&quot;r&quot;, encoding=&quot;utf-8&quot;) as stream:
+        for line_number, line in enumerate(stream, start=1):
+            line = line.rstrip(&quot;\n&quot;)
+            if not line:
+                continue
+            item_id, separator, text = line.partition(&quot;|&quot;)
+            if not separator or not item_id or not text:
+                raise ValueError(f&quot;Invalid line {line_number} in {path}.&quot;)
+            if item_id in result:
+                raise ValueError(f&quot;Duplicate ID {item_id} in {path}.&quot;)
+            result[item_id] = text
+    return result
+
+
+def main() -&gt; None:
+    for path in (SOURCE, SUMMARY, REVIEW):
+        if not path.is_file():
+            raise FileNotFoundError(f&quot;Missing input: {path}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    source = read_id_text(SOURCE)
+    summary = read_id_text(SUMMARY)
+
+    reviewed = {}
+    with REVIEW.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        required = {&quot;summary_id&quot;, &quot;verdict&quot;, &quot;evidence&quot;, &quot;reason&quot;}
+        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
+            raise ValueError(&quot;Review CSV is missing a required column.&quot;)
+
+        for row in reader:
+            summary_id = row[&quot;summary_id&quot;].strip()
+            verdict = row[&quot;verdict&quot;].strip()
+            evidence_ids = [x.strip() for x in row[&quot;evidence&quot;].split(&quot;;&quot;) if x.strip()]
+
+            if summary_id not in summary:
+                raise ValueError(f&quot;Unknown summary ID: {summary_id}&quot;)
+            if summary_id in reviewed:
+                raise ValueError(f&quot;Duplicate review: {summary_id}&quot;)
+            if verdict not in VALID_VERDICTS:
+                raise ValueError(f&quot;Invalid verdict for {summary_id}: {verdict}&quot;)
+            if not evidence_ids:
+                raise ValueError(f&quot;No evidence listed for {summary_id}.&quot;)
+            unknown = [item for item in evidence_ids if item not in source]
+            if unknown:
+                raise ValueError(f&quot;Unknown source IDs for {summary_id}: {unknown}&quot;)
+            if not row[&quot;reason&quot;].strip():
+                raise ValueError(f&quot;Missing reason for {summary_id}.&quot;)
+
+            reviewed[summary_id] = {
+                &quot;summary_id&quot;: summary_id,
+                &quot;summary_text&quot;: summary[summary_id],
+                &quot;verdict&quot;: verdict,
+                &quot;evidence&quot;: &quot;;&quot;.join(evidence_ids),
+                &quot;reason&quot;: row[&quot;reason&quot;].strip(),
+            }
+
+    missing = [item for item in summary if item not in reviewed]
+    if missing:
+        raise ValueError(f&quot;Summary sentences not reviewed: {missing}&quot;)
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    fields = [&quot;summary_id&quot;, &quot;summary_text&quot;, &quot;verdict&quot;, &quot;evidence&quot;, &quot;reason&quot;]
+    with OUTPUT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        for summary_id in summary:
+            writer.writerow(reviewed[summary_id])
+
+    counts = {verdict: 0 for verdict in VALID_VERDICTS}
+    for row in reviewed.values():
+        counts[row[&quot;verdict&quot;]] += 1
+
+    print(f&quot;Summary sentences checked: {len(summary)}.&quot;)
+    print(
+        f&quot;Supported: {counts[&#x27;SUPPORTED&#x27;]}; partial: {counts[&#x27;PARTIAL&#x27;]}; &quot;
+        f&quot;unsupported: {counts[&#x27;UNSUPPORTED&#x27;]}.&quot;
+    )
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-result"><h2><span class="section-number">06</span>期待される結果を確認する</h2><p>上記の合成レビューでは、4つの要約文すべてに有効な判定と有効な原文参照があります。以下に期待されるコンソール出力を示します。これは手作業で導いたもので、実際の実行ログではありません。</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-5-1" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-5-1">Summary sentences checked: 4.
+Supported: 2; partial: 0; unsupported: 2.
+Output: outputs/summary_source_check/validated_review.csv</code></pre></div><ul><li>各A-IDがレビュー内に正確に1回だけ出てくることを確認します。</li><li>引用されたすべてのS-IDがsource.txtに存在することを確認します。</li><li>UNSUPPORTEDの主張が、根拠なくSUPPORTEDに書き換えられていないことを確認します。</li><li>レビューを追跡可能に保つため、元のAI要約は変更せずに保存します。</li><li>OUTPUT_DIRを変更せずにスクリプトを再実行します。以前の検証結果を上書きせず、FileExistsErrorで停止するはずです。</li></ul></section><section id="errors-and-limits"><h2><span class="section-number">07</span>よくある誤りと限界を理解する</h2><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">問題</th><th scope="col">対応方法</th></tr></thead><tbody><tr><td>1つの要約文に2つの別々の主張がある</td><td>文を主張単位に分けるか、それぞれの主張を個別にレビューします。</td></tr><tr><td>根拠が文の一部しか裏付けていない</td><td>PARTIALを使い、不足している条件をreason列に記録します。</td></tr><tr><td>原文に結論を裏付ける記述がない</td><td>もっともらしい推測を出典付きの事実として扱わず、UNSUPPORTEDとします。</td></tr><tr><td>原文の文を引用しているが実際には主張を裏付けていない</td><td>人によるレビューを修正します。有効なIDだけでは意味的な裏付けを証明できません。</td></tr><tr><td>異なる出典が食い違っている</td><td>根拠のない1つの結論に無理にまとめず、相違点を明示的に記録します。</td></tr></tbody></table></div><p>Pythonスクリプトが検証するのは、レビューがすべて揃っているかと参照IDが有効かどうかであり、真偽そのものではありません。意味的な裏付けには、依然として人による読解または別の根拠評価プロセスが必要です。人の判定が間違っていても、構造チェックは通る可能性があります。</p><p>長いレポートでは、曖昧な参照ではなくページ番号、段落ID、表番号、引用位置を使ってください。また、原文の直接的な記述、計算結果、解釈、外部知識を区別してください。要約の中で、これらの区分を暗黙に入れ替えないようにします。</p></section><section id="verification"><h2>実行・検証の記録</h2><p>2026-09-20 · 手作業で確認した例 · 対象: Python 3.12 · 標準ライブラリ: csv, pathlib · 未実行</p><ul><li>合成したAI要約4文を、合成した原文6文と手作業で照合しました。</li><li>A1とA3をSUPPORTED、A2とA4をUNSUPPORTEDに分類しました。</li><li>原文ではsolver開始前にinput validationで停止したと書かれているため、A2がS3と矛盾することを確認しました。</li><li>S6ではproduction deploymentとlong-term reliabilityがテストされていないため、A4が原文の範囲を超えていることを確認しました。</li><li>期待される判定数をSUPPORTED 2、PARTIAL 0、UNSUPPORTED 2として手作業で計算しました。</li><li>未レビュー、重複ID、不正な判定、存在しない原文ID、出力衝突の防止、レポート生成をスクリプトで確認しました。</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><ul><li>この回答の作成者はコードを実行しておらず、検証CSVは作成していません。</li><li>構造チェッカーは、引用された原文が意味的に主張を裏付けているかどうかまでは判断しません。</li><li>ここに示した合成原文と要約だけをレビューしており、長文、表、図、相反する出典はテストしていません。</li><li>公式ドキュメントのURLは既知の文書位置を使用していますが、リアルタイムでは確認していません。</li></ul></div><p><a href="/ja/principles/">サイト全体の執筆・検証方針</a></p></section><section id="references"><h2>参考資料</h2><p>説明と例は独自に作成しました。関連する動作や概念は、以下の公式資料で確認できます。</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12公式ドキュメント · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12公式ドキュメント · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/ai/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="業務用スクリプトの依頼文に入力・出力・エラー処理のルールを入れる 「これを自動化して」を、実行可能な task description に変えます。sensitive data を含まない合成 sample と、手作業で確認した expected result を添えて、team ごとの work logs を集計する script request を完成させます。 ai依頼 業務自動化 入出力" data-category="ai"><div class="card-top"><span class="category-badge ai">AIの業務活用</span><span class="article-number">07</span></div><h3><a href="/ja/articles/script-prompt/">業務用スクリプトの依頼文に入力・出力・エラー処理のルールを入れる</a></h3><p>「これを自動化して」を、実行可能な task description に変えます。sensitive data を含まない合成 sample と、手作業で確認した expected result を添えて、team ごとの work logs を集計する script request を完成させます。</p><div class="card-bottom"><div class="tags"><span>AI依頼</span><span>業務自動化</span><span>入出力</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="小さなデータで ai 生成コードを検証する 手計算できる4行のデータと12個の unit tests を使って aggregation function を確認します。通常値だけでなく、空入力、0、小数、不正入力も検証します。 ai活用 コード検証 unittest" data-category="ai"><div class="card-top"><span class="category-badge ai">AIの業務活用</span><span class="article-number">08</span></div><h3><a href="/ja/articles/verify-ai-code/">小さなデータで AI 生成コードを検証する</a></h3><p>手計算できる4行のデータと12個の unit tests を使って aggregation function を確認します。通常値だけでなく、空入力、0、小数、不正入力も検証します。</p><div class="card-bottom"><div class="tags"><span>AI活用</span><span>コード検証</span><span>unittest</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="aiレポートの数値・計算・出典を文ごとに確認する もっともらしい要約を、事実、計算結果、解釈に分けて確認します。合成した月次データから比率や平均を再計算し、出典が不足している文や因果関係を言い過ぎている文を、検証可能な表現に書き直します。 aiレポート 数値確認 出典確認" data-category="ai"><div class="card-top"><span class="category-badge ai">AIの業務活用</span><span class="article-number">09</span></div><h3><a href="/ja/articles/ai-report-review/">AIレポートの数値・計算・出典を文ごとに確認する</a></h3><p>もっともらしい要約を、事実、計算結果、解釈に分けて確認します。合成した月次データから比率や平均を再計算し、出典が不足している文や因果関係を言い過ぎている文を、検証可能な表現に書き直します。</p><div class="card-bottom"><div class="tags"><span>AIレポート</span><span>数値確認</span><span>出典確認</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="aiが作成した正規表現を一致・不一致の例でテストする aiが生成した正規表現は完成したルールではなく、まず下書きとして扱います。小さな合成テスト表を作り、期待結果と実際の一致結果を比較し、パターンを修正してから実データで使う前にレビュー結果を保存します。 python 正規表現 ai" data-category="ai"><div class="card-top"><span class="category-badge ai">AIの業務活用</span><span class="article-number">27</span></div><h3><a href="/ja/articles/ai-regex-check/">AIが作成した正規表現を一致・不一致の例でテストする</a></h3><p>AIが生成した正規表現は完成したルールではなく、まず下書きとして扱います。小さな合成テスト表を作り、期待結果と実際の一致結果を比較し、パターンを修正してから実データで使う前にレビュー結果を保存します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>正規表現</span><span>AI</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-check"><span>01</span>要約の各文を1つの主張として扱う</a></li><li><a href="#create-synthetic-source"><span>02</span>合成した原文とAI要約を作成する</a></li><li><a href="#review-by-hand"><span>03</span>要約の各文を原文と比較する</a></li><li><a href="#write-review-csv"><span>04</span>追跡可能なCSVにレビューを記録する</a></li><li><a href="#validate-the-review"><span>05</span>すべての文がレビューされているか確認する</a></li><li><a href="#expected-result"><span>06</span>期待される結果を確認する</a></li><li><a href="#errors-and-limits"><span>07</span>よくある誤りと限界を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav><div class="aside-note">コピーしたコードは、まずサンプルデータで実行してください。結果を確認してから実際のファイルに適用してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>無料の実務チュートリアル · 各記事からサンプルデータとコードをダウンロードできます。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

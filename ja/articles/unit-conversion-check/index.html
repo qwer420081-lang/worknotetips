@@ -1,0 +1,113 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>自動車試験データを km/h、m/s、g、m/s² の間で変換する | Worknote</title><meta name="description" content="合成の車速と加速度データを一貫した SI 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の CSV を保持し、変換後の値を新しい出力フォルダに書き出します。"><link rel="canonical" href="https://worknotetips.com/ja/articles/unit-conversion-check/"><meta property="og:url" content="https://worknotetips.com/ja/articles/unit-conversion-check/"><meta property="og:title" content="自動車試験データを km/h、m/s、g、m/s² の間で変換する | Worknote"><meta property="og:description" content="合成の車速と加速度データを一貫した SI 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の CSV を保持し、変換後の値を新しい出力フォルダに書き出します。"><meta property="og:locale" content="ja_JP"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "自動車試験データを km/h、m/s、g、m/s² の間で変換する", "description": "合成の車速と加速度データを一貫した SI 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の CSV を保持し、変換後の値を新しい出力フォルダに書き出します。", "inLanguage": "ja", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ja/articles/unit-conversion-check/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/unit-conversion-check/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/unit-conversion-check/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/unit-conversion-check/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/unit-conversion-check/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/unit-conversion-check/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/unit-conversion-check/"><script type="application/json" id="ui-messages">{"copy":"コピー","copied":"コピー完了","copySuccess":"コードをコピーしました。まずサンプルデータで実行してください。","copyRetry":"もう一度コピー","copyFailure":"自動コピーを利用できません。コードを選択して手動でコピーしてください。","searchCount":"検索結果 {count}件"}</script></head><body><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ja/" aria-label="Worknote ホーム"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a href="/ja/" aria-current="page">チュートリアル</a><a href="/ja/about/" >サイトについて</a><a href="/ja/principles/" >執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/unit-conversion-check/" lang="en" hreflang="en">English</a><a href="/ko/articles/unit-conversion-check/" lang="ko" hreflang="ko">한국어</a><a href="/ja/articles/unit-conversion-check/" lang="ja" hreflang="ja" aria-current="true">日本語</a><a href="/es/articles/unit-conversion-check/" lang="es" hreflang="es">Español</a><a href="/pt-BR/articles/unit-conversion-check/" lang="pt-BR" hreflang="pt-BR">Português</a></nav></details><a class="header-search" href="/ja/#search" aria-label="検索"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>検索</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="現在の位置"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/automotive/">自動車・データ実務</a></nav><header class="article-header"><span class="category-badge automotive">自動車・データ実務</span><h1>自動車試験データを km/h、m/s、g、m/s² の間で変換する</h1><p class="article-summary">合成の車速と加速度データを一貫した SI 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の CSV を保持し、変換後の値を新しい出力フォルダに書き出します。</p><div class="article-meta"><span>内容確認 2026.09.20</span><span>サンプルファイル付き</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-conversions"><span>01</span>データを触る前に変換規則を書く</a></li><li><a href="#create-synthetic-data"><span>02</span>小さな合成試験データセットを作成する</a></li><li><a href="#calculate-by-hand"><span>03</span>想定値を手作業で計算する</a></li><li><a href="#convert-and-check"><span>04</span>CSV を変換して round-trip check を行う</a></li><li><a href="#expected-output"><span>05</span>想定される変換後ファイルと比較する</a></li><li><a href="#checks-and-errors"><span>06</span>独立した確認を行い、よくあるエラーを把握する</a></li><li><a href="#limits"><span>07</span>実際の試験データに使用する前に制限を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav></details><div class="reading-content"><p class="translation-note">この翻訳はAIで作成しました。コード、単位、数値は原文と併せて確認してください。各言語のネイティブ話者による校閲は、まだ完了していません。 <a href="/articles/unit-conversion-check/" lang="en">English</a></p><div class="reader-setup"><p><strong>対象読者</strong>速度と加速度の単位が混在する車両データや試験データを扱い、解析前に簡単な単位変換チェックを行いたい人向けのガイドです。</p><div><strong>準備するもの</strong><ul><li>Python 3.12 と、そのバージョンを起動できるターミナルコマンド。</li><li>UTF-8 CSV と Python ファイルを保存できるテキストエディタ。</li><li>スクリプトが outputs の下に新しいフォルダを作成できる作業フォルダ。</li><li>必要なのは Python 標準ライブラリのみです: csv, math, pathlib.</li></ul></div></div><section id="define-the-conversions"><h2><span class="section-number">01</span>データを触る前に変換規則を書く</h2><p>この例では、速度を metres per second、加速度を metres per second squared に標準化します。速度変換は 1 kilometre = 1000 metres、1 hour = 3600 seconds に基づくため、km/h を 3.6 で割ると m/s になります。逆変換では m/s に 3.6 を掛けます。</p><p>加速度について、このチュートリアルでは conventional standard gravity value g0 = 9.80665 m/s² を使用します。g で表された値に 9.80665 を掛けると m/s² になります。逆変換では m/s² を 9.80665 で割ります。</p><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">変換</th><th scope="col">規則</th></tr></thead><tbody><tr><td>km/h to m/s</td><td>km/h ÷ 3.6</td></tr><tr><td>m/s to km/h</td><td>m/s × 3.6</td></tr><tr><td>g to m/s²</td><td>g × 9.80665</td></tr><tr><td>m/s² to g</td><td>m/s² ÷ 9.80665</td></tr></tbody></table></div><aside class="callout"><strong>単位名を列ヘッダーに残す</strong><p>9.8 のような数値は、単位がなければ曖昧です。unit names を column names または data dictionary に入れ、後のスクリプトが値を km/h, m/s, g, m/s² のどれか推測しなくて済むようにしてください。</p></aside></section><section id="create-synthetic-data"><h2><span class="section-number">02</span>小さな合成試験データセットを作成する</h2><p>以下の dataset は合成データであり、この記事のために作成したものです。unit_test_data.csv として保存してください。速度変換を手作業で確認しやすくしつつ、加速度例には正、負、小数の g values が含まれるよう値を選んでいます。</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="csv"><code id="code-1-1">sample_id,speed_kmh,accel_g
+T001,0,0
+T002,36,1
+T003,72,-0.5
+T004,90,0.25
+T005,108,-1.25
+</code></pre></div><p>レコードは5件あります。negative acceleration values は負のまま保持されます。変換で変わるのは単位であり、符号ではありません。この dataset は数値例にすぎず、特定の vehicle manoeuvre や sensor を表すことを目的としていません。</p></section><section id="calculate-by-hand"><h2><span class="section-number">03</span>想定値を手作業で計算する</h2><p>速度変換は直接計算できます。たとえば、72 km/h ÷ 3.6 = 20 m/s、90 km/h ÷ 3.6 = 25 m/s です。元に戻すと、20 × 3.6 = 72 km/h、25 × 3.6 = 90 km/h になります。</p><p>加速度では、1 g は 9.80665 m/s² になります。-0.5 g は -4.903325 m/s²、0.25 g は 2.4516625 m/s²、-1.25 g は -12.2583125 m/s² になります。</p><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">sample_id</th><th scope="col">speed_kmh</th><th scope="col">想定 speed_m_s</th><th scope="col">accel_g</th><th scope="col">想定 accel_m_s2</th></tr></thead><tbody><tr><td>T001</td><td>0</td><td>0.000000</td><td>0</td><td>0.000000</td></tr><tr><td>T002</td><td>36</td><td>10.000000</td><td>1</td><td>9.806650</td></tr><tr><td>T003</td><td>72</td><td>20.000000</td><td>-0.5</td><td>-4.903325</td></tr><tr><td>T004</td><td>90</td><td>25.000000</td><td>0.25</td><td>2.451663</td></tr><tr><td>T005</td><td>108</td><td>30.000000</td><td>-1.25</td><td>-12.258313</td></tr></tbody></table></div><p>表示される acceleration values は小数点以下6桁に丸めています。計算自体では、すでに丸めた output text を繰り返し使用せず、完全な 9.80665 factor を使用してください。</p></section><section id="convert-and-check"><h2><span class="section-number">04</span>CSV を変換して round-trip check を行う</h2><p>次のスクリプトを unit_conversion_check.py として保存してください。元の values を読み取り、両方の forward conversions を実行し、結果を元の units に戻して、小さな numerical tolerance で round trip を確認します。元の CSV は書き換えません。</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-3-1">import csv
+import math
+from pathlib import Path
+
+SOURCE = Path(&quot;unit_test_data.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;unit_conversion_result&quot;
+OUTPUT = OUTPUT_DIR / &quot;converted_test_data.csv&quot;
+STANDARD_GRAVITY = 9.80665
+TOLERANCE = 1e-12
+
+
+def kmh_to_ms(value: float) -&gt; float:
+    return value / 3.6
+
+
+def ms_to_kmh(value: float) -&gt; float:
+    return value * 3.6
+
+
+def g_to_ms2(value: float) -&gt; float:
+    return value * STANDARD_GRAVITY
+
+
+def ms2_to_g(value: float) -&gt; float:
+    return value / STANDARD_GRAVITY
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    output_rows = []
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        required = {&quot;sample_id&quot;, &quot;speed_kmh&quot;, &quot;accel_g&quot;}
+        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
+            raise ValueError(&quot;CSV is missing a required column.&quot;)
+
+        seen_ids = set()
+        for row in reader:
+            sample_id = row[&quot;sample_id&quot;].strip()
+            if not sample_id:
+                raise ValueError(&quot;sample_id must not be blank.&quot;)
+            if sample_id in seen_ids:
+                raise ValueError(f&quot;Duplicate sample_id: {sample_id}&quot;)
+            seen_ids.add(sample_id)
+
+            speed_kmh = float(row[&quot;speed_kmh&quot;])
+            accel_g = float(row[&quot;accel_g&quot;])
+            speed_ms = kmh_to_ms(speed_kmh)
+            accel_ms2 = g_to_ms2(accel_g)
+            speed_roundtrip = ms_to_kmh(speed_ms)
+            accel_roundtrip = ms2_to_g(accel_ms2)
+
+            speed_ok = math.isclose(
+                speed_kmh, speed_roundtrip,
+                rel_tol=TOLERANCE, abs_tol=TOLERANCE
+            )
+            accel_ok = math.isclose(
+                accel_g, accel_roundtrip,
+                rel_tol=TOLERANCE, abs_tol=TOLERANCE
+            )
+            if not speed_ok or not accel_ok:
+                raise RuntimeError(f&quot;Round-trip check failed: {sample_id}&quot;)
+
+            output_rows.append({
+                &quot;sample_id&quot;: sample_id,
+                &quot;speed_kmh&quot;: f&quot;{speed_kmh:g}&quot;,
+                &quot;speed_m_s&quot;: f&quot;{speed_ms:.6f}&quot;,
+                &quot;speed_roundtrip_kmh&quot;: f&quot;{speed_roundtrip:.6f}&quot;,
+                &quot;accel_g&quot;: f&quot;{accel_g:g}&quot;,
+                &quot;accel_m_s2&quot;: f&quot;{accel_ms2:.6f}&quot;,
+                &quot;accel_roundtrip_g&quot;: f&quot;{accel_roundtrip:.6f}&quot;,
+                &quot;roundtrip_check&quot;: &quot;PASS&quot;,
+            })
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    fields = [
+        &quot;sample_id&quot;, &quot;speed_kmh&quot;, &quot;speed_m_s&quot;, &quot;speed_roundtrip_kmh&quot;,
+        &quot;accel_g&quot;, &quot;accel_m_s2&quot;, &quot;accel_roundtrip_g&quot;, &quot;roundtrip_check&quot;
+    ]
+    with OUTPUT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(output_rows)
+
+    print(f&quot;Converted records: {len(output_rows)}.&quot;)
+    print(f&quot;Round-trip checks passed: {len(output_rows)}.&quot;)
+    print(f&quot;Standard gravity used: {STANDARD_GRAVITY} m/s^2.&quot;)
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>想定される変換後ファイルと比較する</h2><p>reverse conversion の後、すべての行が元の速度と加速度に戻るはずです。以下は小数点以下6桁の出力です。internal calculations では formatting 前に floating-point values を使用します。</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="csv"><code id="code-4-1">sample_id,speed_kmh,speed_m_s,speed_roundtrip_kmh,accel_g,accel_m_s2,accel_roundtrip_g,roundtrip_check
+T001,0,0.000000,0.000000,0,0.000000,0.000000,PASS
+T002,36,10.000000,36.000000,1,9.806650,1.000000,PASS
+T003,72,20.000000,72.000000,-0.5,-4.903325,-0.500000,PASS
+T004,90,25.000000,90.000000,0.25,2.451663,0.250000,PASS
+T005,108,30.000000,108.000000,-1.25,-12.258313,-1.250000,PASS
+</code></pre></div><p>以下の想定 console text は、合成データとスクリプトから手作業で導出したものです。実際に取得した execution log ではありません。</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-4-3">Converted records: 5.
+Round-trip checks passed: 5.
+Standard gravity used: 9.80665 m/s^2.
+Output: outputs/unit_conversion_result/converted_test_data.csv</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>独立した確認を行い、よくあるエラーを把握する</h2><ul><li>36 km/h を手作業で確認します: 36 ÷ 3.6 = 10 m/s.</li><li>108 km/h を手作業で確認します: 108 ÷ 3.6 = 30 m/s.</li><li>-0.5 g を手作業で確認します: -0.5 × 9.80665 = -4.903325 m/s².</li><li>unit conversion 中に符号が変わらないことを確認します。</li><li>5行すべてで roundtrip_check が PASS になっていることを確認します。</li><li>OUTPUT_DIR を変更せずにスクリプトを再実行します。結果を置き換えるのではなく FileExistsError で停止するはずです。</li></ul><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">問題</th><th scope="col">確認すること</th></tr></thead><tbody><tr><td>速度が 3.6 倍程度ずれている</td><td>m/s と表示された値を誤って km/h として扱っていないか、またはその逆か確認します。</td></tr><tr><td>加速度が約 9.8 倍ずれている</td><td>g と m/s² を取り違えていないか確認します。</td></tr><tr><td>負の加速度が正になる</td><td>analysis で magnitude が明確に必要な場合を除き、absolute value を適用しないでください。</td></tr><tr><td>想定外の丸め差がある</td><td>計算には full precision を保持し、表示または export 時だけ丸めます。</td></tr><tr><td>round trip は合格するが元データの単位ラベルが間違っている</td><td>数学的に可逆な conversion では、元データの誤った unit label を検出できません。</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>実際の試験データに使用する前に制限を理解する</h2><p>unit conversion が成功しても、arithmetic と declared units が内部的に一貫していることを示すだけです。元の sensor channel が正しく calibration されていたこと、unit label が正しかったこと、recorded value が想定した physical quantity を表していることまでは証明しません。</p><p>ここでの g conversion には conventional standard gravity, 9.80665 m/s² を使用します。local gravitational acceleration はこの conventional reference と異なる場合があります。多くの engineering datasets では g を normalized acceleration unit として使用するため、使用する convention を文書化してください。</p><p>実際の vehicle test datasets では、wheel speed, vehicle speed, rotational speed, force, pressure, temperature units も混在する可能性があります。data dictionary を作成し、各 channel をその physical dimension に従って変換してください。数値の magnitude だけから unit を推測しないでください。</p></section><section id="verification"><h2>実行・検証の記録</h2><p>2026-09-20 · 手作業で確認した例 · 対象: Python 3.12 · 標準ライブラリ: csv, math, pathlib · 未実行</p><ul><li>5つの速度を 0, 10, 20, 25, 30 m/s と手作業で変換しました。</li><li>1 g あたり 9.80665 m/s² を用いて acceleration values を手作業で計算しました。</li><li>表示丸め前に -0.5 g = -4.903325 m/s², 0.25 g = 2.4516625 m/s², -1.25 g = -12.2583125 m/s² を確認しました。</li><li>3.6 を掛けて reverse speed conversions を手作業で確認しました。</li><li>required columns, duplicate sample IDs, round-trip comparisons, output collision protection, 元 CSV の保持についてコードを確認しました。</li><li>想定される CSV と console output を手作業で導出しました。</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><ul><li>この回答の作成者はコードを実行しておらず、converted CSV は作成していません。</li><li>sensor calibration, metadata correctness, local gravitational acceleration, 実際の acquisition systems における unit labels はテストしていません。</li><li>この例で扱うのは km/h, m/s, g, m/s² だけです。</li><li>公式ドキュメントの URL は既知のドキュメント所在地に基づいて記載していますが、ライブでは確認していません。</li></ul></div><p><a href="/ja/principles/">サイト全体の執筆・検証方針</a></p></section><section id="references"><h2>参考資料</h2><p>説明と例は独自に作成しました。関連する動作や概念は、以下の公式資料で確認できます。</p><ul class="references"><li><a href="https://www.bipm.org/en/publications/si-brochure" target="_blank" rel="noopener noreferrer">BIPM · 国際単位系 SI Brochure <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/math.html" target="_blank" rel="noopener noreferrer">Python 3.12 公式ドキュメント · math <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12 公式ドキュメント · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12 公式ドキュメント · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/automotive/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="まず試験 csv の時間軸と単位を確認する 合成の demonstration data で units、missing values、finite numbers、duplicate または reversed timestamps を確認し、その後 check results と chart を保存します。 車両試験 時間軸 単位確認" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">10</span></div><h3><a href="/ja/articles/test-data-check/">まず試験 CSV の時間軸と単位を確認する</a></h3><p>合成の demonstration data で units、missing values、finite numbers、duplicate または reversed timestamps を確認し、その後 check results と chart を保存します。</p><div class="card-bottom"><div class="tags"><span>車両試験</span><span>時間軸</span><span>単位確認</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="複数の試験条件を同じ時間軸で比較する 3つの合成デモ csv ファイルを検証し、同じ時刻サンプルと加速度単位を共有する曲線を1つのグラフに重ねて表示します。 試験比較 時間軸 加速度" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">11</span></div><h3><a href="/ja/articles/compare-test-results/">複数の試験条件を同じ時間軸で比較する</a></h3><p>3つの合成デモ CSV ファイルを検証し、同じ時刻サンプルと加速度単位を共有する曲線を1つのグラフに重ねて表示します。</p><div class="card-bottom"><div class="tags"><span>試験比較</span><span>時間軸</span><span>加速度</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="シミュレーションのピーク値を比較する前に記録すべき条件 ピーク応力の数値だけを並べると、メッシュ、出力間隔、評価位置の違いが設計変更のように見えることがあります。合成ケースから比較条件表を作成し、数値差と実際に判断できる範囲を一緒に記録します。 解析結果 ピーク比較 メッシュ" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">12</span></div><h3><a href="/ja/articles/compare-peaks/">シミュレーションのピーク値を比較する前に記録すべき条件</a></h3><p>ピーク応力の数値だけを並べると、メッシュ、出力間隔、評価位置の違いが設計変更のように見えることがあります。合成ケースから比較条件表を作成し、数値差と実際に判断できる範囲を一緒に記録します。</p><div class="card-bottom"><div class="tags"><span>解析結果</span><span>ピーク比較</span><span>メッシュ</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="移動平均で合成センサーデータを平滑化し、遅延を確認する 合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のcsvは変更せず、処理済みデータは新しいフォルダに書き出します。 python センサー フィルタリング" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">31</span></div><h3><a href="/ja/articles/moving-average-filter/">移動平均で合成センサーデータを平滑化し、遅延を確認する</a></h3><p>合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のCSVは変更せず、処理済みデータは新しいフォルダに書き出します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>センサー</span><span>フィルタリング</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-conversions"><span>01</span>データを触る前に変換規則を書く</a></li><li><a href="#create-synthetic-data"><span>02</span>小さな合成試験データセットを作成する</a></li><li><a href="#calculate-by-hand"><span>03</span>想定値を手作業で計算する</a></li><li><a href="#convert-and-check"><span>04</span>CSV を変換して round-trip check を行う</a></li><li><a href="#expected-output"><span>05</span>想定される変換後ファイルと比較する</a></li><li><a href="#checks-and-errors"><span>06</span>独立した確認を行い、よくあるエラーを把握する</a></li><li><a href="#limits"><span>07</span>実際の試験データに使用する前に制限を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav><div class="aside-note">コピーしたコードは、まずサンプルデータで実行してください。結果を確認してから実際のファイルに適用してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>無料の実務チュートリアル · 各記事からサンプルデータとコードをダウンロードできます。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

@@ -1,0 +1,146 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>複数の Excel シートを source-sheet 列付きの1つの表にまとめる | Worknote</title><meta name="description" content="同じ列構成を持つ複数のワークシートを1つの Excel 表に統合し、各行がどのシートから来たかを記録します。小さな合成ワークブックを使うことで、行順、件数、合計値を手作業でも確認できます。"><link rel="canonical" href="https://worknotetips.com/ja/articles/excel-merge-sheets/"><meta property="og:url" content="https://worknotetips.com/ja/articles/excel-merge-sheets/"><meta property="og:title" content="複数の Excel シートを source-sheet 列付きの1つの表にまとめる | Worknote"><meta property="og:description" content="同じ列構成を持つ複数のワークシートを1つの Excel 表に統合し、各行がどのシートから来たかを記録します。小さな合成ワークブックを使うことで、行順、件数、合計値を手作業でも確認できます。"><meta property="og:locale" content="ja_JP"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "複数の Excel シートを source-sheet 列付きの1つの表にまとめる", "description": "同じ列構成を持つ複数のワークシートを1つの Excel 表に統合し、各行がどのシートから来たかを記録します。小さな合成ワークブックを使うことで、行順、件数、合計値を手作業でも確認できます。", "inLanguage": "ja", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ja/articles/excel-merge-sheets/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/excel-merge-sheets/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/excel-merge-sheets/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/excel-merge-sheets/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/excel-merge-sheets/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/excel-merge-sheets/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/excel-merge-sheets/"><script type="application/json" id="ui-messages">{"copy":"コピー","copied":"コピー完了","copySuccess":"コードをコピーしました。まずサンプルデータで実行してください。","copyRetry":"もう一度コピー","copyFailure":"自動コピーを利用できません。コードを選択して手動でコピーしてください。","searchCount":"検索結果 {count}件"}</script></head><body><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ja/" aria-label="Worknote ホーム"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a href="/ja/" aria-current="page">チュートリアル</a><a href="/ja/about/" >サイトについて</a><a href="/ja/principles/" >執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/excel-merge-sheets/" lang="en" hreflang="en">English</a><a href="/ko/articles/excel-merge-sheets/" lang="ko" hreflang="ko">한국어</a><a href="/ja/articles/excel-merge-sheets/" lang="ja" hreflang="ja" aria-current="true">日本語</a><a href="/es/articles/excel-merge-sheets/" lang="es" hreflang="es">Español</a><a href="/pt-BR/articles/excel-merge-sheets/" lang="pt-BR" hreflang="pt-BR">Português</a></nav></details><a class="header-search" href="/ja/#search" aria-label="検索"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>検索</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="現在の位置"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/office/">Excel・文書業務</a></nav><header class="article-header"><span class="category-badge office">Excel・文書業務</span><h1>複数の Excel シートを source-sheet 列付きの1つの表にまとめる</h1><p class="article-summary">同じ列構成を持つ複数のワークシートを1つの Excel 表に統合し、各行がどのシートから来たかを記録します。小さな合成ワークブックを使うことで、行順、件数、合計値を手作業でも確認できます。</p><div class="article-meta"><span>内容確認 2026.09.20</span><span>サンプルファイル付き</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-merge-rule"><span>01</span>何を統合するかを正確に定義する</a></li><li><a href="#create-synthetic-workbook"><span>02</span>合成ワークブックを作成する</a></li><li><a href="#expected-row-order"><span>03</span>想定される統合後の行順を手作業で確認する</a></li><li><a href="#merge-the-sheets"><span>04</span>シートを新しいワークブックに統合する</a></li><li><a href="#expected-output"><span>05</span>想定される結果を比較する</a></li><li><a href="#checks-before-real-data"><span>06</span>実データを使う前にワークブックを確認する</a></li><li><a href="#common-errors"><span>07</span>よくあるエラーを確認する</a></li><li><a href="#limits-and-scope"><span>08</span>制限を理解する</a></li><li><a href="#verification"><span>09</span>実行・検証の記録</a></li><li><a href="#references"><span>10</span>参考資料</a></li></ol></nav></details><div class="reading-content"><p class="translation-note">この翻訳はAIで作成しました。コード、単位、数値は原文と併せて確認してください。各言語のネイティブ話者による校閲は、まだ完了していません。 <a href="/articles/excel-merge-sheets/" lang="en">English</a></p><div class="reader-setup"><p><strong>対象読者</strong>同じような構造の Excel シートを複数受け取り、元のワークブックを変更せずに1つの統合データセットを作成したい人向けのガイドです。</p><div><strong>準備するもの</strong><ul><li>Python 3.12 と、そのバージョンを起動できるターミナルコマンド。</li><li>python -m pip install openpyxl で openpyxl をインストール済みであること。</li><li>スクリプトが outputs の下にフォルダを作成できる作業フォルダ。</li><li>統合するシートは、同じ列名を同じ順序で使用している必要があります。</li></ul></div></div><section id="define-the-merge-rule"><h2><span class="section-number">01</span>何を統合するかを正確に定義する</h2><p>このワークフローでは、1つのワークブックから選択したワークシートを新しいワークブックに統合します。各元シートのヘッダー行は、列順と大文字・小文字を含めて完全に一致している必要があります。出力では最初の列として source_sheet を追加し、各レコードの出所を保持します。</p><p>空白行は無視されます。空白でない行は、ワークシートの順序、その後に各シート内の元の行順でコピーされます。元のワークブックは読み取り専用で開かれ、結果は outputs の下にある別フォルダへ書き込まれます。</p><aside class="callout"><strong>これはデータ統合であり、ワークブック書式の複製ではありません</strong><p>この例ではセル値だけをコピーします。色、罫線、結合セル、列幅、フィルター、グラフ、コメント、その他のワークシート表示機能を再現することは目的としていません。</p></aside></section><section id="create-synthetic-workbook"><h2><span class="section-number">02</span>合成ワークブックを作成する</h2><p>以下のワークブックは合成データであり、この記事のために作成したものです。セットアップスクリプトを create_excel_merge_demo.py として保存してください。East, West, Online という3つのシートを作成し、それぞれ order_id, customer, amount の列を使用します。</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-1-1" aria-label="python コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-1-1">from pathlib import Path
+from openpyxl import Workbook
+
+SOURCE_DIR = Path(&quot;outputs&quot;) / &quot;excel_merge_demo&quot;
+SOURCE = SOURCE_DIR / &quot;regional_orders.xlsx&quot;
+HEADERS = [&quot;order_id&quot;, &quot;customer&quot;, &quot;amount&quot;]
+DATA = {
+    &quot;East&quot;: [
+        [&quot;E001&quot;, &quot;Ana&quot;, 120],
+        [&quot;E002&quot;, &quot;Ben&quot;, 80],
+    ],
+    &quot;West&quot;: [
+        [&quot;W001&quot;, &quot;Cara&quot;, 150],
+        [&quot;W002&quot;, &quot;Dan&quot;, 70],
+    ],
+    &quot;Online&quot;: [
+        [&quot;O001&quot;, &quot;Emi&quot;, 90],
+        [None, None, None],
+        [&quot;O002&quot;, &quot;Finn&quot;, 110],
+    ],
+}
+
+SOURCE_DIR.parent.mkdir(parents=True, exist_ok=True)
+SOURCE_DIR.mkdir()  # Stop if the synthetic source folder already exists.
+
+workbook = Workbook()
+for index, (sheet_name, rows) in enumerate(DATA.items()):
+    if index == 0:
+        sheet = workbook.active
+        sheet.title = sheet_name
+    else:
+        sheet = workbook.create_sheet(sheet_name)
+    sheet.append(HEADERS)
+    for row in rows:
+        sheet.append(row)
+
+workbook.save(SOURCE)
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-1-2" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-1-2">python create_excel_merge_demo.py</code></pre></div><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">シート</th><th scope="col">空白でないデータ行</th><th scope="col">amount 合計</th></tr></thead><tbody><tr><td>East</td><td>2</td><td>200</td></tr><tr><td>West</td><td>2</td><td>220</td></tr><tr><td>Online</td><td>2</td><td>200</td></tr></tbody></table></div><p>空白でないデータレコードは合計6件です。amount の合計は 620 です: 120 + 80 + 150 + 70 + 90 + 110。Online には2件のレコードの間に完全な空白行を1行意図的に入れており、統合処理で空白行がスキップされることを確認できます。</p></section><section id="expected-row-order"><h2><span class="section-number">03</span>想定される統合後の行順を手作業で確認する</h2><p>スクリプトではシートを East, West, Online の順で明示的に指定しています。この順序が統合後のレコード順を決定します。各シート内では、元の上から下への順序が維持されます。</p><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">source_sheet</th><th scope="col">order_id</th><th scope="col">customer</th><th scope="col">amount</th></tr></thead><tbody><tr><td>East</td><td>E001</td><td>Ana</td><td>120</td></tr><tr><td>East</td><td>E002</td><td>Ben</td><td>80</td></tr><tr><td>West</td><td>W001</td><td>Cara</td><td>150</td></tr><tr><td>West</td><td>W002</td><td>Dan</td><td>70</td></tr><tr><td>Online</td><td>O001</td><td>Emi</td><td>90</td></tr><tr><td>Online</td><td>O002</td><td>Finn</td><td>110</td></tr></tbody></table></div><p>したがって出力は4列となり、ヘッダーを含めるとワークシート上では7行になります: ヘッダー1行 + データ6行。source_sheet の値は手作業での件数確認にも使えます。East は2回、West は2回、Online は2回出現します。</p></section><section id="merge-the-sheets"><h2><span class="section-number">04</span>シートを新しいワークブックに統合する</h2><p>次のスクリプトを excel_merge_sheets.py として保存してください。元ワークブックを読み取り専用で開き、選択したシート名とヘッダーを検証し、完全な空白行を無視します。また、数式を元のワークブックの文脈から切り離した状態でコピーしないよう、数式セルを検出した場合は処理を停止します。</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-3-1">from pathlib import Path
+from openpyxl import Workbook, load_workbook
+
+SOURCE = Path(&quot;outputs&quot;) / &quot;excel_merge_demo&quot; / &quot;regional_orders.xlsx&quot;
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;excel_merge_result&quot;
+OUTPUT = OUTPUT_DIR / &quot;merged_orders.xlsx&quot;
+SHEETS = (&quot;East&quot;, &quot;West&quot;, &quot;Online&quot;)
+OUTPUT_SHEET = &quot;Combined&quot;
+SOURCE_COLUMN = &quot;source_sheet&quot;
+
+
+def read_sheet_rows(sheet, expected_header=None):
+    first_row = next(
+        sheet.iter_rows(min_row=1, max_row=1, values_only=True),
+        None,
+    )
+    if first_row is None:
+        raise ValueError(f&quot;Sheet is empty: {sheet.title}&quot;)
+
+    header = tuple(first_row)
+    if any(not isinstance(name, str) or not name.strip() for name in header):
+        raise ValueError(f&quot;Invalid header in sheet: {sheet.title}&quot;)
+    if len(set(header)) != len(header):
+        raise ValueError(f&quot;Duplicate header name in sheet: {sheet.title}&quot;)
+    if SOURCE_COLUMN in header:
+        raise ValueError(f&quot;Reserved column already exists: {SOURCE_COLUMN}&quot;)
+    if expected_header is not None and header != expected_header:
+        raise ValueError(f&quot;Header mismatch in sheet: {sheet.title}&quot;)
+
+    rows = []
+    for excel_row, values in enumerate(
+        sheet.iter_rows(min_row=2, max_col=len(header), values_only=True),
+        start=2,
+    ):
+        if all(value is None for value in values):
+            continue
+        if any(isinstance(value, str) and value.startswith(&quot;=&quot;) for value in values):
+            raise ValueError(
+                f&quot;Formula found in {sheet.title} row {excel_row}; &quot;
+                &quot;this example merges literal values only.&quot;
+            )
+        rows.append(tuple(values))
+
+    return header, rows
+
+
+def main() -&gt; None:
+    source_path = SOURCE.resolve(strict=True)
+    if not source_path.is_file():
+        raise ValueError(&quot;SOURCE must be an Excel file.&quot;)
+    if len(set(SHEETS)) != len(SHEETS):
+        raise ValueError(&quot;SHEETS contains a duplicate sheet name.&quot;)
+
+    source_workbook = load_workbook(
+        source_path,
+        read_only=True,
+        data_only=False,
+    )
+    try:
+        missing = [name for name in SHEETS if name not in source_workbook.sheetnames]
+        if missing:
+            raise ValueError(f&quot;Missing sheets: {missing}&quot;)
+
+        expected_header = None
+        combined_rows = []
+        for sheet_name in SHEETS:
+            sheet = source_workbook[sheet_name]
+            header, rows = read_sheet_rows(sheet, expected_header)
+            if expected_header is None:
+                expected_header = header
+            for row in rows:
+                combined_rows.append((sheet_name, *row))
+    finally:
+        source_workbook.close()
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()  # Refuse to reuse an existing output folder.
+
+    output_workbook = Workbook()
+    output_sheet = output_workbook.active
+    output_sheet.title = OUTPUT_SHEET
+    output_sheet.append([SOURCE_COLUMN, *expected_header])
+    for row in combined_rows:
+        output_sheet.append(row)
+    output_workbook.save(OUTPUT)
+
+    check_workbook = load_workbook(OUTPUT, read_only=True, data_only=False)
+    try:
+        if check_workbook.sheetnames != [OUTPUT_SHEET]:
+            raise RuntimeError(&quot;Unexpected output worksheet structure.&quot;)
+        check_sheet = check_workbook[OUTPUT_SHEET]
+        written = list(check_sheet.iter_rows(values_only=True))
+    finally:
+        check_workbook.close()
+
+    expected = [(SOURCE_COLUMN, *expected_header), *combined_rows]
+    if written != expected:
+        raise RuntimeError(&quot;Saved workbook does not match the expected rows.&quot;)
+
+    print(f&quot;Merged {len(SHEETS)} sheets into {len(combined_rows)} data rows.&quot;)
+    print(f&quot;Verified {len(expected_header) + 1} columns and {len(combined_rows)} data rows.&quot;)
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-3-2" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-3-2">python excel_merge_sheets.py</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>想定される結果を比較する</h2><p>合成ワークブックでは、出力に Combined という名前のワークシートが正確に1つ含まれるはずです。1行目は source_sheet, order_id, customer, amount となり、その後に前述の6件のレコードが続きます。</p><p>以下の想定コンソール出力は、コードと合成データから手作業で導出したものです。実際に取得した実行ログではありません。</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-2" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-4-2">Merged 3 sheets into 6 data rows.
+Verified 4 columns and 6 data rows.
+Output: outputs/excel_merge_result/merged_orders.xlsx</code></pre></div><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">確認項目</th><th scope="col">想定結果</th></tr></thead><tbody><tr><td>選択した元シート</td><td>3</td></tr><tr><td>統合データ行</td><td>6</td></tr><tr><td>出力列</td><td>4</td></tr><tr><td>East 行</td><td>2</td></tr><tr><td>West 行</td><td>2</td></tr><tr><td>Online 行</td><td>2</td></tr><tr><td>amount 合計</td><td>620</td></tr></tbody></table></div></section><section id="checks-before-real-data"><h2><span class="section-number">06</span>実データを使う前にワークブックを確認する</h2><ol><li>merged_orders.xlsx を開き、Combined という名前のワークシートが1つだけあることを確認します。</li><li>source_sheet が最初の列で、その後に元の3列が同じ順序で続いていることを確認します。</li><li>source_sheet ごとにレコード数を数えます。East, West, Online がそれぞれ正確に2回ずつ出現するはずです。</li><li>amount 列を手作業または Excel で合計します。想定値は 620 です。</li><li>Online の空白行が、統合結果で空白レコードとして追加されていないことを確認します。</li><li>OUTPUT_DIR を変更せずにスクリプトを再実行します。以前の結果を置き換えるのではなく、FileExistsError で停止するはずです。</li></ol><p>実務ワークブックでは、すべてのワークシートを自動統合するのではなく、SHEETS を明示的に変更してください。こうすることで、同じファイル内にある参照表、メモ、非表示シート、集計シートなどを誤って含める可能性を減らせます。</p></section><section id="common-errors"><h2><span class="section-number">07</span>よくあるエラーを確認する</h2><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">症状</th><th scope="col">確認すること</th></tr></thead><tbody><tr><td>ModuleNotFoundError: No module named openpyxl</td><td>python -m pip install openpyxl を使い、同じ Python 環境に openpyxl をインストールします。</td></tr><tr><td>FileNotFoundError</td><td>SOURCE とターミナルの作業ディレクトリを確認します。この例では、先に合成ワークブックのセットアップを実行してください。</td></tr><tr><td>Missing sheets</td><td>SHEETS の名前を、空白や大文字・小文字も含めて正確に確認します。</td></tr><tr><td>Header mismatch</td><td>選択したすべてのシートで、同一の列名が同一の順序で使われていることを確認します。</td></tr><tr><td>Reserved column already exists</td><td>source_sheet という元列の名前を変更するか、SOURCE_COLUMN を衝突しない名前に変更します。</td></tr><tr><td>Formula found</td><td>統合前に数式の扱い方を決めてください。このチュートリアルでは、文脈のない数式式をコピーする代わりに意図的に停止します。</td></tr><tr><td>FileExistsError</td><td>出力フォルダがすでに存在します。以前の結果を確認し、上書きせず新しい保存先を使用します。</td></tr></tbody></table></div><p>OUTPUT_DIR の作成後に保存や検証が失敗すると、フォルダまたはワークブックが部分的な結果として残る場合があります。未検証の結果として扱い、問題を修正した後は新しい保存先を使用してください。</p></section><section id="limits-and-scope"><h2><span class="section-number">08</span>制限を理解する</h2><p>このスクリプトは、ヘッダー行が1行の矩形データシートを想定しています。複数行ヘッダー、結合されたヘッダーセル、ピボットテーブル、グラフ、画像、複数の無関係な表が同じシート内にあるワークシートには対応していません。</p><p>統合されるのはセル値だけです。数値書式、フォント、塗りつぶし、条件付き書式、入力規則、ハイパーリンク、コメント、数式、行の高さ、列幅、ワークシートレベルの設定は再現されません。日付値や数値そのものは値として保持できますが、元の表示書式はコピーされません。</p><p>また、このスクリプトは出力ワークブックを作成する前に、統合したすべての行タプルを Python のメモリへ読み込みます。この小規模な検証済みワークフローでは扱いやすい方法ですが、非常に大きなワークブックには適さない可能性があります。大規模ファイルでは、write-only 出力と段階的な別検証を組み合わせたストリーミング設計にすると、メモリ使用量を減らせます。</p></section><section id="verification"><h2>実行・検証の記録</h2><p>2026-09-20 · 手作業で確認した例 · 対象: Python 3.12 · openpyxl 必須 · 未実行</p><ul><li>East で2件、West で2件、Online で2件の空白でないレコードを手作業で数え、統合レコードが6件になることを確認しました。</li><li>各シートの amount 合計を 200, 220, 200 と手作業で計算し、全体が 620 になることを確認しました。</li><li>完全な空白行をスキップし、East の行、次に West、その後 Online の順になる想定出力順を手作業で導出しました。</li><li>元ワークブックが読み取り専用で開かれ、結果が別の outputs フォルダに書き込まれることをコードで確認しました。</li><li>ヘッダーチェック、予約済み source_sheet のチェック、空白行処理、数式拒否、保存後の行比較を確認しました。</li><li>出力4列、データ6行、コンソールメッセージの想定値を手作業で導出しました。</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><ul><li>この回答の作成者はコードを実行しておらず、XLSX ファイルの作成や展開も行っていません。</li><li>数式を含むワークブック、結合セル、書式、日付、ハイパーリンク、非表示シート、破損ファイル、非常に大きなワークブックはテストしていません。</li><li>合成ワークブックでの openpyxl の動作はコードから推論したもので、Python ランタイムでは確認していません。</li><li>公式ドキュメントの URL は既知のドキュメント所在地に基づいて記載していますが、ライブでは確認していません。</li></ul></div><p><a href="/ja/principles/">サイト全体の執筆・検証方針</a></p></section><section id="references"><h2>参考資料</h2><p>説明と例は独自に作成しました。関連する動作や概念は、以下の公式資料で確認できます。</p><ul class="references"><li><a href="https://openpyxl.readthedocs.io/en/stable/" target="_blank" rel="noopener noreferrer">openpyxl 公式ドキュメント <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://openpyxl.readthedocs.io/en/stable/tutorial.html" target="_blank" rel="noopener noreferrer">openpyxl 公式ドキュメント · チュートリアル <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12 公式ドキュメント · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/office/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="excel の重複行を見つけて確認用に分離する 4列すべての値が完全一致する行を見つけ、元の行番号とともに新しい excel ファイルへまとめます。最初に出現した行も含め、重複グループごとに確認します。 excel 重複確認 openpyxl" data-category="office"><div class="card-top"><span class="category-badge office">Excel・文書業務</span><span class="article-number">04</span></div><h3><a href="/ja/articles/excel-duplicates/">Excel の重複行を見つけて確認用に分離する</a></h3><p>4列すべての値が完全一致する行を見つけ、元の行番号とともに新しい Excel ファイルへまとめます。最初に出現した行も含め、重複グループごとに確認します。</p><div class="card-bottom"><div class="tags"><span>Excel</span><span>重複確認</span><span>openpyxl</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="作業ログを月次集計表とグラフにまとめる csv 内の日付と作業時間を検証し、月ごとの記録件数と合計時間を csv と棒グラフとして保存します。 月次集計 csv matplotlib" data-category="office"><div class="card-top"><span class="category-badge office">Excel・文書業務</span><span class="article-number">05</span></div><h3><a href="/ja/articles/monthly-report/">作業ログを月次集計表とグラフにまとめる</a></h3><p>CSV 内の日付と作業時間を検証し、月ごとの記録件数と合計時間を CSV と棒グラフとして保存します。</p><div class="card-bottom"><div class="tags"><span>月次集計</span><span>CSV</span><span>Matplotlib</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="文書を書く前に表・数値・単位を確認する 表の内容を文章にする前に、対象、期間、分母、単位をそろえて確認します。80 % から 82 % に変化した値と単位換算を含む合成の月次実績表を使って確認し、再利用できるチェックリストを作成します。 文書確認 単位 百分率" data-category="office"><div class="card-top"><span class="category-badge office">Excel・文書業務</span><span class="article-number">06</span></div><h3><a href="/ja/articles/document-checklist/">文書を書く前に表・数値・単位を確認する</a></h3><p>表の内容を文章にする前に、対象、期間、分母、単位をそろえて確認します。80 % から 82 % に変化した値と単位換算を含む合成の月次実績表を使って確認し、再利用できるチェックリストを作成します。</p><div class="card-bottom"><div class="tags"><span>文書確認</span><span>単位</span><span>百分率</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="pypdf で pdf を結合し、ページ範囲を抽出する 複数の pdf を1つのファイルに結合し、指定した両端を含むページ範囲を2つ目のファイルとして抽出し、結果のページ数と順序を確認します。意図的に寸法を変えた空白ページの合成セットを使うため、結果を手作業でも確認できます。 python pdf pypdf" data-category="office"><div class="card-top"><span class="category-badge office">Excel・文書業務</span><span class="article-number">24</span></div><h3><a href="/ja/articles/pdf-merge-split/">pypdf で PDF を結合し、ページ範囲を抽出する</a></h3><p>複数の PDF を1つのファイルに結合し、指定した両端を含むページ範囲を2つ目のファイルとして抽出し、結果のページ数と順序を確認します。意図的に寸法を変えた空白ページの合成セットを使うため、結果を手作業でも確認できます。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>PDF</span><span>pypdf</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-merge-rule"><span>01</span>何を統合するかを正確に定義する</a></li><li><a href="#create-synthetic-workbook"><span>02</span>合成ワークブックを作成する</a></li><li><a href="#expected-row-order"><span>03</span>想定される統合後の行順を手作業で確認する</a></li><li><a href="#merge-the-sheets"><span>04</span>シートを新しいワークブックに統合する</a></li><li><a href="#expected-output"><span>05</span>想定される結果を比較する</a></li><li><a href="#checks-before-real-data"><span>06</span>実データを使う前にワークブックを確認する</a></li><li><a href="#common-errors"><span>07</span>よくあるエラーを確認する</a></li><li><a href="#limits-and-scope"><span>08</span>制限を理解する</a></li><li><a href="#verification"><span>09</span>実行・検証の記録</a></li><li><a href="#references"><span>10</span>参考資料</a></li></ol></nav><div class="aside-note">コピーしたコードは、まずサンプルデータで実行してください。結果を確認してから実際のファイルに適用してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>無料の実務チュートリアル · 各記事からサンプルデータとコードをダウンロードできます。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

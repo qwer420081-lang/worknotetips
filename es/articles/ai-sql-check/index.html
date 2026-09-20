@@ -1,0 +1,154 @@
+<!doctype html><html lang="es" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Comprobar una consulta SQL escrita por IA frente a resultados de SQLite calculados a mano | Worknote</title><meta name="description" content="Trata una consulta SQL generada por IA como un borrador y pruébala en una pequeña base de datos SQLite con respuestas conocidas. Compara el resultado de la IA con una tabla esperada calculada manualmente antes de usar la consulta con datos reales."><link rel="canonical" href="https://worknotetips.com/es/articles/ai-sql-check/"><meta property="og:url" content="https://worknotetips.com/es/articles/ai-sql-check/"><meta property="og:title" content="Comprobar una consulta SQL escrita por IA frente a resultados de SQLite calculados a mano | Worknote"><meta property="og:description" content="Trata una consulta SQL generada por IA como un borrador y pruébala en una pequeña base de datos SQLite con respuestas conocidas. Compara el resultado de la IA con una tabla esperada calculada manualmente antes de usar la consulta con datos reales."><meta property="og:locale" content="es_ES"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Comprobar una consulta SQL escrita por IA frente a resultados de SQLite calculados a mano", "description": "Trata una consulta SQL generada por IA como un borrador y pruébala en una pequeña base de datos SQLite con respuestas conocidas. Compara el resultado de la IA con una tabla esperada calculada manualmente antes de usar la consulta con datos reales.", "inLanguage": "es", "dateModified": "2026-09-20", "url": "https://worknotetips.com/es/articles/ai-sql-check/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/ai-sql-check/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/ai-sql-check/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/ai-sql-check/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/ai-sql-check/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/ai-sql-check/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/ai-sql-check/"><script type="application/json" id="ui-messages">{"copy":"Copiar","copied":"Copiado","copySuccess":"Código copiado. Ejecútalo primero con los datos de ejemplo.","copyRetry":"Volver a copiar","copyFailure":"La copia automática no está disponible. Selecciona el código y cópialo manualmente.","searchCount":"{count} resultados de búsqueda"}</script></head><body><a class="skip-link" href="#main">Saltar al contenido</a><header class="site-header"><div class="header-inner"><a class="brand" href="/es/" aria-label="Worknote Inicio"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>Scripts e IA en la práctica</small></span></a><nav aria-label="Menú principal"><a href="/es/" aria-current="page">Tutoriales</a><a href="/es/about/" >Acerca del sitio</a><a href="/es/principles/" >Criterios de redacción y verificación</a></nav><details class="language-menu"><summary aria-label="Idioma">◎ Español</summary><nav aria-label="Idioma"><a href="/articles/ai-sql-check/" lang="en" hreflang="en">English</a><a href="/ko/articles/ai-sql-check/" lang="ko" hreflang="ko">한국어</a><a href="/ja/articles/ai-sql-check/" lang="ja" hreflang="ja">日本語</a><a href="/es/articles/ai-sql-check/" lang="es" hreflang="es" aria-current="true">Español</a><a href="/pt-BR/articles/ai-sql-check/" lang="pt-BR" hreflang="pt-BR">Português</a></nav></details><a class="header-search" href="/es/#search" aria-label="Buscar"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>Buscar</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="Ubicación actual"><a href="/es/">Tutoriales</a><span>/</span><a href="/es/category/ai/">Uso de IA en el trabajo</a></nav><header class="article-header"><span class="category-badge ai">Uso de IA en el trabajo</span><h1>Comprobar una consulta SQL escrita por IA frente a resultados de SQLite calculados a mano</h1><p class="article-summary">Trata una consulta SQL generada por IA como un borrador y pruébala en una pequeña base de datos SQLite con respuestas conocidas. Compara el resultado de la IA con una tabla esperada calculada manualmente antes de usar la consulta con datos reales.</p><div class="article-meta"><span>Contenido revisado 2026.09.20</span><span>Incluye archivos de ejemplo</span></div></header><details class="mobile-toc"><summary>Ver el índice</summary><nav class="toc" aria-label="Contenido de este artículo"><p>Contenido de este artículo</p><ol><li><a href="#define-the-question"><span>01</span>Define la pregunta de negocio antes de revisar el SQL</a></li><li><a href="#create-synthetic-database"><span>02</span>Crea una base de datos SQLite sintética</a></li><li><a href="#calculate-expected-result"><span>03</span>Calcula manualmente la respuesta correcta</a></li><li><a href="#compare-ai-and-revised-sql"><span>04</span>Compara la consulta de IA con una consulta revisada</a></li><li><a href="#run-the-checker"><span>05</span>Ejecuta ambas consultas y compáralas con las filas esperadas</a></li><li><a href="#expected-results"><span>06</span>Comprueba la salida esperada</a></li><li><a href="#checks-errors-and-limits"><span>07</span>Añade comprobaciones y entiende los límites</a></li><li><a href="#verification"><span>08</span>Registro de ejecución y verificación</a></li><li><a href="#references"><span>09</span>Fuentes de referencia</a></li></ol></nav></details><div class="reading-content"><p class="translation-note">La traducción se ha realizado con IA. Comprueba el código, las unidades y los valores junto con el original. La revisión por hablantes nativos de cada idioma aún no se ha completado. <a href="/articles/ai-sql-check/" lang="en">English</a></p><div class="reader-setup"><p><strong>Para quién es</strong>Esta guía es para personas que usan IA para redactar SQL y quieren una prueba pequeña y reproducible antes de ejecutar la consulta sobre datos importantes.</p><div><strong>Preparación</strong><ul><li>Python 3.12 y un comando de terminal que inicie esa versión.</li><li>Una carpeta de trabajo donde los scripts puedan crear carpetas dentro de outputs.</li><li>Conocimientos básicos de SELECT, JOIN, GROUP BY y funciones de agregación.</li><li>Solo se necesita la biblioteca estándar de Python: csv, pathlib y sqlite3.</li></ul></div></div><section id="define-the-question"><h2><span class="section-number">01</span>Define la pregunta de negocio antes de revisar el SQL</h2><p>Supongamos que el requisito es: para cada cliente, informar el valor total de los pedidos PAID realizados durante agosto de 2026. Los clientes sin pedidos que cumplan las condiciones deben seguir apareciendo con un total de 0.</p><p>Un asistente de IA propone un INNER JOIN entre customers y orders, seguido de condiciones WHERE para status y date. La consulta parece razonable, pero el INNER JOIN elimina a los clientes que no tienen filas de pedido coincidentes. Esto incumple el requisito de incluir a los clientes con total cero.</p><aside class="callout"><strong>Separa el requisito de la consulta</strong><p>Antes de juzgar el SQL, anota la población esperada, los filtros, el nivel de agrupación y cómo deben tratarse las coincidencias ausentes. Una consulta sintácticamente válida puede responder a una pregunta equivocada.</p></aside></section><section id="create-synthetic-database"><h2><span class="section-number">02</span>Crea una base de datos SQLite sintética</h2><p>La siguiente base de datos es sintética y se creó específicamente para este artículo. Tiene tres clientes y seis pedidos seleccionados para probar estados pagados y no pagados, límites entre meses y un cliente sin pedidos PAID en agosto.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-1-1" aria-label="python Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-1-1">import sqlite3
+from pathlib import Path
+
+SOURCE_DIR = Path(&quot;outputs&quot;) / &quot;ai_sql_demo&quot;
+DATABASE = SOURCE_DIR / &quot;orders.sqlite&quot;
+
+CUSTOMERS = [
+    (1, &quot;Ana&quot;),
+    (2, &quot;Ben&quot;),
+    (3, &quot;Cara&quot;),
+]
+
+ORDERS = [
+    (101, 1, &quot;2026-08-03&quot;, &quot;PAID&quot;, 40),
+    (102, 1, &quot;2026-08-20&quot;, &quot;PAID&quot;, 60),
+    (103, 1, &quot;2026-08-25&quot;, &quot;CANCELLED&quot;, 30),
+    (104, 2, &quot;2026-08-10&quot;, &quot;PAID&quot;, 25),
+    (105, 2, &quot;2026-09-01&quot;, &quot;PAID&quot;, 50),
+    (106, 3, &quot;2026-08-12&quot;, &quot;CANCELLED&quot;, 80),
+]
+
+SOURCE_DIR.parent.mkdir(parents=True, exist_ok=True)
+SOURCE_DIR.mkdir()  # Stop if the synthetic source already exists.
+
+connection = sqlite3.connect(DATABASE)
+try:
+    connection.executescript(&quot;&quot;&quot;
+        CREATE TABLE customers (
+            customer_id INTEGER PRIMARY KEY,
+            customer_name TEXT NOT NULL
+        );
+
+        CREATE TABLE orders (
+            order_id INTEGER PRIMARY KEY,
+            customer_id INTEGER NOT NULL,
+            order_date TEXT NOT NULL,
+            status TEXT NOT NULL,
+            amount INTEGER NOT NULL,
+            FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+        );
+    &quot;&quot;&quot;)
+    connection.executemany(
+        &quot;INSERT INTO customers VALUES (?, ?)&quot;, CUSTOMERS
+    )
+    connection.executemany(
+        &quot;INSERT INTO orders VALUES (?, ?, ?, ?, ?)&quot;, ORDERS
+    )
+    connection.commit()
+finally:
+    connection.close()
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-1-2" aria-label="text Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-1-2">python create_ai_sql_demo.py</code></pre></div></section><section id="calculate-expected-result"><h2><span class="section-number">03</span>Calcula manualmente la respuesta correcta</h2><p>Ana tiene dos pedidos PAID en agosto: 40 y 60, por lo que su total es 100. Su pedido CANCELLED no cuenta. Ben tiene un pedido válido de agosto por valor de 25; su pedido de septiembre no cuenta. Cara solo tiene un pedido CANCELLED en agosto, por lo que debe seguir apareciendo con 0.</p><div class="table-wrap" role="region" aria-label="Tabla de datos de ejemplo" tabindex="0"><table><thead><tr><th scope="col">customer_id</th><th scope="col">customer_name</th><th scope="col">Total PAID esperado de agosto</th></tr></thead><tbody><tr><td>1</td><td>Ana</td><td>100</td></tr><tr><td>2</td><td>Ben</td><td>25</td></tr><tr><td>3</td><td>Cara</td><td>0</td></tr></tbody></table></div><p>El total general esperado es 125. Debe haber exactamente 3 filas de salida porque el requisito indica que todos los clientes deben aparecer.</p></section><section id="compare-ai-and-revised-sql"><h2><span class="section-number">04</span>Compara la consulta de IA con una consulta revisada</h2><p>La consulta de IA siguiente filtra los pedidos válidos en la cláusula WHERE después de un INNER JOIN. Cara no tiene ningún pedido PAID de agosto que coincida, por lo que desaparece por completo.</p><div class="code-block"><div class="code-toolbar"><span>sql</span><button type="button" data-copy="code-3-1" aria-label="sql Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="sql"><code id="code-3-1">SELECT
+    c.customer_id,
+    c.customer_name,
+    SUM(o.amount) AS august_paid_total
+FROM customers AS c
+JOIN orders AS o
+    ON o.customer_id = c.customer_id
+WHERE o.status = &#x27;PAID&#x27;
+  AND o.order_date &gt;= &#x27;2026-08-01&#x27;
+  AND o.order_date &lt; &#x27;2026-09-01&#x27;
+GROUP BY c.customer_id, c.customer_name
+ORDER BY c.customer_id;</code></pre></div><p>La consulta revisada parte de todos los clientes y utiliza LEFT JOIN. Los filtros de pedidos se colocan dentro de la condición ON para conservar a los clientes sin coincidencias. COALESCE convierte el agregado NULL resultante en 0.</p><div class="code-block"><div class="code-toolbar"><span>sql</span><button type="button" data-copy="code-3-3" aria-label="sql Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="sql"><code id="code-3-3">SELECT
+    c.customer_id,
+    c.customer_name,
+    COALESCE(SUM(o.amount), 0) AS august_paid_total
+FROM customers AS c
+LEFT JOIN orders AS o
+    ON o.customer_id = c.customer_id
+   AND o.status = &#x27;PAID&#x27;
+   AND o.order_date &gt;= &#x27;2026-08-01&#x27;
+   AND o.order_date &lt; &#x27;2026-09-01&#x27;
+GROUP BY c.customer_id, c.customer_name
+ORDER BY c.customer_id;</code></pre></div></section><section id="run-the-checker"><h2><span class="section-number">05</span>Ejecuta ambas consultas y compáralas con las filas esperadas</h2><p>Guarda el siguiente script como ai_sql_check.py. Ejecuta ambas consultas, compara sus resultados con la tabla esperada calculada a mano y escribe un informe CSV de revisión. No modifica la base de datos sintética.</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-4-1" aria-label="python Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-4-1">import csv
+import sqlite3
+from pathlib import Path
+
+DATABASE = Path(&quot;outputs&quot;) / &quot;ai_sql_demo&quot; / &quot;orders.sqlite&quot;
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;ai_sql_check_result&quot;
+REPORT = OUTPUT_DIR / &quot;sql_check.csv&quot;
+
+AI_SQL = &quot;&quot;&quot;
+SELECT c.customer_id, c.customer_name, SUM(o.amount)
+FROM customers AS c
+JOIN orders AS o ON o.customer_id = c.customer_id
+WHERE o.status = &#x27;PAID&#x27;
+  AND o.order_date &gt;= &#x27;2026-08-01&#x27;
+  AND o.order_date &lt; &#x27;2026-09-01&#x27;
+GROUP BY c.customer_id, c.customer_name
+ORDER BY c.customer_id;
+&quot;&quot;&quot;
+
+REVISED_SQL = &quot;&quot;&quot;
+SELECT c.customer_id, c.customer_name, COALESCE(SUM(o.amount), 0)
+FROM customers AS c
+LEFT JOIN orders AS o
+    ON o.customer_id = c.customer_id
+   AND o.status = &#x27;PAID&#x27;
+   AND o.order_date &gt;= &#x27;2026-08-01&#x27;
+   AND o.order_date &lt; &#x27;2026-09-01&#x27;
+GROUP BY c.customer_id, c.customer_name
+ORDER BY c.customer_id;
+&quot;&quot;&quot;
+
+EXPECTED = [
+    (1, &quot;Ana&quot;, 100),
+    (2, &quot;Ben&quot;, 25),
+    (3, &quot;Cara&quot;, 0),
+]
+
+
+def run_query(connection, sql):
+    return connection.execute(sql).fetchall()
+
+
+def main() -&gt; None:
+    if not DATABASE.is_file():
+        raise FileNotFoundError(f&quot;Database not found: {DATABASE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+
+    connection = sqlite3.connect(f&quot;file:{DATABASE.resolve()}?mode=ro&quot;, uri=True)
+    try:
+        ai_rows = run_query(connection, AI_SQL)
+        revised_rows = run_query(connection, REVISED_SQL)
+    finally:
+        connection.close()
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+
+    with REPORT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.writer(stream)
+        writer.writerow([&quot;query&quot;, &quot;rows&quot;, &quot;matches_expected&quot;])
+        writer.writerow([&quot;AI&quot;, repr(ai_rows), ai_rows == EXPECTED])
+        writer.writerow([&quot;REVISED&quot;, repr(revised_rows), revised_rows == EXPECTED])
+
+    print(f&quot;Expected rows: {len(EXPECTED)}.&quot;)
+    print(f&quot;AI rows: {len(ai_rows)}; matches expected: {ai_rows == EXPECTED}.&quot;)
+    print(
+        f&quot;Revised rows: {len(revised_rows)}; &quot;
+        f&quot;matches expected: {revised_rows == EXPECTED}.&quot;
+    )
+    print(f&quot;Report: {REPORT.as_posix()}&quot;)
+
+    if revised_rows != EXPECTED:
+        raise RuntimeError(&quot;Revised SQL does not match the expected result.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-2" aria-label="text Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-4-2">python ai_sql_check.py</code></pre></div></section><section id="expected-results"><h2><span class="section-number">06</span>Comprueba la salida esperada</h2><p>La consulta de IA debe devolver solo a Ana y Ben, por lo que produce 2 filas y no coincide con el resultado esperado. La consulta revisada debe devolver a los 3 clientes y coincidir exactamente con la tabla calculada a mano.</p><div class="table-wrap" role="region" aria-label="Tabla de datos de ejemplo" tabindex="0"><table><thead><tr><th scope="col">Consulta</th><th scope="col">Filas devueltas</th><th scope="col">Total general esperado</th><th scope="col">Coincide con la tabla esperada</th></tr></thead><tbody><tr><td>IA</td><td>2</td><td>125</td><td>No</td></tr><tr><td>Revisada</td><td>3</td><td>125</td><td>Sí</td></tr></tbody></table></div><p>El resultado de la IA puede seguir teniendo el total general correcto de 125 aunque sea incorrecto, porque falta la fila obligatoria de Cara con valor cero. Por eso no basta con comprobar solo los totales.</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-5-3" aria-label="text Copiar código">Copiar</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-5-3">Expected rows: 3.
+AI rows: 2; matches expected: False.
+Revised rows: 3; matches expected: True.
+Report: outputs/ai_sql_check_result/sql_check.csv</code></pre></div></section><section id="checks-errors-and-limits"><h2><span class="section-number">07</span>Añade comprobaciones y entiende los límites</h2><ul><li>Comprueba el número de filas además de los totales.</li><li>Incluye en los datos sintéticos clientes con cero registros coincidentes cuando el requisito indique que deben aparecer.</li><li>Prueba límites de fecha como August 31 y September 1.</li><li>Incluye estados excluidos como CANCELLED.</li><li>Vuelve a ejecutar el comprobador sin cambiar OUTPUT_DIR. Debe detenerse con FileExistsError en lugar de sobrescribir el informe.</li></ul><div class="table-wrap" role="region" aria-label="Tabla de datos de ejemplo" tabindex="0"><table><thead><tr><th scope="col">Problema común</th><th scope="col">Qué revisar</th></tr></thead><tbody><tr><td>Faltan filas de forma inesperada</td><td>Comprueba el tipo de JOIN y si los filtros en WHERE eliminan filas no coincidentes de un LEFT JOIN.</td></tr><tr><td>Totales demasiado altos</td><td>Busca joins uno-a-muchos que dupliquen filas antes de la agregación.</td></tr><tr><td>Intervalo de fechas incorrecto</td><td>Usa un límite inferior explícito y un límite superior exclusivo adecuado al formato de fecha almacenado.</td></tr><tr><td>NULL en lugar de cero</td><td>Decide si las coincidencias ausentes deben quedarse como NULL o convertirse con COALESCE.</td></tr><tr><td>Total correcto pero detalle incorrecto</td><td>Compara todas las filas esperadas, no solo el total general.</td></tr></tbody></table></div><p>Esta prueba solo demuestra que la consulta revisada coincide con este pequeño ejemplo sintético. Los esquemas reales pueden contener relaciones duplicadas, valores NULL, timestamps, time zones, refunds o reglas de negocio adicionales. Amplía los datos de prueba cuando esas condiciones sean importantes.</p></section><section id="verification"><h2>Registro de ejecución y verificación</h2><p>2026-09-20 · ejemplo revisado manualmente · objetivo: Python 3.12 · biblioteca estándar: csv, pathlib, sqlite3 · sin ejecución</p><ul><li>Se calculó manualmente el total válido de Ana en agosto como 40 + 60 = 100.</li><li>Se calculó manualmente el total válido de Ben en agosto como 25 y se excluyó su pedido de septiembre.</li><li>Se determinó manualmente que Cara debe aparecer con 0 porque su único pedido de agosto es CANCELLED.</li><li>Se calculó manualmente el total general esperado como 125 y el número esperado de filas como 3.</li><li>Se revisó la consulta de IA y se determinó que su INNER JOIN y sus filtros WHERE omiten a Cara, produciendo 2 filas.</li><li>Se revisó la consulta LEFT JOIN corregida y se esperaba que devolviera las tres filas calculadas a mano.</li><li>Se obtuvieron manualmente la salida de consola esperada y la comparación del informe.</li></ul><div class="verification-limits"><strong>Límites de la verificación</strong><ul><li>El autor de esta respuesta no ejecutó el código; el comportamiento de SQLite y del sistema de archivos no se probó aquí.</li><li>Solo se evaluaron las filas sintéticas indicadas; no se probaron importes NULL, joins duplicados, timestamps, time zones, refunds ni conjuntos de datos grandes.</li><li>Coincidir con este ejemplo no demuestra que la consulta sea correcta para todos los esquemas de producción o reglas de negocio.</li><li>Las URL de la documentación oficial se proporcionaron desde ubicaciones conocidas, pero no se comprobaron en tiempo real.</li></ul></div><p><a href="/es/principles/">Criterios de redacción y verificación de todo el sitio</a></p></section><section id="references"><h2>Fuentes de referencia</h2><p>Las explicaciones y los ejemplos son de elaboración propia. Puedes consultar los comportamientos y conceptos relacionados en las siguientes fuentes oficiales.</p><ul class="references"><li><a href="https://www.sqlite.org/lang_select.html" target="_blank" rel="noopener noreferrer">Documentación oficial de SQLite · SELECT <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://www.sqlite.org/lang_aggfunc.html" target="_blank" rel="noopener noreferrer">Documentación oficial de SQLite · Funciones de agregación integradas <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/sqlite3.html" target="_blank" rel="noopener noreferrer">Documentación oficial de Python 3.12 · sqlite3 <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Documentación oficial de Python 3.12 · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>Sigue leyendo</h2><a href="/es/category/ai/">Todos los artículos de este tema <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="incluye reglas de entrada, salida y errores en una solicitud de script para el trabajo convierte “automatiza esto” en una descripción de tarea ejecutable. adjunta una muestra sintética sin datos sensibles y un resultado esperado comprobado manualmente para completar una solicitud de script que totalice registros de trabajo por equipo. solicitudes ia automatización entrada y salida" data-category="ai"><div class="card-top"><span class="category-badge ai">Uso de IA en el trabajo</span><span class="article-number">07</span></div><h3><a href="/es/articles/script-prompt/">Incluye reglas de entrada, salida y errores en una solicitud de script para el trabajo</a></h3><p>Convierte “automatiza esto” en una descripción de tarea ejecutable. Adjunta una muestra sintética sin datos sensibles y un resultado esperado comprobado manualmente para completar una solicitud de script que totalice registros de trabajo por equipo.</p><div class="card-bottom"><div class="tags"><span>Solicitudes IA</span><span>Automatización</span><span>Entrada y salida</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="verificar código generado por ia con datos pequeños comprueba una función de agregación con cuatro filas que puedes calcular manualmente y 12 unit tests. verifica no solo valores normales, sino también entrada vacía, cero, decimales y entrada no válida. uso de ia verificación unittest" data-category="ai"><div class="card-top"><span class="category-badge ai">Uso de IA en el trabajo</span><span class="article-number">08</span></div><h3><a href="/es/articles/verify-ai-code/">Verificar código generado por IA con datos pequeños</a></h3><p>Comprueba una función de agregación con cuatro filas que puedes calcular manualmente y 12 unit tests. Verifica no solo valores normales, sino también entrada vacía, cero, decimales y entrada no válida.</p><div class="card-bottom"><div class="tags"><span>Uso de IA</span><span>Verificación</span><span>unittest</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="comprobar números, cálculos y fuentes de un informe de ia frase por frase divide un resumen plausible en hechos, cálculos e interpretaciones. recalcula proporciones y promedios a partir de datos mensuales sintéticos y reescribe las frases con fuentes faltantes o causas exageradas para convertirlas en afirmaciones comprobables. informes de ia comprobación numérica fuentes" data-category="ai"><div class="card-top"><span class="category-badge ai">Uso de IA en el trabajo</span><span class="article-number">09</span></div><h3><a href="/es/articles/ai-report-review/">Comprobar números, cálculos y fuentes de un informe de IA frase por frase</a></h3><p>Divide un resumen plausible en hechos, cálculos e interpretaciones. Recalcula proporciones y promedios a partir de datos mensuales sintéticos y reescribe las frases con fuentes faltantes o causas exageradas para convertirlas en afirmaciones comprobables.</p><div class="card-bottom"><div class="tags"><span>Informes de IA</span><span>Comprobación numérica</span><span>Fuentes</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="probar una expresión regular escrita por ia con ejemplos positivos y negativos trata una expresión regular generada por ia como un borrador, no como una regla terminada. crea una pequeña tabla de pruebas sintéticas, compara las coincidencias esperadas con las reales, corrige el patrón y guarda un informe de revisión antes de usarlo con datos reales. python regex ia" data-category="ai"><div class="card-top"><span class="category-badge ai">Uso de IA en el trabajo</span><span class="article-number">27</span></div><h3><a href="/es/articles/ai-regex-check/">Probar una expresión regular escrita por IA con ejemplos positivos y negativos</a></h3><p>Trata una expresión regular generada por IA como un borrador, no como una regla terminada. Crea una pequeña tabla de pruebas sintéticas, compara las coincidencias esperadas con las reales, corrige el patrón y guarda un informe de revisión antes de usarlo con datos reales.</p><div class="card-bottom"><div class="tags"><span>Python</span><span>Regex</span><span>IA</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="Contenido de este artículo"><p>Contenido de este artículo</p><ol><li><a href="#define-the-question"><span>01</span>Define la pregunta de negocio antes de revisar el SQL</a></li><li><a href="#create-synthetic-database"><span>02</span>Crea una base de datos SQLite sintética</a></li><li><a href="#calculate-expected-result"><span>03</span>Calcula manualmente la respuesta correcta</a></li><li><a href="#compare-ai-and-revised-sql"><span>04</span>Compara la consulta de IA con una consulta revisada</a></li><li><a href="#run-the-checker"><span>05</span>Ejecuta ambas consultas y compáralas con las filas esperadas</a></li><li><a href="#expected-results"><span>06</span>Comprueba la salida esperada</a></li><li><a href="#checks-errors-and-limits"><span>07</span>Añade comprobaciones y entiende los límites</a></li><li><a href="#verification"><span>08</span>Registro de ejecución y verificación</a></li><li><a href="#references"><span>09</span>Fuentes de referencia</a></li></ol></nav><div class="aside-note">Ejecuta primero el código copiado con los datos de ejemplo. Comprueba el resultado antes de aplicarlo a archivos reales.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/es/">Worknote<span>Probar, comprobar y documentar.</span></a><nav aria-label="Información del sitio"><a href="/es/about/">Acerca del sitio</a><a href="/es/principles/">Criterios de redacción y verificación</a><a href="/es/privacy/">Información de privacidad</a><a href="/es/rights/">Uso de los materiales</a></nav></div><p>Tutoriales prácticos gratuitos · Puedes descargar los datos de ejemplo y el código en cada artículo.</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>

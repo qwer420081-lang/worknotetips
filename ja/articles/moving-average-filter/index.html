@@ -1,0 +1,104 @@
+<!doctype html><html lang="ja" dir="ltr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>移動平均で合成センサーデータを平滑化し、遅延を確認する | Worknote</title><meta name="description" content="合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のCSVは変更せず、処理済みデータは新しいフォルダに書き出します。"><link rel="canonical" href="https://worknotetips.com/ja/articles/moving-average-filter/"><meta property="og:url" content="https://worknotetips.com/ja/articles/moving-average-filter/"><meta property="og:title" content="移動平均で合成センサーデータを平滑化し、遅延を確認する | Worknote"><meta property="og:description" content="合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のCSVは変更せず、処理済みデータは新しいフォルダに書き出します。"><meta property="og:locale" content="ja_JP"><meta property="og:type" content="article"><meta name="theme-color" content="#163b35"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="stylesheet" href="/assets/styles.css"><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "移動平均で合成センサーデータを平滑化し、遅延を確認する", "description": "合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のCSVは変更せず、処理済みデータは新しいフォルダに書き出します。", "inLanguage": "ja", "dateModified": "2026-09-20", "url": "https://worknotetips.com/ja/articles/moving-average-filter/"}</script><script type="module" src="/assets/app.js"></script><link rel="alternate" hreflang="en" href="https://worknotetips.com/articles/moving-average-filter/"><link rel="alternate" hreflang="ko" href="https://worknotetips.com/ko/articles/moving-average-filter/"><link rel="alternate" hreflang="ja" href="https://worknotetips.com/ja/articles/moving-average-filter/"><link rel="alternate" hreflang="es" href="https://worknotetips.com/es/articles/moving-average-filter/"><link rel="alternate" hreflang="pt-BR" href="https://worknotetips.com/pt-BR/articles/moving-average-filter/"><link rel="alternate" hreflang="x-default" href="https://worknotetips.com/articles/moving-average-filter/"><script type="application/json" id="ui-messages">{"copy":"コピー","copied":"コピー完了","copySuccess":"コードをコピーしました。まずサンプルデータで実行してください。","copyRetry":"もう一度コピー","copyFailure":"自動コピーを利用できません。コードを選択して手動でコピーしてください。","searchCount":"検索結果 {count}件"}</script></head><body><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a class="brand" href="/ja/" aria-label="Worknote ホーム"><span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a href="/ja/" aria-current="page">チュートリアル</a><a href="/ja/about/" >サイトについて</a><a href="/ja/principles/" >執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/moving-average-filter/" lang="en" hreflang="en">English</a><a href="/ko/articles/moving-average-filter/" lang="ko" hreflang="ko">한국어</a><a href="/ja/articles/moving-average-filter/" lang="ja" hreflang="ja" aria-current="true">日本語</a><a href="/es/articles/moving-average-filter/" lang="es" hreflang="es">Español</a><a href="/pt-BR/articles/moving-average-filter/" lang="pt-BR" hreflang="pt-BR">Português</a></nav></details><a class="header-search" href="/ja/#search" aria-label="検索"><svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"/></svg><span>検索</span><kbd>/</kbd></a></div></header><main id="main" class="article-layout"><div class="article-main"><nav class="breadcrumbs" aria-label="現在の位置"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/automotive/">自動車・データ実務</a></nav><header class="article-header"><span class="category-badge automotive">自動車・データ実務</span><h1>移動平均で合成センサーデータを平滑化し、遅延を確認する</h1><p class="article-summary">合成加速度データに3サンプルの後方移動平均を適用し、すべてのフィルタ値を手計算で確認し、フィルタによる1サンプルのアライメント遅延を明示します。元のCSVは変更せず、処理済みデータは新しいフォルダに書き出します。</p><div class="article-meta"><span>内容確認 2026.09.20</span><span>サンプルファイル付き</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-filter"><span>01</span>移動平均とその時間関係を定義する</a></li><li><a href="#create-synthetic-data"><span>02</span>小さな合成加速度信号を作成する</a></li><li><a href="#calculate-by-hand"><span>03</span>フィルタ値を手計算する</a></li><li><a href="#apply-the-filter"><span>04</span>フィルタを適用し、アライメント遅延を記録する</a></li><li><a href="#expected-output"><span>05</span>期待結果と比較する</a></li><li><a href="#checks-and-errors"><span>06</span>結果と一般的なエラーを確認する</a></li><li><a href="#limits"><span>07</span>試験データに使用する前に限界を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav></details><div class="reading-content"><p class="translation-note">この翻訳はAIで作成しました。コード、単位、数値は原文と併せて確認してください。各言語のネイティブ話者による校閲は、まだ完了していません。 <a href="/articles/moving-average-filter/" lang="en">English</a></p><div class="reader-setup"><p><strong>対象読者</strong>このガイドは、サンプリングされた自動車または試験用センサーデータに対して簡単な初期平滑化手法を必要とし、フィルタによって生じる遅延も理解したい人向けです。</p><div><strong>準備するもの</strong><ul><li>Python 3.12と、そのバージョンを起動できるターミナルコマンド。</li><li>UTF-8のCSVファイルとPythonファイルを保存できるテキストエディタ。</li><li>センサー値が離散的な時刻ごとに記録されるという基本的な理解。</li><li>必要なのはPython標準ライブラリのみです: csv と pathlib。</li></ul></div></div><section id="define-the-filter"><h2><span class="section-number">01</span>移動平均とその時間関係を定義する</h2><p>この例では、ウィンドウ幅が3サンプルの後方移動平均を使用します。サンプル n のフィルタ値は、現在のサンプルと直前の2サンプルの平均です: ma[n] = (x[n] + x[n-1] + x[n-2]) / 3。したがって、最初の2サンプルには完全な3サンプルウィンドウがありません。</p><p>移動平均はサンプル間の急激な変動を抑えますが、時間関係も変化させます。0.2、0.3、0.4秒の時刻を含む3サンプルウィンドウの中心は0.3秒ですが、因果的な後方実装では0.4秒のサンプルが到着した時点で結果が生成されます。サンプル間隔が0.1秒の場合、この中心時刻と出力時刻のアライメント差は0.1秒です。</p><aside class="callout"><strong>平滑化には代償がある</strong><p>一般に移動平均のウィンドウを大きくすると平滑化は強くなりますが、より長い時間範囲の情報を使用します。そのため、短時間のイベントがぼやけ、アライメント遅延が増える可能性があります。</p></aside></section><section id="create-synthetic-data"><h2><span class="section-number">02</span>小さな合成加速度信号を作成する</h2><p>以下のデータセットは合成データで、この資料のために作成したものです。sensor_data.csv として保存してください。サンプル間隔は0.1秒です。信号は0付近から始まり、その後9 m/s^2付近まで上昇し、両方のレベルの周辺に意図的な変動を加えています。</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-1-1" aria-label="csv コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="csv"><code id="code-1-1">time_s,accel_m_s2
+0.0,0
+0.1,3
+0.2,-3
+0.3,0
+0.4,9
+0.5,12
+0.6,6
+0.7,9
+</code></pre></div><p>サンプルは8個あります。0.4秒より前の生データ値は0、3、-3、0です。0.4秒以降の値は9、12、6、9です。このデータは意図的に単純化されており、特定の車両センサーやノイズ分布を表しているとは主張しません。</p></section><section id="calculate-by-hand"><h2><span class="section-number">03</span>フィルタ値を手計算する</h2><p>最初の完全なウィンドウは0.2秒で終了します: (0 + 3 - 3) / 3 = 0。次のウィンドウは (3 - 3 + 0) / 3 = 0 です。生信号が0.4秒で初めて9に達したとき、ウィンドウ内の3つの値は-3、0、9なので、フィルタ結果は9ではなく2になります。</p><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">出力時刻</th><th scope="col">3つのサンプル</th><th scope="col">MA3</th><th scope="col">ウィンドウ中心</th><th scope="col">アライメント遅延</th></tr></thead><tbody><tr><td>0.2 s</td><td>0, 3, -3</td><td>0.000</td><td>0.1 s</td><td>0.1 s</td></tr><tr><td>0.3 s</td><td>3, -3, 0</td><td>0.000</td><td>0.2 s</td><td>0.1 s</td></tr><tr><td>0.4 s</td><td>-3, 0, 9</td><td>2.000</td><td>0.3 s</td><td>0.1 s</td></tr><tr><td>0.5 s</td><td>0, 9, 12</td><td>7.000</td><td>0.4 s</td><td>0.1 s</td></tr><tr><td>0.6 s</td><td>9, 12, 6</td><td>9.000</td><td>0.5 s</td><td>0.1 s</td></tr><tr><td>0.7 s</td><td>12, 6, 9</td><td>9.000</td><td>0.6 s</td><td>0.1 s</td></tr></tbody></table></div><p>変化部分のフィルタ系列は0から9へ直接跳ぶのではなく、0、2、7、9となり、上昇が複数の出力に広がっていることが分かります。これが平滑化の効果であり、フィルタ済み信号を他のチャンネルと比較する際に時間関係を考慮する必要がある理由も示しています。</p></section><section id="apply-the-filter"><h2><span class="section-number">04</span>フィルタを適用し、アライメント遅延を記録する</h2><p>以下のスクリプトを moving_average_filter.py として保存してください。タイムスタンプが一定の0.1秒間隔で増加していることを確認し、3サンプルの後方平均を計算して、新しいCSVを書き出します。既存の出力フォルダは再利用しません。</p><div class="code-block"><div class="code-toolbar"><span>python</span><button type="button" data-copy="code-3-1" aria-label="python コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="python"><code id="code-3-1">import csv
+from pathlib import Path
+
+SOURCE = Path(&quot;sensor_data.csv&quot;)
+OUTPUT_DIR = Path(&quot;outputs&quot;) / &quot;moving_average_result&quot;
+OUTPUT = OUTPUT_DIR / &quot;filtered_sensor_data.csv&quot;
+WINDOW = 3
+EXPECTED_DT = 0.1
+TOLERANCE = 1e-9
+
+
+def main() -&gt; None:
+    if not SOURCE.is_file():
+        raise FileNotFoundError(f&quot;Source CSV not found: {SOURCE}&quot;)
+    if OUTPUT_DIR.exists():
+        raise FileExistsError(f&quot;Output folder already exists: {OUTPUT_DIR}&quot;)
+    if WINDOW &lt; 1 or WINDOW % 2 == 0:
+        raise ValueError(&quot;WINDOW must be a positive odd integer.&quot;)
+
+    samples = []
+    with SOURCE.open(&quot;r&quot;, encoding=&quot;utf-8-sig&quot;, newline=&quot;&quot;) as stream:
+        reader = csv.DictReader(stream)
+        required = {&quot;time_s&quot;, &quot;accel_m_s2&quot;}
+        if reader.fieldnames is None or not required.issubset(reader.fieldnames):
+            raise ValueError(&quot;CSV is missing a required column.&quot;)
+
+        for row in reader:
+            samples.append((float(row[&quot;time_s&quot;]), float(row[&quot;accel_m_s2&quot;])))
+
+    if len(samples) &lt; WINDOW:
+        raise ValueError(&quot;Not enough samples for the moving-average window.&quot;)
+
+    for index in range(1, len(samples)):
+        dt = samples[index][0] - samples[index - 1][0]
+        if abs(dt - EXPECTED_DT) &gt; TOLERANCE:
+            raise ValueError(f&quot;Unexpected sample interval at row {index + 2}: {dt}&quot;)
+
+    half_window = WINDOW // 2
+    output_rows = []
+
+    for index, (time_s, raw_value) in enumerate(samples):
+        if index &lt; WINDOW - 1:
+            average_text = &quot;&quot;
+            center_text = &quot;&quot;
+            delay_text = &quot;&quot;
+        else:
+            window_values = [value for _, value in samples[index - WINDOW + 1:index + 1]]
+            average = sum(window_values) / WINDOW
+            center_time = samples[index - half_window][0]
+            alignment_delay = time_s - center_time
+            average_text = f&quot;{average:.3f}&quot;
+            center_text = f&quot;{center_time:.1f}&quot;
+            delay_text = f&quot;{alignment_delay:.1f}&quot;
+
+        output_rows.append({
+            &quot;time_s&quot;: f&quot;{time_s:.1f}&quot;,
+            &quot;raw_accel_m_s2&quot;: f&quot;{raw_value:g}&quot;,
+            &quot;ma3_accel_m_s2&quot;: average_text,
+            &quot;window_center_time_s&quot;: center_text,
+            &quot;alignment_delay_s&quot;: delay_text,
+        })
+
+    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_DIR.mkdir()
+    fields = [
+        &quot;time_s&quot;, &quot;raw_accel_m_s2&quot;, &quot;ma3_accel_m_s2&quot;,
+        &quot;window_center_time_s&quot;, &quot;alignment_delay_s&quot;
+    ]
+    with OUTPUT.open(&quot;x&quot;, encoding=&quot;utf-8&quot;, newline=&quot;&quot;) as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(output_rows)
+
+    valid_outputs = len(samples) - WINDOW + 1
+    print(f&quot;Input samples: {len(samples)}.&quot;)
+    print(f&quot;MA{WINDOW} outputs with full windows: {valid_outputs}.&quot;)
+    print(f&quot;Nominal alignment delay: {half_window * EXPECTED_DT:.1f} s.&quot;)
+    print(f&quot;Output: {OUTPUT.as_posix()}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></section><section id="expected-output"><h2><span class="section-number">05</span>期待結果と比較する</h2><p>最初の2つのフィルタ済みセルは、完全な3サンプルウィンドウが利用できないため空欄になるはずです。残り6つのフィルタ値は0.000、0.000、2.000、7.000、9.000、9.000になるはずです。</p><div class="code-block"><div class="code-toolbar"><span>csv</span><button type="button" data-copy="code-4-1" aria-label="csv コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="csv"><code id="code-4-1">time_s,raw_accel_m_s2,ma3_accel_m_s2,window_center_time_s,alignment_delay_s
+0.0,0,,,
+0.1,3,,,
+0.2,-3,0.000,0.1,0.1
+0.3,0,0.000,0.2,0.1
+0.4,9,2.000,0.3,0.1
+0.5,12,7.000,0.4,0.1
+0.6,6,9.000,0.5,0.1
+0.7,9,9.000,0.6,0.1
+</code></pre></div><p>以下の期待されるコンソール出力は、合成データとコードから手作業で導出したものです。実際の実行ログではありません。</p><div class="code-block"><div class="code-toolbar"><span>text</span><button type="button" data-copy="code-4-3" aria-label="text コードをコピー">コピー</button></div><pre tabindex="0" dir="ltr" aria-label="text"><code id="code-4-3">Input samples: 8.
+MA3 outputs with full windows: 6.
+Nominal alignment delay: 0.1 s.
+Output: outputs/moving_average_result/filtered_sensor_data.csv</code></pre></div></section><section id="checks-and-errors"><h2><span class="section-number">06</span>結果と一般的なエラーを確認する</h2><ul><li>最初の完全な平均を手作業で確認します: (0 + 3 - 3) / 3 = 0。</li><li>0.4秒での遷移値を確認します: (-3 + 0 + 9) / 3 = 2。</li><li>8サンプルにウィンドウ幅3を適用すると、完全なウィンドウの値が6個生成されることを確認します。</li><li>報告されるすべてのウィンドウ中心との差が0.1秒であることを確認します。</li><li>OUTPUT_DIR を変更せずにスクリプトをもう一度実行します。結果を上書きせず、FileExistsError で停止するはずです。</li></ul><div class="table-wrap" role="region" aria-label="サンプルデータの表" tabindex="0"><table><thead><tr><th scope="col">問題</th><th scope="col">確認すること</th></tr></thead><tbody><tr><td>予期しないサンプル間隔</td><td>欠落サンプル、重複タイムスタンプ、または誤った EXPECTED_DT 値を確認します。</td></tr><tr><td>フィルタ済み信号が遅れて見える</td><td>後方ウィンドウは出力タイムスタンプより前を中心とするデータを要約していることを考慮します。</td></tr><tr><td>重要なピークが小さくなる</td><td>移動平均は短時間のイベントを隣接サンプルに広げます。</td></tr><tr><td>平滑化が強すぎる</td><td>ウィンドウ長を短くし、ノイズ低減と時間特性のバランスを再評価します。</td></tr><tr><td>平滑化が弱すぎる</td><td>より長いウィンドウが有効な場合もありますが、時間方向のぼやけと公称遅延も増えます。</td></tr></tbody></table></div></section><section id="limits"><h2><span class="section-number">07</span>試験データに使用する前に限界を理解する</h2><p>移動平均は単純なローパス平滑化手法であり、あらゆるセンサーに適用できる万能フィルタではありません。急激な変動を低減できますが、ピークを弱めたり、短時間イベントの開始点や終了点をぼかしたりすることもあります。これは振動、衝撃、故障検出、しきい値ベースの解析で重要です。</p><p>ここで報告する0.1秒の遅延は、0.1秒ごとにサンプリングされた3サンプルウィンドウについて、後方ウィンドウの中心時刻と結果が利用可能になるタイムスタンプとの差です。すべての信号特徴やすべてのフィルタ実装に共通する遅延として扱うべきではありません。</p><p>実際の自動車データには、不均一サンプリング、欠落サンプル、センサーバイアス、飽和、複数の同期チャンネル、またはサンプリング周波数と帯域要件から設計したフィルタを必要とする周波数成分が含まれる場合があります。工学的な結論を導く前に、必ず生信号を保存し、フィルタリング方法を記録してください。</p></section><section id="verification"><h2>実行・検証の記録</h2><p>2026-09-20 · 手作業で確認した例 · 対象: Python 3.12 · 標準ライブラリ: csv, pathlib · 実行なし</p><ul><li>8個の合成加速度サンプルと一定の0.1秒間隔を手作業で確認しました。</li><li>6個の完全な3サンプル平均を0、0、2、7、9、9として手計算しました。</li><li>3サンプルウィンドウの中心が後方出力タイムスタンプの1サンプル前にあることを手作業で確認しました。</li><li>公称の中心時刻から出力時刻までのアライメント差を 1 sample × 0.1 s = 0.1 s と計算しました。</li><li>入力列チェック、サンプル間隔チェック、出力競合保護、元CSVの保持についてスクリプトを確認しました。</li><li>期待される出力CSVとコンソールテキストを手作業で導出しました。</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><ul><li>この回答の作成者はコードを実行しておらず、フィルタ済みCSVは作成していません。</li><li>合成信号は特定の車両、加速度計、または実測ノイズ分布を表すものではありません。</li><li>周波数応答、任意周波数に対する位相応答、不規則サンプリング、欠落サンプル、大規模データセットはテストしていません。</li><li>公式ドキュメントのURLは既知のドキュメント位置に基づいて記載しましたが、リアルタイムでは確認していません。</li></ul></div><p><a href="/ja/principles/">サイト全体の執筆・検証方針</a></p></section><section id="references"><h2>参考資料</h2><p>説明と例は独自に作成しました。関連する動作や概念は、以下の公式資料で確認できます。</p><ul class="references"><li><a href="https://docs.python.org/3.12/library/csv.html" target="_blank" rel="noopener noreferrer">Python 3.12公式ドキュメント · csv <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li><li><a href="https://docs.python.org/3.12/library/pathlib.html" target="_blank" rel="noopener noreferrer">Python 3.12公式ドキュメント · pathlib <span aria-hidden="true">↗</span><span class="sr-only"> (New tab)</span></a></li></ul></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/automotive/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card" data-search="まず試験 csv の時間軸と単位を確認する 合成の demonstration data で units、missing values、finite numbers、duplicate または reversed timestamps を確認し、その後 check results と chart を保存します。 車両試験 時間軸 単位確認" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">10</span></div><h3><a href="/ja/articles/test-data-check/">まず試験 CSV の時間軸と単位を確認する</a></h3><p>合成の demonstration data で units、missing values、finite numbers、duplicate または reversed timestamps を確認し、その後 check results と chart を保存します。</p><div class="card-bottom"><div class="tags"><span>車両試験</span><span>時間軸</span><span>単位確認</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="複数の試験条件を同じ時間軸で比較する 3つの合成デモ csv ファイルを検証し、同じ時刻サンプルと加速度単位を共有する曲線を1つのグラフに重ねて表示します。 試験比較 時間軸 加速度" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">11</span></div><h3><a href="/ja/articles/compare-test-results/">複数の試験条件を同じ時間軸で比較する</a></h3><p>3つの合成デモ CSV ファイルを検証し、同じ時刻サンプルと加速度単位を共有する曲線を1つのグラフに重ねて表示します。</p><div class="card-bottom"><div class="tags"><span>試験比較</span><span>時間軸</span><span>加速度</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="シミュレーションのピーク値を比較する前に記録すべき条件 ピーク応力の数値だけを並べると、メッシュ、出力間隔、評価位置の違いが設計変更のように見えることがあります。合成ケースから比較条件表を作成し、数値差と実際に判断できる範囲を一緒に記録します。 解析結果 ピーク比較 メッシュ" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">12</span></div><h3><a href="/ja/articles/compare-peaks/">シミュレーションのピーク値を比較する前に記録すべき条件</a></h3><p>ピーク応力の数値だけを並べると、メッシュ、出力間隔、評価位置の違いが設計変更のように見えることがあります。合成ケースから比較条件表を作成し、数値差と実際に判断できる範囲を一緒に記録します。</p><div class="card-bottom"><div class="tags"><span>解析結果</span><span>ピーク比較</span><span>メッシュ</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article><article class="article-card" data-search="自動車試験データを km/h、m/s、g、m/s² の間で変換する 合成の車速と加速度データを一貫した si 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の csv を保持し、変換後の値を新しい出力フォルダに書き出します。 python 単位 自動車" data-category="automotive"><div class="card-top"><span class="category-badge automotive">自動車・データ実務</span><span class="article-number">32</span></div><h3><a href="/ja/articles/unit-conversion-check/">自動車試験データを km/h、m/s、g、m/s² の間で変換する</a></h3><p>合成の車速と加速度データを一貫した SI 単位へ変換し、その結果を元の単位へ戻して計算を確認します。スクリプトは元の CSV を保持し、変換後の値を新しい出力フォルダに書き出します。</p><div class="card-bottom"><div class="tags"><span>Python</span><span>単位</span><span>自動車</span></div><span class="card-arrow" aria-hidden="true">↗</span></div></article></div></section></div><aside class="article-aside"><nav class="toc" aria-label="この記事で扱う内容"><p>この記事で扱う内容</p><ol><li><a href="#define-the-filter"><span>01</span>移動平均とその時間関係を定義する</a></li><li><a href="#create-synthetic-data"><span>02</span>小さな合成加速度信号を作成する</a></li><li><a href="#calculate-by-hand"><span>03</span>フィルタ値を手計算する</a></li><li><a href="#apply-the-filter"><span>04</span>フィルタを適用し、アライメント遅延を記録する</a></li><li><a href="#expected-output"><span>05</span>期待結果と比較する</a></li><li><a href="#checks-and-errors"><span>06</span>結果と一般的なエラーを確認する</a></li><li><a href="#limits"><span>07</span>試験データに使用する前に限界を理解する</a></li><li><a href="#verification"><span>08</span>実行・検証の記録</a></li><li><a href="#references"><span>09</span>参考資料</a></li></ol></nav><div class="aside-note">コピーしたコードは、まずサンプルデータで実行してください。結果を確認してから実際のファイルに適用してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>無料の実務チュートリアル · 各記事からサンプルデータとコードをダウンロードできます。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div></body></html>
