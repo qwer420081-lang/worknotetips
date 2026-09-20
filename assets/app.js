@@ -1,3 +1,4 @@
+if(location.protocol==='http:'&&location.hostname==='worknotetips.com'){location.replace('https://'+location.host+location.pathname+location.search+location.hash);}
 const input=document.querySelector('#search-input');
 const form=document.querySelector('#search');
 const cards=[...document.querySelectorAll('.article-card[data-search]')];
