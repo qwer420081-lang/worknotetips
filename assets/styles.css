@@ -62,3 +62,7 @@ html:not([lang="ko"]):not([lang="ja"]):not([lang="zh-Hans"]) h1,html:not([lang="
     .list-heading h2 { flex-shrink: 0; }
   }
 }
+
+/* Natural-language examples need wrapping rather than code-style horizontal scrolling. */
+.beginner-article .code-block pre{white-space:pre-wrap;overflow-wrap:anywhere}
+.beginner-article .toc a span{flex-shrink:0;white-space:nowrap}

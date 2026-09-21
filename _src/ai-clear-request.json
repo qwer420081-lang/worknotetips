@@ -1,0 +1,242 @@
+{
+  "slug": "ai-clear-request",
+  "title": "How to Ask AI for the Answer You Want: Define the Goal, Context, Constraints, and Format",
+  "summary": "Learn how to get easier-to-check results by giving AI the goal, confirmed facts, prohibited assumptions, and desired format instead of simply asking it to write something. Using a neighborhood book club notice as an example, you will check whether AI invented missing information and then use a follow-up request to adjust only the tone while keeping the facts unchanged.",
+  "audience": "Non-developers who are new to AI conversations and want to learn how to ask for more precise results",
+  "prerequisites": [
+    "A text-based AI conversation tool",
+    "Use fictional examples rather than real personal information or customer data",
+    "Check the facts yourself instead of publishing AI-generated text as-is"
+  ],
+  "tags": [
+    "AI requests",
+    "prompt basics",
+    "result checking"
+  ],
+  "sections": [
+    {
+      "id": "goal-and-facts",
+      "heading": "1. Organize the facts before asking for the final output",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The goal of this exercise is not to get a polished notice in one try. It is to see what information you need to give AI so that the result is easier to verify. The example uses a fictional neighborhood book club rather than a real organization. The fixed facts are: the group name is Small Book Club, the location is the fictional space Attic Room, the date is October 12, the time is 19:00–20:00, participants should bring a book they have already been reading, and there is no participation fee. There is no application link yet."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Confirmed information",
+            "What to watch for"
+          ],
+          "rows": [
+            [
+              "Group name",
+              "Small Book Club",
+              "Do not change it to another name"
+            ],
+            [
+              "Location",
+              "Fictional space Attic Room",
+              "Do not invent an address"
+            ],
+            [
+              "Date",
+              "October 12",
+              "Do not guess the weekday or year"
+            ],
+            [
+              "Time",
+              "19:00–20:00",
+              "Do not change it arbitrarily"
+            ],
+            [
+              "What to bring",
+              "A book each person has already been reading",
+              "Do not invent additional items"
+            ],
+            [
+              "Participation fee",
+              "None",
+              "Do not expand this into benefits such as free drinks"
+            ],
+            [
+              "Application",
+              "No link yet",
+              "Do not generate a URL or phone number"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If you separate confirmed facts from unconfirmed information like this before asking AI, you can later check whether the facts are correct before judging whether the wording sounds good."
+        }
+      ]
+    },
+    {
+      "id": "vague-request",
+      "heading": "2. Deliberately start with a vague request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "First, try a short request that people commonly use. It barely specifies the audience, length, required facts, or information that must not be invented."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Write a friendly promotional notice for a neighborhood book club."
+        },
+        {
+          "type": "p",
+          "text": "The following is an intentionally insufficient fictional AI response created for comparison. It is an editorial example, not an actual execution result."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · Not an actual AI response]\nYou’re invited to Small Book Club! Join us at Attic Room at 7 PM on Saturday, October 12, to talk about books together. Participation is free, and warm drinks will be provided. To join, apply at https://example-bookclub.test or call 010-XXXX-XXXX. Just bring one of your favorite books and come ready for a relaxed conversation!"
+        },
+        {
+          "type": "p",
+          "text": "The wording sounds natural, but this version cannot be used as-is. It guessed the weekday for October 12, invented free drinks, created an application link and phone number, and changed the required item from 'a book each person has already been reading' to 'one of your favorite books.' Even when AI produces fluent text, newly invented details make fact-checking harder."
+        }
+      ]
+    },
+    {
+      "id": "structured-request",
+      "heading": "3. Put the goal, context, constraints, and format into one request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This time, separate the request into four parts. The goal is to inform local residents about the gathering. The context is the set of already confirmed meeting details. The constraints prohibit guessing and require unconfirmed application information to remain clearly marked. The format is a short notice of no more than five sentences."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Write a short book club notice for local residents.\nConfirmed facts: the group name is 'Small Book Club,' the location is 'Fictional space Attic Room,' the date is 'October 12,' the time is '19:00–20:00,' participants should bring 'a book they have already been reading,' and there is no participation fee.\nThere is no application link yet, so do not invent a link or phone number. Write 'Application details will be announced later.'\nDo not guess the weekday or year for October 12, and do not add information I did not provide, such as free drinks or other benefits.\nKeep the entire notice to no more than five sentences and make it easy for someone seeing it for the first time to understand."
+        },
+        {
+          "type": "p",
+          "text": "The following response is also an editorial example created to explain the checking process, not an actual AI execution result."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · Not an actual AI response]\nSmall Book Club is looking for people who would like to talk about books together. The meeting will take place on October 12 from 19:00–20:00 at the fictional space Attic Room. Bring a book you have already been reading, and there is no participation fee. Application details will be announced later. If you would like to share books and conversation in a relaxed setting, feel free to join us."
+        }
+      ]
+    },
+    {
+      "id": "check-the-answer",
+      "heading": "4. Check the facts and constraints before judging the writing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even after receiving an improved response, do not stop there. Compare each item against the original facts first, and then check the format requirements. For a condition such as 'no more than five sentences,' do not rely on how long the text feels. Count the sentences using a rule you define, such as sentence-ending periods."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check item",
+            "Result to confirm",
+            "Correction rule"
+          ],
+          "rows": [
+            [
+              "Group name",
+              "Small Book Club is preserved",
+              "Restore the original if it changes"
+            ],
+            [
+              "Date and time",
+              "October 12, 19:00–20:00 are preserved",
+              "Remove any added weekday or year"
+            ],
+            [
+              "Location",
+              "Fictional space Attic Room is preserved",
+              "If an address appears, mark it for verification"
+            ],
+            [
+              "What to bring and fee",
+              "A book already being read, no participation fee",
+              "Do not allow additional items or benefits"
+            ],
+            [
+              "Application information",
+              "Marked as to be announced later",
+              "If a link or phone number appears, delete it and mark it for verification"
+            ],
+            [
+              "Length",
+              "5 sentences",
+              "If there are 6 or more sentences, ask for a shorter version"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If AI inserts a nonexistent link or phone number again, do not simply delete it and forget about it. It can be useful to leave a placeholder such as '[Needs confirmation: application method not yet decided]' in the draft. Managing uncertain information as a visible blank makes it easier to replace later when the real information is confirmed."
+        }
+      ]
+    },
+    {
+      "id": "follow-up-tone",
+      "heading": "5. In a follow-up, keep the facts fixed and change only the tone",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If the first result is factually correct but sounds slightly stiff, there is no need to regenerate everything from scratch. Separate what must stay fixed from what you want to change in the follow-up request."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Keep all factual information and the limit of no more than five sentences exactly as they are in the notice you just wrote. Do not add any new information. Only make the tone a little softer and more like a friendly notice to neighbors. In particular, do not change the date, time, location, what to bring, participation fee, or the fact that the application method has not been decided yet."
+        },
+        {
+          "type": "p",
+          "text": "The key to a useful follow-up is not saying 'make it better,' but specifying what must remain unchanged and what may be revised. This reduces the chance that numbers or locations will change while you are only trying to adjust the tone."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Change: tone and sentence flow",
+            "Keep fixed: date, time, location, what to bring, participation fee, application status",
+            "Do not add: nonexistent links, phone numbers, services, benefits, or guessed weekday/year",
+            "Final check: recount the sentences and compare the facts again"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reuse-checklist",
+      "heading": "6. Reuse the same structure for other requests",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The real output of this exercise is not the book club notice itself but the 'goal-context-constraints-format' structure. For event notices, club announcements, short explanations, and other tasks where factual accuracy matters, separate confirmed and unconfirmed information first and then reuse the same request structure."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Goal: who should read this and what they should learn\nContext: confirmed facts and numbers\nConstraints: information that must not be guessed or added\nFormat: length, sentence count, table use, tone\nVerification: items to compare against the source information"
+        },
+        {
+          "type": "p",
+          "text": "AI producing natural language and AI producing accurate content are two different things. For beginners, it is more important to clearly provide verifiable facts and develop the habit of spotting newly introduced information than to make the request sound sophisticated."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example using text conversation only · Actual AI responses vary by tool and model",
+    "items": [
+      "Check that the group name, location, date, time, required item, and participation fee match the fixed facts",
+      "Check that no weekday or year was arbitrarily added to October 12",
+      "Check that no unprovided information such as an application link, phone number, or free drinks was invented",
+      "If application information is undecided, check that it is marked as needing confirmation or to be announced later",
+      "Directly count the sentences and confirm that the final notice is no more than five sentences",
+      "After the follow-up request, confirm that the facts stayed the same and only the tone changed"
+    ],
+    "limits": "This is a learning-oriented editorial example, not the result of testing an actual AI tool or conducting user testing. Do not enter personally identifiable information or real customer data, and compare all facts directly against the original information yourself."
+  }
+}

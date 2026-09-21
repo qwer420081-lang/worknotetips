@@ -1,0 +1,714 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "ai-clear-request",
+      "title": "How to Ask AI for the Answer You Want: Define the Goal, Context, Constraints, and Format",
+      "summary": "Learn how to get easier-to-check results by giving AI the goal, confirmed facts, prohibited assumptions, and desired format instead of simply asking it to write something. Using a neighborhood book club notice as an example, you will check whether AI invented missing information and then use a follow-up request to adjust only the tone while keeping the facts unchanged.",
+      "audience": "Non-developers who are new to AI conversations and want to learn how to ask for more precise results",
+      "prerequisites": [
+        "A text-based AI conversation tool",
+        "Use fictional examples rather than real personal information or customer data",
+        "Check the facts yourself instead of publishing AI-generated text as-is"
+      ],
+      "tags": [
+        "AI requests",
+        "prompt basics",
+        "result checking"
+      ],
+      "sections": [
+        {
+          "id": "goal-and-facts",
+          "heading": "1. Organize the facts before asking for the final output",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The goal of this exercise is not to get a polished notice in one try. It is to see what information you need to give AI so that the result is easier to verify. The example uses a fictional neighborhood book club rather than a real organization. The fixed facts are: the group name is Small Book Club, the location is the fictional space Attic Room, the date is October 12, the time is 19:00–20:00, participants should bring a book they have already been reading, and there is no participation fee. There is no application link yet."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Confirmed information",
+                "What to watch for"
+              ],
+              "rows": [
+                [
+                  "Group name",
+                  "Small Book Club",
+                  "Do not change it to another name"
+                ],
+                [
+                  "Location",
+                  "Fictional space Attic Room",
+                  "Do not invent an address"
+                ],
+                [
+                  "Date",
+                  "October 12",
+                  "Do not guess the weekday or year"
+                ],
+                [
+                  "Time",
+                  "19:00–20:00",
+                  "Do not change it arbitrarily"
+                ],
+                [
+                  "What to bring",
+                  "A book each person has already been reading",
+                  "Do not invent additional items"
+                ],
+                [
+                  "Participation fee",
+                  "None",
+                  "Do not expand this into benefits such as free drinks"
+                ],
+                [
+                  "Application",
+                  "No link yet",
+                  "Do not generate a URL or phone number"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "If you separate confirmed facts from unconfirmed information like this before asking AI, you can later check whether the facts are correct before judging whether the wording sounds good."
+            }
+          ]
+        },
+        {
+          "id": "vague-request",
+          "heading": "2. Deliberately start with a vague request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "First, try a short request that people commonly use. It barely specifies the audience, length, required facts, or information that must not be invented."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Write a friendly promotional notice for a neighborhood book club."
+            },
+            {
+              "type": "p",
+              "text": "The following is an intentionally insufficient fictional AI response created for comparison. It is an editorial example, not an actual execution result."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nYou’re invited to Small Book Club! Join us at Attic Room at 7 PM on Saturday, October 12, to talk about books together. Participation is free, and warm drinks will be provided. To join, apply at https://example-bookclub.test or call 010-XXXX-XXXX. Just bring one of your favorite books and come ready for a relaxed conversation!"
+            },
+            {
+              "type": "p",
+              "text": "The wording sounds natural, but this version cannot be used as-is. It guessed the weekday for October 12, invented free drinks, created an application link and phone number, and changed the required item from 'a book each person has already been reading' to 'one of your favorite books.' Even when AI produces fluent text, newly invented details make fact-checking harder."
+            }
+          ]
+        },
+        {
+          "id": "structured-request",
+          "heading": "3. Put the goal, context, constraints, and format into one request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This time, separate the request into four parts. The goal is to inform local residents about the gathering. The context is the set of already confirmed meeting details. The constraints prohibit guessing and require unconfirmed application information to remain clearly marked. The format is a short notice of no more than five sentences."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Write a short book club notice for local residents.\nConfirmed facts: the group name is 'Small Book Club,' the location is 'Fictional space Attic Room,' the date is 'October 12,' the time is '19:00–20:00,' participants should bring 'a book they have already been reading,' and there is no participation fee.\nThere is no application link yet, so do not invent a link or phone number. Write 'Application details will be announced later.'\nDo not guess the weekday or year for October 12, and do not add information I did not provide, such as free drinks or other benefits.\nKeep the entire notice to no more than five sentences and make it easy for someone seeing it for the first time to understand."
+            },
+            {
+              "type": "p",
+              "text": "The following response is also an editorial example created to explain the checking process, not an actual AI execution result."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nSmall Book Club is looking for people who would like to talk about books together. The meeting will take place on October 12 from 19:00–20:00 at the fictional space Attic Room. Bring a book you have already been reading, and there is no participation fee. Application details will be announced later. If you would like to share books and conversation in a relaxed setting, feel free to join us."
+            }
+          ]
+        },
+        {
+          "id": "check-the-answer",
+          "heading": "4. Check the facts and constraints before judging the writing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even after receiving an improved response, do not stop there. Compare each item against the original facts first, and then check the format requirements. For a condition such as 'no more than five sentences,' do not rely on how long the text feels. Count the sentences using a rule you define, such as sentence-ending periods."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Check item",
+                "Result to confirm",
+                "Correction rule"
+              ],
+              "rows": [
+                [
+                  "Group name",
+                  "Small Book Club is preserved",
+                  "Restore the original if it changes"
+                ],
+                [
+                  "Date and time",
+                  "October 12, 19:00–20:00 are preserved",
+                  "Remove any added weekday or year"
+                ],
+                [
+                  "Location",
+                  "Fictional space Attic Room is preserved",
+                  "If an address appears, mark it for verification"
+                ],
+                [
+                  "What to bring and fee",
+                  "A book already being read, no participation fee",
+                  "Do not allow additional items or benefits"
+                ],
+                [
+                  "Application information",
+                  "Marked as to be announced later",
+                  "If a link or phone number appears, delete it and mark it for verification"
+                ],
+                [
+                  "Length",
+                  "5 sentences",
+                  "If there are 6 or more sentences, ask for a shorter version"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "If AI inserts a nonexistent link or phone number again, do not simply delete it and forget about it. It can be useful to leave a placeholder such as '[Needs confirmation: application method not yet decided]' in the draft. Managing uncertain information as a visible blank makes it easier to replace later when the real information is confirmed."
+            }
+          ]
+        },
+        {
+          "id": "follow-up-tone",
+          "heading": "5. In a follow-up, keep the facts fixed and change only the tone",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If the first result is factually correct but sounds slightly stiff, there is no need to regenerate everything from scratch. Separate what must stay fixed from what you want to change in the follow-up request."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Keep all factual information and the limit of no more than five sentences exactly as they are in the notice you just wrote. Do not add any new information. Only make the tone a little softer and more like a friendly notice to neighbors. In particular, do not change the date, time, location, what to bring, participation fee, or the fact that the application method has not been decided yet."
+            },
+            {
+              "type": "p",
+              "text": "The key to a useful follow-up is not saying 'make it better,' but specifying what must remain unchanged and what may be revised. This reduces the chance that numbers or locations will change while you are only trying to adjust the tone."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Change: tone and sentence flow",
+                "Keep fixed: date, time, location, what to bring, participation fee, application status",
+                "Do not add: nonexistent links, phone numbers, services, benefits, or guessed weekday/year",
+                "Final check: recount the sentences and compare the facts again"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "reuse-checklist",
+          "heading": "6. Reuse the same structure for other requests",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The real output of this exercise is not the book club notice itself but the 'goal-context-constraints-format' structure. For event notices, club announcements, short explanations, and other tasks where factual accuracy matters, separate confirmed and unconfirmed information first and then reuse the same request structure."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Goal: who should read this and what they should learn\nContext: confirmed facts and numbers\nConstraints: information that must not be guessed or added\nFormat: length, sentence count, table use, tone\nVerification: items to compare against the source information"
+            },
+            {
+              "type": "p",
+              "text": "AI producing natural language and AI producing accurate content are two different things. For beginners, it is more important to clearly provide verifiable facts and develop the habit of spotting newly introduced information than to make the request sound sophisticated."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example using text conversation only · Actual AI responses vary by tool and model",
+        "items": [
+          "Check that the group name, location, date, time, required item, and participation fee match the fixed facts",
+          "Check that no weekday or year was arbitrarily added to October 12",
+          "Check that no unprovided information such as an application link, phone number, or free drinks was invented",
+          "If application information is undecided, check that it is marked as needing confirmation or to be announced later",
+          "Directly count the sentences and confirm that the final notice is no more than five sentences",
+          "After the follow-up request, confirm that the facts stayed the same and only the tone changed"
+        ],
+        "limits": "This is a learning-oriented editorial example, not the result of testing an actual AI tool or conducting user testing. Do not enter personally identifiable information or real customer data, and compare all facts directly against the original information yourself."
+      }
+    },
+    {
+      "slug": "ai-practice-tutor",
+      "title": "Use AI as a Personal Practice Tutor: From Hints to Reviewing Wrong Answers",
+      "summary": "Learn to use AI for practice by having it present one problem at a time, wait for your answer, and then provide hints and explanations instead of immediately giving the answer. Using three percentage problems, you will check which value belongs in the denominator and independently verify AI explanations with your own calculations.",
+      "audience": "Beginners who want to practice basic calculations themselves while using AI as a learning aid",
+      "prerequisites": [
+        "Be able to do basic multiplication and division",
+        "Recalculate answers yourself instead of memorizing AI-generated answers",
+        "Do not apply this exercise to cheating on tests, proxy answers for qualification assessments, or medical calculations"
+      ],
+      "tags": [
+        "AI learning",
+        "percentages",
+        "error review"
+      ],
+      "sections": [
+        {
+          "id": "practice-rules",
+          "heading": "1. Define AI as a practice partner, not an answer generator",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The goal of this article is not to have AI provide all the questions and answers at once. Instead, you will calculate first, ask for a hint only when you get stuck, and receive an explanation of why an answer is wrong when necessary. The exercise uses only three problems: 25% of 80, the price after a 15% discount from 200, and the percentage increase from 40 to 50."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Problem",
+                "Answer",
+                "Principle to check"
+              ],
+              "rows": [
+                [
+                  "What is 25% of 80?",
+                  "20",
+                  "Multiply the total 80 by 0.25"
+                ],
+                [
+                  "What is the price after a 15% discount from 200?",
+                  "170",
+                  "Subtract the discount amount 30 from the original 200"
+                ],
+                [
+                  "What is the percentage increase from 40 to 50?",
+                  "25%",
+                  "Divide the increase of 10 by the original value 40"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In percentage-change problems such as the third one, choosing the correct denominator is especially important. The percentage increase uses the original value 40 as the denominator, not the new value 50."
+            }
+          ]
+        },
+        {
+          "id": "bad-first-request",
+          "heading": "2. See what is lost when you ask for answers immediately",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Give me three percentage problems and show me the answers and solutions too."
+            },
+            {
+              "type": "p",
+              "text": "This request is convenient for checking answers quickly, but it removes the practice process. The following is an intentionally insufficient fictional AI response designed to show the problem. It is an editorial example, not an actual execution result."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\n1) 25% of 80 = 20\n2) Subtracting 15% from 200 gives 170\n3) Since the value increased from 40 to 50, the percentage increase is 25%\nJust remember the formulas."
+            },
+            {
+              "type": "p",
+              "text": "The answers are correct, but this does not reveal where the learner gets stuck, and it makes it difficult to detect habits such as choosing the wrong denominator. Simply 'remembering the formulas' can also lead to mistakes when a similar problem is worded differently."
+            }
+          ]
+        },
+        {
+          "id": "tutor-prompt",
+          "heading": "3. Create a practice rule that waits for your answer one problem at a time",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When assigning AI the role of tutor, do more than tell it to hide the answers. Specify the progression. Ask it to present one problem, wait for your answer, and give only one hint before revealing a solution if your first attempt is wrong."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Act as a percentage practice tutor. Give me the following 3 problems in order, one at a time, and wait for my answer after each one.\n1) 25% of 80\n2) The value after a 15% discount from 200\n3) The percentage increase from 40 to 50\nIf I am wrong, do not immediately tell me the answer. Give me only 1 hint first. If I am still wrong on my second attempt, briefly explain the calculation. For the percentage-increase problem, ask me which value is the reference value and which value should be used as the denominator. Show all calculations in simple expressions that I can verify again by hand."
+            },
+            {
+              "type": "p",
+              "text": "The key point is the learning sequence. If the conversation follows problem, learner answer, hint, retry, and solution check, AI is less likely to replace the learner's entire reasoning process."
+            }
+          ]
+        },
+        {
+          "id": "hint-example",
+          "heading": "4. Make sure hints do not perform the calculation for the learner",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Suppose the learner gets stuck on the first problem. A useful hint should not immediately reveal the answer 20. It should instead suggest converting 25% to 0.25 or 1/4."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nProblem: What is 25% of 80?\nUser: I’m not sure.\nAI: I’ll give you one hint. 25% is 25 out of 100, which is the same as 1/4. Try calculating 80 divided by 4.\nUser: 20.\nAI: Correct. Check once more by hand that 80 ÷ 4 = 20."
+            },
+            {
+              "type": "p",
+              "text": "The second problem can be handled the same way. First calculate that 15% of 200 is the discount amount, and then check that the final price is found by subtracting the discount from the original price. Even if AI says the answer is 170, independently verify 200×0.15=30 and 200-30=170."
+            }
+          ]
+        },
+        {
+          "id": "wrong-denominator",
+          "heading": "5. Review the incorrect 20% answer in the percentage-increase problem",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "For the third problem, suppose the learner answers 20%. That wrong answer comes from calculating (50-40)/50, which divides the increase of 10 by the new value 50. The arithmetic itself is not the main problem; the reference value is wrong."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nProblem: A value increased from 40 to 50. What is the percentage increase?\nUser: 20%.\nAI: Let’s check the denominator. The 20% result comes from (50-40) ÷ 50 = 10 ÷ 50. But percentage increase asks how much the value increased relative to the original value, so the reference is the original value 40. Divide the increase of 10 by the original value 40 and calculate it yourself.\nUser: 0.25, so 25%.\nAI: Correct. The key is that the original value belongs in the denominator."
+            },
+            {
+              "type": "p",
+              "text": "The correction criterion here is not simply changing the answer from 20% to 25%. You should be able to explain why 40, not 50, is the reference. Percentage increase compares the change against the original state, so the original value 40 is the denominator."
+            }
+          ]
+        },
+        {
+          "id": "independent-check",
+          "heading": "6. Finally, solve all three problems again without AI",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After the review, do not simply reread the answers in the same conversation. Solve all three problems independently on paper or in a note. AI explanations can also contain errors, so the calculations should be checked separately."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Calculate 80×25/100 = 20 yourself",
+                "Check the two-step calculation 200×15/100 = 30, then 200-30 = 170",
+                "Check (50-40)/40 = 10/40 = 0.25 = 25%",
+                "Explain in words why the denominator for percentage increase is the original value 40 rather than the new value 50",
+                "Distinguish between a calculation mistake and an error in choosing the reference value"
+              ]
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Create only 1 new problem similar to the three problems we just practiced. Do not tell me the answer yet. Wait until I answer. After I respond, check not only the calculation result but also which value I used as the reference."
+            },
+            {
+              "type": "p",
+              "text": "This method is appropriate for practice conversations, but it should not be applied directly to cheating on an actual test, answering a qualification assessment on someone else's behalf, or medical calculations where an incorrect result could affect an important decision. Even for learning, the core habit is to verify the final calculation yourself."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example using text conversation only · Actual AI responses vary by tool and model",
+        "items": [
+          "Independently calculate 80×0.25=20 to confirm that 25% of 80 is 20",
+          "Confirm step by step that the 15% discount on 200 is 30 and the final value is 170",
+          "Confirm that the increase from 40 to 50 is 10",
+          "Confirm that the denominator in the percentage-increase calculation is the original value 40",
+          "Be able to explain that (50-40)/50=20% uses the wrong reference value",
+          "Check whether AI follows the rule of presenting one problem at a time and waiting for the user's answer"
+        ],
+        "limits": "This is a learning-oriented editorial example, not the result of testing an actual AI tool's educational performance or effectiveness. Do not use it for cheating on tests, proxy answers for qualification assessments, or medical calculations, and independently recalculate all arithmetic results yourself."
+      }
+    },
+    {
+      "slug": "ai-weekly-plan",
+      "title": "Build a Realistic Weekly Plan with AI: Calculate Available Time First",
+      "summary": "Learn to calculate the time you actually have available and the time required for your tasks before asking AI to place work into a schedule. The exercise also covers a situation where Wednesday suddenly becomes unavailable and shows how to verify that AI does not invent extra time that does not exist.",
+      "audience": "Non-developers who want to place personal study or life tasks within realistic time limits",
+      "prerequisites": [
+        "Be able to write down the time you can realistically use during the week in minutes",
+        "Be able to estimate the duration and required number of repetitions for each task",
+        "Use a fictional personal-planning example rather than real work logs or customer schedules"
+      ],
+      "tags": [
+        "AI planning",
+        "time management",
+        "decision making"
+      ],
+      "sections": [
+        {
+          "id": "calculate-capacity",
+          "heading": "1. Calculate available time before listing tasks",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The key to this exercise is not to immediately ask AI, 'Make my weekly plan.' First, fix the amount of time that is actually available. The available time is 30 minutes on Monday, 0 on Tuesday, 45 on Wednesday, 30 on Thursday, 0 on Friday, 60 on Saturday, and 30 on Sunday."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Day",
+                "Available time"
+              ],
+              "rows": [
+                [
+                  "Monday",
+                  "30 min"
+                ],
+                [
+                  "Tuesday",
+                  "0 min"
+                ],
+                [
+                  "Wednesday",
+                  "45 min"
+                ],
+                [
+                  "Thursday",
+                  "30 min"
+                ],
+                [
+                  "Friday",
+                  "0 min"
+                ],
+                [
+                  "Saturday",
+                  "60 min"
+                ],
+                [
+                  "Sunday",
+                  "30 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The total is 30+0+45+30+0+60+30=195 minutes. This is the maximum capacity available for the week. Since Tuesday and Friday have 0 minutes available, the basic rule is to assign no tasks on those days."
+            }
+          ]
+        },
+        {
+          "id": "calculate-workload",
+          "heading": "2. Calculate task time and repetition counts separately",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This week's tasks are document organizing for 20 minutes × 2 sessions, reading for 25 minutes × 3 sessions, and presentation practice for 30 minutes × 2 sessions. Calculating the total time for each task gives 40 minutes for document organizing, 75 minutes for reading, and 60 minutes for presentation practice, for a total of 175 minutes."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Task",
+                "Time per session",
+                "Sessions",
+                "Total time"
+              ],
+              "rows": [
+                [
+                  "Document organizing",
+                  "20 min",
+                  "2",
+                  "40 min"
+                ],
+                [
+                  "Reading",
+                  "25 min",
+                  "3",
+                  "75 min"
+                ],
+                [
+                  "Presentation practice",
+                  "30 min",
+                  "2",
+                  "60 min"
+                ],
+                [
+                  "Total",
+                  "",
+                  "",
+                  "175 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Subtracting the required 175 minutes from the available 195 minutes leaves 20 minutes of spare time. This means all tasks can fit under the current conditions, but it does not mean they can be placed on any day. Each day's maximum time must also be respected."
+            }
+          ]
+        },
+        {
+          "id": "weak-plan-request",
+          "heading": "3. See how a vague request can produce an unrealistic plan",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "This week I need to organize documents, read, and practice a presentation. Make me a balanced plan."
+            },
+            {
+              "type": "p",
+              "text": "This request does not include daily availability or required repetition counts, so AI may invent a schedule that looks balanced but violates real constraints. The following is an intentionally flawed fictional AI response created for illustration. It is an editorial example, not an actual execution result."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nMonday: Document organizing 20 min + Reading 25 min\nTuesday: Presentation practice 30 min\nWednesday: Reading 25 min\nThursday: Document organizing 20 min + Presentation practice 30 min\nFriday: Reading 25 min\nSaturday and Sunday: Catch up on anything unfinished"
+            },
+            {
+              "type": "p",
+              "text": "Monday has 45 minutes of work even though only 30 minutes are available, and tasks were assigned on Tuesday and Friday even though those days have 0 minutes available. This shows that a vague phrase such as 'balanced' does not communicate the actual scheduling constraints."
+            }
+          ]
+        },
+        {
+          "id": "constrained-plan",
+          "heading": "4. Give both the total capacity and daily limits",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Create a personal weekly plan for me.\nMy available time is Monday 30 min, Tuesday 0 min, Wednesday 45 min, Thursday 30 min, Friday 0 min, Saturday 60 min, and Sunday 30 min, for a total of 195 min.\nMy tasks are document organizing 20 min × 2 sessions, reading 25 min × 3 sessions, and presentation practice 30 min × 2 sessions, for a total of 175 min.\nDo not exceed the available time on any day, and do not assign any tasks on Tuesday or Friday. Keep the number of sessions exactly correct. Do not force the remaining 20 min to be filled; leave it as spare time.\nShow the daily tasks and used time in a table, then recalculate the total used time and remaining time at the end."
+            },
+            {
+              "type": "p",
+              "text": "The following is an editorial example of an acceptable schedule that satisfies the conditions. It is not an actual AI execution result."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Day",
+                "Assignment",
+                "Used time",
+                "Available time"
+              ],
+              "rows": [
+                [
+                  "Monday",
+                  "Reading 1 session",
+                  "25 min",
+                  "30 min"
+                ],
+                [
+                  "Tuesday",
+                  "Rest",
+                  "0 min",
+                  "0 min"
+                ],
+                [
+                  "Wednesday",
+                  "Document organizing 1 session + Reading 1 session",
+                  "45 min",
+                  "45 min"
+                ],
+                [
+                  "Thursday",
+                  "Presentation practice 1 session",
+                  "30 min",
+                  "30 min"
+                ],
+                [
+                  "Friday",
+                  "Rest",
+                  "0 min",
+                  "0 min"
+                ],
+                [
+                  "Saturday",
+                  "Presentation practice 1 session + Reading 1 session",
+                  "55 min",
+                  "60 min"
+                ],
+                [
+                  "Sunday",
+                  "Document organizing 1 session",
+                  "20 min",
+                  "30 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The total used time is 25+45+30+55+20=175 minutes, which is 20 minutes less than the total available time of 195 minutes. The required counts are also satisfied exactly: document organizing 2 sessions, reading 3 sessions, and presentation practice 2 sessions."
+            }
+          ]
+        },
+        {
+          "id": "verify-plan",
+          "heading": "5. Check the arithmetic constraints before judging whether the plan looks good",
+          "blocks": [
+            {
+              "type": "ul",
+              "items": [
+                "Confirm that Monday uses 25 minutes, which is no more than the 30-minute maximum",
+                "Confirm that Wednesday uses 45 minutes, which is no more than the 45-minute maximum",
+                "Confirm that Thursday uses 30 minutes, which is no more than the 30-minute maximum",
+                "Confirm that Saturday uses 55 minutes, which is no more than the 60-minute maximum",
+                "Confirm that Sunday uses 20 minutes, which is no more than the 30-minute maximum",
+                "Confirm that Tuesday and Friday each use 0 minutes",
+                "Recalculate that total available time is 195 minutes",
+                "Recalculate that total task time is 175 minutes",
+                "Confirm the session counts: document organizing 2, reading 3, presentation practice 2",
+                "Confirm that 195-175=20 minutes of spare time remains"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Even if AI produces a clean-looking table, the plan needs correction if any of these checks fail. On days with more than one task, directly add the task times and confirm that the sum does not exceed that day's maximum."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Recheck this plan. For each day, verify whether used time exceeds available time, whether the total task time is 175 minutes, and whether the session counts are document organizing 2, reading 3, and presentation practice 2. Show the addition expressions too so I can recalculate your verification myself."
+            }
+          ]
+        },
+        {
+          "id": "schedule-change",
+          "heading": "6. If Wednesday's 45 minutes disappear, decide what to postpone",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Now suppose the 45 minutes on Wednesday suddenly become unavailable. The new total available time is the original 195 minutes minus 45, leaving 150 minutes. The original tasks require 175 minutes, so 25 minutes are missing. It is therefore mathematically impossible to fit all of the original tasks into the week."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "I suddenly cannot use the 45 minutes on Wednesday. Keep the available time on all other days unchanged, and do not invent any extra time. I now have 150 minutes total, but the existing tasks require 175 minutes. First explain what needs to change, then show possible options. I have not decided whether tasks can be split into smaller parts, so if that condition matters, point it out and ask me to confirm it."
+            },
+            {
+              "type": "p",
+              "text": "The following is an editorial example showing the correction logic. It is not an actual AI response."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · Not an actual AI response]\nWithout Wednesday, the available time is 150 minutes, so the original 175 minutes of tasks cannot all be scheduled. At least 25 minutes must be removed or postponed to next week. One option is to move one 25-minute reading session to next week. That reduces the remaining task time to exactly 150 minutes, matching the total available time. However, whether the remaining tasks can fit within each day's limits may depend on whether tasks are allowed to be split into smaller units, so it would be better to confirm whether splitting is allowed first."
+            },
+            {
+              "type": "p",
+              "text": "The important point is that AI should not hide the shortage by extending Saturday to 85 minutes or inventing new time on Tuesday. When available time becomes insufficient, the first step is to acknowledge that not everything can be completed and then adjust priorities. Moving one 25-minute reading session to next week leaves exactly 150 minutes of work, so the total amount can fit within the remaining weekly capacity. However, the actual day-by-day arrangement may depend on whether tasks can be split, so that condition should be confirmed with the user."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example using text conversation only · Actual AI responses vary by tool and model",
+        "items": [
+          "Directly calculate that the daily available times total 195 minutes",
+          "Calculate the original task total of 175 minutes from each task's duration × number of sessions",
+          "Confirm that each day's used time in the original plan does not exceed that day's maximum",
+          "Confirm that no tasks are assigned on Tuesday or Friday",
+          "Confirm exactly 2 document-organizing sessions, 3 reading sessions, and 2 presentation-practice sessions",
+          "Confirm that the original plan leaves 20 minutes of spare time",
+          "After removing Wednesday's 45 minutes, confirm that total available time becomes 150 minutes",
+          "Confirm that 175 minutes of work cannot all fit into 150 minutes",
+          "Confirm that postponing one 25-minute reading session reduces the remaining work to 150 minutes",
+          "Check that AI does not invent additional time that does not exist"
+        ],
+        "limits": "This is an editorial example for learning personal planning, not the result of testing an actual scheduling tool or user behavior. Estimated task durations may differ in real situations, and the user must decide whether tasks may be split and which tasks have priority."
+      }
+    }
+  ]
+}

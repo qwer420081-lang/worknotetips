@@ -1,0 +1,179 @@
+{
+  "slug": "ai-practice-tutor",
+  "title": "Use AI as a Personal Practice Tutor: From Hints to Reviewing Wrong Answers",
+  "summary": "Learn to use AI for practice by having it present one problem at a time, wait for your answer, and then provide hints and explanations instead of immediately giving the answer. Using three percentage problems, you will check which value belongs in the denominator and independently verify AI explanations with your own calculations.",
+  "audience": "Beginners who want to practice basic calculations themselves while using AI as a learning aid",
+  "prerequisites": [
+    "Be able to do basic multiplication and division",
+    "Recalculate answers yourself instead of memorizing AI-generated answers",
+    "Do not apply this exercise to cheating on tests, proxy answers for qualification assessments, or medical calculations"
+  ],
+  "tags": [
+    "AI learning",
+    "percentages",
+    "error review"
+  ],
+  "sections": [
+    {
+      "id": "practice-rules",
+      "heading": "1. Define AI as a practice partner, not an answer generator",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The goal of this article is not to have AI provide all the questions and answers at once. Instead, you will calculate first, ask for a hint only when you get stuck, and receive an explanation of why an answer is wrong when necessary. The exercise uses only three problems: 25% of 80, the price after a 15% discount from 200, and the percentage increase from 40 to 50."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "Answer",
+            "Principle to check"
+          ],
+          "rows": [
+            [
+              "What is 25% of 80?",
+              "20",
+              "Multiply the total 80 by 0.25"
+            ],
+            [
+              "What is the price after a 15% discount from 200?",
+              "170",
+              "Subtract the discount amount 30 from the original 200"
+            ],
+            [
+              "What is the percentage increase from 40 to 50?",
+              "25%",
+              "Divide the increase of 10 by the original value 40"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In percentage-change problems such as the third one, choosing the correct denominator is especially important. The percentage increase uses the original value 40 as the denominator, not the new value 50."
+        }
+      ]
+    },
+    {
+      "id": "bad-first-request",
+      "heading": "2. See what is lost when you ask for answers immediately",
+      "blocks": [
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Give me three percentage problems and show me the answers and solutions too."
+        },
+        {
+          "type": "p",
+          "text": "This request is convenient for checking answers quickly, but it removes the practice process. The following is an intentionally insufficient fictional AI response designed to show the problem. It is an editorial example, not an actual execution result."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · Not an actual AI response]\n1) 25% of 80 = 20\n2) Subtracting 15% from 200 gives 170\n3) Since the value increased from 40 to 50, the percentage increase is 25%\nJust remember the formulas."
+        },
+        {
+          "type": "p",
+          "text": "The answers are correct, but this does not reveal where the learner gets stuck, and it makes it difficult to detect habits such as choosing the wrong denominator. Simply 'remembering the formulas' can also lead to mistakes when a similar problem is worded differently."
+        }
+      ]
+    },
+    {
+      "id": "tutor-prompt",
+      "heading": "3. Create a practice rule that waits for your answer one problem at a time",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When assigning AI the role of tutor, do more than tell it to hide the answers. Specify the progression. Ask it to present one problem, wait for your answer, and give only one hint before revealing a solution if your first attempt is wrong."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Act as a percentage practice tutor. Give me the following 3 problems in order, one at a time, and wait for my answer after each one.\n1) 25% of 80\n2) The value after a 15% discount from 200\n3) The percentage increase from 40 to 50\nIf I am wrong, do not immediately tell me the answer. Give me only 1 hint first. If I am still wrong on my second attempt, briefly explain the calculation. For the percentage-increase problem, ask me which value is the reference value and which value should be used as the denominator. Show all calculations in simple expressions that I can verify again by hand."
+        },
+        {
+          "type": "p",
+          "text": "The key point is the learning sequence. If the conversation follows problem, learner answer, hint, retry, and solution check, AI is less likely to replace the learner's entire reasoning process."
+        }
+      ]
+    },
+    {
+      "id": "hint-example",
+      "heading": "4. Make sure hints do not perform the calculation for the learner",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose the learner gets stuck on the first problem. A useful hint should not immediately reveal the answer 20. It should instead suggest converting 25% to 0.25 or 1/4."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · Not an actual AI response]\nProblem: What is 25% of 80?\nUser: I’m not sure.\nAI: I’ll give you one hint. 25% is 25 out of 100, which is the same as 1/4. Try calculating 80 divided by 4.\nUser: 20.\nAI: Correct. Check once more by hand that 80 ÷ 4 = 20."
+        },
+        {
+          "type": "p",
+          "text": "The second problem can be handled the same way. First calculate that 15% of 200 is the discount amount, and then check that the final price is found by subtracting the discount from the original price. Even if AI says the answer is 170, independently verify 200×0.15=30 and 200-30=170."
+        }
+      ]
+    },
+    {
+      "id": "wrong-denominator",
+      "heading": "5. Review the incorrect 20% answer in the percentage-increase problem",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the third problem, suppose the learner answers 20%. That wrong answer comes from calculating (50-40)/50, which divides the increase of 10 by the new value 50. The arithmetic itself is not the main problem; the reference value is wrong."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · Not an actual AI response]\nProblem: A value increased from 40 to 50. What is the percentage increase?\nUser: 20%.\nAI: Let’s check the denominator. The 20% result comes from (50-40) ÷ 50 = 10 ÷ 50. But percentage increase asks how much the value increased relative to the original value, so the reference is the original value 40. Divide the increase of 10 by the original value 40 and calculate it yourself.\nUser: 0.25, so 25%.\nAI: Correct. The key is that the original value belongs in the denominator."
+        },
+        {
+          "type": "p",
+          "text": "The correction criterion here is not simply changing the answer from 20% to 25%. You should be able to explain why 40, not 50, is the reference. Percentage increase compares the change against the original state, so the original value 40 is the denominator."
+        }
+      ]
+    },
+    {
+      "id": "independent-check",
+      "heading": "6. Finally, solve all three problems again without AI",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the review, do not simply reread the answers in the same conversation. Solve all three problems independently on paper or in a note. AI explanations can also contain errors, so the calculations should be checked separately."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Calculate 80×25/100 = 20 yourself",
+            "Check the two-step calculation 200×15/100 = 30, then 200-30 = 170",
+            "Check (50-40)/40 = 10/40 = 0.25 = 25%",
+            "Explain in words why the denominator for percentage increase is the original value 40 rather than the new value 50",
+            "Distinguish between a calculation mistake and an error in choosing the reference value"
+          ]
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Create only 1 new problem similar to the three problems we just practiced. Do not tell me the answer yet. Wait until I answer. After I respond, check not only the calculation result but also which value I used as the reference."
+        },
+        {
+          "type": "p",
+          "text": "This method is appropriate for practice conversations, but it should not be applied directly to cheating on an actual test, answering a qualification assessment on someone else's behalf, or medical calculations where an incorrect result could affect an important decision. Even for learning, the core habit is to verify the final calculation yourself."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example using text conversation only · Actual AI responses vary by tool and model",
+    "items": [
+      "Independently calculate 80×0.25=20 to confirm that 25% of 80 is 20",
+      "Confirm step by step that the 15% discount on 200 is 30 and the final value is 170",
+      "Confirm that the increase from 40 to 50 is 10",
+      "Confirm that the denominator in the percentage-increase calculation is the original value 40",
+      "Be able to explain that (50-40)/50=20% uses the wrong reference value",
+      "Check whether AI follows the rule of presenting one problem at a time and waiting for the user's answer"
+    ],
+    "limits": "This is a learning-oriented editorial example, not the result of testing an actual AI tool's educational performance or effectiveness. Do not use it for cheating on tests, proxy answers for qualification assessments, or medical calculations, and independently recalculate all arithmetic results yourself."
+  }
+}

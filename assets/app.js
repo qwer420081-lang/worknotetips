@@ -1,5 +1,5 @@
 if(location.protocol==='http:'&&location.hostname==='worknotetips.com'){location.replace('https://'+location.host+location.pathname+location.search+location.hash);}
-(function(){var id='G-NZFH8DJJJ5';var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',id,{anonymize_ip:true});})();
+(function(){if(location.hostname!=='worknotetips.com')return;var id='G-NZFH8DJJJ5';var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+id;document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag('js',new Date());gtag('config',id,{anonymize_ip:true});})();
 
 const input=document.querySelector('#search-input');
 const form=document.querySelector('#search');

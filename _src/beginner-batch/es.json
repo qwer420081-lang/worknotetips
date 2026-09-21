@@ -1,0 +1,714 @@
+{
+  "lang": "es",
+  "articles": [
+    {
+      "slug": "ai-clear-request",
+      "title": "Cómo pedirle a la IA la respuesta que quieres: definir objetivo, contexto, condiciones y formato",
+      "summary": "Aprende a pedirle a la IA un resultado más fácil de revisar indicando el objetivo, los hechos ya confirmados, lo que no debe suponer y el formato deseado, en lugar de pedir simplemente que escriba un texto. Con un aviso para un club de lectura vecinal como ejemplo, comprobarás si la IA inventó información que no existía y usarás una pregunta de seguimiento para suavizar el tono sin cambiar los hechos.",
+      "audience": "Personas no desarrolladoras que empiezan a conversar con IA y quieren aprender a formular solicitudes más precisas",
+      "prerequisites": [
+        "Una herramienta de conversación con IA basada en texto",
+        "Usar ejemplos ficticios en lugar de información personal real o datos de clientes",
+        "Comprobar personalmente los hechos en vez de publicar directamente el texto generado por la IA"
+      ],
+      "tags": [
+        "solicitudes IA",
+        "prompts básicos",
+        "verificación"
+      ],
+      "sections": [
+        {
+          "id": "goal-and-facts",
+          "heading": "1. Organiza primero los hechos, no el resultado final",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El objetivo de esta práctica no es conseguir un aviso perfecto a la primera, sino comprobar qué información debes dar a la IA para que el resultado sea más fácil de revisar. El ejemplo usa un club de lectura vecinal ficticio, no una organización real. Los datos fijos son: el nombre del grupo es Pequeño Club de Lectura, el lugar es el espacio ficticio La Buhardilla, la fecha es 12 de octubre, el horario es 19:00~20:00, cada persona debe llevar el libro que estaba leyendo y no hay cuota de participación. Todavía no existe un enlace de inscripción."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Elemento",
+                "Contenido confirmado",
+                "Qué vigilar"
+              ],
+              "rows": [
+                [
+                  "Nombre del grupo",
+                  "Pequeño Club de Lectura",
+                  "No cambiarlo por otro nombre"
+                ],
+                [
+                  "Lugar",
+                  "Espacio ficticio La Buhardilla",
+                  "No inventar una dirección"
+                ],
+                [
+                  "Fecha",
+                  "12 de octubre",
+                  "No adivinar el día de la semana ni el año"
+                ],
+                [
+                  "Horario",
+                  "19:00~20:00",
+                  "No cambiarlo arbitrariamente"
+                ],
+                [
+                  "Qué llevar",
+                  "El libro que cada persona estaba leyendo",
+                  "No inventar materiales adicionales"
+                ],
+                [
+                  "Cuota de participación",
+                  "Ninguna",
+                  "No ampliarlo a otros beneficios, como bebidas gratis"
+                ],
+                [
+                  "Inscripción",
+                  "Todavía no hay enlace",
+                  "No generar una URL ni un número de teléfono"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Si antes de pedirle algo a la IA separas de esta forma los hechos confirmados de la información pendiente, después podrás comprobar primero si los datos son correctos antes de decidir si el texto suena bien."
+            }
+          ]
+        },
+        {
+          "id": "vague-request",
+          "heading": "2. Prueba deliberadamente con una solicitud ambigua",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Empieza con una petición breve, como las que suelen usarse. Esta solicitud apenas especifica el público, la longitud, los hechos que deben aparecer ni la información que no debe inventarse."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Escribe de forma cercana un aviso promocional para un club de lectura vecinal."
+            },
+            {
+              "type": "p",
+              "text": "La siguiente es una respuesta ficticia de IA, creada deliberadamente con carencias para poder compararla. No es un resultado de ejecución real, sino un ejemplo editorial."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\n¡Te invitamos al Pequeño Club de Lectura! Nos reuniremos el sábado 12 de octubre a las 19:00 en La Buhardilla para hablar de libros. La participación es gratuita y habrá bebidas calientes. Si quieres participar, inscríbete en https://example-bookclub.test o llama al 010-XXXX-XXXX. Solo tienes que traer uno de tus libros favoritos y ganas de pasar un rato agradable."
+            },
+            {
+              "type": "p",
+              "text": "El texto suena natural, pero no puede usarse tal cual. Ha adivinado el día de la semana del 12 de octubre, ha inventado bebidas gratuitas, un enlace de inscripción y un número de teléfono, y además ha cambiado el material que había que llevar por 'uno de tus libros favoritos'. Aunque la redacción de la IA parezca buena, los detalles añadidos que no estaban en la información original dificultan la comprobación de los hechos."
+            }
+          ]
+        },
+        {
+          "id": "structured-request",
+          "heading": "3. Incluye objetivo, contexto, condiciones y formato en una sola solicitud",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ahora separa la solicitud en cuatro partes. El objetivo es informar a los vecinos sobre la reunión, el contexto son los datos ya confirmados, las condiciones son no hacer suposiciones y dejar claro que la información de inscripción aún no está decidida, y el formato es un aviso breve de no más de 5 frases."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Escribe un aviso breve para informar a los vecinos sobre un club de lectura.\nHechos confirmados: el nombre del grupo es 'Pequeño Club de Lectura', el lugar es 'Espacio ficticio La Buhardilla', la fecha es '12 de octubre', el horario es '19:00~20:00', cada participante debe llevar 'el libro que estaba leyendo' y no hay cuota de participación.\nTodavía no existe un enlace de inscripción, así que no inventes enlaces ni números de teléfono y escribe 'El método de inscripción se anunciará más adelante'.\nNo adivines el día de la semana ni el año del 12 de octubre y no añadas información que no te haya dado, como bebidas gratuitas u otros beneficios.\nEl texto completo debe tener como máximo 5 frases y ser fácil de entender para alguien que lo vea por primera vez."
+            },
+            {
+              "type": "p",
+              "text": "La siguiente respuesta tampoco es un resultado real de ejecución de una IA, sino un ejemplo editorial para explicar el método de revisión."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\nEl Pequeño Club de Lectura busca personas que quieran compartir conversaciones sobre libros. La reunión tendrá lugar el 12 de octubre de 19:00~20:00 en el espacio ficticio La Buhardilla. Cada persona debe traer el libro que estaba leyendo y no hay cuota de participación. El método de inscripción se anunciará más adelante. Si te apetece compartir lecturas y conversación en un ambiente relajado, puedes unirte."
+            }
+          ]
+        },
+        {
+          "id": "check-the-answer",
+          "heading": "4. Comprueba los hechos y las condiciones antes que la redacción",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Aunque recibas una respuesta mejorada, no termines ahí. Primero compárala punto por punto con la información original y después revisa las condiciones de formato. En particular, una condición como 'máximo 5 frases' no debe juzgarse por la sensación de longitud: conviene contar realmente las frases según una regla que hayas definido, por ejemplo usando los puntos finales."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Elemento de revisión",
+                "Resultado que debe mantenerse",
+                "Criterio de corrección"
+              ],
+              "rows": [
+                [
+                  "Nombre del grupo",
+                  "Se mantiene Pequeño Club de Lectura",
+                  "Si cambia, restaurar el original"
+                ],
+                [
+                  "Fecha y horario",
+                  "Se mantienen 12 de octubre y 19:00~20:00",
+                  "Eliminar cualquier día de la semana o año añadido"
+                ],
+                [
+                  "Lugar",
+                  "Se mantiene Espacio ficticio La Buhardilla",
+                  "Si aparece una dirección, marcarla para verificar"
+                ],
+                [
+                  "Qué llevar y cuota",
+                  "El libro que cada persona estaba leyendo, sin cuota",
+                  "No permitir materiales ni beneficios adicionales"
+                ],
+                [
+                  "Información de inscripción",
+                  "Se indica que se anunciará más adelante",
+                  "Si aparece un enlace o teléfono, eliminarlo y marcarlo para verificar"
+                ],
+                [
+                  "Longitud",
+                  "5 frases",
+                  "Si hay 6 o más, pedir una versión más corta"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Si la IA vuelve a insertar un enlace o un número de teléfono inexistente, no conviene limitarse a borrarlo y olvidarlo. Puede ser útil dejar en el borrador una marca como '[Necesita confirmación: método de inscripción aún no decidido]'. Mantener visible la información pendiente facilita sustituirla cuando se confirme el dato real."
+            }
+          ]
+        },
+        {
+          "id": "follow-up-tone",
+          "heading": "5. En la pregunta de seguimiento, fija los hechos y cambia solo el tono",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si el primer resultado es correcto en cuanto a los hechos pero suena un poco rígido, no hace falta regenerar toda la información desde cero. Separa lo que debe mantenerse de lo que quieres modificar y envía una pregunta de seguimiento."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Mantén exactamente la información factual y la condición de un máximo de 5 frases del aviso anterior. No añadas información nueva y cambia solo el tono para que suene un poco más cercano, como un aviso dirigido a los vecinos. En especial, no cambies la fecha, el horario, el lugar, lo que hay que llevar, la cuota de participación ni el hecho de que el método de inscripción todavía no está decidido."
+            },
+            {
+              "type": "p",
+              "text": "La clave de una buena pregunta de seguimiento no es decir 'escríbelo mejor', sino indicar qué debe quedar fijo y qué parte se puede revisar. Esto reduce el riesgo de que cambien también los números o el lugar cuando solo querías ajustar el tono."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Qué cambiar: el tono y la conexión entre frases",
+                "Qué mantener fijo: fecha, horario, lugar, qué llevar, cuota de participación y estado de la inscripción",
+                "Qué no añadir: enlaces, teléfonos, servicios, beneficios o suposiciones sobre el día de la semana o el año",
+                "Comprobación final: volver a contar las frases y revisar que los hechos coincidan"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "reuse-checklist",
+          "heading": "6. Reutiliza la misma estructura en otras solicitudes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El resultado real de esta práctica no es el aviso del club de lectura, sino la estructura 'objetivo-contexto-condiciones-formato'. En avisos de eventos, comunicaciones de grupos, explicaciones breves y otros trabajos donde los hechos sean importantes, puedes separar primero la información confirmada de la pendiente y después utilizar la misma estructura."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Objetivo: quién va a leerlo y qué debe saber\nContexto: hechos y cifras ya confirmados\nCondiciones: información que no debe suponerse ni añadirse\nFormato: longitud, número de frases, uso de tablas, tono\nVerificación: elementos que deben compararse con la información original"
+            },
+            {
+              "type": "p",
+              "text": "Que la IA escriba de manera natural y que el contenido sea correcto son dos cosas distintas. Para una persona principiante, es más importante indicar con claridad hechos verificables y desarrollar el hábito de detectar información nueva introducida en el resultado que intentar hacer la solicitud más sofisticada."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Ejemplo editorial · Las respuestas reales de IA varían según la herramienta y el modelo",
+        "items": [
+          "Comprobar que el nombre del grupo, el lugar, la fecha, el horario, lo que hay que llevar y la cuota coinciden con los hechos fijados",
+          "Comprobar que no se haya añadido arbitrariamente un día de la semana o un año al 12 de octubre",
+          "Comprobar que no se haya inventado información no proporcionada, como un enlace de inscripción, un teléfono o bebidas gratuitas",
+          "Si la información de inscripción está pendiente, comprobar que aparezca como pendiente de confirmar o que se anunciará más adelante",
+          "Contar personalmente las frases y confirmar que el aviso final tenga como máximo 5",
+          "Después de la pregunta de seguimiento, confirmar que los hechos siguen iguales y solo haya cambiado el tono"
+        ],
+        "limits": "Este es un ejemplo editorial con fines de aprendizaje, no el resultado de ejecutar una herramienta de IA real ni de realizar pruebas con usuarios. No introduzcas información de identificación personal ni datos reales de clientes y compara directamente todos los hechos con la información original."
+      }
+    },
+    {
+      "slug": "ai-practice-tutor",
+      "title": "Usar la IA como ayudante de práctica personal: desde pistas hasta repasar errores",
+      "summary": "Aprende a usar la IA para practicar haciendo que presente un problema cada vez, espere tu respuesta y después ofrezca pistas y explicaciones de los errores en lugar de dar directamente la solución. Con tres problemas de porcentajes, comprobarás qué valor debe usarse como denominador y verificarás de forma independiente las explicaciones de la IA con cálculos hechos a mano.",
+      "audience": "Personas principiantes que quieren practicar cálculos básicos por sí mismas mientras usan la IA como apoyo de aprendizaje",
+      "prerequisites": [
+        "Poder hacer multiplicaciones y divisiones básicas",
+        "Volver a calcular las respuestas personalmente en lugar de memorizar directamente lo que diga la IA",
+        "No aplicar este ejemplo a trampas en exámenes, respuestas por otra persona en evaluaciones de cualificación ni cálculos médicos"
+      ],
+      "tags": [
+        "aprendizaje IA",
+        "porcentajes",
+        "repaso errores"
+      ],
+      "sections": [
+        {
+          "id": "practice-rules",
+          "heading": "1. Define a la IA como compañero de práctica, no como generador de respuestas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El objetivo de este artículo no es pedirle a la IA que muestre todos los problemas y respuestas de una vez para limitarte a leerlos. La idea es calcular primero por tu cuenta, pedir una pista solo cuando te atasques y, si te equivocas, recibir una explicación de por qué. La práctica usa únicamente tres problemas: 25% de 80, el valor después de aplicar un descuento del 15% a 200 y el porcentaje de aumento de 40 a 50."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Problema",
+                "Respuesta",
+                "Principio que comprobar"
+              ],
+              "rows": [
+                [
+                  "¿Cuál es el 25% de 80?",
+                  "20",
+                  "Multiplicar el total 80 por 0.25"
+                ],
+                [
+                  "¿Cuánto queda después de aplicar un 15% de descuento a 200?",
+                  "170",
+                  "Restar el descuento de 30 al valor original 200"
+                ],
+                [
+                  "¿Cuál es el porcentaje de aumento de 40 a 50?",
+                  "25%",
+                  "Dividir el aumento de 10 entre el valor original 40"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "En problemas de variación porcentual como el tercero, es especialmente importante decidir qué valor debe ir en el denominador. Para calcular el porcentaje de aumento se usa como denominador el valor original 40, no el nuevo valor 50."
+            }
+          ]
+        },
+        {
+          "id": "bad-first-request",
+          "heading": "2. Observa qué se pierde cuando pides directamente las respuestas",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Ponme tres problemas de porcentajes y dime también las respuestas y cómo se resuelven."
+            },
+            {
+              "type": "p",
+              "text": "Esta solicitud es cómoda para comprobar respuestas rápidamente, pero elimina el proceso de práctica. La siguiente es una respuesta ficticia de IA, deliberadamente insuficiente para mostrar el problema. No es un resultado de ejecución real, sino un ejemplo editorial."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\n1) 25% de 80 = 20\n2) Si restas el 15% de 200, quedan 170\n3) Como aumentó de 40 a 50, el porcentaje de aumento es 25%\nSolo tienes que recordar las fórmulas."
+            },
+            {
+              "type": "p",
+              "text": "Las respuestas son correctas, pero no permiten saber en qué paso se atasca la persona y hacen más difícil detectar hábitos como elegir el denominador equivocado. Limitarse a 'recordar las fórmulas' también puede provocar nuevos errores cuando un problema parecido está redactado de otra forma."
+            }
+          ]
+        },
+        {
+          "id": "tutor-prompt",
+          "heading": "3. Crea una regla de práctica que espere tu respuesta problema por problema",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Cuando asignes a la IA el papel de tutor, no basta con pedirle que oculte la respuesta. Especifica cómo debe desarrollarse la práctica. Pídele que plantee un problema, espere tu respuesta y, si te equivocas, dé primero una sola pista en lugar de mostrar directamente la solución."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Actúa como ayudante para practicar porcentajes. Hazme los siguientes 3 problemas en orden, solo uno cada vez, y espera mi respuesta antes de continuar.\n1) 25% de 80\n2) El valor después de aplicar un 15% de descuento a 200\n3) El porcentaje de aumento de 40 a 50\nSi me equivoco, no me digas inmediatamente la respuesta. Dame primero solo 1 pista. Si también fallo en el segundo intento, explica brevemente el cálculo. En especial, para el problema del porcentaje de aumento, hazme una pregunta para comprobar cuál es el valor de referencia y qué valor debe usarse como denominador. Muestra todos los cálculos como expresiones sencillas que yo pueda volver a comprobar a mano."
+            },
+            {
+              "type": "p",
+              "text": "La clave de esta solicitud es el orden de aprendizaje. Si el proceso sigue la secuencia problema, respuesta del usuario, pista, nuevo intento y comprobación de la solución, se reduce la posibilidad de que la IA sustituya por completo el razonamiento del estudiante."
+            }
+          ]
+        },
+        {
+          "id": "hint-example",
+          "heading": "4. Haz que las pistas de los dos primeros problemas no resuelvan el cálculo por ti",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Supón que te atascas en el primer problema. Una buena pista no debe revelar de inmediato la respuesta 20, sino sugerir que conviertas 25% en 0.25 o en 1/4."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\nProblema: ¿Cuál es el 25% de 80?\nUsuario: No estoy seguro.\nIA: Te daré solo una pista. 25% es 25 de cada 100 y equivale a 1/4. Calcula cuánto es 80 dividido entre 4.\nUsuario: 20.\nIA: Correcto. Comprueba una vez más a mano que 80 ÷ 4 = 20."
+            },
+            {
+              "type": "p",
+              "text": "El segundo problema puede hacerse de la misma manera. Primero se obtiene que el 15% de 200 es el importe del descuento y después se comprueba que el precio final se calcula restando ese descuento al precio original. Aunque la IA diga que el resultado es 170, verifica por separado 200×0.15=30 y 200-30=170."
+            }
+          ]
+        },
+        {
+          "id": "wrong-denominator",
+          "heading": "5. Repasa la respuesta incorrecta de 20% en el problema de aumento",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En el tercer problema, supón que respondes 20%. Ese resultado incorrecto sale de calcular (50-40)/50, es decir, dividir el aumento de 10 entre el nuevo valor 50. El problema principal no es la aritmética, sino haber elegido mal el valor de referencia."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\nProblema: Un valor aumentó de 40 a 50. ¿Cuál es el porcentaje de aumento?\nUsuario: 20%.\nIA: Vamos a comprobar el denominador. El resultado 20% sale de (50-40) ÷ 50 = 10 ÷ 50. Pero el porcentaje de aumento mide cuánto creció el valor con respecto al valor original, así que la referencia es el valor inicial 40. Divide el aumento de 10 entre el valor original 40 y haz tú mismo el cálculo.\nUsuario: 0.25, así que 25%.\nIA: Correcto. La clave es que el valor original va en el denominador."
+            },
+            {
+              "type": "p",
+              "text": "El criterio de corrección aquí no consiste simplemente en cambiar la respuesta de 20% a 25%. Debes poder explicar por qué 40, y no 50, es la referencia. El porcentaje de aumento compara el cambio con el estado original, por eso el valor original 40 es el punto de comparación."
+            }
+          ]
+        },
+        {
+          "id": "independent-check",
+          "heading": "6. Al final, vuelve a resolver los tres problemas sin IA",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Cuando termines el repaso, no te limites a releer las respuestas en la misma conversación. Resuelve de forma independiente los tres problemas en papel o en una nota. Las explicaciones de la IA también pueden contener errores, así que los cálculos deben comprobarse por separado."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Calcular personalmente 80×25/100 = 20",
+                "Comprobar en dos pasos 200×15/100 = 30 y después 200-30 = 170",
+                "Comprobar (50-40)/40 = 10/40 = 0.25 = 25%",
+                "Explicar con palabras por qué el denominador del porcentaje de aumento es el valor original 40 y no el nuevo valor 50",
+                "Distinguir entre un error de cálculo y un error al elegir el valor de referencia"
+              ]
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Crea solo 1 problema nuevo parecido a los tres que acabamos de practicar. Todavía no me digas la respuesta y espera hasta que yo responda. Después, comprueba no solo el resultado del cálculo, sino también qué valor usé como referencia."
+            },
+            {
+              "type": "p",
+              "text": "Este método es adecuado para conversaciones de práctica, pero no debe aplicarse directamente a trampas en exámenes reales, respuestas por otra persona en evaluaciones de cualificación ni cálculos médicos donde un error pueda afectar una decisión importante. Incluso cuando el objetivo es aprender, el hábito fundamental es comprobar personalmente el cálculo final."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Ejemplo editorial · Las respuestas reales de IA varían según la herramienta y el modelo",
+        "items": [
+          "Comprobar mediante un cálculo independiente que el 25% de 80 es 80×0.25=20",
+          "Comprobar paso a paso que el 15% de descuento sobre 200 es 30 y que el valor final es 170",
+          "Comprobar que el aumento de 40 a 50 es 10",
+          "Comprobar que el denominador del cálculo del porcentaje de aumento es el valor original 40",
+          "Poder explicar que (50-40)/50=20% usa un valor de referencia incorrecto",
+          "Comprobar que la IA respeta la regla de presentar un problema cada vez y esperar la respuesta del usuario"
+        ],
+        "limits": "Este es un ejemplo editorial con fines de aprendizaje, no el resultado de probar el rendimiento educativo ni la eficacia de una herramienta de IA real. No lo uses para hacer trampas en exámenes, responder por otra persona en evaluaciones de cualificación ni realizar cálculos médicos, y vuelve a calcular personalmente todos los resultados."
+      }
+    },
+    {
+      "slug": "ai-weekly-plan",
+      "title": "Crear un plan semanal realista con IA: calcular primero el tiempo disponible",
+      "summary": "Aprende a calcular primero el tiempo realmente disponible durante la semana y el tiempo necesario para tus tareas, en lugar de intentar encajarlas a la fuerza en los huecos. La práctica también contempla que el miércoles deje de estar disponible y muestra cómo comprobar que la IA no invente tiempo adicional que no existe.",
+      "audience": "Personas no desarrolladoras que quieren distribuir tareas personales de estudio o vida cotidiana dentro de límites de tiempo realistas",
+      "prerequisites": [
+        "Poder anotar en minutos el tiempo que realmente tienes disponible durante la semana",
+        "Poder estimar aproximadamente la duración y el número de veces que debes realizar cada tarea",
+        "Practicar con un ejemplo personal ficticio, no con registros reales de trabajo ni agendas de clientes"
+      ],
+      "tags": [
+        "planificación IA",
+        "gestión tiempo",
+        "decisiones"
+      ],
+      "sections": [
+        {
+          "id": "calculate-capacity",
+          "heading": "1. Calcula el tiempo disponible antes que las tareas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La idea central de esta práctica es no pedir directamente a la IA 'hazme un plan para esta semana', sino fijar primero cuánto tiempo tienes realmente disponible. El tiempo disponible es lunes 30 minutos, martes 0, miércoles 45, jueves 30, viernes 0, sábado 60 y domingo 30 minutos."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Día",
+                "Tiempo disponible"
+              ],
+              "rows": [
+                [
+                  "Lunes",
+                  "30 min"
+                ],
+                [
+                  "Martes",
+                  "0 min"
+                ],
+                [
+                  "Miércoles",
+                  "45 min"
+                ],
+                [
+                  "Jueves",
+                  "30 min"
+                ],
+                [
+                  "Viernes",
+                  "0 min"
+                ],
+                [
+                  "Sábado",
+                  "60 min"
+                ],
+                [
+                  "Domingo",
+                  "30 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "El total es 30+0+45+30+0+60+30=195 minutos. Esta cifra es la capacidad máxima que puedes usar durante la semana. Como martes y viernes tienen 0 minutos disponibles, la condición básica es no asignar ninguna tarea esos días."
+            }
+          ]
+        },
+        {
+          "id": "calculate-workload",
+          "heading": "2. Calcula por separado la duración y el número de repeticiones",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Las tareas de esta semana son organizar documentos durante 20 minutos × 2 veces, leer durante 25 minutos × 3 veces y practicar una presentación durante 30 minutos × 2 veces. Si calculas primero el tiempo total de cada tarea, obtienes 40 minutos para organizar documentos, 75 para leer y 60 para practicar la presentación, un total de 175 minutos."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Tarea",
+                "Tiempo por sesión",
+                "Veces",
+                "Tiempo total"
+              ],
+              "rows": [
+                [
+                  "Organizar documentos",
+                  "20 min",
+                  "2",
+                  "40 min"
+                ],
+                [
+                  "Lectura",
+                  "25 min",
+                  "3",
+                  "75 min"
+                ],
+                [
+                  "Práctica de presentación",
+                  "30 min",
+                  "2",
+                  "60 min"
+                ],
+                [
+                  "Total",
+                  "",
+                  "",
+                  "175 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Si restas los 175 minutos necesarios a los 195 disponibles, quedan 20 minutos de margen. Esto significa que, con las condiciones actuales, todas las tareas caben, pero no significa que puedan colocarse en cualquier día. También hay que respetar el máximo disponible de cada jornada."
+            }
+          ]
+        },
+        {
+          "id": "weak-plan-request",
+          "heading": "3. Observa cómo una solicitud ambigua puede producir un plan poco realista",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Esta semana tengo que organizar documentos, leer y practicar una presentación. Hazme un plan equilibrado."
+            },
+            {
+              "type": "p",
+              "text": "Esta solicitud no incluye el tiempo disponible de cada día ni el número de veces que debe hacerse cada tarea, por lo que la IA puede inventar un plan que parezca equilibrado pero no respete las limitaciones reales. La siguiente es una respuesta ficticia de IA creada deliberadamente con errores para mostrar el problema. No es un resultado de ejecución real, sino un ejemplo editorial."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\nLunes: Organizar documentos 20 min + Lectura 25 min\nMartes: Práctica de presentación 30 min\nMiércoles: Lectura 25 min\nJueves: Organizar documentos 20 min + Práctica de presentación 30 min\nViernes: Lectura 25 min\nSábado y domingo: Completar las tareas que queden pendientes"
+            },
+            {
+              "type": "p",
+              "text": "El lunes se han asignado 45 minutos aunque solo hay 30 disponibles, y además se han colocado tareas el martes y el viernes aunque esos días tienen 0 minutos disponibles. Esto muestra que una expresión como 'equilibrado' no transmite por sí sola las limitaciones reales."
+            }
+          ]
+        },
+        {
+          "id": "constrained-plan",
+          "heading": "4. Da a la IA tanto el total como los límites de cada día",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Crea un plan semanal personal para mí.\nMi tiempo disponible es lunes 30 min, martes 0 min, miércoles 45 min, jueves 30 min, viernes 0 min, sábado 60 min y domingo 30 min, para un total de 195 min.\nLas tareas son organizar documentos 20 min × 2 veces, leer 25 min × 3 veces y practicar una presentación 30 min × 2 veces, para un total de 175 min.\nNo superes el tiempo disponible de ningún día y no asignes ninguna tarea el martes ni el viernes. Respeta exactamente el número de veces de cada tarea. No intentes llenar a la fuerza los 20 min sobrantes; déjalos como margen libre.\nMuestra en una tabla las tareas y el tiempo usado cada día y, al final, vuelve a calcular el tiempo total utilizado y el tiempo restante."
+            },
+            {
+              "type": "p",
+              "text": "La siguiente es una distribución editorial aceptable que cumple las condiciones. No es un resultado real de ejecución de una IA."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Día",
+                "Asignación",
+                "Tiempo usado",
+                "Tiempo disponible"
+              ],
+              "rows": [
+                [
+                  "Lunes",
+                  "Lectura 1 vez",
+                  "25 min",
+                  "30 min"
+                ],
+                [
+                  "Martes",
+                  "Descanso",
+                  "0 min",
+                  "0 min"
+                ],
+                [
+                  "Miércoles",
+                  "Organizar documentos 1 vez + Lectura 1 vez",
+                  "45 min",
+                  "45 min"
+                ],
+                [
+                  "Jueves",
+                  "Práctica de presentación 1 vez",
+                  "30 min",
+                  "30 min"
+                ],
+                [
+                  "Viernes",
+                  "Descanso",
+                  "0 min",
+                  "0 min"
+                ],
+                [
+                  "Sábado",
+                  "Práctica de presentación 1 vez + Lectura 1 vez",
+                  "55 min",
+                  "60 min"
+                ],
+                [
+                  "Domingo",
+                  "Organizar documentos 1 vez",
+                  "20 min",
+                  "30 min"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "El tiempo usado es 25+45+30+55+20=175 minutos, es decir, 20 minutos menos que los 195 minutos disponibles en total. También se cumplen exactamente las cantidades necesarias: organizar documentos 2 veces, leer 3 veces y practicar la presentación 2 veces."
+            }
+          ]
+        },
+        {
+          "id": "verify-plan",
+          "heading": "5. Comprueba primero las restricciones numéricas, no si el plan se ve bonito",
+          "blocks": [
+            {
+              "type": "ul",
+              "items": [
+                "Comprobar que los 25 minutos del lunes no superan el máximo de 30",
+                "Comprobar que los 45 minutos del miércoles no superan el máximo de 45",
+                "Comprobar que los 30 minutos del jueves no superan el máximo de 30",
+                "Comprobar que los 55 minutos del sábado no superan el máximo de 60",
+                "Comprobar que los 20 minutos del domingo no superan el máximo de 30",
+                "Comprobar que el tiempo usado el martes y el viernes sea 0",
+                "Volver a calcular que el tiempo total disponible es 195 minutos",
+                "Volver a calcular que el tiempo total de tareas es 175 minutos",
+                "Comprobar las repeticiones: organizar documentos 2, lectura 3 y práctica de presentación 2",
+                "Comprobar que realmente queden 195-175=20 minutos de margen"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Aunque la IA presente una tabla muy limpia, si falla una sola de estas comprobaciones hay que corregir el plan. En los días que tengan más de una tarea, suma directamente los tiempos y confirma que no se supere el máximo diario."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Vuelve a comprobar este plan. Para cada día, verifica si el tiempo usado supera el tiempo disponible, si el tiempo total de tareas es 175 minutos y si las repeticiones son organizar documentos 2, lectura 3 y práctica de presentación 2. Además, muestra las sumas para que yo pueda volver a calcular tu verificación por mi cuenta."
+            }
+          ]
+        },
+        {
+          "id": "schedule-change",
+          "heading": "6. Si desaparecen los 45 minutos del miércoles, decide qué posponer",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Supón que, después de crear el plan, de repente ya no puedes usar los 45 minutos del miércoles. El nuevo tiempo disponible es 195 menos 45, es decir, 150 minutos. Las tareas originales requieren 175 minutos, así que faltan 25 minutos. Por tanto, es matemáticamente imposible mantener todas las tareas originales dentro de la semana."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "De repente ya no puedo usar los 45 minutos del miércoles. Mantén igual el tiempo disponible de los demás días y no inventes tiempo adicional. Ahora tengo 150 minutos en total, pero las tareas actuales requieren 175 minutos. Explica primero qué hay que ajustar y después muestra opciones posibles. Todavía no he decidido si las tareas se pueden dividir en partes más pequeñas, así que, si esa condición es importante, indícalo y dime que debería confirmarla."
+            },
+            {
+              "type": "p",
+              "text": "El siguiente es un ejemplo editorial que muestra la lógica de corrección. No es una respuesta real de IA."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Ejemplo editorial · No es una respuesta real de IA]\nSin el miércoles, el tiempo disponible es de 150 minutos, así que no es posible programar los 175 minutos de tareas originales. Hay que reducir o pasar a la semana siguiente al menos 25 minutos. Una opción es trasladar a la semana siguiente 1 sesión de lectura de 25 minutos. Así, el tiempo restante de tareas queda exactamente en 150 minutos, igual que el tiempo total disponible. Sin embargo, que las tareas restantes puedan colocarse dentro de los límites de cada día puede depender de si se permite dividirlas en unidades más pequeñas, por lo que conviene confirmar primero si la división está permitida."
+            },
+            {
+              "type": "p",
+              "text": "Lo importante es que la IA no oculte la falta de tiempo alargando el sábado a 85 minutos o creando tiempo nuevo el martes. Cuando el tiempo disponible deja de ser suficiente, primero hay que reconocer que no se puede hacer todo y después ajustar prioridades. Si se aplaza una sesión de lectura de 25 minutos a la semana siguiente, quedan exactamente 150 minutos de trabajo, de modo que el total cabe dentro de la capacidad semanal restante. Sin embargo, la distribución real por días puede depender de si las tareas se pueden dividir, por lo que esa condición debe confirmarse con el usuario."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Ejemplo editorial · Las respuestas reales de IA varían según la herramienta y el modelo",
+        "items": [
+          "Calcular directamente que la suma del tiempo disponible por día es 195 minutos",
+          "Calcular que el tiempo total original de tareas es 175 minutos usando duración × número de veces de cada tarea",
+          "Comprobar que, en el plan original, el tiempo usado cada día no supere el máximo disponible de ese día",
+          "Comprobar que no haya tareas asignadas el martes ni el viernes",
+          "Comprobar que haya exactamente 2 sesiones de organizar documentos, 3 de lectura y 2 de práctica de presentación",
+          "Comprobar que el plan original deje 20 minutos de margen",
+          "Después de eliminar los 45 minutos del miércoles, comprobar que el tiempo total disponible sea 150 minutos",
+          "Comprobar que 175 minutos de tareas no caben completamente en 150 minutos",
+          "Comprobar que aplazar 1 sesión de lectura de 25 minutos reduzca el trabajo restante a 150 minutos",
+          "Comprobar que la IA no invente tiempo adicional que no existe"
+        ],
+        "limits": "Este es un ejemplo editorial para aprender a planificar tareas personales, no el resultado de ejecutar una herramienta real de gestión de horarios ni de probar el comportamiento de usuarios. La duración estimada de las tareas puede variar en situaciones reales, y el usuario debe decidir personalmente si las tareas pueden dividirse y cuáles tienen prioridad."
+      }
+    }
+  ]
+}
