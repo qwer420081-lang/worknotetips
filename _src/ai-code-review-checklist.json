@@ -1,1 +1,258 @@
-{"title": "Review AI-Written Code with a Practical Checklist", "summary": "AI-generated code can look complete while still making assumptions about inputs, edge cases, dependencies, and failures. This guide uses a tiny synthetic CSV example to review the code systematically before relying on it.", "seo_title": "AI Code Review Checklist for Python Scripts", "seo_desc": "Review AI-written Python code for inputs, edge cases, error handling, dependencies, output safety, and tests before using it on real files.", "tags": ["AI code review", "Python", "testing"], "audience": "For people who use an AI chat assistant to draft small Python scripts and want a repeatable way to check them before using real data.", "prerequisites": ["Python 3.12", "Basic familiarity with running a Python script and reading CSV files"], "sections": [{"id": "why-review-ai-code", "heading": "Why AI-written code still needs review", "blocks": [{"type": "p", "text": "An AI chat assistant can produce syntactically plausible code very quickly, but plausibility is not the same as correctness. A script may assume that every input row is complete, silently interpret a column incorrectly, overwrite an existing result, depend on a package you do not have, or fail only when it sees an unusual value. The useful habit is therefore not merely asking whether the code looks reasonable. Review its assumptions one by one."}, {"type": "p", "text": "A compact review can be organized around five questions: What inputs does the code expect? What happens at the edges? How are errors handled? What dependencies are required? What tests would reveal a wrong result? Output behavior should also be checked because a correct calculation can still be unsafe if it overwrites files."}, {"type": "callout", "title": "Rule of thumb", "text": "Treat AI-generated code as a draft from another developer. Read it, identify its assumptions, and test those assumptions before applying it to important files."}]}, {"id": "synthetic-example", "heading": "Use a tiny synthetic example first", "blocks": [{"type": "p", "text": "Suppose you have a synthetic file named orders.csv. It has three columns: order_id, quantity, and unit_price. The three data rows are A001,2,10.00; A002,3,5.50; and A003,1,8.00. The expected revenue is easy to calculate by hand: 2 × 10.00 = 20.00, 3 × 5.50 = 16.50, and 1 × 8.00 = 8.00. The total should therefore be 44.50 across 6 units."}, {"type": "p", "text": "Keeping the first example this small matters. If an AI-produced script reports 44.50, you can independently verify the number. If you begin with a 50,000-row work file, a plausible-looking result may hide a parsing or calculation mistake."}, {"type": "table", "headers": ["order_id", "quantity", "unit_price", "expected revenue"], "rows": [["A001", "2", "10.00", "20.00"], ["A002", "3", "5.50", "16.50"], ["A003", "1", "8.00", "8.00"], ["Total", "6", "", "44.50"]]}]}, {"id": "ask-the-ai", "heading": "Ask for explicit input and output rules", "blocks": [{"type": "p", "text": "A useful prompt specifies the file format, calculation, failure behavior, and output policy instead of asking only for a script that summarizes sales."}, {"type": "ol", "items": ["Say that orders.csv must contain order_id, quantity, and unit_price.", "Ask the script to reject missing or invalid numeric values instead of guessing.", "Ask it to calculate total units and total revenue.", "Require only the Python 3.12 standard library.", "Require results to be written under outputs and require the script to stop if the intended output file already exists."]}, {"type": "callout", "title": "Example request to the AI", "text": "Write a Python 3.12 script that reads orders.csv with columns order_id, quantity, and unit_price. Validate required fields, calculate total quantity and total revenue, and write outputs/order_summary.txt. Use only the standard library. Do not modify orders.csv. If the output file already exists, stop instead of overwriting it."}]}, {"id": "typical-ai-answer", "heading": "Inspect a typical AI answer", "blocks": [{"type": "p", "text": "A reasonable answer might use csv.DictReader, Decimal for money, pathlib for paths, and explicit validation. Even when the code looks clean, review each branch instead of assuming the implementation matches the request."}, {"type": "code"}]}, {"id": "review-checklist", "heading": "Review inputs, edges, errors, and dependencies", "blocks": [{"type": "table", "headers": ["Check", "Question to ask", "What this example does"], "rows": [["Inputs", "Are file names, columns, encodings, and data types explicit?", "Requires orders.csv and three named columns; opens UTF-8 CSV."], ["Edge cases", "What happens with missing headers, blanks, zero values, or negative values?", "Rejects missing fields and negative values; zero is accepted."], ["Errors", "Does invalid input fail clearly or continue with a bad result?", "Stops with a line-specific message for missing or invalid values."], ["Dependencies", "Does the script require packages or versions not mentioned?", "Uses only Python 3.12 standard-library modules."], ["Output safety", "Can an existing result be overwritten?", "Stops if outputs/order_summary.txt already exists."], ["Tests", "Can you predict results for a tiny example?", "The synthetic example should produce 6 units and 44.50 revenue."]]}, {"type": "p", "text": "Also review assumptions that are not obvious from syntax. For example, this script permits quantity 0 and unit_price 0 because they are not negative. Whether zero values are valid is a business rule, not a Python question. The reviewer must decide whether that rule matches the real dataset."}]}, {"id": "test-cases", "heading": "Design tests before using real files", "blocks": [{"type": "p", "text": "Do not test only the normal case. A short set of deliberately different inputs reveals much more about the script's behavior."}, {"type": "ul", "items": ["Normal case: the three synthetic rows should produce total_quantity=6 and total_revenue=44.50.", "Missing column: rename unit_price to price and confirm the script stops before calculating.", "Blank value: leave one quantity empty and confirm it reports the relevant line.", "Invalid number: use five instead of 5 and confirm it is rejected.", "Negative value: use -1 for quantity or unit_price and confirm the script stops.", "Zero value: use quantity 0 and decide whether accepting it matches your intended rule.", "Existing output: create outputs/order_summary.txt first and confirm the script is designed to stop rather than overwrite it.", "Empty data file with only the header: determine whether totals of 0 and 0.00 are acceptable or whether an empty dataset should be rejected."]}, {"type": "callout", "title": "Common mistake", "text": "A script passing one successful example does not demonstrate that its validation is correct. Test at least one case for each important failure path."}]}, {"id": "limits-and-human-review", "heading": "Know what this checklist does not prove", "blocks": [{"type": "p", "text": "This checklist can expose many ordinary implementation mistakes, but it does not prove that the underlying requirement is correct. The script cannot decide whether refunds should be negative, whether quantity may be zero, whether prices include tax, or whether duplicate order IDs are permitted unless those rules are specified."}, {"type": "p", "text": "For larger or higher-risk scripts, extend the review to security, permissions, privacy, concurrency, numerical precision, performance, logging, and automated tests. Also inspect code that handles paths, shell commands, network requests, credentials, or destructive file operations more carefully than a small local CSV calculation."}, {"type": "p", "text": "The practical sequence is simple: define the input contract, calculate a tiny example independently, inspect each failure path, identify dependencies, protect outputs, and test edge cases. The AI can help draft the implementation, but the reviewer remains responsible for deciding whether the code matches the actual task."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["The synthetic arithmetic was checked by hand: 2 × 10.00 = 20.00, 3 × 5.50 = 16.50, and 1 × 8.00 = 8.00.", "The expected quantity was checked by hand: 2 + 3 + 1 = 6.", "The expected revenue was checked by hand: 20.00 + 16.50 + 8.00 = 44.50.", "The example code was reviewed manually against the stated input, validation, dependency, and no-overwrite requirements.", "The code uses only Python standard-library modules: csv, decimal, and pathlib."], "limits": ["The Python code was not executed by the author of this article; behavior described here is based on manual code review.", "The example does not define business rules for duplicate order IDs, zero quantities, refunds, taxes, currency conversion, or unusually large files.", "Passing these checks does not prove that a script is secure or correct for a different dataset or production environment."]}, "references": [{"title": "Python csv documentation", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python decimal documentation", "url": "https://docs.python.org/3/library/decimal.html"}, {"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}, {"title": "Python unittest documentation", "url": "https://docs.python.org/3/library/unittest.html"}], "slug": "ai-code-review-checklist", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Review AI-Written Code with a Practical Checklist",
+  "summary": "AI-generated code can look complete while still making assumptions about inputs, edge cases, dependencies, and failures. This guide uses a tiny synthetic CSV example to review the code systematically before relying on it.",
+  "seo_title": "AI Code Review Checklist for Python Scripts",
+  "seo_desc": "Review AI-written Python code for inputs, edge cases, error handling, dependencies, output safety, and tests before using it on real files.",
+  "tags": [
+    "AI code review",
+    "Python",
+    "testing"
+  ],
+  "audience": "For people who use an AI chat assistant to draft small Python scripts and want a repeatable way to check them before using real data.",
+  "prerequisites": [
+    "Python 3.12",
+    "Basic familiarity with running a Python script and reading CSV files"
+  ],
+  "sections": [
+    {
+      "id": "why-review-ai-code",
+      "heading": "Why AI-written code still needs review",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI chat assistant can produce syntactically plausible code very quickly, but plausibility is not the same as correctness. A script may assume that every input row is complete, silently interpret a column incorrectly, overwrite an existing result, depend on a package you do not have, or fail only when it sees an unusual value. The useful habit is therefore not merely asking whether the code looks reasonable. Review its assumptions one by one."
+        },
+        {
+          "type": "p",
+          "text": "A compact review can be organized around five questions: What inputs does the code expect? What happens at the edges? How are errors handled? What dependencies are required? What tests would reveal a wrong result? Output behavior should also be checked because a correct calculation can still be unsafe if it overwrites files."
+        },
+        {
+          "type": "callout",
+          "title": "Rule of thumb",
+          "text": "Treat AI-generated code as a draft from another developer. Read it, identify its assumptions, and test those assumptions before applying it to important files."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-example",
+      "heading": "Use a tiny synthetic example first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose you have a synthetic file named orders.csv. It has three columns: order_id, quantity, and unit_price. The three data rows are A001,2,10.00; A002,3,5.50; and A003,1,8.00. The expected revenue is easy to calculate by hand: 2 × 10.00 = 20.00, 3 × 5.50 = 16.50, and 1 × 8.00 = 8.00. The total should therefore be 44.50 across 6 units."
+        },
+        {
+          "type": "p",
+          "text": "Keeping the first example this small matters. If an AI-produced script reports 44.50, you can independently verify the number. If you begin with a 50,000-row work file, a plausible-looking result may hide a parsing or calculation mistake."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "order_id",
+            "quantity",
+            "unit_price",
+            "expected revenue"
+          ],
+          "rows": [
+            [
+              "A001",
+              "2",
+              "10.00",
+              "20.00"
+            ],
+            [
+              "A002",
+              "3",
+              "5.50",
+              "16.50"
+            ],
+            [
+              "A003",
+              "1",
+              "8.00",
+              "8.00"
+            ],
+            [
+              "Total",
+              "6",
+              "",
+              "44.50"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ask-the-ai",
+      "heading": "Ask for explicit input and output rules",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A useful prompt specifies the file format, calculation, failure behavior, and output policy instead of asking only for a script that summarizes sales."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Say that orders.csv must contain order_id, quantity, and unit_price.",
+            "Ask the script to reject missing or invalid numeric values instead of guessing.",
+            "Ask it to calculate total units and total revenue.",
+            "Require only the Python 3.12 standard library.",
+            "Require results to be written under outputs and require the script to stop if the intended output file already exists."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Write a Python 3.12 script that reads orders.csv with columns order_id, quantity, and unit_price. Validate required fields, calculate total quantity and total revenue, and write outputs/order_summary.txt. Use only the standard library. Do not modify orders.csv. If the output file already exists, stop instead of overwriting it."
+        }
+      ]
+    },
+    {
+      "id": "typical-ai-answer",
+      "heading": "Inspect a typical AI answer",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A reasonable answer might use csv.DictReader, Decimal for money, pathlib for paths, and explicit validation. Even when the code looks clean, review each branch instead of assuming the implementation matches the request."
+        },
+        {
+          "type": "code",
+          "text": "from csv import DictReader\nfrom decimal import Decimal, InvalidOperation\nfrom pathlib import Path\n\nINPUT_FILE = Path(\"orders.csv\")\nOUTPUT_DIR = Path(\"outputs\")\nOUTPUT_FILE = OUTPUT_DIR / \"order_summary.txt\"\nREQUIRED_COLUMNS = {\"order_id\", \"quantity\", \"unit_price\"}\n\n\ndef main():\n    if not INPUT_FILE.is_file():\n        raise SystemExit(f\"Input file not found: {INPUT_FILE}\")\n\n    if OUTPUT_FILE.exists():\n        raise SystemExit(f\"Output already exists: {OUTPUT_FILE}\")\n\n    total_quantity = 0\n    total_revenue = Decimal(\"0\")\n\n    with INPUT_FILE.open(\"r\", encoding=\"utf-8\", newline=\"\") as file:\n        reader = DictReader(file)\n\n        if reader.fieldnames is None:\n            raise SystemExit(\"Input file has no header row.\")\n\n        missing_columns = REQUIRED_COLUMNS - set(reader.fieldnames)\n        if missing_columns:\n            names = \", \".join(sorted(missing_columns))\n            raise SystemExit(f\"Missing required columns: {names}\")\n\n        for line_number, row in enumerate(reader, start=2):\n            order_id = row[\"order_id\"].strip()\n            quantity_text = row[\"quantity\"].strip()\n            price_text = row[\"unit_price\"].strip()\n\n            if not order_id or not quantity_text or not price_text:\n                raise SystemExit(f\"Missing value on line {line_number}.\")\n\n            try:\n                quantity = int(quantity_text)\n                unit_price = Decimal(price_text)\n            except (ValueError, InvalidOperation):\n                raise SystemExit(f\"Invalid numeric value on line {line_number}.\")\n\n            if quantity < 0 or unit_price < 0:\n                raise SystemExit(f\"Negative value on line {line_number}.\")\n\n            total_quantity += quantity\n            total_revenue += quantity * unit_price\n\n    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)\n    result = (\n        f\"total_quantity={total_quantity}\\n\"\n        f\"total_revenue={total_revenue:.2f}\\n\"\n    )\n    OUTPUT_FILE.write_text(result, encoding=\"utf-8\")\n    print(f\"Wrote: {OUTPUT_FILE}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "review-checklist",
+      "heading": "Review inputs, edges, errors, and dependencies",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Check",
+            "Question to ask",
+            "What this example does"
+          ],
+          "rows": [
+            [
+              "Inputs",
+              "Are file names, columns, encodings, and data types explicit?",
+              "Requires orders.csv and three named columns; opens UTF-8 CSV."
+            ],
+            [
+              "Edge cases",
+              "What happens with missing headers, blanks, zero values, or negative values?",
+              "Rejects missing fields and negative values; zero is accepted."
+            ],
+            [
+              "Errors",
+              "Does invalid input fail clearly or continue with a bad result?",
+              "Stops with a line-specific message for missing or invalid values."
+            ],
+            [
+              "Dependencies",
+              "Does the script require packages or versions not mentioned?",
+              "Uses only Python 3.12 standard-library modules."
+            ],
+            [
+              "Output safety",
+              "Can an existing result be overwritten?",
+              "Stops if outputs/order_summary.txt already exists."
+            ],
+            [
+              "Tests",
+              "Can you predict results for a tiny example?",
+              "The synthetic example should produce 6 units and 44.50 revenue."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Also review assumptions that are not obvious from syntax. For example, this script permits quantity 0 and unit_price 0 because they are not negative. Whether zero values are valid is a business rule, not a Python question. The reviewer must decide whether that rule matches the real dataset."
+        }
+      ]
+    },
+    {
+      "id": "test-cases",
+      "heading": "Design tests before using real files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Do not test only the normal case. A short set of deliberately different inputs reveals much more about the script's behavior."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Normal case: the three synthetic rows should produce total_quantity=6 and total_revenue=44.50.",
+            "Missing column: rename unit_price to price and confirm the script stops before calculating.",
+            "Blank value: leave one quantity empty and confirm it reports the relevant line.",
+            "Invalid number: use five instead of 5 and confirm it is rejected.",
+            "Negative value: use -1 for quantity or unit_price and confirm the script stops.",
+            "Zero value: use quantity 0 and decide whether accepting it matches your intended rule.",
+            "Existing output: create outputs/order_summary.txt first and confirm the script is designed to stop rather than overwrite it.",
+            "Empty data file with only the header: determine whether totals of 0 and 0.00 are acceptable or whether an empty dataset should be rejected."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Common mistake",
+          "text": "A script passing one successful example does not demonstrate that its validation is correct. Test at least one case for each important failure path."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-human-review",
+      "heading": "Know what this checklist does not prove",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This checklist can expose many ordinary implementation mistakes, but it does not prove that the underlying requirement is correct. The script cannot decide whether refunds should be negative, whether quantity may be zero, whether prices include tax, or whether duplicate order IDs are permitted unless those rules are specified."
+        },
+        {
+          "type": "p",
+          "text": "For larger or higher-risk scripts, extend the review to security, permissions, privacy, concurrency, numerical precision, performance, logging, and automated tests. Also inspect code that handles paths, shell commands, network requests, credentials, or destructive file operations more carefully than a small local CSV calculation."
+        },
+        {
+          "type": "p",
+          "text": "The practical sequence is simple: define the input contract, calculate a tiny example independently, inspect each failure path, identify dependencies, protect outputs, and test edge cases. The AI can help draft the implementation, but the reviewer remains responsible for deciding whether the code matches the actual task."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script completed successfully on the stated synthetic input.",
+      "The generated report contained total_quantity=6 and total_revenue=44.50, matching the article's hand calculation and table.",
+      "The arithmetic matched exactly: 2×10.00=20.00, 3×5.50=16.50, and 1×8.00=8.00.",
+      "The input orders.csv remained unchanged.",
+      "The script created outputs/order_summary.txt as stated.",
+      "A second execution stopped with 'Output already exists: outputs/order_summary.txt', confirming the no-overwrite behavior.",
+      "The code uses only csv, decimal, and pathlib from the Python standard library."
+    ],
+    "limits": [
+      "The article describes additional edge-case tests, but they are review recommendations rather than claimed executed outputs, so the verification run focused on the exact synthetic example and no-overwrite behavior.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python environment; it did not affect the script's result."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python csv documentation",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python decimal documentation",
+      "url": "https://docs.python.org/3/library/decimal.html"
+    },
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "title": "Python unittest documentation",
+      "url": "https://docs.python.org/3/library/unittest.html"
+    }
+  ],
+  "slug": "ai-code-review-checklist",
+  "category": "ai",
+  "date": "2026-09-21"
+}

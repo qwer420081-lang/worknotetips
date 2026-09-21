@@ -1,1 +1,311 @@
-{"title": "Merge PDFs and extract a page range with pypdf", "summary": "Merge several PDFs into one file, extract an inclusive page range into a second file, and verify the resulting page counts and order. A synthetic set of blank pages with deliberately different dimensions makes the result checkable by hand.", "tags": ["Python", "PDF", "pypdf"], "audience": "This guide is for people who need to combine PDFs or extract selected pages without modifying the original documents.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "pypdf installed with python -m pip install pypdf.", "A working folder where the scripts can create folders beneath outputs.", "Enough disk space for the source PDFs, merged PDF, and extracted PDF."], "sections": [{"id": "define-the-workflow", "heading": "1. Define the merge and extraction rules", "blocks": [{"type": "p", "text": "The workflow uses three source PDFs in an explicit order: alpha.pdf, beta.pdf, then gamma.pdf. Their pages are appended to one merged PDF. A second output then extracts pages 2 through 5 from the merged PDF, using ordinary human page numbering where the first page is page 1."}, {"type": "p", "text": "Python sequences use zero-based indexes, but this script accepts START_PAGE and END_PAGE as one-based inclusive page numbers. Pages 2 through 5 therefore correspond to Python slice positions 1 through 4, implemented as merged_reader.pages[START_PAGE - 1:END_PAGE]."}, {"type": "callout", "title": "Keep originals separate", "text": "The source PDFs are opened only for reading. Both generated PDFs are written into a new folder beneath outputs. If that destination folder already exists, the script stops instead of replacing an earlier result."}]}, {"id": "create-synthetic-pdfs", "heading": "2. Create three synthetic PDFs", "blocks": [{"type": "p", "text": "The PDFs below are synthetic and were created specifically for this article. Each page is blank, but every page has a different width and height. That makes page order independently checkable without requiring another PDF-generation package."}, {"type": "code"}, {"type": "code"}, {"type": "table", "headers": ["Source PDF", "Pages", "Page dimensions in order"], "rows": [["alpha.pdf", "2", "100×200, 110×210"], ["beta.pdf", "1", "120×220"], ["gamma.pdf", "3", "130×230, 140×240, 150×250"]]}, {"type": "p", "text": "The three source files contain 6 pages in total: 2 + 1 + 3. The dimensions are expressed in PDF user-space units. Their purpose here is simply to give every synthetic page a recognizable signature."}]}, {"id": "work-out-expected-order", "heading": "3. Work out the expected page order", "blocks": [{"type": "p", "text": "Because the inputs are explicitly listed, the merged PDF should contain the two alpha pages first, followed by the beta page, then the three gamma pages. The merged result should therefore contain 6 pages."}, {"type": "table", "headers": ["Merged page", "Source", "Expected dimensions"], "rows": [["1", "alpha.pdf page 1", "100×200"], ["2", "alpha.pdf page 2", "110×210"], ["3", "beta.pdf page 1", "120×220"], ["4", "gamma.pdf page 1", "130×230"], ["5", "gamma.pdf page 2", "140×240"], ["6", "gamma.pdf page 3", "150×250"]]}, {"type": "p", "text": "Extracting merged pages 2 through 5 should therefore produce exactly 4 pages with dimensions 110×210, 120×220, 130×230, and 140×240 in that order."}]}, {"id": "merge-and-extract", "heading": "4. Merge the files and extract pages 2 through 5", "blocks": [{"type": "p", "text": "Save the following script as pdf_merge_split.py. It validates every input file, rejects encrypted PDFs for this simple example, merges all pages, reopens the merged output to verify it, then creates the requested page-range file."}, {"type": "code"}, {"type": "code"}]}, {"id": "expected-results", "heading": "5. Compare the expected outputs", "blocks": [{"type": "p", "text": "The first output, merged.pdf, should contain 6 pages. The second output, pages_2_to_5.pdf, should contain 4 pages. The extraction is inclusive at both ends because the script converts the human page numbers into the corresponding Python slice."}, {"type": "table", "headers": ["Output", "Expected pages", "Expected dimensions in order"], "rows": [["merged.pdf", "6", "100×200, 110×210, 120×220, 130×230, 140×240, 150×250"], ["pages_2_to_5.pdf", "4", "110×210, 120×220, 130×230, 140×240"]]}, {"type": "p", "text": "The expected console text below was derived manually from the synthetic inputs and code. It is not an execution log."}, {"type": "code"}]}, {"id": "checks-before-real-files", "heading": "6. Check the result before using real PDFs", "blocks": [{"type": "ol", "items": ["Open merged.pdf and confirm that it has 6 pages.", "Open pages_2_to_5.pdf and confirm that it has exactly 4 pages.", "Inspect page dimensions or another visible page feature to confirm that the order is 110×210, 120×220, 130×230, 140×240 in the extracted file.", "Confirm that alpha.pdf, beta.pdf, and gamma.pdf still exist unchanged in the source folder.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous PDFs."]}, {"type": "p", "text": "For real documents, also inspect page content visually. Matching counts alone cannot reveal every possible issue, such as an unexpected input order or a source PDF whose page labels differ from its physical page positions."}]}, {"id": "common-errors", "heading": "7. Recognize common errors", "blocks": [{"type": "table", "headers": ["Symptom", "What to check"], "rows": [["ModuleNotFoundError: No module named pypdf", "Install pypdf into the same Python environment with python -m pip install pypdf."], ["FileNotFoundError", "Check SOURCE_DIR, INPUTS, and the terminal's working directory. Run the synthetic setup script first for this example."], ["FileExistsError", "The result folder already exists. Review the previous outputs and choose a new folder rather than overwriting them."], ["Encrypted PDF is not supported here", "Use a permitted decrypted copy or add an explicit password-handling workflow appropriate to your documents."], ["Requested page is beyond the merged PDF", "Check the merged page count and the one-based START_PAGE and END_PAGE values."], ["Merged or extracted verification mismatch", "Treat the generated file as unverified. Check the inputs and use a fresh output folder for the next run."]]}, {"type": "p", "text": "If an exception happens after OUTPUT_DIR is created, partial files can remain. The script does not automatically delete them. Keep failed outputs separate from verified files."}]}, {"id": "limits-and-scope", "heading": "8. Understand the limits", "blocks": [{"type": "p", "text": "This workflow verifies physical page count and page dimensions, not semantic content. It does not compare rendered pixels, extracted text, annotations, forms, bookmarks, named destinations, attachments, signatures, or accessibility structure."}, {"type": "p", "text": "PDF page labels can differ from physical page positions. A document might display roman numerals or custom labels even though pypdf still accesses its page objects by zero-based sequence position. The START_PAGE and END_PAGE values in this tutorial refer to physical sequence positions, not printed page numbers."}, {"type": "p", "text": "Some complex PDFs contain interactive forms, digital signatures, encrypted content, unusual object relationships, or features that require more deliberate handling. Merging a digitally signed PDF into a new document does not preserve the meaning of the original signature as a signature over the newly created file. For important records, inspect the relevant PDF requirements before treating a merged copy as equivalent to the original."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · pypdf required · no execution", "items": ["Manually counted source page totals of 2, 1, and 3 for 6 merged pages.", "Manually traced the expected merged dimensions as 100x200, 110x210, 120x220, 130x230, 140x240, and 150x250.", "Manually converted the inclusive human page range 2-5 into Python positions 1 through 4 and confirmed that it contains 4 pages.", "Manually derived the extracted dimensions as 110x210, 120x220, 130x230, and 140x240.", "Inspected the code to confirm that source PDFs are opened for reading, outputs go to a separate folder, and an existing output folder causes the run to stop.", "Inspected the page-count and page-dimension comparison logic and derived the expected console output by hand."], "limits": ["The code was not executed by the author of this response; no PDF files were created, merged, extracted, or opened here.", "Encrypted PDFs, forms, annotations, bookmarks, digital signatures, attachments, page labels, and malformed PDFs were not tested.", "The page-dimension checks verify order for the synthetic example but do not prove semantic equivalence for arbitrary real PDFs.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official pypdf documentation", "url": "https://pypdf.readthedocs.io/en/stable/"}, {"title": "Official pypdf documentation · Merging PDF files", "url": "https://pypdf.readthedocs.io/en/stable/user/merging-pdfs.html"}, {"title": "Official pypdf documentation · Cropping and transforming PDFs", "url": "https://pypdf.readthedocs.io/en/stable/user/cropping-and-transforming.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "pdf-merge-split", "category": "office", "date": "2026-09-20"}
+{
+  "title": "Merge PDFs and extract a page range with pypdf",
+  "summary": "Merge several PDFs into one file, extract an inclusive page range into a second file, and verify the resulting page counts and order. A synthetic set of blank pages with deliberately different dimensions makes the result checkable by hand.",
+  "tags": [
+    "Python",
+    "PDF",
+    "pypdf"
+  ],
+  "audience": "This guide is for people who need to combine PDFs or extract selected pages without modifying the original documents.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "pypdf installed with python -m pip install pypdf.",
+    "A working folder where the scripts can create folders beneath outputs.",
+    "Enough disk space for the source PDFs, merged PDF, and extracted PDF."
+  ],
+  "sections": [
+    {
+      "id": "define-the-workflow",
+      "heading": "1. Define the merge and extraction rules",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The workflow uses three source PDFs in an explicit order: alpha.pdf, beta.pdf, then gamma.pdf. Their pages are appended to one merged PDF. A second output then extracts pages 2 through 5 from the merged PDF, using ordinary human page numbering where the first page is page 1."
+        },
+        {
+          "type": "p",
+          "text": "Python sequences use zero-based indexes, but this script accepts START_PAGE and END_PAGE as one-based inclusive page numbers. Pages 2 through 5 therefore correspond to Python slice positions 1 through 4, implemented as merged_reader.pages[START_PAGE - 1:END_PAGE]."
+        },
+        {
+          "type": "callout",
+          "title": "Keep originals separate",
+          "text": "The source PDFs are opened only for reading. Both generated PDFs are written into a new folder beneath outputs. If that destination folder already exists, the script stops instead of replacing an earlier result."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-pdfs",
+      "heading": "2. Create three synthetic PDFs",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The PDFs below are synthetic and were created specifically for this article. Each page is blank, but every page has a different width and height. That makes page order independently checkable without requiring another PDF-generation package."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom pypdf import PdfWriter\n\nSOURCE_DIR = Path(\"outputs\") / \"pdf_merge_split_demo\"\nPDFS = {\n    \"alpha.pdf\": [(100, 200), (110, 210)],\n    \"beta.pdf\": [(120, 220)],\n    \"gamma.pdf\": [(130, 230), (140, 240), (150, 250)],\n}\n\nSOURCE_DIR.parent.mkdir(parents=True, exist_ok=True)\nSOURCE_DIR.mkdir()  # Stop if the synthetic source already exists.\n\nfor filename, page_sizes in PDFS.items():\n    writer = PdfWriter()\n    for width, height in page_sizes:\n        writer.add_blank_page(width=width, height=height)\n    target = SOURCE_DIR / filename\n    with target.open(\"xb\") as stream:\n        writer.write(stream)\n"
+        },
+        {
+          "type": "code",
+          "text": "python create_pdf_demo.py"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Source PDF",
+            "Pages",
+            "Page dimensions in order"
+          ],
+          "rows": [
+            [
+              "alpha.pdf",
+              "2",
+              "100×200, 110×210"
+            ],
+            [
+              "beta.pdf",
+              "1",
+              "120×220"
+            ],
+            [
+              "gamma.pdf",
+              "3",
+              "130×230, 140×240, 150×250"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The three source files contain 6 pages in total: 2 + 1 + 3. The dimensions are expressed in PDF user-space units. Their purpose here is simply to give every synthetic page a recognizable signature."
+        }
+      ]
+    },
+    {
+      "id": "work-out-expected-order",
+      "heading": "3. Work out the expected page order",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Because the inputs are explicitly listed, the merged PDF should contain the two alpha pages first, followed by the beta page, then the three gamma pages. The merged result should therefore contain 6 pages."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Merged page",
+            "Source",
+            "Expected dimensions"
+          ],
+          "rows": [
+            [
+              "1",
+              "alpha.pdf page 1",
+              "100×200"
+            ],
+            [
+              "2",
+              "alpha.pdf page 2",
+              "110×210"
+            ],
+            [
+              "3",
+              "beta.pdf page 1",
+              "120×220"
+            ],
+            [
+              "4",
+              "gamma.pdf page 1",
+              "130×230"
+            ],
+            [
+              "5",
+              "gamma.pdf page 2",
+              "140×240"
+            ],
+            [
+              "6",
+              "gamma.pdf page 3",
+              "150×250"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Extracting merged pages 2 through 5 should therefore produce exactly 4 pages with dimensions 110×210, 120×220, 130×230, and 140×240 in that order."
+        }
+      ]
+    },
+    {
+      "id": "merge-and-extract",
+      "heading": "4. Merge the files and extract pages 2 through 5",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as pdf_merge_split.py. It validates every input file, rejects encrypted PDFs for this simple example, merges all pages, reopens the merged output to verify it, then creates the requested page-range file."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom pypdf import PdfReader, PdfWriter\n\nSOURCE_DIR = Path(\"outputs\") / \"pdf_merge_split_demo\"\nINPUTS = (\"alpha.pdf\", \"beta.pdf\", \"gamma.pdf\")\nOUTPUT_DIR = Path(\"outputs\") / \"pdf_merge_split_result\"\nMERGED = OUTPUT_DIR / \"merged.pdf\"\nEXTRACTED = OUTPUT_DIR / \"pages_2_to_5.pdf\"\nSTART_PAGE = 2\nEND_PAGE = 5\n\n\ndef page_size(page) -> tuple[int, int]:\n    width = int(float(page.mediabox.width))\n    height = int(float(page.mediabox.height))\n    return width, height\n\n\ndef main() -> None:\n    source_root = SOURCE_DIR.resolve(strict=True)\n    if not source_root.is_dir():\n        raise ValueError(\"SOURCE_DIR must be a directory.\")\n    if START_PAGE < 1 or END_PAGE < START_PAGE:\n        raise ValueError(\"Invalid page range.\")\n\n    input_paths = [source_root / name for name in INPUTS]\n    for path in input_paths:\n        if not path.is_file():\n            raise FileNotFoundError(f\"Missing input PDF: {path}\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()  # Refuse to reuse an existing result folder.\n\n    expected_sizes = []\n    writer = PdfWriter()\n    for path in input_paths:\n        reader = PdfReader(path)\n        if reader.is_encrypted:\n            raise ValueError(f\"Encrypted PDF is not supported here: {path.name}\")\n        for page in reader.pages:\n            expected_sizes.append(page_size(page))\n            writer.add_page(page)\n\n    with MERGED.open(\"xb\") as stream:\n        writer.write(stream)\n\n    merged_reader = PdfReader(MERGED)\n    if merged_reader.is_encrypted:\n        raise RuntimeError(\"Unexpected encrypted merged PDF.\")\n    merged_sizes = [page_size(page) for page in merged_reader.pages]\n    if merged_sizes != expected_sizes:\n        raise RuntimeError(\"Merged page count or order does not match the inputs.\")\n\n    if END_PAGE > len(merged_reader.pages):\n        raise ValueError(\n            f\"Requested page {END_PAGE}, but merged PDF has only \"\n            f\"{len(merged_reader.pages)} pages.\"\n        )\n\n    selected_pages = merged_reader.pages[START_PAGE - 1:END_PAGE]\n    extracted_writer = PdfWriter()\n    expected_extract_sizes = []\n    for page in selected_pages:\n        expected_extract_sizes.append(page_size(page))\n        extracted_writer.add_page(page)\n\n    with EXTRACTED.open(\"xb\") as stream:\n        extracted_writer.write(stream)\n\n    extracted_reader = PdfReader(EXTRACTED)\n    extracted_sizes = [page_size(page) for page in extracted_reader.pages]\n    if extracted_sizes != expected_extract_sizes:\n        raise RuntimeError(\"Extracted PDF does not match the selected pages.\")\n\n    print(f\"Merged {len(INPUTS)} PDFs into {len(merged_reader.pages)} pages.\")\n    print(\n        f\"Extracted pages {START_PAGE}-{END_PAGE}: \"\n        f\"{len(extracted_reader.pages)} pages.\"\n    )\n    print(f\"Merged output: {MERGED.as_posix()}\")\n    print(f\"Extracted output: {EXTRACTED.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "code",
+          "text": "python pdf_merge_split.py"
+        }
+      ]
+    },
+    {
+      "id": "expected-results",
+      "heading": "5. Compare the expected outputs",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The first output, merged.pdf, should contain 6 pages. The second output, pages_2_to_5.pdf, should contain 4 pages. The extraction is inclusive at both ends because the script converts the human page numbers into the corresponding Python slice."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Output",
+            "Expected pages",
+            "Expected dimensions in order"
+          ],
+          "rows": [
+            [
+              "merged.pdf",
+              "6",
+              "100×200, 110×210, 120×220, 130×230, 140×240, 150×250"
+            ],
+            [
+              "pages_2_to_5.pdf",
+              "4",
+              "110×210, 120×220, 130×230, 140×240"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected console text below was derived manually from the synthetic inputs and code. It is not an execution log."
+        },
+        {
+          "type": "code",
+          "text": "Merged 3 PDFs into 6 pages.\nExtracted pages 2-5: 4 pages.\nMerged output: outputs/pdf_merge_split_result/merged.pdf\nExtracted output: outputs/pdf_merge_split_result/pages_2_to_5.pdf"
+        }
+      ]
+    },
+    {
+      "id": "checks-before-real-files",
+      "heading": "6. Check the result before using real PDFs",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Open merged.pdf and confirm that it has 6 pages.",
+            "Open pages_2_to_5.pdf and confirm that it has exactly 4 pages.",
+            "Inspect page dimensions or another visible page feature to confirm that the order is 110×210, 120×220, 130×230, 140×240 in the extracted file.",
+            "Confirm that alpha.pdf, beta.pdf, and gamma.pdf still exist unchanged in the source folder.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous PDFs."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "For real documents, also inspect page content visually. Matching counts alone cannot reveal every possible issue, such as an unexpected input order or a source PDF whose page labels differ from its physical page positions."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "7. Recognize common errors",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "ModuleNotFoundError: No module named pypdf",
+              "Install pypdf into the same Python environment with python -m pip install pypdf."
+            ],
+            [
+              "FileNotFoundError",
+              "Check SOURCE_DIR, INPUTS, and the terminal's working directory. Run the synthetic setup script first for this example."
+            ],
+            [
+              "FileExistsError",
+              "The result folder already exists. Review the previous outputs and choose a new folder rather than overwriting them."
+            ],
+            [
+              "Encrypted PDF is not supported here",
+              "Use a permitted decrypted copy or add an explicit password-handling workflow appropriate to your documents."
+            ],
+            [
+              "Requested page is beyond the merged PDF",
+              "Check the merged page count and the one-based START_PAGE and END_PAGE values."
+            ],
+            [
+              "Merged or extracted verification mismatch",
+              "Treat the generated file as unverified. Check the inputs and use a fresh output folder for the next run."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If an exception happens after OUTPUT_DIR is created, partial files can remain. The script does not automatically delete them. Keep failed outputs separate from verified files."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-scope",
+      "heading": "8. Understand the limits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This workflow verifies physical page count and page dimensions, not semantic content. It does not compare rendered pixels, extracted text, annotations, forms, bookmarks, named destinations, attachments, signatures, or accessibility structure."
+        },
+        {
+          "type": "p",
+          "text": "PDF page labels can differ from physical page positions. A document might display roman numerals or custom labels even though pypdf still accesses its page objects by zero-based sequence position. The START_PAGE and END_PAGE values in this tutorial refer to physical sequence positions, not printed page numbers."
+        },
+        {
+          "type": "p",
+          "text": "Some complex PDFs contain interactive forms, digital signatures, encrypted content, unusual object relationships, or features that require more deliberate handling. Merging a digitally signed PDF into a new document does not preserve the meaning of the original signature as a signature over the newly created file. For important records, inspect the relevant PDF requirements before treating a merged copy as equivalent to the original."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · pypdf 5.9.0",
+    "items": [
+      "The synthetic inputs contained exactly 2 pages in alpha.pdf, 1 page in beta.pdf, and 3 pages in gamma.pdf, for 6 pages total.",
+      "The main script printed exactly: 'Merged 3 PDFs into 6 pages.', 'Extracted pages 2-5: 4 pages.', 'Merged output: outputs/pdf_merge_split_result/merged.pdf', and 'Extracted output: outputs/pdf_merge_split_result/pages_2_to_5.pdf'.",
+      "merged.pdf contained exactly 6 pages with dimensions, in order: 100×200, 110×210, 120×220, 130×230, 140×240, 150×250.",
+      "pages_2_to_5.pdf contained exactly 4 pages with dimensions, in order: 110×210, 120×220, 130×230, 140×240.",
+      "The one-based inclusive range 2-5 was implemented correctly by the slice merged_reader.pages[START_PAGE - 1:END_PAGE].",
+      "SHA-256 hashes of alpha.pdf, beta.pdf, and gamma.pdf were identical before and after the merge/extraction run, confirming the source PDFs were not rewritten.",
+      "A second run with outputs/pdf_merge_split_result already present raised FileExistsError before replacing the previous outputs."
+    ],
+    "limits": [
+      "Encrypted PDFs, malformed PDFs, annotations, forms, bookmarks, attachments, digital signatures, custom page labels, complex PDF object relationships, partial-write failures, and semantic or rendered-content equivalence were not tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official pypdf documentation",
+      "url": "https://pypdf.readthedocs.io/en/stable/"
+    },
+    {
+      "title": "Official pypdf documentation · Merging PDF files",
+      "url": "https://pypdf.readthedocs.io/en/stable/user/merging-pdfs.html"
+    },
+    {
+      "title": "Official pypdf documentation · Cropping and transforming PDFs",
+      "url": "https://pypdf.readthedocs.io/en/stable/user/cropping-and-transforming.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "pdf-merge-split",
+  "category": "office",
+  "date": "2026-09-20"
+}

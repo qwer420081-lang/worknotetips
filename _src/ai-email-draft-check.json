@@ -1,1 +1,227 @@
-{"title": "Check an AI-drafted work email before sending", "summary": "Review an AI-drafted work email against the original facts before you send it. This example checks names, quantities, prices, dates, recipients, tone, and wording that could accidentally create a promise.", "seo_title": "AI Email Draft Check: Verify Facts Before Sending", "seo_desc": "Check AI-drafted work emails for facts, numbers, dates, recipients, tone, and risky promises before sending them to colleagues or clients.", "tags": ["AI email", "email review", "work automation"], "audience": "Office workers who use an AI chat assistant to draft emails and want a repeatable final review before sending.", "prerequisites": ["Python 3.12", "A text editor and terminal"], "sections": [{"id": "why-check-ai-email", "heading": "Why an AI email still needs a final check", "blocks": [{"type": "p", "text": "An AI chat assistant can turn rough notes into a polished work email, but fluent wording does not prove that the underlying details are correct. A draft can contain the wrong quantity, confuse two dates, address the wrong person, or turn a request into a firm commitment."}, {"type": "p", "text": "The example below is synthetic. The goal is to keep drafting and verification separate: use the AI to improve wording, then compare the result with the source facts yourself before sending."}, {"type": "callout", "title": "Treat source records as authoritative", "text": "The AI draft is not the source of truth. Names, prices, dates, quantities, approvals, delivery commitments, payment terms, and other business facts should be checked against the original notes, records, or systems."}]}, {"id": "synthetic-source-facts", "heading": "Write down the confirmed source facts first", "blocks": [{"type": "p", "text": "Suppose you need to contact a fictional supplier about sample parts. Before asking an AI to draft the email, record the facts that must remain unchanged."}, {"type": "table", "headers": ["Item", "Confirmed source fact"], "rows": [["Recipient", "Mina Park"], ["Company", "Example Parts"], ["Sample quantity", "24 units"], ["Unit price", "$18.50"], ["Calculated total", "$444.00"], ["Requested delivery date", "October 7, 2026"], ["Internal review date", "October 9, 2026"], ["Commitment status", "October 7 is requested, not confirmed"]]}, {"type": "p", "text": "The arithmetic is 24 × $18.50 = $444.00. October 7 is a requested supplier delivery date, while October 9 is the company's internal review date. The notes do not authorize any promise about payment timing, future orders, approval, or guaranteed delivery."}]}, {"id": "ask-ai-for-draft", "heading": "Ask the AI to draft without filling gaps", "blocks": [{"type": "p", "text": "A useful prompt should contain the confirmed facts and tell the AI not to invent missing information."}, {"type": "callout", "title": "Example request to the AI", "text": "Draft a concise professional email to Mina Park at Example Parts. We want to request 24 sample units at $18.50 each, total $444.00. Delivery is requested by October 7, 2026, because our internal review is October 9, 2026. Do not say that delivery is confirmed. Do not promise payment timing, future orders, approval, or purchase volume. If information is missing, leave it out rather than guessing."}, {"type": "p", "text": "A typical AI answer could read: 'Hello Mina, We would like to request 24 sample units at $18.50 per unit, for a total of $444.00. If possible, please arrange delivery by October 7, 2026, as our internal review is scheduled for October 9. Please let us know whether this delivery date is feasible. Best regards.' This is a reasonable draft, but it still requires verification."}]}, {"id": "manual-email-check", "heading": "Check facts, numbers, dates, recipients, tone, and promises", "blocks": [{"type": "ol", "items": ["Facts: Compare names, companies, product descriptions, project names, and other factual statements with the original source.", "Numbers: Recalculate quantities, prices, totals, percentages, dimensions, or other important values independently.", "Dates: Check the date itself and what that date represents. A requested date is not the same as a confirmed date.", "Recipients: Confirm the person's name, organization, actual email address, and whether each CC or BCC recipient is necessary.", "Tone: Remove language that is unnecessarily demanding, vague, overly familiar, or more certain than the facts justify.", "Promises: Search for wording that could create an unauthorized commitment, including guarantee, definitely, confirmed, approved, will pay, will deliver, or future-order promises."]}, {"type": "p", "text": "In the synthetic example, the draft correctly preserves 24 units, $18.50, $444.00, October 7, and October 9. It also says 'if possible' and asks whether the requested delivery date is feasible instead of claiming that the date has already been confirmed."}, {"type": "callout", "title": "Check the actual mail fields", "text": "The correct name in the email body does not prove that the correct address is in the To field. Review To, CC, BCC, and attachments inside the mail client immediately before sending."}]}, {"id": "python-draft-check", "heading": "Use Python for a repeatable first-pass check", "blocks": [{"type": "p", "text": "The following standard-library script reads draft_email.txt, checks whether the expected synthetic facts appear, recalculates the total, and searches for several risky promise phrases. It writes a report to outputs/email_check_report.txt. It does not modify the original draft and stops if the outputs folder already exists."}, {"type": "code"}, {"type": "p", "text": "Save the draft as draft_email.txt, save the script as email_check.py, and run python email_check.py. A PASS only means that expected text was found or that the listed risky phrases were not found. It does not mean the email has been approved or is safe to send."}]}, {"id": "common-email-mistakes", "heading": "Common mistakes to look for", "blocks": [{"type": "ul", "items": ["The quantity changes from 24 to 25 because another number appeared elsewhere in the conversation.", "The unit price is correct but the total is copied or calculated incorrectly.", "October 9 is presented as the supplier deadline instead of the internal review date.", "A request to check whether October 7 is feasible becomes a statement that delivery is confirmed for October 7.", "The AI adds payment timing, approval, future purchase volume, or another commitment that was not in the source notes.", "The body names Mina Park correctly, but the To field contains a different contact with a similar name."]}, {"type": "p", "text": "Keyword checks have obvious limits. An email might contain '$444.00' in the wrong context, or it might create a commitment using wording that is not included in the risky-phrase list. Automated checking is useful for catching simple discrepancies, but it cannot replace a final human read."}]}, {"id": "final-send-checklist", "heading": "Run a final checklist before pressing Send", "blocks": [{"type": "ol", "items": ["Keep the original notes or records open beside the draft.", "Check every name, company, product, quantity, amount, and date.", "Recalculate important arithmetic independently.", "Confirm what each date means, not only whether the date itself is present.", "Read specifically for promises, approvals, guarantees, and commitments.", "Check the actual To, CC, BCC, and attachment fields.", "Read the final version once from the recipient's perspective."]}, {"type": "p", "text": "A practical division of responsibility is to let the AI help with wording while you verify facts and decide what your organization is authorized to promise. Emails involving contracts, legal obligations, confidential information, regulated decisions, safety issues, or substantial financial consequences should follow the organization's formal review and approval process."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["Checked by hand that 24 × $18.50 = $444.00.", "Checked that October 7, 2026 is the requested delivery date and October 9, 2026 is the internal review date.", "Checked that the example draft asks whether October 7 is feasible rather than claiming that it is confirmed.", "Checked that the script reads draft_email.txt without modifying it.", "Checked that the only generated file is outputs/email_check_report.txt.", "Checked that the script stops if the outputs folder already exists.", "Checked that the script uses only Python 3.12 standard-library modules."], "limits": ["The code was reviewed and the small example was worked out by hand; the code was not executed by me.", "Simple string matching cannot prove that a statement is factually correct.", "The risky-phrase list cannot detect every possible promise, guarantee, approval, or commitment.", "The script cannot verify real To, CC, or BCC addresses, attachments, organizational authority, or the surrounding email thread.", "For legal, contractual, financial, safety-related, confidential, or regulated communication, use the organization's required review process."]}, "references": [{"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}, {"title": "Python decimal documentation", "url": "https://docs.python.org/3/library/decimal.html"}], "slug": "ai-email-draft-check", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Check an AI-drafted work email before sending",
+  "summary": "Review an AI-drafted work email against the original facts before you send it. This example checks names, quantities, prices, dates, recipients, tone, and wording that could accidentally create a promise.",
+  "seo_title": "AI Email Draft Check: Verify Facts Before Sending",
+  "seo_desc": "Check AI-drafted work emails for facts, numbers, dates, recipients, tone, and risky promises before sending them to colleagues or clients.",
+  "tags": [
+    "AI email",
+    "email review",
+    "work automation"
+  ],
+  "audience": "Office workers who use an AI chat assistant to draft emails and want a repeatable final review before sending.",
+  "prerequisites": [
+    "Python 3.12",
+    "A text editor and terminal"
+  ],
+  "sections": [
+    {
+      "id": "why-check-ai-email",
+      "heading": "Why an AI email still needs a final check",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI chat assistant can turn rough notes into a polished work email, but fluent wording does not prove that the underlying details are correct. A draft can contain the wrong quantity, confuse two dates, address the wrong person, or turn a request into a firm commitment."
+        },
+        {
+          "type": "p",
+          "text": "The example below is synthetic. The goal is to keep drafting and verification separate: use the AI to improve wording, then compare the result with the source facts yourself before sending."
+        },
+        {
+          "type": "callout",
+          "title": "Treat source records as authoritative",
+          "text": "The AI draft is not the source of truth. Names, prices, dates, quantities, approvals, delivery commitments, payment terms, and other business facts should be checked against the original notes, records, or systems."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-source-facts",
+      "heading": "Write down the confirmed source facts first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose you need to contact a fictional supplier about sample parts. Before asking an AI to draft the email, record the facts that must remain unchanged."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Confirmed source fact"
+          ],
+          "rows": [
+            [
+              "Recipient",
+              "Mina Park"
+            ],
+            [
+              "Company",
+              "Example Parts"
+            ],
+            [
+              "Sample quantity",
+              "24 units"
+            ],
+            [
+              "Unit price",
+              "$18.50"
+            ],
+            [
+              "Calculated total",
+              "$444.00"
+            ],
+            [
+              "Requested delivery date",
+              "October 7, 2026"
+            ],
+            [
+              "Internal review date",
+              "October 9, 2026"
+            ],
+            [
+              "Commitment status",
+              "October 7 is requested, not confirmed"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The arithmetic is 24 × $18.50 = $444.00. October 7 is a requested supplier delivery date, while October 9 is the company's internal review date. The notes do not authorize any promise about payment timing, future orders, approval, or guaranteed delivery."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-draft",
+      "heading": "Ask the AI to draft without filling gaps",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A useful prompt should contain the confirmed facts and tell the AI not to invent missing information."
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Draft a concise professional email to Mina Park at Example Parts. We want to request 24 sample units at $18.50 each, total $444.00. Delivery is requested by October 7, 2026, because our internal review is October 9, 2026. Do not say that delivery is confirmed. Do not promise payment timing, future orders, approval, or purchase volume. If information is missing, leave it out rather than guessing."
+        },
+        {
+          "type": "p",
+          "text": "A typical AI answer could read: 'Hello Mina Park, We would like to request 24 sample units from Example Parts at $18.50 per unit, for a total of $444.00. If possible, please arrange delivery by October 7, 2026, as our internal review is scheduled for October 9, 2026. Please let us know whether this delivery date is feasible. Best regards.' This is a reasonable draft, but it still requires verification."
+        }
+      ]
+    },
+    {
+      "id": "manual-email-check",
+      "heading": "Check facts, numbers, dates, recipients, tone, and promises",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Facts: Compare names, companies, product descriptions, project names, and other factual statements with the original source.",
+            "Numbers: Recalculate quantities, prices, totals, percentages, dimensions, or other important values independently.",
+            "Dates: Check the date itself and what that date represents. A requested date is not the same as a confirmed date.",
+            "Recipients: Confirm the person's name, organization, actual email address, and whether each CC or BCC recipient is necessary.",
+            "Tone: Remove language that is unnecessarily demanding, vague, overly familiar, or more certain than the facts justify.",
+            "Promises: Search for wording that could create an unauthorized commitment, including guarantee, definitely, confirmed, approved, will pay, will deliver, or future-order promises."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In the synthetic example, the draft correctly preserves 24 units, $18.50, $444.00, October 7, and October 9. It also says 'if possible' and asks whether the requested delivery date is feasible instead of claiming that the date has already been confirmed."
+        },
+        {
+          "type": "callout",
+          "title": "Check the actual mail fields",
+          "text": "The correct name in the email body does not prove that the correct address is in the To field. Review To, CC, BCC, and attachments inside the mail client immediately before sending."
+        }
+      ]
+    },
+    {
+      "id": "python-draft-check",
+      "heading": "Use Python for a repeatable first-pass check",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following standard-library script reads draft_email.txt, checks whether the expected synthetic facts appear, recalculates the total, and searches for several risky promise phrases. It writes a report to outputs/email_check_report.txt. It does not modify the original draft and stops if the outputs folder already exists."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom decimal import Decimal\nimport sys\n\nDRAFT_PATH = Path(\"draft_email.txt\")\nOUTPUT_DIR = Path(\"outputs\")\nREPORT_PATH = OUTPUT_DIR / \"email_check_report.txt\"\n\nif not DRAFT_PATH.is_file():\n    sys.exit(\"Missing input file: draft_email.txt\")\n\nif OUTPUT_DIR.exists():\n    sys.exit(\"Stop: outputs folder already exists. Remove or rename it manually first.\")\n\nrecipient = \"Mina Park\"\ncompany = \"Example Parts\"\nquantity = 24\nunit_price = Decimal(\"18.50\")\nexpected_total = Decimal(quantity) * unit_price\nrequested_date = \"October 7, 2026\"\nreview_date = \"October 9, 2026\"\n\nrequired_text = {\n    \"recipient\": recipient,\n    \"company\": company,\n    \"quantity\": \"24\",\n    \"unit price\": \"$18.50\",\n    \"total\": f\"${expected_total:.2f}\",\n    \"requested delivery date\": requested_date,\n    \"internal review date\": review_date,\n}\n\nrisky_phrases = [\n    \"guarantee\",\n    \"guaranteed\",\n    \"definitely\",\n    \"delivery is confirmed\",\n    \"we confirm payment\",\n    \"we will place future orders\",\n]\n\ndraft = DRAFT_PATH.read_text(encoding=\"utf-8\")\ndraft_lower = draft.lower()\n\nlines = []\nlines.append(\"AI EMAIL DRAFT CHECK\")\nlines.append(\"====================\")\nlines.append(f\"Calculated total: {quantity} x ${unit_price:.2f} = ${expected_total:.2f}\")\nlines.append(\"\")\nlines.append(\"Required details:\")\n\nfor label, value in required_text.items():\n    status = \"PASS\" if value.lower() in draft_lower else \"CHECK\"\n    lines.append(f\"{status}: {label} -> {value}\")\n\nlines.append(\"\")\nlines.append(\"Risky promise phrases:\")\nfound_risk = False\n\nfor phrase in risky_phrases:\n    if phrase in draft_lower:\n        found_risk = True\n        lines.append(f\"CHECK: found phrase -> {phrase}\")\n\nif not found_risk:\n    lines.append(\"PASS: none of the listed phrases were found\")\n\nlines.append(\"\")\nlines.append(\"Manual checks still required:\")\nlines.append(\"- Verify the actual To, CC, and BCC addresses in the mail client.\")\nlines.append(\"- Confirm that October 7 is presented as requested, not guaranteed.\")\nlines.append(\"- Confirm tone and context against the original conversation.\")\nlines.append(\"- Check for commitments not covered by this phrase list.\")\nlines.append(\"- Verify attachments before sending.\")\n\nOUTPUT_DIR.mkdir()\nREPORT_PATH.write_text(\"\\n\".join(lines) + \"\\n\", encoding=\"utf-8\")\nprint(f\"Created: {REPORT_PATH}\")\n"
+        },
+        {
+          "type": "p",
+          "text": "Save the draft as draft_email.txt, save the script as email_check.py, and run python email_check.py. A PASS only means that expected text was found or that the listed risky phrases were not found. It does not mean the email has been approved or is safe to send."
+        }
+      ]
+    },
+    {
+      "id": "common-email-mistakes",
+      "heading": "Common mistakes to look for",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "The quantity changes from 24 to 25 because another number appeared elsewhere in the conversation.",
+            "The unit price is correct but the total is copied or calculated incorrectly.",
+            "October 9 is presented as the supplier deadline instead of the internal review date.",
+            "A request to check whether October 7 is feasible becomes a statement that delivery is confirmed for October 7.",
+            "The AI adds payment timing, approval, future purchase volume, or another commitment that was not in the source notes.",
+            "The body names Mina Park correctly, but the To field contains a different contact with a similar name."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Keyword checks have obvious limits. An email might contain '$444.00' in the wrong context, or it might create a commitment using wording that is not included in the risky-phrase list. Automated checking is useful for catching simple discrepancies, but it cannot replace a final human read."
+        }
+      ]
+    },
+    {
+      "id": "final-send-checklist",
+      "heading": "Run a final checklist before pressing Send",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Keep the original notes or records open beside the draft.",
+            "Check every name, company, product, quantity, amount, and date.",
+            "Recalculate important arithmetic independently.",
+            "Confirm what each date means, not only whether the date itself is present.",
+            "Read specifically for promises, approvals, guarantees, and commitments.",
+            "Check the actual To, CC, BCC, and attachment fields.",
+            "Read the final version once from the recipient's perspective."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A practical division of responsibility is to let the AI help with wording while you verify facts and decide what your organization is authorized to promise. Emails involving contracts, legal obligations, confidential information, regulated decisions, safety issues, or substantial financial consequences should follow the organization's formal review and approval process."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, sys",
+    "items": [
+      "The script executed successfully and created outputs/email_check_report.txt.",
+      "The corrected email draft contains Mina Park, Example Parts, and both complete dates (October 7, 2026 and October 9, 2026). All seven required-detail checks and the risky-phrase check passed.",
+      "No listed risky promise phrase was detected.",
+      "The calculated total was exactly 24 x $18.50 = $444.00.",
+      "draft_email.txt was byte-for-byte unchanged after execution.",
+      "A second run stopped because outputs already existed, so the report was not overwritten.",
+      "Local recheck on 2026-09-21 with Python 3.12.14: the corrected example passed; source preservation and overwrite protection also passed."
+    ],
+    "limits": [
+      "The script cannot verify actual To, CC, BCC fields, attachments, organizational authority, tone, or commitments expressed with phrases outside its fixed list.",
+      "The Python environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the article script or its results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "title": "Python decimal documentation",
+      "url": "https://docs.python.org/3/library/decimal.html"
+    }
+  ],
+  "slug": "ai-email-draft-check",
+  "category": "ai",
+  "date": "2026-09-21"
+}

@@ -1,1 +1,236 @@
-{"title": "Check an AI summary sentence by sentence against the source", "summary": "Break an AI summary into individual claims, link each claim to specific source sentences, and mark unsupported or overstated statements before reuse. A small synthetic document shows why fluent summaries still need evidence checks.", "tags": ["AI", "Summary", "Verification"], "audience": "This guide is for people who use AI to summarize reports, notes, or research material and want a traceable sentence-by-sentence review.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor that can save UTF-8 text and CSV files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv and pathlib."], "sections": [{"id": "define-the-check", "heading": "1. Treat every summary sentence as a claim", "blocks": [{"type": "p", "text": "An AI summary can be grammatically clean while still changing a cause, dropping a limitation, or adding a conclusion that the source never made. A useful review therefore asks a simple question for every summary sentence: which exact part of the source supports this statement?"}, {"type": "p", "text": "This tutorial uses three verdicts. SUPPORTED means the source directly supports the sentence. PARTIAL means only part of the sentence is supported or important qualification is missing. UNSUPPORTED means the source does not support the claim or contradicts it."}, {"type": "callout", "title": "Do not use fluency as evidence", "text": "A sentence sounding reasonable is not evidence. The review should point to source sentence IDs or another precise source location."}]}, {"id": "create-synthetic-source", "heading": "2. Create a synthetic source document and AI summary", "blocks": [{"type": "p", "text": "The following source and summary are synthetic and were written specifically for this article. Save the first block as source.txt and the second as ai_summary.txt."}, {"type": "code"}, {"type": "code"}, {"type": "p", "text": "The source contains 6 sentences. The AI summary contains 4 sentences. The values are intentionally small enough to verify without software."}]}, {"id": "review-by-hand", "heading": "3. Compare each summary sentence with the source", "blocks": [{"type": "p", "text": "A1 is supported by S1 and S2. A2 is contradicted by S3: the source says the two cases stopped during input validation before the solver started, not because of solver crashes. A3 is directly supported by S4. A4 goes beyond the evidence because S6 explicitly says no production deployment or long-term reliability test was performed."}, {"type": "table", "headers": ["Summary ID", "Verdict", "Evidence", "Reason"], "rows": [["A1", "SUPPORTED", "S1;S2", "The case count and successful completions match the source."], ["A2", "UNSUPPORTED", "S3", "The source attributes the stops to input validation before solver start."], ["A3", "SUPPORTED", "S4", "The 42-second median is stated for the 18 completed cases."], ["A4", "UNSUPPORTED", "S6", "Production readiness was not tested."]]}, {"type": "p", "text": "The expected review therefore contains 2 supported sentences and 2 unsupported sentences. None of the four synthetic sentences requires the PARTIAL label."}]}, {"id": "write-review-csv", "heading": "4. Record the review in a traceable CSV", "blocks": [{"type": "p", "text": "Save the following as summary_review.csv. The evidence column contains source sentence IDs rather than copied paragraphs, which keeps the review compact while preserving traceability."}, {"type": "code"}, {"type": "p", "text": "This review remains a human judgment. The next script does not decide whether a claim is true. It checks whether every AI summary sentence received a valid verdict and whether every cited source ID actually exists."}]}, {"id": "validate-the-review", "heading": "5. Check that every sentence was reviewed", "blocks": [{"type": "p", "text": "Save the following script as check_summary_review.py. It reads the source, summary, and completed review CSV, verifies IDs and verdicts, and writes a new validated report without modifying any input file."}, {"type": "code"}]}, {"id": "expected-result", "heading": "6. Check the expected result", "blocks": [{"type": "p", "text": "For the synthetic review above, all 4 summary sentences have a valid verdict and valid source references. The expected console output is shown below. It was derived by hand and is not an execution log."}, {"type": "code"}, {"type": "ul", "items": ["Confirm that every A-ID appears exactly once in the review.", "Confirm that every cited S-ID exists in source.txt.", "Confirm that unsupported claims are not silently rewritten as supported claims.", "Keep the original AI summary unchanged so the review remains auditable.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous validation."]}]}, {"id": "errors-and-limits", "heading": "7. Recognize common errors and limits", "blocks": [{"type": "table", "headers": ["Problem", "What to do"], "rows": [["One summary sentence contains two separate claims", "Split the sentence into claim-sized units or review each claim separately."], ["Evidence only supports part of a sentence", "Use PARTIAL and write the missing qualification in the reason column."], ["The source is silent on a conclusion", "Mark it UNSUPPORTED instead of treating a plausible inference as a sourced fact."], ["A source sentence is cited but does not actually support the claim", "Fix the human review; valid IDs alone do not prove semantic support."], ["Different sources disagree", "Record the disagreement explicitly instead of forcing a single unsupported conclusion."]]}, {"type": "p", "text": "The Python script validates review completeness and reference IDs, not truth. Semantic support still requires human reading or a separate evidence-evaluation process. A wrong human verdict can pass the structural checker."}, {"type": "p", "text": "For long reports, use page numbers, paragraph IDs, table numbers, or quoted source locations instead of informal references. Also distinguish direct source statements from calculations, interpretations, and external knowledge. A summary should not quietly turn one category into another."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib · no execution", "items": ["Manually checked 4 synthetic summary sentences against 6 synthetic source sentences.", "Classified A1 and A3 as SUPPORTED and A2 and A4 as UNSUPPORTED.", "Confirmed that A2 conflicts with S3 because the source says input validation stopped the cases before the solver started.", "Confirmed that A4 goes beyond the source because S6 says production deployment and long-term reliability were not tested.", "Manually calculated the expected verdict counts as 2 supported, 0 partial, and 2 unsupported.", "Inspected the script for missing reviews, duplicate IDs, invalid verdicts, unknown source IDs, output collision protection, and report generation."], "limits": ["The code was not executed by the author of this response; no validation CSV was created.", "The structural checker does not determine whether a cited source semantically supports a claim.", "Only the synthetic source and summary shown here were reviewed; long documents, tables, figures, and conflicting sources were not tested.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "ai-summary-source-check", "category": "ai", "date": "2026-09-20"}
+{
+  "title": "Check an AI summary sentence by sentence against the source",
+  "summary": "Break an AI summary into individual claims, link each claim to specific source sentences, and mark unsupported or overstated statements before reuse. A small synthetic document shows why fluent summaries still need evidence checks.",
+  "tags": [
+    "AI",
+    "Summary",
+    "Verification"
+  ],
+  "audience": "This guide is for people who use AI to summarize reports, notes, or research material and want a traceable sentence-by-sentence review.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor that can save UTF-8 text and CSV files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-the-check",
+      "heading": "1. Treat every summary sentence as a claim",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI summary can be grammatically clean while still changing a cause, dropping a limitation, or adding a conclusion that the source never made. A useful review therefore asks a simple question for every summary sentence: which exact part of the source supports this statement?"
+        },
+        {
+          "type": "p",
+          "text": "This tutorial uses three verdicts. SUPPORTED means the source directly supports the sentence. PARTIAL means only part of the sentence is supported or important qualification is missing. UNSUPPORTED means the source does not support the claim or contradicts it."
+        },
+        {
+          "type": "callout",
+          "title": "Do not use fluency as evidence",
+          "text": "A sentence sounding reasonable is not evidence. The review should point to source sentence IDs or another precise source location."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-source",
+      "heading": "2. Create a synthetic source document and AI summary",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following source and summary are synthetic and were written specifically for this article. Save the first block as source.txt and the second as ai_summary.txt."
+        },
+        {
+          "type": "code",
+          "text": "S1|The pilot processed 20 test cases.\nS2|Eighteen cases completed successfully.\nS3|Two cases stopped during input validation before the solver started.\nS4|Among the 18 completed cases, the median runtime was 42 seconds.\nS5|The test was performed on one workstation under the same software configuration.\nS6|No production deployment or long-term reliability test was performed.\n"
+        },
+        {
+          "type": "code",
+          "text": "A1|The pilot processed 20 cases, and 18 completed successfully.\nA2|Two cases failed because the solver crashed.\nA3|The median runtime for completed cases was 42 seconds.\nA4|The results show that the automation is reliable enough for production use.\n"
+        },
+        {
+          "type": "p",
+          "text": "The source contains 6 sentences. The AI summary contains 4 sentences. The values are intentionally small enough to verify without software."
+        }
+      ]
+    },
+    {
+      "id": "review-by-hand",
+      "heading": "3. Compare each summary sentence with the source",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A1 is supported by S1 and S2. A2 is contradicted by S3: the source says the two cases stopped during input validation before the solver started, not because of solver crashes. A3 is directly supported by S4. A4 goes beyond the evidence because S6 explicitly says no production deployment or long-term reliability test was performed."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Summary ID",
+            "Verdict",
+            "Evidence",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "A1",
+              "SUPPORTED",
+              "S1;S2",
+              "The case count and successful completions match the source."
+            ],
+            [
+              "A2",
+              "UNSUPPORTED",
+              "S3",
+              "The source attributes the stops to input validation before solver start."
+            ],
+            [
+              "A3",
+              "SUPPORTED",
+              "S4",
+              "The 42-second median is stated for the 18 completed cases."
+            ],
+            [
+              "A4",
+              "UNSUPPORTED",
+              "S6",
+              "Production readiness was not tested."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected review therefore contains 2 supported sentences and 2 unsupported sentences. None of the four synthetic sentences requires the PARTIAL label."
+        }
+      ]
+    },
+    {
+      "id": "write-review-csv",
+      "heading": "4. Record the review in a traceable CSV",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following as summary_review.csv. The evidence column contains source sentence IDs rather than copied paragraphs, which keeps the review compact while preserving traceability."
+        },
+        {
+          "type": "code",
+          "text": "summary_id,verdict,evidence,reason\nA1,SUPPORTED,S1;S2,The case count and successful completions match the source.\nA2,UNSUPPORTED,S3,The source attributes the stops to input validation before solver start.\nA3,SUPPORTED,S4,The 42-second median is stated for the 18 completed cases.\nA4,UNSUPPORTED,S6,Production readiness was not tested.\n"
+        },
+        {
+          "type": "p",
+          "text": "This review remains a human judgment. The next script does not decide whether a claim is true. It checks whether every AI summary sentence received a valid verdict and whether every cited source ID actually exists."
+        }
+      ]
+    },
+    {
+      "id": "validate-the-review",
+      "heading": "5. Check that every sentence was reviewed",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as check_summary_review.py. It reads the source, summary, and completed review CSV, verifies IDs and verdicts, and writes a new validated report without modifying any input file."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\n\nSOURCE = Path(\"source.txt\")\nSUMMARY = Path(\"ai_summary.txt\")\nREVIEW = Path(\"summary_review.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"summary_source_check\"\nOUTPUT = OUTPUT_DIR / \"validated_review.csv\"\nVALID_VERDICTS = {\"SUPPORTED\", \"PARTIAL\", \"UNSUPPORTED\"}\n\n\ndef read_id_text(path: Path) -> dict[str, str]:\n    result = {}\n    with path.open(\"r\", encoding=\"utf-8\") as stream:\n        for line_number, line in enumerate(stream, start=1):\n            line = line.rstrip(\"\\n\")\n            if not line:\n                continue\n            item_id, separator, text = line.partition(\"|\")\n            if not separator or not item_id or not text:\n                raise ValueError(f\"Invalid line {line_number} in {path}.\")\n            if item_id in result:\n                raise ValueError(f\"Duplicate ID {item_id} in {path}.\")\n            result[item_id] = text\n    return result\n\n\ndef main() -> None:\n    for path in (SOURCE, SUMMARY, REVIEW):\n        if not path.is_file():\n            raise FileNotFoundError(f\"Missing input: {path}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    source = read_id_text(SOURCE)\n    summary = read_id_text(SUMMARY)\n\n    reviewed = {}\n    with REVIEW.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        required = {\"summary_id\", \"verdict\", \"evidence\", \"reason\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise ValueError(\"Review CSV is missing a required column.\")\n\n        for row in reader:\n            summary_id = row[\"summary_id\"].strip()\n            verdict = row[\"verdict\"].strip()\n            evidence_ids = [x.strip() for x in row[\"evidence\"].split(\";\") if x.strip()]\n\n            if summary_id not in summary:\n                raise ValueError(f\"Unknown summary ID: {summary_id}\")\n            if summary_id in reviewed:\n                raise ValueError(f\"Duplicate review: {summary_id}\")\n            if verdict not in VALID_VERDICTS:\n                raise ValueError(f\"Invalid verdict for {summary_id}: {verdict}\")\n            if not evidence_ids:\n                raise ValueError(f\"No evidence listed for {summary_id}.\")\n            unknown = [item for item in evidence_ids if item not in source]\n            if unknown:\n                raise ValueError(f\"Unknown source IDs for {summary_id}: {unknown}\")\n            if not row[\"reason\"].strip():\n                raise ValueError(f\"Missing reason for {summary_id}.\")\n\n            reviewed[summary_id] = {\n                \"summary_id\": summary_id,\n                \"summary_text\": summary[summary_id],\n                \"verdict\": verdict,\n                \"evidence\": \";\".join(evidence_ids),\n                \"reason\": row[\"reason\"].strip(),\n            }\n\n    missing = [item for item in summary if item not in reviewed]\n    if missing:\n        raise ValueError(f\"Summary sentences not reviewed: {missing}\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    fields = [\"summary_id\", \"summary_text\", \"verdict\", \"evidence\", \"reason\"]\n    with OUTPUT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=fields)\n        writer.writeheader()\n        for summary_id in summary:\n            writer.writerow(reviewed[summary_id])\n\n    counts = {verdict: 0 for verdict in VALID_VERDICTS}\n    for row in reviewed.values():\n        counts[row[\"verdict\"]] += 1\n\n    print(f\"Summary sentences checked: {len(summary)}.\")\n    print(\n        f\"Supported: {counts['SUPPORTED']}; partial: {counts['PARTIAL']}; \"\n        f\"unsupported: {counts['UNSUPPORTED']}.\"\n    )\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-result",
+      "heading": "6. Check the expected result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the synthetic review above, all 4 summary sentences have a valid verdict and valid source references. The expected console output is shown below. It was derived by hand and is not an execution log."
+        },
+        {
+          "type": "code",
+          "text": "Summary sentences checked: 4.\nSupported: 2; partial: 0; unsupported: 2.\nOutput: outputs/summary_source_check/validated_review.csv"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that every A-ID appears exactly once in the review.",
+            "Confirm that every cited S-ID exists in source.txt.",
+            "Confirm that unsupported claims are not silently rewritten as supported claims.",
+            "Keep the original AI summary unchanged so the review remains auditable.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous validation."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "errors-and-limits",
+      "heading": "7. Recognize common errors and limits",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What to do"
+          ],
+          "rows": [
+            [
+              "One summary sentence contains two separate claims",
+              "Split the sentence into claim-sized units or review each claim separately."
+            ],
+            [
+              "Evidence only supports part of a sentence",
+              "Use PARTIAL and write the missing qualification in the reason column."
+            ],
+            [
+              "The source is silent on a conclusion",
+              "Mark it UNSUPPORTED instead of treating a plausible inference as a sourced fact."
+            ],
+            [
+              "A source sentence is cited but does not actually support the claim",
+              "Fix the human review; valid IDs alone do not prove semantic support."
+            ],
+            [
+              "Different sources disagree",
+              "Record the disagreement explicitly instead of forcing a single unsupported conclusion."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The Python script validates review completeness and reference IDs, not truth. Semantic support still requires human reading or a separate evidence-evaluation process. A wrong human verdict can pass the structural checker."
+        },
+        {
+          "type": "p",
+          "text": "For long reports, use page numbers, paragraph IDs, table numbers, or quoted source locations instead of informal references. Also distinguish direct source statements from calculations, interpretations, and external knowledge. A summary should not quietly turn one category into another."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+    "items": [
+      "Confirmed source.txt contains 6 source sentences and ai_summary.txt contains 4 summary sentences.",
+      "Confirmed summary_review.csv contains exactly 4 reviews: A1 and A3 SUPPORTED; A2 and A4 UNSUPPORTED; no PARTIAL rows.",
+      "Execution completed successfully and printed: Summary sentences checked: 4; Supported: 2; partial: 0; unsupported: 2; Output: outputs/summary_source_check/validated_review.csv.",
+      "validated_review.csv contained exactly 4 data rows with the expected summary text, verdicts, evidence IDs, and reasons.",
+      "All cited source IDs existed and every summary ID was reviewed exactly once.",
+      "Second execution stopped with FileExistsError for outputs/summary_source_check, confirming overwrite protection.",
+      "SHA-256 comparison confirmed source.txt, ai_summary.txt, and summary_review.csv were unchanged by the script."
+    ],
+    "limits": [
+      "The script checks review completeness, IDs, and verdict structure; it does not itself determine semantic truth or whether the human-assigned verdict is correct.",
+      "The synthetic sentence-to-source judgments were checked against the article's supplied source text, not against any external source."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-summary-source-check",
+  "category": "ai",
+  "date": "2026-09-20"
+}

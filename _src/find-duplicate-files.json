@@ -1,1 +1,337 @@
-{"title": "Find duplicate files by size and SHA-256 before deleting anything", "summary": "Filter files by size, compare SHA-256 digests, and write a review-only CSV without changing the source files. Use a seven-file synthetic example to check which paths belong in the report and which do not.", "tags": ["Python", "Files", "SHA-256"], "audience": "This guide is for people who want to identify potentially redundant files while keeping deletion decisions separate from the scan.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A working folder where you can create an outputs folder.", "Read permission for the scanned files, with no other process changing them during the scan.", "Only the Python standard library is required: csv, hashlib, os, pathlib, and stat."], "sections": [{"id": "define-a-duplicate-candidate", "heading": "1. Define what the report means", "blocks": [{"type": "p", "text": "This workflow groups files by byte size first. Only size groups containing multiple paths need hashing: files with different sizes cannot contain exactly the same bytes. Within each size group, matching SHA-256 digests identify duplicate candidates. Matching names are neither required nor sufficient."}, {"type": "p", "text": "A candidate group is not a deletion instruction. Identical content can serve different purposes in different folders, and a digest is not an absolute proof of equality. The report records every matching path without automatically choosing a file to keep."}, {"type": "callout", "title": "No deletion step", "text": "Neither script deletes, renames, or overwrites existing source files. Each requires a new destination folder beneath outputs and stops if that destination already exists."}]}, {"id": "create-synthetic-files", "heading": "2. Create seven synthetic files", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written for this article. Save the code as create_duplicate_demo.py and run it from your working folder. Binary writes make the contents exact: no newline is appended, and the empty files contain zero bytes."}, {"type": "code"}, {"type": "code"}, {"type": "table", "headers": ["Relative path", "Exact text content", "Bytes"], "rows": [["archive/a_saved.txt", "abc", "3"], ["empty_a.txt", "Empty", "0"], ["empty_b.txt", "Empty", "0"], ["notes/a.txt", "abc", "3"], ["notes/a_copy.txt", "abc", "3"], ["notes/other.txt", "xyz", "3"], ["unique.txt", "solo", "4"]]}, {"type": "p", "text": "The seven files contain 16 bytes altogether. Four have size 3, but notes/other.txt contains different bytes from the three abc files. This deliberately tests why equal size alone is insufficient."}]}, {"id": "choose-source-and-output", "heading": "3. Keep the report outside the scanned folder", "blocks": [{"type": "ol", "items": ["Save the next script as find_duplicate_files.py beside the setup script.", "Leave SOURCE set to outputs/duplicate_demo for this example.", "Keep outputs/duplicate_review separate from the source. That destination must not already exist.", "Run the script from the same working folder using the command below."]}, {"type": "code"}, {"type": "p", "text": "The script rejects a report destination inside the resolved source folder. This prevents the scan from including its own output. Relative paths still depend on the terminal's working directory."}]}, {"id": "scan-and-write-report", "heading": "4. Scan files and write the review CSV", "blocks": [{"type": "p", "text": "The scanner skips symbolic links discovered during traversal and ignores non-regular file entries. Traversal and read errors stop the run. Metadata comparisons around hashing detect some concurrent changes, but they do not create a locked snapshot."}, {"type": "code"}]}, {"id": "expected-review-report", "heading": "5. Compare the expected groups", "blocks": [{"type": "p", "text": "The expected report has five data rows plus its header. Groups are ordered by size and then digest; paths within each group are sorted. The table below omits the sha256 column because no digests were calculated here. The script fills that column when executed."}, {"type": "table", "headers": ["group_id", "size_bytes", "relative_path", "review_status"], "rows": [["G001", "0", "empty_a.txt", "UNREVIEWED"], ["G001", "0", "empty_b.txt", "UNREVIEWED"], ["G002", "3", "archive/a_saved.txt", "UNREVIEWED"], ["G002", "3", "notes/a.txt", "UNREVIEWED"], ["G002", "3", "notes/a_copy.txt", "UNREVIEWED"]]}, {"type": "p", "text": "Six files require hashing: the two empty files and all four three-byte files. The four-byte file has no size peer and is skipped at the hashing stage. The expected console text is hand-derived, not an execution log."}, {"type": "code"}]}, {"id": "review-before-deleting", "heading": "6. Review meaning, not just matching bytes", "blocks": [{"type": "ol", "items": ["Check that each reported path still exists and that the source has not changed since scanning.", "Compare candidate files byte for byte before a destructive decision. Confirm that a separate, usable backup exists.", "Check folder purpose, ownership, references from other files, and application requirements. Identical contents do not establish interchangeability.", "Record a proposed action in a separate review copy. Do not interpret the first path in a group as the automatically preferred copy."]}, {"type": "p", "text": "Empty files may be intentional placeholders. Their matching content does not make them unnecessary, and removing them would not eliminate any file-content bytes."}]}, {"id": "checks-to-run-yourself", "heading": "7. Check the safeguards yourself", "blocks": [{"type": "ul", "items": ["Confirm that both empty files and all three abc files appear, while notes/other.txt and unique.txt do not.", "Check that each group has one shared size and one shared 64-character SHA-256 hexadecimal value.", "Run again without changing OUTPUT_DIR. FileExistsError should stop the run before another report is written.", "Try a separate source containing only unique sizes. Expect a header-only report and zero hashed files."]}, {"type": "p", "text": "These are reader checks, not tests executed for this article. A completed report with zero groups is different from a scan that stopped with an exception."}]}, {"id": "common-errors", "heading": "8. Recognize common errors", "blocks": [{"type": "table", "headers": ["Symptom", "What to check"], "rows": [["FileNotFoundError", "Run the setup first and check SOURCE against the terminal's working directory."], ["FileExistsError", "Review the previous destination and choose a fresh folder beneath outputs. Existing empty destinations are also refused."], ["PermissionError or another read error", "Resolve access problems or narrow the source deliberately. Do not treat an interrupted scan as complete."], ["File changed before or during hashing", "Stop applications modifying the source, then scan again using a fresh output destination."], ["Unexpected byte sizes", "A text editor may have added a newline or changed encoding. Recreate the example with the binary-writing setup script."], ["Empty folder or partial report after failure", "An interrupted run does not roll back its destination. Keep that result separate from completed reports."]]}]}, {"id": "limits-and-safe-scope", "heading": "9. Understand the limits", "blocks": [{"type": "p", "text": "Hashing reads content in chunks, but the script stores file metadata, paths, and groups in memory. This is not a constant-memory inventory. It compares complete bytes, not visual similarity or document meaning; matching-looking documents can have different digests."}, {"type": "p", "text": "The report counts paths, not independent physical copies. Hard links can produce multiple reported paths without separate content storage, so reported sizes are not guaranteed disk savings. Windows junctions, mount points, and hostile concurrent changes require additional handling beyond the symbolic-link checks."}, {"type": "callout", "title": "Treat filenames as untrusted text", "text": "The CSV preserves filenames literally. Inspect unfamiliar reports as plain text or import columns explicitly as text rather than letting spreadsheet software interpret filenames as formulas."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, hashlib, os, pathlib, stat · no execution", "items": ["Manually counted seven files: two of size 0, four of size 3, and one of size 4, totaling 16 bytes.", "Identified the identical-content groups by inspecting the synthetic byte strings: two empty files and three abc files.", "Traced the size filter to six hashing candidates and the expected review report to two groups containing five paths.", "Inspected exclusive destination creation, report placement, traversal error handling, and the absence of deletion operations.", "Derived the expected console text and report row order by hand."], "limits": ["The code was not executed by the author of this response; no files or reports were created.", "SHA-256 digests were not computed or checked. Expected content groups were determined by inspecting the synthetic inputs.", "Output collisions, permission failures, concurrent changes, links, interrupted writes, and large directories were not tested.", "Reference pages were not opened or checked live."]}, "references": [{"title": "Official Python 3.12 documentation · hashlib", "url": "https://docs.python.org/3.12/library/hashlib.html"}, {"title": "Official Python 3.12 documentation · os.walk", "url": "https://docs.python.org/3.12/library/os.html#os.walk"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}, {"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}], "slug": "find-duplicate-files", "category": "automation", "date": "2026-09-20"}
+{
+  "title": "Find duplicate files by size and SHA-256 before deleting anything",
+  "summary": "Filter files by size, compare SHA-256 digests, and write a review-only CSV without changing the source files. Use a seven-file synthetic example to check which paths belong in the report and which do not.",
+  "tags": [
+    "Python",
+    "Files",
+    "SHA-256"
+  ],
+  "audience": "This guide is for people who want to identify potentially redundant files while keeping deletion decisions separate from the scan.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A working folder where you can create an outputs folder.",
+    "Read permission for the scanned files, with no other process changing them during the scan.",
+    "Only the Python standard library is required: csv, hashlib, os, pathlib, and stat."
+  ],
+  "sections": [
+    {
+      "id": "define-a-duplicate-candidate",
+      "heading": "1. Define what the report means",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This workflow groups files by byte size first. Only size groups containing multiple paths need hashing: files with different sizes cannot contain exactly the same bytes. Within each size group, matching SHA-256 digests identify duplicate candidates. Matching names are neither required nor sufficient."
+        },
+        {
+          "type": "p",
+          "text": "A candidate group is not a deletion instruction. Identical content can serve different purposes in different folders, and a digest is not an absolute proof of equality. The report records every matching path without automatically choosing a file to keep."
+        },
+        {
+          "type": "callout",
+          "title": "No deletion step",
+          "text": "Neither script deletes, renames, or overwrites existing source files. Each requires a new destination folder beneath outputs and stops if that destination already exists."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-files",
+      "heading": "2. Create seven synthetic files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written for this article. Save the code as create_duplicate_demo.py and run it from your working folder. Binary writes make the contents exact: no newline is appended, and the empty files contain zero bytes."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\n\nDEMO = Path(\"outputs\") / \"duplicate_demo\"\nFILES = {\n    \"archive/a_saved.txt\": b\"abc\",\n    \"empty_a.txt\": b\"\",\n    \"empty_b.txt\": b\"\",\n    \"notes/a.txt\": b\"abc\",\n    \"notes/a_copy.txt\": b\"abc\",\n    \"notes/other.txt\": b\"xyz\",\n    \"unique.txt\": b\"solo\",\n}\n\nDEMO.parent.mkdir(parents=True, exist_ok=True)\nDEMO.mkdir()  # Refuse to reuse an existing destination.\nfor relative_path, content in FILES.items():\n    target = DEMO / relative_path\n    target.parent.mkdir(parents=True, exist_ok=True)\n    with target.open(\"xb\") as stream:\n        stream.write(content)\n"
+        },
+        {
+          "type": "code",
+          "text": "python create_duplicate_demo.py"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Relative path",
+            "Exact text content",
+            "Bytes"
+          ],
+          "rows": [
+            [
+              "archive/a_saved.txt",
+              "abc",
+              "3"
+            ],
+            [
+              "empty_a.txt",
+              "Empty",
+              "0"
+            ],
+            [
+              "empty_b.txt",
+              "Empty",
+              "0"
+            ],
+            [
+              "notes/a.txt",
+              "abc",
+              "3"
+            ],
+            [
+              "notes/a_copy.txt",
+              "abc",
+              "3"
+            ],
+            [
+              "notes/other.txt",
+              "xyz",
+              "3"
+            ],
+            [
+              "unique.txt",
+              "solo",
+              "4"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The seven files contain 16 bytes altogether. Four have size 3, but notes/other.txt contains different bytes from the three abc files. This deliberately tests why equal size alone is insufficient."
+        }
+      ]
+    },
+    {
+      "id": "choose-source-and-output",
+      "heading": "3. Keep the report outside the scanned folder",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Save the next script as find_duplicate_files.py beside the setup script.",
+            "Leave SOURCE set to outputs/duplicate_demo for this example.",
+            "Keep outputs/duplicate_review separate from the source. That destination must not already exist.",
+            "Run the script from the same working folder using the command below."
+          ]
+        },
+        {
+          "type": "code",
+          "text": "python find_duplicate_files.py"
+        },
+        {
+          "type": "p",
+          "text": "The script rejects a report destination inside the resolved source folder. This prevents the scan from including its own output. Relative paths still depend on the terminal's working directory."
+        }
+      ]
+    },
+    {
+      "id": "scan-and-write-report",
+      "heading": "4. Scan files and write the review CSV",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The scanner skips symbolic links discovered during traversal and ignores non-regular file entries. Traversal and read errors stop the run. Metadata comparisons around hashing detect some concurrent changes, but they do not create a locked snapshot."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport hashlib\nimport os\nimport stat\nfrom pathlib import Path\n\nSOURCE = Path(\"outputs\") / \"duplicate_demo\"\nOUTPUT_DIR = Path(\"outputs\") / \"duplicate_review\"\nCHUNK_BYTES = 1024 * 1024\n\n\ndef signature(info: os.stat_result) -> tuple[int, ...]:\n    return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns)\n\n\ndef raise_walk_error(error: OSError) -> None:\n    raise error\n\n\ndef file_digest(path: Path, expected: os.stat_result) -> str:\n    digest = hashlib.sha256()\n    with path.open(\"rb\") as stream:\n        before = os.fstat(stream.fileno())\n        if not stat.S_ISREG(before.st_mode) or signature(before) != signature(expected):\n            raise RuntimeError(f\"File changed before hashing: {path}\")\n        while chunk := stream.read(CHUNK_BYTES):\n            digest.update(chunk)\n        after = os.fstat(stream.fileno())\n    if signature(after) != signature(expected) or signature(path.lstat()) != signature(expected):\n        raise RuntimeError(f\"File changed during hashing: {path}\")\n    return digest.hexdigest()\n\n\ndef main() -> None:\n    root = SOURCE.resolve(strict=True)\n    if not root.is_dir():\n        raise ValueError(\"SOURCE must be a directory.\")\n    if OUTPUT_DIR.resolve().is_relative_to(root):\n        raise ValueError(\"The report folder must be outside SOURCE.\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()  # Stop if the destination already exists.\n\n    by_size = {}\n    scanned = 0\n    for directory, directories, filenames in os.walk(\n        root, followlinks=False, onerror=raise_walk_error\n    ):\n        base = Path(directory)\n        directories[:] = sorted(\n            name for name in directories if not (base / name).is_symlink()\n        )\n        for name in sorted(filenames):\n            path = base / name\n            info = path.lstat()\n            if not stat.S_ISREG(info.st_mode):\n                continue\n            by_size.setdefault(info.st_size, []).append((path, info))\n            scanned += 1\n\n    groups = []\n    hashed = 0\n    for size, members in sorted(by_size.items()):\n        if len(members) < 2:\n            continue\n        by_hash = {}\n        for path, initial in members:\n            digest = file_digest(path, initial)\n            by_hash.setdefault(digest, []).append(path)\n            hashed += 1\n        for digest, paths in sorted(by_hash.items()):\n            if len(paths) > 1:\n                ordered = sorted(paths, key=lambda path: path.as_posix())\n                groups.append((size, digest, ordered))\n\n    report = OUTPUT_DIR / \"duplicates.csv\"\n    with report.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.writer(stream)\n        writer.writerow([\n            \"group_id\", \"size_bytes\", \"sha256\", \"relative_path\", \"review_status\"\n        ])\n        for number, (size, digest, paths) in enumerate(groups, start=1):\n            for path in paths:\n                writer.writerow([\n                    f\"G{number:03d}\", size, digest,\n                    path.relative_to(root).as_posix(), \"UNREVIEWED\"\n                ])\n\n    matched = sum(len(paths) for _, _, paths in groups)\n    print(f\"Scanned {scanned} regular file paths; hashed {hashed}.\")\n    print(f\"Duplicate candidates: {len(groups)} groups, {matched} paths.\")\n    print(f\"Review CSV: {report.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-review-report",
+      "heading": "5. Compare the expected groups",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The report has five data rows plus its header. Groups are ordered by size and digest, with sorted paths in each group. The table below omits the SHA-256 column for readability; the generated CSV includes it and the values were checked during execution."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "group_id",
+            "size_bytes",
+            "relative_path",
+            "review_status"
+          ],
+          "rows": [
+            [
+              "G001",
+              "0",
+              "empty_a.txt",
+              "UNREVIEWED"
+            ],
+            [
+              "G001",
+              "0",
+              "empty_b.txt",
+              "UNREVIEWED"
+            ],
+            [
+              "G002",
+              "3",
+              "archive/a_saved.txt",
+              "UNREVIEWED"
+            ],
+            [
+              "G002",
+              "3",
+              "notes/a.txt",
+              "UNREVIEWED"
+            ],
+            [
+              "G002",
+              "3",
+              "notes/a_copy.txt",
+              "UNREVIEWED"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Six files require hashing: the two empty files and all four three-byte files. The four-byte file has no size peer and is skipped. The execution matched the expected console output."
+        },
+        {
+          "type": "code",
+          "text": "Scanned 7 regular file paths; hashed 6.\nDuplicate candidates: 2 groups, 5 paths.\nReview CSV: outputs/duplicate_review/duplicates.csv"
+        }
+      ]
+    },
+    {
+      "id": "review-before-deleting",
+      "heading": "6. Review meaning, not just matching bytes",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Check that each reported path still exists and that the source has not changed since scanning.",
+            "Compare candidate files byte for byte before a destructive decision. Confirm that a separate, usable backup exists.",
+            "Check folder purpose, ownership, references from other files, and application requirements. Identical contents do not establish interchangeability.",
+            "Record a proposed action in a separate review copy. Do not interpret the first path in a group as the automatically preferred copy."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Empty files may be intentional placeholders. Their matching content does not make them unnecessary, and removing them would not eliminate any file-content bytes."
+        }
+      ]
+    },
+    {
+      "id": "checks-to-run-yourself",
+      "heading": "7. Check the safeguards yourself",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that both empty files and all three abc files appear, while notes/other.txt and unique.txt do not.",
+            "Check that each group has one shared size and one shared 64-character SHA-256 hexadecimal value.",
+            "Run again without changing OUTPUT_DIR. FileExistsError should stop the run before another report is written.",
+            "Try a separate source containing only unique sizes. Expect a header-only report and zero hashed files."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "These are reader checks, not tests executed for this article. A completed report with zero groups is different from a scan that stopped with an exception."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "8. Recognize common errors",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "FileNotFoundError",
+              "Run the setup first and check SOURCE against the terminal's working directory."
+            ],
+            [
+              "FileExistsError",
+              "Review the previous destination and choose a fresh folder beneath outputs. Existing empty destinations are also refused."
+            ],
+            [
+              "PermissionError or another read error",
+              "Resolve access problems or narrow the source deliberately. Do not treat an interrupted scan as complete."
+            ],
+            [
+              "File changed before or during hashing",
+              "Stop applications modifying the source, then scan again using a fresh output destination."
+            ],
+            [
+              "Unexpected byte sizes",
+              "A text editor may have added a newline or changed encoding. Recreate the example with the binary-writing setup script."
+            ],
+            [
+              "Empty folder or partial report after failure",
+              "An interrupted run does not roll back its destination. Keep that result separate from completed reports."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits-and-safe-scope",
+      "heading": "9. Understand the limits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Hashing reads content in chunks, but the script stores file metadata, paths, and groups in memory. This is not a constant-memory inventory. It compares complete bytes, not visual similarity or document meaning; matching-looking documents can have different digests."
+        },
+        {
+          "type": "p",
+          "text": "The report counts paths, not independent physical copies. Hard links can produce multiple reported paths without separate content storage, so reported sizes are not guaranteed disk savings. Windows junctions, mount points, and hostile concurrent changes require additional handling beyond the symbolic-link checks."
+        },
+        {
+          "type": "callout",
+          "title": "Treat filenames as untrusted text",
+          "text": "The CSV preserves filenames literally. Inspect unfamiliar reports as plain text or import columns explicitly as text rather than letting spreadsheet software interpret filenames as formulas."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library csv/hashlib/os/pathlib/stat",
+    "items": [
+      "The setup created exactly 7 regular source files totaling 16 bytes: two size-0 files, four size-3 files, and one size-4 file.",
+      "The main run printed exactly: 'Scanned 7 regular file paths; hashed 6.', 'Duplicate candidates: 2 groups, 5 paths.', and 'Review CSV: outputs/duplicate_review/duplicates.csv'.",
+      "duplicates.csv contained exactly 5 data rows plus its header.",
+      "G001 contained empty_a.txt and empty_b.txt, both size 0 with SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.",
+      "G002 contained archive/a_saved.txt, notes/a.txt, and notes/a_copy.txt, all size 3 with SHA-256 ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad.",
+      "notes/other.txt and unique.txt were correctly absent from the duplicate report.",
+      "Six files were hashed: the two zero-byte peers and all four three-byte files; unique.txt was skipped because its size had no peer.",
+      "Source file contents and hashes were identical before and after the scan.",
+      "A second run stopped with FileExistsError because outputs/duplicate_review already existed.",
+      "A source with file sizes 1, 2, and 3 bytes produced 'hashed 0', zero duplicate groups, and a header-only CSV report.",
+      "An OUTPUT_DIR placed beneath SOURCE raised ValueError: 'The report folder must be outside SOURCE.'",
+      "With a symbolic-link file and symbolic-link directory added to the source, the scanner still reported only 7 regular file paths and the same 2 duplicate groups."
+    ],
+    "limits": [
+      "Permission failures, concurrent file mutation during hashing, hard-link accounting, Windows junctions or mount points, interrupted writes, hostile filesystem races, and large-directory performance were not tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · hashlib",
+      "url": "https://docs.python.org/3.12/library/hashlib.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · os.walk",
+      "url": "https://docs.python.org/3.12/library/os.html#os.walk"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    }
+  ],
+  "slug": "find-duplicate-files",
+  "category": "automation",
+  "date": "2026-09-20"
+}

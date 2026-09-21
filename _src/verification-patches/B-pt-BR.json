@@ -1,0 +1,361 @@
+{
+  "file": "B",
+  "lang": "pt-BR",
+  "data": {
+    "useful-changelog": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: json, pathlib",
+        "items": [
+          "A execução foi concluída com sucesso com 3 mudanças, 3 ações obrigatórias, 3 verificações e 9 linhas de marcadores no total.",
+          "O arquivo CHANGELOG_ENTRY.txt gerado correspondeu exatamente ao texto esperado do changelog no artigo.",
+          "A saída do console correspondeu exatamente: Changes: 3; Required actions: 3; Verification checks: 3; Total bullets: 9; Output: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt.",
+          "Foi confirmado que cada mudança aparece uma vez em What changed, cada ação aparece uma vez em What you need to do e as 3 verificações aparecem em Check after updating.",
+          "Foi confirmado que reports/ e outputs/reports/, report_dir e output_dir, e o texto customer_id foram copiados exatamente do JSON sintético de origem.",
+          "A segunda execução gerou FileExistsError para outputs/useful_changelog_result, confirmando a proteção contra sobrescrita.",
+          "A comparação SHA-256 confirmou que release_notes.json permaneceu inalterado."
+        ],
+        "limits": [
+          "O ambiente de execução emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas durante a inicialização do Python; isso não afetou a primeira execução bem-sucedida do script, a saída gerada nem o comportamento de proteção contra sobrescrita.",
+          "O script valida a estrutura, o texto obrigatório, a presença das seções e a contagem dos marcadores; ele não consegue determinar se uma descrição de changelog escrita por uma pessoa é substancialmente completa ou precisa."
+        ]
+      },
+      "text_fixes": []
+    },
+    "project-handover-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, pathlib",
+        "items": [
+          "A primeira execução foi concluída com sucesso.",
+          "A saída do console correspondeu exatamente: 5 itens de checklist, 2 itens em aberto, 2 problemas de validação, 2 itens afetados e o caminho de relatório informado.",
+          "O relatório gerado continha exatamente row 5 H004 MISSING_OWNER e row 6 H005 MISSING_LOCATION.",
+          "O arquivo de origem handover_items.csv permaneceu idêntico byte por byte após a execução.",
+          "A única saída do artigo gerada foi outputs/handover_check_result/handover_review.csv.",
+          "Uma segunda execução foi interrompida com FileExistsError porque outputs/handover_check_result já existia, portanto o relatório anterior não foi sobrescrito."
+        ],
+        "limits": [
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou a execução nem os resultados do script.",
+          "As URLs de documentação externa não foram verificadas porque a tarefa de verificação se concentrava no exemplo executável do artigo."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-email-draft-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, sys",
+        "items": [
+          "O script foi executado com sucesso e criou outputs/email_check_report.txt.",
+          "Usando o rascunho de exemplo original do artigo, quantity, unit price, total, October 7 e October 9 passaram; recipient Mina Park e company Example Parts retornaram CHECK porque essas strings exatas não estavam presentes.",
+          "Nenhuma das frases de promessa arriscada listadas foi detectada.",
+          "O total calculado foi exatamente 24 x $18.50 = $444.00.",
+          "draft_email.txt permaneceu idêntico byte por byte após a execução.",
+          "Uma segunda execução foi interrompida porque outputs já existia, portanto o relatório não foi sobrescrito.",
+          "A correção de texto proposta torna o rascunho representativo consistente com as verificações de texto obrigatório do script sem alterar o código."
+        ],
+        "limits": [
+          "O script não consegue verificar os campos reais To, CC e BCC, anexos, autoridade organizacional, tom ou compromissos expressos com frases fora de sua lista fixa.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem seus resultados."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "ask-ai-for-draft",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "Uma resposta típica de IA poderia ser: 'Hello Mina Park, We would like to request 24 sample units from Example Parts at $18.50 per unit, for a total of $444.00. If possible, please arrange delivery by October 7, 2026, as our internal review is scheduled for October 9. Please let us know whether this delivery date is feasible. Best regards.' É um rascunho razoável, mas ainda precisa ser verificado.",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-meeting-minutes-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, sys",
+        "items": [
+          "A primeira execução foi concluída com sucesso e criou outputs/minutes_check_report.txt.",
+          "As cinco verificações retornaram PASS: decisão sobre revised-template, ação de Leo para October 6, ação de review de Sara, decisão não resolvida sobre appendix e data incerta de October 8 para supplier-data.",
+          "O relatório gerado continha exatamente as cinco linhas PASS seguidas dos quatro lembretes de revisão manual informados.",
+          "O transcript permaneceu idêntico byte por byte após a execução.",
+          "Uma segunda execução foi interrompida com a mensagem informada porque outputs já existia, portanto o relatório anterior não foi sobrescrito.",
+          "A interpretação do artigo é consistente com o transcript: Sara não tem um prazo no calendário, October 8 se aplica apenas à possível chegada de supplier-data, appendix continua sem resolução e a data do supplier continua explicitamente não confirmada."
+        ],
+        "limits": [
+          "A correspondência exata de frases não consegue validar paráfrases nem um contexto mais amplo do transcript.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem sua saída verificada."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-excel-formula-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, datetime, csv, sys",
+        "items": [
+          "A primeira execução foi concluída com sucesso e criou outputs/formula_check_report.txt.",
+          "Os resultados gerados foram exatamente: Row 2 = 20.00%, Row 3 = 0.00%, Row 4 = blank, Rows 5-8 = CHECK.",
+          "Os resultados correspondem à sequência informada no artigo: 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, CHECK.",
+          "A linha de datas ISO 2026-10-01 a 2026-10-08 foi detectada corretamente e marcada como CHECK.",
+          "O arquivo de origem formula_cases.csv permaneceu idêntico byte por byte após a execução.",
+          "Uma segunda execução foi interrompida com a mensagem informada porque outputs já existia, portanto o relatório anterior não foi sobrescrito.",
+          "O script usa apenas módulos da biblioteca padrão e seu comportamento corresponde à regra de negócio informada para o CSV sintético fornecido."
+        ],
+        "limits": [
+          "O teste em Python verifica a regra independente do CSV, e não o comportamento das fórmulas do Excel dentro de uma pasta de trabalho real do Excel.",
+          "A afirmação do artigo de que datas reais do Excel são valores seriais numéricos e, portanto, passam em ISNUMBER não foi executada no Excel durante esta verificação.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem sua saída."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-translation-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, re, sys",
+        "items": [
+          "O script original foi executado com sucesso e criou outputs/translation_check_report.txt.",
+          "Com uma tradução válida para coreano, a expressão regular original extraiu do texto de origem os números ['12', '35', '80', '14', '2026'], mas da tradução apenas ['35', '80', '14'], demonstrando uma falsa divergência causada pelo comportamento de limites de palavra Unicode.",
+          "As quatro strings protegidas N·m, °C, Mina Park e Alpha-X passaram.",
+          "Após substituir a expressão regular por (?<!\\d)\\d+(?:\\.\\d+)?(?!\\d), ambos os arquivos produziram ['12', '35', '80', '14', '2026'] e o relatório retornou PASS: number sequence matches.",
+          "source.txt e translation.txt permaneceram idênticos byte por byte.",
+          "Uma segunda execução foi interrompida porque outputs já existia, portanto o relatório anterior não foi sobrescrito."
+        ],
+        "limits": [
+          "O artigo não fornece um único exemplo completo e exato de translation.txt no idioma de destino, portanto foi usada na execução uma tradução fiel para coreano que preservava os detalhes protegidos especificados.",
+          "A expressão regular corrigida ainda não reconhece todas as notações numéricas localizadas, números com sinal, separadores de milhar nem formatos decimais específicos de localidade.",
+          "O script não consegue verificar fidelidade semântica, negação, força de obrigação nem se um número preservado continua associado à afirmação correta.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem os resultados verificados."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-data-cleaning-rules": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, sys, decimal, pathlib",
+        "items": [
+          "A primeira execução foi concluída com sucesso.",
+          "A saída do console correspondeu exatamente ao artigo: 5 rows written e 9 changed cells.",
+          "O log de alterações continha exatamente 9 mudanças: 3 em row 1, 3 em row 3, 2 em row 4 e 1 em row 5.",
+          "As nove mudanças corresponderam exatamente à tabela prevista: row 1 name/email/department; row 3 email/department/hours; row 4 department/hours; row 5 department.",
+          "Row 2 não apareceu no log de alterações.",
+          "O CSV limpo manteve todas as 5 linhas na ordem original e preservou todos os row_id.",
+          "Os valores limpos ficaram como esperado, incluindo 8.0 -> 8, NA -> blank, normalização de department, remoção de espaços em branco e conversão para minúsculas dos endereços email não vazios.",
+          "sample_people.csv permaneceu idêntico byte por byte após a execução.",
+          "Uma segunda execução foi interrompida com 'Stop: outputs already exists. Review or rename it first.' e não sobrescreveu as saídas anteriores."
+        ],
+        "limits": [
+          "O teste cobre apenas o CSV sintético fornecido e as regras aprovadas; ele não valida mapeamentos mais amplos de department, entrada CSV malformada, codificações incomuns, campos multilinha nem regras de dados específicas de domínio.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem seus resultados."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-chart-claims-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib",
+        "items": [
+          "A primeira execução foi concluída com sucesso e gravou outputs/claims_check.txt.",
+          "O relatório produziu PASS para annual_total: AI=490, recomputed=490.00.",
+          "O relatório produziu FAIL para quarterly_average: AI=120, recomputed=122.50.",
+          "O relatório produziu FAIL para q4_share_percent: AI=32.6, recomputed=30.61.",
+          "O relatório produziu PASS para q1_to_q4_change_percent: AI=50.0, recomputed=50.00.",
+          "O relatório produziu PASS para largest_qoq_absolute_change: AI=30, recomputed=30.00.",
+          "O relatório produziu PASS para largest_qoq_percent_change: AI=25.0, recomputed=25.00.",
+          "O maior intervalo de mudança trimestre a trimestre informado foi Q3 to Q4.",
+          "Os resultados numéricos correspondem exatamente à tabela de interpretação e ao texto do artigo: total 490, média 122.5, participação de Q4 de aproximadamente 30.61%, aumento de Q1 para Q4 de 50% e aumento de Q3 para Q4 de 30 ou 25%.",
+          "Uma segunda execução terminou com 'Stop: outputs/claims_check.txt already exists.' e não substituiu o relatório existente."
+        ],
+        "limits": [
+          "O script verifica apenas as seis afirmações codificadas explicitamente em ai_claims; ele não analisa resumos arbitrários de gráficos escritos por IA.",
+          "A tolerância ilustrativa de 0.05 foi exercitada apenas com estes valores fornecidos.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem seus resultados."
+        ]
+      },
+      "text_fixes": []
+    },
+    "prompt-template-library": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, string",
+        "items": [
+          "A primeira execução foi concluída com sucesso e imprimiu 'Wrote outputs/weekly_summary_prompt.txt'.",
+          "O caminho do arquivo gerado correspondeu exatamente a outputs/weekly_summary_prompt.txt.",
+          "O prompt renderizado continha Project: Atlas e Audience: engineering team.",
+          "As quatro linhas fornecidas do work-log foram preservadas exatamente, incluindo as datas 2026-09-14 e 2026-09-16 e o valor 120.",
+          "Nenhum placeholder como $project, $audience ou $log_text permaneceu no prompt renderizado.",
+          "O template selecionado continha exatamente as três variáveis obrigatórias project, audience e log_text, e todas foram fornecidas com valores não vazios.",
+          "O prompt gerado incluía as instruções de task informadas, quatro regras, o formato de exemplo, três itens de checklist e o source work log.",
+          "Uma segunda execução terminou com 'Stop: outputs/weekly_summary_prompt.txt already exists.' e não sobrescreveu o prompt renderizado existente."
+        ],
+        "limits": [
+          "Apenas a ramificação weekly_summary selecionada é executada no código do artigo, portanto o template meeting_actions foi inspecionado no código-fonte, mas não foi renderizado nesta execução exata.",
+          "O script verifica a construção do prompt, e não se uma IA posterior seguirá corretamente o prompt renderizado.",
+          "O ambiente Python emitiu no stderr um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem sua saída."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-json-extraction-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script foi executado com sucesso e gravou outputs/json_validation.txt.",
+          "O relatório continha Validation: FAIL com exatamente três erros: unexpected issue_summary, ticket_id not integer e invalid priority.",
+          "products=[\"Desktop\", \"Web\"] passou pela regra de lista não vazia de strings.",
+          "callback_time=15:30 passou pela regra de validação HH:MM.",
+          "Os três motivos de falha informados correspondem ao texto e à tabela do artigo.",
+          "Uma segunda execução foi interrompida com 'Stop: outputs/json_validation.txt already exists.' e não sobrescreveu o relatório.",
+          "O exemplo de origem dá suporte explícito a ticket 1842, Mira Lee, priority high, Desktop, Web e callback time 15:30."
+        ],
+        "limits": [
+          "O validador verifica apenas estrutura e formato; a correspondência factual com texto de origem arbitrário ainda exige comparação com a fonte."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-classification-accuracy": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script processou exatamente 8 tickets.",
+          "O script calculou correct=6 e accuracy=0.750, correspondendo aos 75% informados.",
+          "A matriz de confusão correspondeu exatamente ao artigo: billing=[2,1,0], login=[0,2,0], bug=[0,1,2].",
+          "As células da matriz de confusão totalizam 8 casos.",
+          "O script gravou outputs/classification_report.txt sem modificar ticket_labels.csv.",
+          "Uma segunda execução foi interrompida com 'Output already exists: outputs/classification_report.txt', confirmando o comportamento de não sobrescrita."
+        ],
+        "limits": [
+          "O conjunto de dados com 8 tickets é sintético e pequeno demais para estabelecer desempenho real de classificação.",
+          "O ambiente de execução Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou a execução nem os resultados do script."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-mask-personal-data": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "A primeira execução foi concluída com sucesso.",
+          "O console informou que 2 nomes únicos, 2 emails únicos e 2 números de telefone únicos foram mascarados.",
+          "replacements.csv continha exatamente 6 linhas: Alice Kim -> [NAME_1], Bob Lee -> [NAME_2], duas substituições de email e duas substituições de telefone.",
+          "outputs/message_masked.txt substituiu os dois nomes completos aprovados, os dois emails e os dois números de telefone.",
+          "A referência abreviada 'Alice' permaneceu sem mascaramento porque o código substitui apenas o nome aprovado exato 'Alice Kim'.",
+          "A referência deliberadamente abreviada 'A. Kim' também permaneceu sem mascaramento, como esperado.",
+          "message.txt não foi modificado.",
+          "Uma segunda execução foi interrompida porque outputs já existia, confirmando o comportamento de não sobrescrita."
+        ],
+        "limits": [
+          "A lógica de full-name é intencionalmente uma allowlist de correspondência exata com apenas dois nomes e não é um detector geral de dados pessoais.",
+          "O ambiente Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou a execução do script nem os arquivos gerados."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "check-expected-output",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "O nome completo exato Alice Kim aparece uma vez no texto de origem e é substituído por [NAME_1]. A referência posterior mais curta Alice não corresponde exatamente à lista aprovada de nomes completos, portanto permanece sem mascaramento e deve ser identificada durante a revisão manual. O relatório contém valores únicos detectados, em vez de uma linha para cada ocorrência.",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-code-review-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script foi concluído com sucesso com a entrada sintética informada.",
+          "O relatório gerado continha total_quantity=6 e total_revenue=44.50, correspondendo ao cálculo manual e à tabela do artigo.",
+          "A aritmética correspondeu exatamente: 2×10.00=20.00, 3×5.50=16.50 e 1×8.00=8.00.",
+          "O arquivo de entrada orders.csv permaneceu inalterado.",
+          "O script criou outputs/order_summary.txt conforme informado.",
+          "Uma segunda execução foi interrompida com 'Output already exists: outputs/order_summary.txt', confirmando o comportamento de não sobrescrita.",
+          "O código usa apenas csv, decimal e pathlib da biblioteca padrão do Python."
+        ],
+        "limits": [
+          "O artigo descreve testes adicionais de edge cases, mas eles são recomendações de revisão, e não resultados que se afirma terem sido executados; por isso, a execução de verificação se concentrou no exemplo sintético exato e no comportamento de não sobrescrita.",
+          "O ambiente Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o resultado do script."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-document-qa-citations": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script contou document_lines=7 e citations_found=2.",
+          "[L2-L3] foi aceito como válido e extraiu exatamente L2 e L3.",
+          "[L5-L6] foi aceito como válido e extraiu exatamente L5 e L6.",
+          "O relatório terminou com invalid_citations=0, correspondendo ao artigo.",
+          "O texto extraído de L2-L3 sustenta a data alterada de prototype-test e o motivo do atraso de replacement-sensor.",
+          "O texto extraído de L5-L6 sustenta o prazo de draft de 18 Sep e a final review meeting de 21 Sep.",
+          "Uma resposta separada contendo [L8] produziu valid_range=False, source=INVALID LINE RANGE e invalid_citations=1.",
+          "Uma segunda execução do caso original foi interrompida com 'Output already exists: outputs/citation_check.txt', confirmando o comportamento de não sobrescrita.",
+          "O comportamento da expressão regular é consistente com os formatos de citation informados no artigo."
+        ],
+        "limits": [
+          "O script verifica a sintaxe das citation e a existência dos line-range; o suporte semântico ainda exige revisão humana.",
+          "O ambiente Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas e isso não afetou os resultados do script."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-paper-summary-table": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script foi concluído com sucesso e gravou outputs/paper_table_check.txt.",
+          "O relatório continha cells_checked=5 e evidence_not_found=0.",
+          "P1 method, data_size e result foram todos informados como EVIDENCE_FOUND.",
+          "P2 limitation='Not stated' foi informado como REVIEW_NOT_STATED, correspondendo à lógica do script e à explicação do artigo.",
+          "P3 result foi informado como EVIDENCE_FOUND.",
+          "Todos os quatro evidence fragment não vazios fornecidos foram encontrados literalmente em seus abstracts correspondentes.",
+          "As afirmações substantivas da tabela do artigo correspondem aos abstracts sintéticos, incluindo P1 com MAE 0.18 mm em um 30-sample test set, P2 com error below 4% para 90% dos validation cases e P3 com lower RMSE para Gaussian process regression.",
+          "Uma segunda execução foi interrompida com 'Output already exists: outputs/paper_table_check.txt', confirmando o comportamento de não sobrescrita."
+        ],
+        "limits": [
+          "A correspondência literal de evidence não prova que um valor parafraseado preserve todas as qualificações ou o significado semântico completo da fonte.",
+          "A ramificação 'Not stated' marca a célula para revisão, mas não prova automaticamente que a informação esteja ausente do abstract.",
+          "O ambiente Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou a execução nem a saída do script."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-reference-existence-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script foi concluído com sucesso e criou outputs/reference_check.json.",
+          "A saída continha exatamente três objetos de resultado correspondentes a urllib.request, json e à referência sintética falsa.",
+          "Como o ambiente de execução Python não conseguiu resolver DNS externo, as três solicitações foram tratadas como valores URLError em vez de causar falha no script.",
+          "Para URLs inacessíveis, reachable permaneceu false, status e final_url permaneceram null, term_matches permaneceu vazio e o campo error registrou a falha de rede conforme esperado.",
+          "O script usa apenas módulos da biblioteca padrão do Python: pathlib, urllib.request, urllib.error, html, json e re.",
+          "O script não sobrescreveu uma revisão existente: uma segunda execução foi interrompida com 'outputs already exists; remove or rename it before running again'.",
+          "O nome do arquivo de relatório gerado foi exatamente outputs/reference_check.json, correspondendo ao artigo."
+        ],
+        "limits": [
+          "O ambiente de execução do ChatGPT Python não tinha acesso funcional a DNS/rede externa durante a verificação, portanto não foi possível verificar, executando este script, os códigos de status HTTP atuais, redirecionamentos, texto de página baixado e term matches das duas URLs de documentação do Python.",
+          "Como nenhuma página foi recuperada, a ramificação real reachable-and-terms-found não pôde ser exercitada.",
+          "A presença de palavras-chave serviria apenas para filtrar possível relevância e não estabeleceria que uma página citada sustenta semanticamente toda a afirmação.",
+          "Um aviso não relacionado de aquecimento do ambiente de planilhas foi emitido durante a inicialização do Python; isso não afetou a execução do script do artigo."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-weekly-report-from-log": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "O script foi concluído com sucesso no work log sintético exato.",
+          "A saída informou Rows: 6.",
+          "A saída informou Total hours: 10.5, correspondendo a 2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5.",
+          "A saída informou Completed activities: 5.",
+          "A saída informou In-progress activities: 1.",
+          "Esses valores correspondem à tabela expected-values e à tabela de comparação AI-report do artigo.",
+          "O script criou outputs/weekly_reconciliation.txt com exatamente as quatro métricas de reconciliation informadas.",
+          "work_log.csv permaneceu inalterado após a execução.",
+          "Uma segunda execução foi interrompida com 'outputs already exists; remove or rename it before running again', confirmando o comportamento de não sobrescrita informado."
+        ],
+        "limits": [
+          "O script verifica as hours registradas e as contagens de status, mas não consegue determinar se as entradas originais do work-log são factualmente completas ou precisas.",
+          "A regra de counting trata cada CSV row como uma activity, conforme informado no artigo.",
+          "O ambiente de execução Python emitiu um aviso não relacionado de aquecimento do ambiente de planilhas; isso não afetou o script do artigo nem sua saída."
+        ]
+      },
+      "text_fixes": []
+    }
+  }
+}

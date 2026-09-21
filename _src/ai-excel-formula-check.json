@@ -1,1 +1,251 @@
-{"title": "Test an AI-suggested Excel formula on blanks, zero, text, and dates", "summary": "Do not trust an AI-suggested Excel formula after testing only normal rows. Use a small synthetic sheet to test blanks, zero, text, and dates, then cross-check the intended results with a simple Python script.", "seo_title": "Excel Formula Check: Test AI Formulas on Edge Cases", "seo_desc": "Test an AI-suggested Excel formula with blanks, zero, text, and dates, then cross-check expected results with a small Python script.", "tags": ["Excel formula", "AI verification", "Python check"], "audience": "People who use an AI chat assistant to create Excel formulas and want to test those formulas before applying them to real workbooks.", "prerequisites": ["Excel or another spreadsheet application that supports common Excel formulas", "Python 3.12"], "sections": [{"id": "why-test-ai-formulas", "heading": "Why a formula that works on one row can still be wrong", "blocks": [{"type": "p", "text": "An AI chat assistant can suggest an Excel formula that looks correct on ordinary data but behaves differently when a cell is blank, the denominator is zero, text appears where a number was expected, or a date is stored as an Excel serial number. These cases matter because spreadsheet errors are not always visible as #DIV/0! or #VALUE!. A formula can also return a plausible-looking number that is logically wrong."}, {"type": "p", "text": "The example below is synthetic. Suppose column A contains an old value, column B contains a new value, and column C should calculate percentage change as (new - old) / old. The business rule is that blanks stay blank, zero denominators and non-numeric values are marked CHECK, and dates must not be treated as ordinary measurements."}, {"type": "callout", "title": "Test the rule, not just the syntax", "text": "A formula can be valid Excel syntax and still violate the intended business rule. Write down what should happen for unusual inputs before deciding that the formula is correct."}]}, {"id": "synthetic-edge-cases", "heading": "Build a small sheet with deliberate edge cases", "blocks": [{"type": "p", "text": "Create a small test sheet before applying the formula to a real workbook. Use the following rows so normal values and common failure cases are visible together."}, {"type": "table", "headers": ["Row", "A: Old value", "B: New value", "Intended result"], "rows": [["2", "100", "120", "20%"], ["3", "50", "50", "0%"], ["4", "", "25", "blank"], ["5", "0", "10", "CHECK"], ["6", "pending", "10", "CHECK"], ["7", "100", "n/a", "CHECK"], ["8", "2026-10-01", "2026-10-08", "CHECK"]]}, {"type": "p", "text": "The first two rows establish the normal behavior: (120 - 100) / 100 = 0.20, or 20%, and (50 - 50) / 50 = 0%. The remaining rows are tests rather than ordinary production data."}]}, {"id": "ask-ai-for-formula", "heading": "Ask the AI for a formula, then inspect its assumptions", "blocks": [{"type": "p", "text": "A simple request to an AI chat assistant might be: Calculate percentage change from A2 to B2. Leave the result blank if there is an error."}, {"type": "callout", "title": "Typical AI suggestion", "text": "=IFERROR((B2-A2)/A2,\"\")"}, {"type": "p", "text": "This formula works for 100 to 120 and 50 to 50. However, IFERROR hides several different problems behind the same blank result. A zero denominator, text input, or another formula error may disappear instead of being identified for review. More importantly, Excel stores dates internally as serial numbers. If A2 and B2 contain real Excel dates, subtraction and division can produce a numeric percentage instead of an obvious error."}, {"type": "p", "text": "That means a successful calculation is not sufficient evidence that the inputs belong to the intended data type."}]}, {"id": "improve-and-test-formula", "heading": "Make the formula more explicit and test every row", "blocks": [{"type": "p", "text": "For the stated rules, a more explicit formula is:"}, {"type": "callout", "title": "More defensive formula", "text": "=IF(OR(A2=\"\",B2=\"\"),\"\",IF(OR(NOT(ISNUMBER(A2)),NOT(ISNUMBER(B2))),\"CHECK\",IF(A2=0,\"CHECK\",(B2-A2)/A2)))"}, {"type": "p", "text": "This version distinguishes blanks, non-numeric inputs, and a zero denominator. Rows 2 through 7 therefore behave as intended. Format numeric results in column C as Percentage if you want 0.20 displayed as 20%."}, {"type": "p", "text": "Row 8 exposes an important limit. Excel dates are numbers underneath their displayed date format, so ISNUMBER returns TRUE for a real Excel date. The defensive formula can therefore still calculate with dates. A generic formula cannot reliably infer whether a numeric serial represents an intended measurement or an unintended date merely from its numeric value."}, {"type": "callout", "title": "Do not hide a type problem with a longer formula", "text": "If a column must contain ordinary numeric measurements, control the input type with workbook structure, validation, import checks, or a separate data-quality step. Cell formatting alone is not proof of semantic type."}]}, {"id": "python-cross-check", "heading": "Cross-check the intended rule with Python", "blocks": [{"type": "p", "text": "For a second check, save the synthetic cases as formula_cases.csv with columns row,old_value,new_value. Keep 2026-10-01 and 2026-10-08 as shown. The following standard-library script applies the intended rule independently: blanks remain blank, ISO-formatted dates are marked CHECK, non-numeric values are marked CHECK, zero old values are marked CHECK, and valid numbers are used for percentage change."}, {"type": "code"}, {"type": "p", "text": "For the seven synthetic rows, the expected Python results are 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, and CHECK. Compare these results with the spreadsheet row by row rather than checking only whether Excel displays an error."}]}, {"id": "common-formula-mistakes", "heading": "Common mistakes when checking AI-suggested formulas", "blocks": [{"type": "ul", "items": ["Testing only one normal row and then filling the formula down thousands of rows.", "Using IFERROR to hide every failure without distinguishing missing data from invalid data.", "Forgetting that dividing by zero requires an explicit business rule.", "Assuming numeric-looking or formatted cells always contain the intended type of data.", "Forgetting that Excel dates are stored as numbers and can participate in arithmetic.", "Comparing displayed percentages without checking whether the underlying value is 0.20, 20, or another scale.", "Changing the formula until the visible errors disappear instead of defining expected outputs first."]}, {"type": "p", "text": "Python is useful here because it provides an independent implementation of the rule. It should not simply reproduce the Excel formula character for character. If both implementations make the same assumption, the cross-check may repeat the same mistake."}]}, {"id": "final-formula-checklist", "heading": "Use a final formula test checklist", "blocks": [{"type": "ol", "items": ["Write the intended calculation in plain language before accepting a formula.", "Create normal, blank, zero, text, and date test rows.", "Calculate the simple expected values by hand.", "Check whether errors should be blank, flagged, or stopped rather than hidden automatically.", "Confirm how dates and other special Excel types are represented.", "Cross-check the rule with an independent calculation when the result matters.", "Only then apply the formula to the full dataset."]}, {"type": "p", "text": "The main lesson is that formula verification is a data-type and business-rule problem, not only a syntax problem. An AI-generated formula is a draft implementation. Edge-case tests tell you whether that implementation matches the behavior you actually need."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["Checked by hand that (120 - 100) / 100 = 0.20, or 20%.", "Checked by hand that (50 - 50) / 50 = 0, or 0%.", "Checked that a blank input should produce blank under the stated synthetic rule.", "Checked that an old value of 0 cannot be used as the denominator and is therefore marked CHECK.", "Checked that pending and n/a are non-numeric inputs and are marked CHECK.", "Checked that the Python rule explicitly detects the ISO dates 2026-10-01 and 2026-10-08 and marks the row CHECK.", "Checked that the script reads formula_cases.csv, writes only outputs/formula_check_report.txt, and stops if the outputs folder already exists."], "limits": ["The code was reviewed and the small example was worked out by hand; the code was not executed by me.", "The Python example recognizes ISO dates such as 2026-10-01 but does not attempt to recognize every possible regional date format.", "Excel stores real dates as serial numbers, so ISNUMBER alone cannot distinguish a date from an intended ordinary numeric measurement.", "CSV export can change how spreadsheet dates and formatting are represented, so a CSV cross-check does not inspect the original Excel cell formatting.", "Real workbooks may require additional tests for errors, percentages, formulas returning empty strings, localized number formats, and domain-specific validation rules."]}, "references": [{"title": "Python csv documentation", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python decimal documentation", "url": "https://docs.python.org/3/library/decimal.html"}, {"title": "Python datetime documentation", "url": "https://docs.python.org/3/library/datetime.html"}], "slug": "ai-excel-formula-check", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Test an AI-suggested Excel formula on blanks, zero, text, and dates",
+  "summary": "Do not trust an AI-suggested Excel formula after testing only normal rows. Use a small synthetic sheet to test blanks, zero, text, and dates, then cross-check the intended results with a simple Python script.",
+  "seo_title": "Excel Formula Check: Test AI Formulas on Edge Cases",
+  "seo_desc": "Test an AI-suggested Excel formula with blanks, zero, text, and dates, then cross-check expected results with a small Python script.",
+  "tags": [
+    "Excel formula",
+    "AI verification",
+    "Python check"
+  ],
+  "audience": "People who use an AI chat assistant to create Excel formulas and want to test those formulas before applying them to real workbooks.",
+  "prerequisites": [
+    "Excel or another spreadsheet application that supports common Excel formulas",
+    "Python 3.12"
+  ],
+  "sections": [
+    {
+      "id": "why-test-ai-formulas",
+      "heading": "Why a formula that works on one row can still be wrong",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI chat assistant can suggest an Excel formula that looks correct on ordinary data but behaves differently when a cell is blank, the denominator is zero, text appears where a number was expected, or a date is stored as an Excel serial number. These cases matter because spreadsheet errors are not always visible as #DIV/0! or #VALUE!. A formula can also return a plausible-looking number that is logically wrong."
+        },
+        {
+          "type": "p",
+          "text": "The example below is synthetic. Suppose column A contains an old value, column B contains a new value, and column C should calculate percentage change as (new - old) / old. The business rule is that blanks stay blank, zero denominators and non-numeric values are marked CHECK, and dates must not be treated as ordinary measurements."
+        },
+        {
+          "type": "callout",
+          "title": "Test the rule, not just the syntax",
+          "text": "A formula can be valid Excel syntax and still violate the intended business rule. Write down what should happen for unusual inputs before deciding that the formula is correct."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-edge-cases",
+      "heading": "Build a small sheet with deliberate edge cases",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Create a small test sheet before applying the formula to a real workbook. Use the following rows so normal values and common failure cases are visible together."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Row",
+            "A: Old value",
+            "B: New value",
+            "Intended result"
+          ],
+          "rows": [
+            [
+              "2",
+              "100",
+              "120",
+              "20%"
+            ],
+            [
+              "3",
+              "50",
+              "50",
+              "0%"
+            ],
+            [
+              "4",
+              "",
+              "25",
+              "blank"
+            ],
+            [
+              "5",
+              "0",
+              "10",
+              "CHECK"
+            ],
+            [
+              "6",
+              "pending",
+              "10",
+              "CHECK"
+            ],
+            [
+              "7",
+              "100",
+              "n/a",
+              "CHECK"
+            ],
+            [
+              "8",
+              "2026-10-01",
+              "2026-10-08",
+              "CHECK"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The first two rows establish the normal behavior: (120 - 100) / 100 = 0.20, or 20%, and (50 - 50) / 50 = 0%. The remaining rows are tests rather than ordinary production data."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-formula",
+      "heading": "Ask the AI for a formula, then inspect its assumptions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A simple request to an AI chat assistant might be: Calculate percentage change from A2 to B2. Leave the result blank if there is an error."
+        },
+        {
+          "type": "callout",
+          "title": "Typical AI suggestion",
+          "text": "=IFERROR((B2-A2)/A2,\"\")"
+        },
+        {
+          "type": "p",
+          "text": "This formula works for 100 to 120 and 50 to 50. However, IFERROR hides several different problems behind the same blank result. A zero denominator, text input, or another formula error may disappear instead of being identified for review. More importantly, Excel stores dates internally as serial numbers. If A2 and B2 contain real Excel dates, subtraction and division can produce a numeric percentage instead of an obvious error."
+        },
+        {
+          "type": "p",
+          "text": "That means a successful calculation is not sufficient evidence that the inputs belong to the intended data type."
+        }
+      ]
+    },
+    {
+      "id": "improve-and-test-formula",
+      "heading": "Make the formula more explicit and test every row",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the stated rules, a more explicit formula is:"
+        },
+        {
+          "type": "callout",
+          "title": "More defensive formula",
+          "text": "=IF(OR(A2=\"\",B2=\"\"),\"\",IF(OR(NOT(ISNUMBER(A2)),NOT(ISNUMBER(B2))),\"CHECK\",IF(A2=0,\"CHECK\",(B2-A2)/A2)))"
+        },
+        {
+          "type": "p",
+          "text": "This version distinguishes blanks, non-numeric inputs, and a zero denominator. Rows 2 through 7 therefore behave as intended. Format numeric results in column C as Percentage if you want 0.20 displayed as 20%."
+        },
+        {
+          "type": "p",
+          "text": "Row 8 exposes an important limit. Excel dates are numbers underneath their displayed date format, so ISNUMBER returns TRUE for a real Excel date. The defensive formula can therefore still calculate with dates. A generic formula cannot reliably infer whether a numeric serial represents an intended measurement or an unintended date merely from its numeric value."
+        },
+        {
+          "type": "callout",
+          "title": "Do not hide a type problem with a longer formula",
+          "text": "If a column must contain ordinary numeric measurements, control the input type with workbook structure, validation, import checks, or a separate data-quality step. Cell formatting alone is not proof of semantic type."
+        }
+      ]
+    },
+    {
+      "id": "python-cross-check",
+      "heading": "Cross-check the intended rule with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For a second check, save the synthetic cases as formula_cases.csv with columns row,old_value,new_value. Keep 2026-10-01 and 2026-10-08 as shown. The following standard-library script applies the intended rule independently: blanks remain blank, ISO-formatted dates are marked CHECK, non-numeric values are marked CHECK, zero old values are marked CHECK, and valid numbers are used for percentage change."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom decimal import Decimal, InvalidOperation\nfrom datetime import date\nimport csv\nimport sys\n\nINPUT_PATH = Path(\"formula_cases.csv\")\nOUTPUT_DIR = Path(\"outputs\")\nREPORT_PATH = OUTPUT_DIR / \"formula_check_report.txt\"\n\nif not INPUT_PATH.is_file():\n    sys.exit(\"Missing input file: formula_cases.csv\")\n\nif OUTPUT_DIR.exists():\n    sys.exit(\"Stop: outputs folder already exists. Remove or rename it manually first.\")\n\n\ndef is_iso_date(value):\n    try:\n        date.fromisoformat(value)\n        return True\n    except ValueError:\n        return False\n\n\ndef check_change(old_text, new_text):\n    old_text = old_text.strip()\n    new_text = new_text.strip()\n\n    if old_text == \"\" or new_text == \"\":\n        return \"blank\"\n\n    if is_iso_date(old_text) or is_iso_date(new_text):\n        return \"CHECK\"\n\n    try:\n        old = Decimal(old_text)\n        new = Decimal(new_text)\n    except InvalidOperation:\n        return \"CHECK\"\n\n    if old == 0:\n        return \"CHECK\"\n\n    change = (new - old) / old * Decimal(\"100\")\n    return f\"{change:.2f}%\"\n\n\nresults = []\n\nwith INPUT_PATH.open(\"r\", encoding=\"utf-8\", newline=\"\") as file:\n    reader = csv.DictReader(file)\n    required = {\"row\", \"old_value\", \"new_value\"}\n\n    if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n        sys.exit(\"CSV must contain: row, old_value, new_value\")\n\n    for record in reader:\n        result = check_change(record[\"old_value\"], record[\"new_value\"])\n        results.append(\n            f\"Row {record['row']}: \"\n            f\"old={record['old_value']!r}, \"\n            f\"new={record['new_value']!r} -> {result}\"\n        )\n\nOUTPUT_DIR.mkdir()\nREPORT_PATH.write_text(\"\\n\".join(results) + \"\\n\", encoding=\"utf-8\")\nprint(f\"Created: {REPORT_PATH}\")\n"
+        },
+        {
+          "type": "p",
+          "text": "For the seven synthetic rows, the expected Python results are 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, and CHECK. Compare these results with the spreadsheet row by row rather than checking only whether Excel displays an error."
+        }
+      ]
+    },
+    {
+      "id": "common-formula-mistakes",
+      "heading": "Common mistakes when checking AI-suggested formulas",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Testing only one normal row and then filling the formula down thousands of rows.",
+            "Using IFERROR to hide every failure without distinguishing missing data from invalid data.",
+            "Forgetting that dividing by zero requires an explicit business rule.",
+            "Assuming numeric-looking or formatted cells always contain the intended type of data.",
+            "Forgetting that Excel dates are stored as numbers and can participate in arithmetic.",
+            "Comparing displayed percentages without checking whether the underlying value is 0.20, 20, or another scale.",
+            "Changing the formula until the visible errors disappear instead of defining expected outputs first."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Python is useful here because it provides an independent implementation of the rule. It should not simply reproduce the Excel formula character for character. If both implementations make the same assumption, the cross-check may repeat the same mistake."
+        }
+      ]
+    },
+    {
+      "id": "final-formula-checklist",
+      "heading": "Use a final formula test checklist",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Write the intended calculation in plain language before accepting a formula.",
+            "Create normal, blank, zero, text, and date test rows.",
+            "Calculate the simple expected values by hand.",
+            "Check whether errors should be blank, flagged, or stopped rather than hidden automatically.",
+            "Confirm how dates and other special Excel types are represented.",
+            "Cross-check the rule with an independent calculation when the result matters.",
+            "Only then apply the formula to the full dataset."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The main lesson is that formula verification is a data-type and business-rule problem, not only a syntax problem. An AI-generated formula is a draft implementation. Edge-case tests tell you whether that implementation matches the behavior you actually need."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, datetime, csv, sys",
+    "items": [
+      "The first run completed successfully and created outputs/formula_check_report.txt.",
+      "The generated results were exactly: Row 2 = 20.00%, Row 3 = 0.00%, Row 4 = blank, Rows 5-8 = CHECK.",
+      "The results match the article's claimed sequence: 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, CHECK.",
+      "The ISO date row 2026-10-01 to 2026-10-08 was correctly detected and marked CHECK.",
+      "The source formula_cases.csv remained byte-for-byte unchanged after execution.",
+      "A second run stopped with the stated message because outputs already existed, so the previous report was not overwritten.",
+      "The script uses only standard-library modules and its behavior matches the stated business rule for the supplied synthetic CSV."
+    ],
+    "limits": [
+      "The Python test verifies the independent CSV rule, not the behavior of the Excel formulas inside an actual Excel workbook.",
+      "The article's statement that real Excel dates are numeric serial values and therefore pass ISNUMBER was not executed in Excel during this verification.",
+      "The Python environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the article script or its output."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python csv documentation",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python decimal documentation",
+      "url": "https://docs.python.org/3/library/decimal.html"
+    },
+    {
+      "title": "Python datetime documentation",
+      "url": "https://docs.python.org/3/library/datetime.html"
+    }
+  ],
+  "slug": "ai-excel-formula-check",
+  "category": "ai",
+  "date": "2026-09-21"
+}

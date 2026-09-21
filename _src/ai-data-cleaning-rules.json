@@ -1,1 +1,288 @@
-{"title": "Ask AI for CSV cleaning rules and review every changed cell", "summary": "Use an AI chat assistant to propose explicit data-cleaning rules, apply only approved rules to a copy of a small CSV, and create a cell-level before/after log. The example is synthetic so you can inspect every transformation yourself.", "seo_title": "AI data cleaning rules: clean CSV and review changes", "seo_desc": "Ask AI for CSV cleaning rules, apply approved changes to a copy with Python, and review a before-and-after log for every changed cell.", "tags": ["AI data cleaning", "CSV", "Python"], "audience": "For people who want AI help defining repeatable CSV-cleaning rules without letting the AI silently rewrite their data.", "prerequisites": ["Python 3.12", "A text editor and an AI chat assistant"], "sections": [{"id": "start-with-synthetic-data", "heading": "Start with a tiny synthetic CSV", "blocks": [{"type": "p", "text": "This example uses synthetic people and addresses; none of the records are real. The goal is not to ask AI to clean the file directly. Instead, ask it to describe rules that you can inspect, approve, and implement deterministically."}, {"type": "p", "text": "Save the following as sample_people.csv. Notice the inconsistent spaces, email capitalization, department capitalization, missing-value marker, and numeric formatting."}, {"type": "code"}, {"type": "callout", "title": "Keep the original", "text": "The Python script below reads sample_people.csv but never overwrites it. It creates a new outputs folder containing a cleaned copy and a separate change log."}]}, {"id": "ask-ai-for-rules", "heading": "Ask AI for rules, not a rewritten file", "blocks": [{"type": "p", "text": "Give the AI the column meanings and a few representative values. Ask it to separate safe formatting changes from transformations that could change meaning."}, {"type": "callout", "title": "Example prompt", "text": "I have a CSV with columns row_id, name, email, department, and hours. Propose conservative cleaning rules. Do not invent missing values or merge records. Preserve row_id and row order. For every rule, state the affected column, exact transformation, and a case that should remain unchanged. Flag ambiguous changes instead of guessing."}, {"type": "p", "text": "Do not approve a rule merely because it sounds reasonable. A recommendation such as converting every name to title case could corrupt valid capitalization. A rule such as replacing every blank hours value with zero would add information that the source did not contain."}]}, {"id": "review-typical-answer", "heading": "Turn the AI answer into an explicit rule table", "blocks": [{"type": "p", "text": "A conservative AI answer for this example might suggest rules like these. Review them before writing code."}, {"type": "table", "headers": ["Column", "Approved rule", "Reason"], "rows": [["name", "Trim leading and trailing whitespace only", "Removes accidental spacing without changing capitalization"], ["email", "Trim whitespace, then lowercase non-empty values", "Normalizes the example addresses without inventing missing values"], ["department", "After trimming, map sales to Sales and engineering to Engineering case-insensitively", "Uses a closed list visible in the example"], ["hours", "Trim whitespace; change NA to blank; normalize valid decimal notation", "Makes the chosen missing marker and numeric representation consistent"], ["row_id", "Do not change", "Preserves record identity"]]}, {"type": "p", "text": "These rules are intentionally narrow. Unknown department values should remain unchanged rather than being guessed. Blank email addresses remain blank. No rows are deleted or deduplicated."}]}, {"id": "define-expected-changes", "heading": "Predict the changes before running anything", "blocks": [{"type": "p", "text": "For a tiny example, work out the expected result manually. This gives you a reference against which to review the script output."}, {"type": "table", "headers": ["row_id", "Column", "Before", "After"], "rows": [["1", "name", " alice kim ", "alice kim"], ["1", "email", "ALICE.KIM@example.com", "alice.kim@example.com"], ["1", "department", " sales ", "Sales"], ["3", "email", " carol.park@example.com ", "carol.park@example.com"], ["3", "department", "SALES", "Sales"], ["3", "hours", " 8.0", "8"], ["4", "department", "engineering", "Engineering"], ["4", "hours", "NA", ""], ["5", "department", " Sales", "Sales"]]}, {"type": "p", "text": "There should therefore be 9 changed cells. Row 2 should be unchanged, and the script should still output all 5 rows in their original order."}]}, {"id": "apply-rules-to-copy", "heading": "Apply only the approved rules to a copy", "blocks": [{"type": "p", "text": "The following standard-library script validates the expected columns, cleans each row, and records every cell whose value changes. It refuses to run if outputs already exists, reducing the chance of silently replacing an earlier review."}, {"type": "code"}, {"type": "p", "text": "Run it with python clean_csv.py after placing clean_csv.py and sample_people.csv in the same folder. For this example, the expected summary is 5 rows written and 9 changed cells."}]}, {"id": "review-cell-diff", "heading": "Review every changed cell", "blocks": [{"type": "p", "text": "Open outputs/changes.csv before treating the cleaned file as usable. Each line should explain one transformation using row_id, column, original value, replacement value, and the rule that caused it."}, {"type": "ol", "items": ["Confirm that the change log contains exactly 9 rows for this synthetic example.", "Check that row_id values themselves never appear as changed cells.", "Compare the 9 entries with the manually predicted table above.", "Confirm that row 2 does not appear in the change log.", "Open outputs/sample_people_cleaned.csv and confirm that it still contains 5 data rows in the original order.", "Investigate any additional change rather than assuming the AI-generated rule was correct."]}, {"type": "callout", "title": "Why the diff matters", "text": "A cleaned file alone hides how it was produced. A cell-level change log makes unexpected transformations visible and gives you something concrete to review before the cleaned copy enters later analysis."}]}, {"id": "mistakes-and-limits", "heading": "Common mistakes and limits", "blocks": [{"type": "ul", "items": ["Do not ask the AI to infer missing hours, departments, or email addresses unless you have a separate justified method for doing so.", "Do not use broad text transformations such as title-casing every name without checking whether legitimate values would be changed.", "Do not delete duplicates merely because two rows look similar. Deduplication requires an explicit record-matching rule.", "Do not overwrite the source CSV. Keep both the untouched input and the reviewed output.", "Do not rely only on a total such as 9 changes. Review which cells changed and why.", "For large or sensitive datasets, test rules on a representative sample and add domain-specific validation before applying them widely."]}, {"type": "p", "text": "AI is useful here as a rule-drafting assistant, not as the final authority on what your data means. Column definitions, valid categories, missing-value conventions, and acceptable transformations should come from the dataset owner or another authoritative source."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["I checked the synthetic CSV and the approved transformations by hand.", "The expected cell-level diff contains 9 changes: 3 in row 1, 3 in row 3, 2 in row 4, and 1 in row 5.", "Row 2 has no expected changes.", "The expected cleaned dataset retains all 5 rows and preserves their order and row_id values.", "The script writes only to outputs/sample_people_cleaned.csv and outputs/changes.csv and does not overwrite sample_people.csv.", "The script stops if the outputs folder already exists."], "limits": ["I did not execute the Python code; the small example and expected results were checked manually.", "The department mapping is intentionally limited to Sales and Engineering and is not a general department-normalization scheme.", "Lowercasing email addresses is used as an explicit rule for this tutorial example; real organizational data policies should be checked before applying normalization broadly.", "The example does not cover malformed CSV files, unusual encodings, multiline fields, schema changes, duplicate-record resolution, or domain-specific validity rules."]}, "references": [{"title": "Python documentation: csv — CSV File Reading and Writing", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python documentation: pathlib — Object-oriented filesystem paths", "url": "https://docs.python.org/3/library/pathlib.html"}, {"title": "Python documentation: decimal — Decimal fixed-point and floating-point arithmetic", "url": "https://docs.python.org/3/library/decimal.html"}], "slug": "ai-data-cleaning-rules", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Ask AI for CSV cleaning rules and review every changed cell",
+  "summary": "Use an AI chat assistant to propose explicit data-cleaning rules, apply only approved rules to a copy of a small CSV, and create a cell-level before/after log. The example is synthetic so you can inspect every transformation yourself.",
+  "seo_title": "AI data cleaning rules: clean CSV and review changes",
+  "seo_desc": "Ask AI for CSV cleaning rules, apply approved changes to a copy with Python, and review a before-and-after log for every changed cell.",
+  "tags": [
+    "AI data cleaning",
+    "CSV",
+    "Python"
+  ],
+  "audience": "For people who want AI help defining repeatable CSV-cleaning rules without letting the AI silently rewrite their data.",
+  "prerequisites": [
+    "Python 3.12",
+    "A text editor and an AI chat assistant"
+  ],
+  "sections": [
+    {
+      "id": "start-with-synthetic-data",
+      "heading": "Start with a tiny synthetic CSV",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example uses synthetic people and addresses; none of the records are real. The goal is not to ask AI to clean the file directly. Instead, ask it to describe rules that you can inspect, approve, and implement deterministically."
+        },
+        {
+          "type": "p",
+          "text": "Save the following as sample_people.csv. Notice the inconsistent spaces, email capitalization, department capitalization, missing-value marker, and numeric formatting."
+        },
+        {
+          "type": "code",
+          "text": "row_id,name,email,department,hours\n1, alice kim ,ALICE.KIM@example.com, sales ,8\n2,Bob Lee,bob.lee@example.com,Engineering,7.5\n3,Carol Park, carol.park@example.com ,SALES, 8.0\n4,Dan Choi,,engineering,NA\n5,Eve Han,eve.han@example.com, Sales,9\n"
+        },
+        {
+          "type": "callout",
+          "title": "Keep the original",
+          "text": "The Python script below reads sample_people.csv but never overwrites it. It creates a new outputs folder containing a cleaned copy and a separate change log."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-rules",
+      "heading": "Ask AI for rules, not a rewritten file",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Give the AI the column meanings and a few representative values. Ask it to separate safe formatting changes from transformations that could change meaning."
+        },
+        {
+          "type": "callout",
+          "title": "Example prompt",
+          "text": "I have a CSV with columns row_id, name, email, department, and hours. Propose conservative cleaning rules. Do not invent missing values or merge records. Preserve row_id and row order. For every rule, state the affected column, exact transformation, and a case that should remain unchanged. Flag ambiguous changes instead of guessing."
+        },
+        {
+          "type": "p",
+          "text": "Do not approve a rule merely because it sounds reasonable. A recommendation such as converting every name to title case could corrupt valid capitalization. A rule such as replacing every blank hours value with zero would add information that the source did not contain."
+        }
+      ]
+    },
+    {
+      "id": "review-typical-answer",
+      "heading": "Turn the AI answer into an explicit rule table",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A conservative AI answer for this example might suggest rules like these. Review them before writing code."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Column",
+            "Approved rule",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "name",
+              "Trim leading and trailing whitespace only",
+              "Removes accidental spacing without changing capitalization"
+            ],
+            [
+              "email",
+              "Trim whitespace, then lowercase non-empty values",
+              "Normalizes the example addresses without inventing missing values"
+            ],
+            [
+              "department",
+              "After trimming, map sales to Sales and engineering to Engineering case-insensitively",
+              "Uses a closed list visible in the example"
+            ],
+            [
+              "hours",
+              "Trim whitespace; change NA to blank; normalize valid decimal notation",
+              "Makes the chosen missing marker and numeric representation consistent"
+            ],
+            [
+              "row_id",
+              "Do not change",
+              "Preserves record identity"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "These rules are intentionally narrow. Unknown department values should remain unchanged rather than being guessed. Blank email addresses remain blank. No rows are deleted or deduplicated."
+        }
+      ]
+    },
+    {
+      "id": "define-expected-changes",
+      "heading": "Predict the changes before running anything",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For a tiny example, work out the expected result manually. This gives you a reference against which to review the script output."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "row_id",
+            "Column",
+            "Before",
+            "After"
+          ],
+          "rows": [
+            [
+              "1",
+              "name",
+              " alice kim ",
+              "alice kim"
+            ],
+            [
+              "1",
+              "email",
+              "ALICE.KIM@example.com",
+              "alice.kim@example.com"
+            ],
+            [
+              "1",
+              "department",
+              " sales ",
+              "Sales"
+            ],
+            [
+              "3",
+              "email",
+              " carol.park@example.com ",
+              "carol.park@example.com"
+            ],
+            [
+              "3",
+              "department",
+              "SALES",
+              "Sales"
+            ],
+            [
+              "3",
+              "hours",
+              " 8.0",
+              "8"
+            ],
+            [
+              "4",
+              "department",
+              "engineering",
+              "Engineering"
+            ],
+            [
+              "4",
+              "hours",
+              "NA",
+              ""
+            ],
+            [
+              "5",
+              "department",
+              " Sales",
+              "Sales"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "There should therefore be 9 changed cells. Row 2 should be unchanged, and the script should still output all 5 rows in their original order."
+        }
+      ]
+    },
+    {
+      "id": "apply-rules-to-copy",
+      "heading": "Apply only the approved rules to a copy",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following standard-library script validates the expected columns, cleans each row, and records every cell whose value changes. It refuses to run if outputs already exists, reducing the chance of silently replacing an earlier review."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport sys\nfrom decimal import Decimal, InvalidOperation\nfrom pathlib import Path\n\nINPUT = Path(\"sample_people.csv\")\nOUTPUT_DIR = Path(\"outputs\")\nCLEANED = OUTPUT_DIR / \"sample_people_cleaned.csv\"\nCHANGES = OUTPUT_DIR / \"changes.csv\"\n\nEXPECTED_FIELDS = [\"row_id\", \"name\", \"email\", \"department\", \"hours\"]\nDEPARTMENT_MAP = {\n    \"sales\": \"Sales\",\n    \"engineering\": \"Engineering\",\n}\n\n\ndef clean_hours(value):\n    trimmed = value.strip()\n    if trimmed == \"NA\":\n        return \"\", \"NA converted to blank\"\n    if trimmed == \"\":\n        return \"\", \"trim whitespace\"\n\n    try:\n        number = Decimal(trimmed)\n    except InvalidOperation:\n        return trimmed, \"trim whitespace\"\n\n    if number == number.to_integral():\n        normalized = str(number.quantize(Decimal(\"1\")))\n    else:\n        normalized = format(number.normalize(), \"f\")\n    return normalized, \"normalize numeric notation\"\n\n\ndef clean_cell(column, value):\n    if column == \"row_id\":\n        return value, \"preserve row_id\"\n\n    if column == \"name\":\n        return value.strip(), \"trim name whitespace\"\n\n    if column == \"email\":\n        trimmed = value.strip()\n        return trimmed.lower() if trimmed else \"\", \"trim and lowercase email\"\n\n    if column == \"department\":\n        trimmed = value.strip()\n        normalized = DEPARTMENT_MAP.get(trimmed.lower(), trimmed)\n        return normalized, \"trim and normalize known department\"\n\n    if column == \"hours\":\n        return clean_hours(value)\n\n    return value, \"no rule\"\n\n\ndef main():\n    if not INPUT.is_file():\n        sys.exit(f\"Input file not found: {INPUT}\")\n\n    if OUTPUT_DIR.exists():\n        sys.exit(f\"Stop: {OUTPUT_DIR} already exists. Review or rename it first.\")\n\n    OUTPUT_DIR.mkdir()\n\n    cleaned_rows = []\n    changes = []\n\n    with INPUT.open(\"r\", encoding=\"utf-8\", newline=\"\") as source:\n        reader = csv.DictReader(source)\n        if reader.fieldnames != EXPECTED_FIELDS:\n            sys.exit(\n                f\"Unexpected columns. Expected {EXPECTED_FIELDS}, got {reader.fieldnames}\"\n            )\n\n        for row in reader:\n            cleaned = {}\n            for column in EXPECTED_FIELDS:\n                before = row[column]\n                after, rule = clean_cell(column, before)\n                cleaned[column] = after\n\n                if before != after:\n                    changes.append(\n                        {\n                            \"row_id\": row[\"row_id\"],\n                            \"column\": column,\n                            \"before\": before,\n                            \"after\": after,\n                            \"rule\": rule,\n                        }\n                    )\n\n            cleaned_rows.append(cleaned)\n\n    with CLEANED.open(\"x\", encoding=\"utf-8\", newline=\"\") as target:\n        writer = csv.DictWriter(target, fieldnames=EXPECTED_FIELDS)\n        writer.writeheader()\n        writer.writerows(cleaned_rows)\n\n    with CHANGES.open(\"x\", encoding=\"utf-8\", newline=\"\") as target:\n        writer = csv.DictWriter(\n            target,\n            fieldnames=[\"row_id\", \"column\", \"before\", \"after\", \"rule\"],\n        )\n        writer.writeheader()\n        writer.writerows(changes)\n\n    print(f\"Rows written: {len(cleaned_rows)}\")\n    print(f\"Changed cells: {len(changes)}\")\n    print(f\"Cleaned copy: {CLEANED}\")\n    print(f\"Change log: {CHANGES}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "p",
+          "text": "Run it with python clean_csv.py after placing clean_csv.py and sample_people.csv in the same folder. For this example, the expected summary is 5 rows written and 9 changed cells."
+        }
+      ]
+    },
+    {
+      "id": "review-cell-diff",
+      "heading": "Review every changed cell",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Open outputs/changes.csv before treating the cleaned file as usable. Each line should explain one transformation using row_id, column, original value, replacement value, and the rule that caused it."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Confirm that the change log contains exactly 9 rows for this synthetic example.",
+            "Check that row_id values themselves never appear as changed cells.",
+            "Compare the 9 entries with the manually predicted table above.",
+            "Confirm that row 2 does not appear in the change log.",
+            "Open outputs/sample_people_cleaned.csv and confirm that it still contains 5 data rows in the original order.",
+            "Investigate any additional change rather than assuming the AI-generated rule was correct."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Why the diff matters",
+          "text": "A cleaned file alone hides how it was produced. A cell-level change log makes unexpected transformations visible and gives you something concrete to review before the cleaned copy enters later analysis."
+        }
+      ]
+    },
+    {
+      "id": "mistakes-and-limits",
+      "heading": "Common mistakes and limits",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Do not ask the AI to infer missing hours, departments, or email addresses unless you have a separate justified method for doing so.",
+            "Do not use broad text transformations such as title-casing every name without checking whether legitimate values would be changed.",
+            "Do not delete duplicates merely because two rows look similar. Deduplication requires an explicit record-matching rule.",
+            "Do not overwrite the source CSV. Keep both the untouched input and the reviewed output.",
+            "Do not rely only on a total such as 9 changes. Review which cells changed and why.",
+            "For large or sensitive datasets, test rules on a representative sample and add domain-specific validation before applying them widely."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "AI is useful here as a rule-drafting assistant, not as the final authority on what your data means. Column definitions, valid categories, missing-value conventions, and acceptable transformations should come from the dataset owner or another authoritative source."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library csv, sys, decimal, pathlib",
+    "items": [
+      "The first run completed successfully.",
+      "Console output matched the article exactly: 5 rows written and 9 changed cells.",
+      "The change log contained exactly 9 changes: 3 in row 1, 3 in row 3, 2 in row 4, and 1 in row 5.",
+      "The nine changes exactly matched the predicted table: row 1 name/email/department; row 3 email/department/hours; row 4 department/hours; row 5 department.",
+      "Row 2 did not appear in the change log.",
+      "The cleaned CSV retained all 5 rows in their original order and preserved every row_id.",
+      "The cleaned values were as intended, including 8.0 -> 8, NA -> blank, department normalization, whitespace trimming, and lowercasing non-empty email addresses.",
+      "sample_people.csv was byte-for-byte unchanged after execution.",
+      "A second run stopped with 'Stop: outputs already exists. Review or rename it first.' and did not overwrite the previous outputs."
+    ],
+    "limits": [
+      "The test covers only the supplied synthetic CSV and approved rules; it does not validate broader department mappings, malformed CSV input, unusual encodings, multiline fields, or domain-specific data rules.",
+      "The Python environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the article script or its results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python documentation: csv — CSV File Reading and Writing",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python documentation: pathlib — Object-oriented filesystem paths",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "title": "Python documentation: decimal — Decimal fixed-point and floating-point arithmetic",
+      "url": "https://docs.python.org/3/library/decimal.html"
+    }
+  ],
+  "slug": "ai-data-cleaning-rules",
+  "category": "ai",
+  "date": "2026-09-21"
+}

@@ -1,1 +1,266 @@
-{"title": "Check an AI translation of a work document for numbers, units, names, and meaning", "summary": "Review an AI-translated work document systematically instead of checking only whether it sounds natural. Use a small synthetic example to compare numbers, units, names, negations, and selected back-translations against the source.", "seo_title": "AI Translation Check: Verify Numbers, Units and Meaning", "seo_desc": "Check AI translations for numbers, units, names, negations, and meaning, then use a back-translation spot check and a small Python script.", "tags": ["AI translation", "translation review", "document check"], "audience": "People who use an AI chat assistant to translate work documents and need a repeatable way to verify important details before sharing them.", "prerequisites": ["Python 3.12", "The source text and AI translation saved as plain-text files"], "sections": [{"id": "why-check-ai-translation", "heading": "Why a fluent translation can still be wrong", "blocks": [{"type": "p", "text": "An AI translation can read smoothly while changing an important fact. A decimal point may move, a unit may disappear, a product name may be translated unnecessarily, or a negative instruction may become positive. These errors are especially risky in technical, purchasing, scheduling, compliance, and operational documents because a small wording change can alter what someone is expected to do."}, {"type": "p", "text": "The example below is synthetic. The goal is not to judge literary quality. It is to verify whether information that must remain stable across languages has actually remained stable."}, {"type": "callout", "title": "Separate fluency from fidelity", "text": "A sentence can sound natural and still be inaccurate. Check critical facts against the source first, then review style and readability."}]}, {"id": "synthetic-source-translation", "heading": "Start with a small synthetic work note", "blocks": [{"type": "p", "text": "Assume the English source contains a short instruction for a fictional test team. The target language is not important for this exercise; the verification process is the same."}, {"type": "table", "headers": ["Source item", "Source text"], "rows": [["Quantity", "Prepare 12 samples."], ["Torque", "Tighten Bolt A to 35 N·m."], ["Temperature", "Do not exceed 80 °C."], ["Date", "Send the report by October 14, 2026."], ["Name", "Send the final file to Mina Park."], ["Product name", "Use the Alpha-X bracket."]]}, {"type": "p", "text": "The critical values are therefore 12, 35 N·m, 80 °C, October 14, 2026, Mina Park, and Alpha-X. The phrase 'Do not exceed' is also critical because reversing or weakening the negation changes the operating instruction."}]}, {"id": "ask-ai-for-translation", "heading": "Ask the AI to preserve protected details", "blocks": [{"type": "p", "text": "When requesting the translation, specify which items must remain unchanged or must not be interpreted creatively."}, {"type": "callout", "title": "Example request to the AI", "text": "Translate this work note into the target language. Preserve all numbers, units, dates, personal names, and product names exactly unless the target language requires only a grammatical change around them. Preserve negation and obligation strength exactly. Do not convert units, round values, rename products, or add information."}, {"type": "p", "text": "Even with a careful prompt, verification is still required. The prompt reduces risk; it does not prove that every critical detail survived the translation."}]}, {"id": "check-critical-elements", "heading": "Check numbers, units, names, and negations one by one", "blocks": [{"type": "ol", "items": ["Numbers: compare every quantity, decimal, percentage, date component, model number, and revision number with the source.", "Units: confirm that 35 N·m remains 35 N·m and 80 °C remains 80 °C unless conversion was explicitly requested.", "Names: verify personal names, company names, project names, and product names against the source spelling.", "Negations: search for source expressions such as not, never, do not, cannot, except, and without, then confirm that the translated sentence preserves the same restriction.", "Obligation strength: distinguish must, should, may, and can. These words are not interchangeable in instructions.", "Dates: check both the numeric date and its role. A deadline must not become a meeting date or estimated date."]}, {"type": "table", "headers": ["Translation issue", "Result"], "rows": [["35 N·m translated as 35 Nm", "Meaning may still be understandable, but verify whether the document requires exact unit notation."], ["80 °C translated as 80 °F", "Incorrect unless an explicit unit conversion was requested and checked."], ["Mina Park translated or respelled", "Check against the authoritative spelling."], ["Do not exceed 80 °C translated as Maintain 80 °C", "Incorrect because the prohibition and meaning changed."], ["Alpha-X translated into a descriptive phrase", "Incorrect if Alpha-X is the official product name."]]}]}, {"id": "back-translation-spot-check", "heading": "Use back-translation as a spot check, not as proof", "blocks": [{"type": "p", "text": "A useful second check is to take selected translated sentences and ask the AI to translate them back into the source language without seeing the original. This is especially useful for negative instructions, commitments, deadlines, and sentences where the wording feels unusually different."}, {"type": "callout", "title": "Example back-translation request", "text": "Translate the following target-language sentence back into English as literally as practical. Do not improve or rewrite it. I am checking whether the original meaning, negation, quantities, units, names, and deadline strength were preserved."}, {"type": "p", "text": "Suppose the back-translation returns 'Keep the temperature at 80 °C' instead of 'Do not exceed 80 °C.' That difference is a warning that the translated instruction should be rechecked. However, a matching back-translation still does not prove correctness because the same AI may reproduce its earlier interpretation."}, {"type": "callout", "title": "Use back-translation selectively", "text": "Back-translation is most useful for high-risk sentences and unexpected wording. It should supplement direct source-to-translation comparison, not replace it."}]}, {"id": "python-token-check", "heading": "Use Python to compare protected tokens", "blocks": [{"type": "p", "text": "A small script can help detect obvious changes to protected details. The following standard-library example reads source.txt and translation.txt, extracts numbers and selected protected strings, and writes a report to outputs/translation_check_report.txt. It does not modify either original file and stops if the outputs folder already exists."}, {"type": "code"}, {"type": "p", "text": "Run the script with python translation_check.py after saving the two texts. Matching number lists are useful but not sufficient. The translation could contain the same numbers in the wrong sentences, so every flagged or critical item still needs contextual review."}]}, {"id": "common-translation-mistakes", "heading": "Common mistakes when reviewing AI translations", "blocks": [{"type": "ul", "items": ["Checking only whether the translated text sounds natural.", "Missing a decimal, minus sign, percentage symbol, or unit change.", "Allowing a product or project name to be translated as ordinary vocabulary.", "Failing to notice that not, never, except, or without disappeared.", "Treating must, should, may, and can as equivalent.", "Trusting back-translation as definitive proof because it resembles the source.", "Comparing only token presence without checking whether each token remains attached to the correct statement."]}, {"type": "p", "text": "Automated checks are strongest at finding visible mismatches. They are much weaker at verifying whether a sentence preserves intent, scope, exceptions, responsibility, or legal effect. Those require contextual reading and, for high-stakes documents, appropriate subject-matter review."}]}, {"id": "final-translation-checklist", "heading": "Use a final translation review checklist", "blocks": [{"type": "ol", "items": ["Compare every number, date, percentage, model number, and revision number.", "Confirm every unit and ensure no unrequested conversion occurred.", "Check personal, company, project, and product names against authoritative spelling.", "Review every negation and exception directly against the source sentence.", "Check obligation words such as must, should, may, and can.", "Back-translate a few high-risk sentences without showing the original.", "Read the final translation in context rather than relying only on automated token checks."]}, {"type": "p", "text": "The practical rule is to treat an AI translation as a draft whose critical facts must be verified independently. For contracts, safety instructions, regulatory documents, medical content, or other high-consequence material, use the organization's required professional review process rather than relying on a lightweight AI and script check."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["Checked that the synthetic source contains the critical values 12, 35 N·m, 80 °C, October 14, 2026, Mina Park, and Alpha-X.", "Checked that 'Do not exceed 80 °C' is a negative upper-limit instruction and is not equivalent to 'Maintain 80 °C.'", "Checked that changing 80 °C to 80 °F without an explicit conversion request would alter the source information.", "Checked that the back-translation example is presented only as a spot check, not as proof of correctness.", "Checked that the script reads source.txt and translation.txt without modifying them.", "Checked that the script writes only outputs/translation_check_report.txt and stops if the outputs folder already exists.", "Checked that the script uses only Python 3.12 standard-library modules."], "limits": ["The code was reviewed and the small synthetic example was checked by hand; the code was not executed by me.", "The script compares visible numbers and selected protected strings but cannot determine whether they remain attached to the correct meaning.", "The example does not automatically detect all unit variants, localized number formats, grammatical negation patterns, or semantic changes.", "Back-translation can reproduce the same interpretation error and therefore cannot establish correctness by itself.", "High-stakes legal, safety, regulatory, medical, contractual, or technical documents may require review by a qualified human translator or subject-matter reviewer."]}, "references": [{"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}, {"title": "Python re documentation", "url": "https://docs.python.org/3/library/re.html"}], "slug": "ai-translation-check", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Check an AI translation of a work document for numbers, units, names, and meaning",
+  "summary": "Review an AI-translated work document systematically instead of checking only whether it sounds natural. Use a small synthetic example to compare numbers, units, names, negations, and selected back-translations against the source.",
+  "seo_title": "AI Translation Check: Verify Numbers, Units and Meaning",
+  "seo_desc": "Check AI translations for numbers, units, names, negations, and meaning, then use a back-translation spot check and a small Python script.",
+  "tags": [
+    "AI translation",
+    "translation review",
+    "document check"
+  ],
+  "audience": "People who use an AI chat assistant to translate work documents and need a repeatable way to verify important details before sharing them.",
+  "prerequisites": [
+    "Python 3.12",
+    "The source text and AI translation saved as plain-text files"
+  ],
+  "sections": [
+    {
+      "id": "why-check-ai-translation",
+      "heading": "Why a fluent translation can still be wrong",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI translation can read smoothly while changing an important fact. A decimal point may move, a unit may disappear, a product name may be translated unnecessarily, or a negative instruction may become positive. These errors are especially risky in technical, purchasing, scheduling, compliance, and operational documents because a small wording change can alter what someone is expected to do."
+        },
+        {
+          "type": "p",
+          "text": "The example below is synthetic. The goal is not to judge literary quality. It is to verify whether information that must remain stable across languages has actually remained stable."
+        },
+        {
+          "type": "callout",
+          "title": "Separate fluency from fidelity",
+          "text": "A sentence can sound natural and still be inaccurate. Check critical facts against the source first, then review style and readability."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-source-translation",
+      "heading": "Start with a small synthetic work note",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Assume the English source contains a short instruction for a fictional test team. The target language is not important for this exercise; the verification process is the same."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Source item",
+            "Source text"
+          ],
+          "rows": [
+            [
+              "Quantity",
+              "Prepare 12 samples."
+            ],
+            [
+              "Torque",
+              "Tighten Bolt A to 35 N·m."
+            ],
+            [
+              "Temperature",
+              "Do not exceed 80 °C."
+            ],
+            [
+              "Date",
+              "Send the report by October 14, 2026."
+            ],
+            [
+              "Name",
+              "Send the final file to Mina Park."
+            ],
+            [
+              "Product name",
+              "Use the Alpha-X bracket."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The critical values are therefore 12, 35 N·m, 80 °C, October 14, 2026, Mina Park, and Alpha-X. The phrase 'Do not exceed' is also critical because reversing or weakening the negation changes the operating instruction."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-translation",
+      "heading": "Ask the AI to preserve protected details",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When requesting the translation, specify which items must remain unchanged or must not be interpreted creatively."
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Translate this work note into the target language. Preserve all numbers, units, dates, personal names, and product names exactly unless the target language requires only a grammatical change around them. Preserve negation and obligation strength exactly. Do not convert units, round values, rename products, or add information."
+        },
+        {
+          "type": "p",
+          "text": "Even with a careful prompt, verification is still required. The prompt reduces risk; it does not prove that every critical detail survived the translation."
+        }
+      ]
+    },
+    {
+      "id": "check-critical-elements",
+      "heading": "Check numbers, units, names, and negations one by one",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Numbers: compare every quantity, decimal, percentage, date component, model number, and revision number with the source.",
+            "Units: confirm that 35 N·m remains 35 N·m and 80 °C remains 80 °C unless conversion was explicitly requested.",
+            "Names: verify personal names, company names, project names, and product names against the source spelling.",
+            "Negations: search for source expressions such as not, never, do not, cannot, except, and without, then confirm that the translated sentence preserves the same restriction.",
+            "Obligation strength: distinguish must, should, may, and can. These words are not interchangeable in instructions.",
+            "Dates: check both the numeric date and its role. A deadline must not become a meeting date or estimated date."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Translation issue",
+            "Result"
+          ],
+          "rows": [
+            [
+              "35 N·m translated as 35 Nm",
+              "Meaning may still be understandable, but verify whether the document requires exact unit notation."
+            ],
+            [
+              "80 °C translated as 80 °F",
+              "Incorrect unless an explicit unit conversion was requested and checked."
+            ],
+            [
+              "Mina Park translated or respelled",
+              "Check against the authoritative spelling."
+            ],
+            [
+              "Do not exceed 80 °C translated as Maintain 80 °C",
+              "Incorrect because the prohibition and meaning changed."
+            ],
+            [
+              "Alpha-X translated into a descriptive phrase",
+              "Incorrect if Alpha-X is the official product name."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "back-translation-spot-check",
+      "heading": "Use back-translation as a spot check, not as proof",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A useful second check is to take selected translated sentences and ask the AI to translate them back into the source language without seeing the original. This is especially useful for negative instructions, commitments, deadlines, and sentences where the wording feels unusually different."
+        },
+        {
+          "type": "callout",
+          "title": "Example back-translation request",
+          "text": "Translate the following target-language sentence back into English as literally as practical. Do not improve or rewrite it. I am checking whether the original meaning, negation, quantities, units, names, and deadline strength were preserved."
+        },
+        {
+          "type": "p",
+          "text": "Suppose the back-translation returns 'Keep the temperature at 80 °C' instead of 'Do not exceed 80 °C.' That difference is a warning that the translated instruction should be rechecked. However, a matching back-translation still does not prove correctness because the same AI may reproduce its earlier interpretation."
+        },
+        {
+          "type": "callout",
+          "title": "Use back-translation selectively",
+          "text": "Back-translation is most useful for high-risk sentences and unexpected wording. It should supplement direct source-to-translation comparison, not replace it."
+        }
+      ]
+    },
+    {
+      "id": "python-token-check",
+      "heading": "Use Python to compare protected tokens",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A small script can help detect obvious changes to protected details. The following standard-library example reads source.txt and translation.txt, extracts numbers and selected protected strings, and writes a report to outputs/translation_check_report.txt. It does not modify either original file and stops if the outputs folder already exists."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nimport re\nimport sys\n\nSOURCE_PATH = Path(\"source.txt\")\nTRANSLATION_PATH = Path(\"translation.txt\")\nOUTPUT_DIR = Path(\"outputs\")\nREPORT_PATH = OUTPUT_DIR / \"translation_check_report.txt\"\n\nif not SOURCE_PATH.is_file():\n    sys.exit(\"Missing input file: source.txt\")\n\nif not TRANSLATION_PATH.is_file():\n    sys.exit(\"Missing input file: translation.txt\")\n\nif OUTPUT_DIR.exists():\n    sys.exit(\"Stop: outputs folder already exists. Remove or rename it manually first.\")\n\nsource = SOURCE_PATH.read_text(encoding=\"utf-8\")\ntranslation = TRANSLATION_PATH.read_text(encoding=\"utf-8\")\n\nnumber_pattern = re.compile(r\"(?<!\\d)\\d+(?:\\.\\d+)?(?!\\d)\")\nsource_numbers = number_pattern.findall(source)\ntranslation_numbers = number_pattern.findall(translation)\n\nprotected_strings = [\n    \"N·m\",\n    \"°C\",\n    \"Mina Park\",\n    \"Alpha-X\",\n]\n\nlines = []\nlines.append(\"AI TRANSLATION CHECK\")\nlines.append(\"====================\")\nlines.append(\"\")\nlines.append(f\"Source numbers: {source_numbers}\")\nlines.append(f\"Translation numbers: {translation_numbers}\")\n\nif source_numbers == translation_numbers:\n    lines.append(\"PASS: number sequence matches\")\nelse:\n    lines.append(\"CHECK: number sequence differs\")\n\nlines.append(\"\")\nlines.append(\"Protected strings:\")\n\nfor item in protected_strings:\n    in_source = item in source\n    in_translation = item in translation\n    if in_source and in_translation:\n        lines.append(f\"PASS: {item}\")\n    elif in_source:\n        lines.append(f\"CHECK: missing or changed in translation -> {item}\")\n\nlines.append(\"\")\nlines.append(\"Manual checks still required:\")\nlines.append(\"- Verify negations and obligation strength sentence by sentence.\")\nlines.append(\"- Confirm that each number still refers to the same item.\")\nlines.append(\"- Check dates, names, units, and product names in context.\")\nlines.append(\"- Spot-check high-risk sentences with back-translation.\")\n\nOUTPUT_DIR.mkdir()\nREPORT_PATH.write_text(\"\\n\".join(lines) + \"\\n\", encoding=\"utf-8\")\nprint(f\"Created: {REPORT_PATH}\")\n"
+        },
+        {
+          "type": "p",
+          "text": "Run the script with python translation_check.py after saving the two texts. Matching number lists are useful but not sufficient. The translation could contain the same numbers in the wrong sentences, so every flagged or critical item still needs contextual review."
+        }
+      ]
+    },
+    {
+      "id": "common-translation-mistakes",
+      "heading": "Common mistakes when reviewing AI translations",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Checking only whether the translated text sounds natural.",
+            "Missing a decimal, minus sign, percentage symbol, or unit change.",
+            "Allowing a product or project name to be translated as ordinary vocabulary.",
+            "Failing to notice that not, never, except, or without disappeared.",
+            "Treating must, should, may, and can as equivalent.",
+            "Trusting back-translation as definitive proof because it resembles the source.",
+            "Comparing only token presence without checking whether each token remains attached to the correct statement."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Automated checks are strongest at finding visible mismatches. They are much weaker at verifying whether a sentence preserves intent, scope, exceptions, responsibility, or legal effect. Those require contextual reading and, for high-stakes documents, appropriate subject-matter review."
+        }
+      ]
+    },
+    {
+      "id": "final-translation-checklist",
+      "heading": "Use a final translation review checklist",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Compare every number, date, percentage, model number, and revision number.",
+            "Confirm every unit and ensure no unrequested conversion occurred.",
+            "Check personal, company, project, and product names against authoritative spelling.",
+            "Review every negation and exception directly against the source sentence.",
+            "Check obligation words such as must, should, may, and can.",
+            "Back-translate a few high-risk sentences without showing the original.",
+            "Read the final translation in context rather than relying only on automated token checks."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The practical rule is to treat an AI translation as a draft whose critical facts must be verified independently. For contracts, safety instructions, regulatory documents, medical content, or other high-consequence material, use the organization's required professional review process rather than relying on a lightweight AI and script check."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library pathlib, re, sys",
+    "items": [
+      "The original script executed successfully and created outputs/translation_check_report.txt.",
+      "With a valid Korean translation, the original regex extracted source numbers ['12', '35', '80', '14', '2026'] but translation numbers ['35', '80', '14'], demonstrating a false mismatch caused by Unicode word-boundary behavior.",
+      "All four protected strings N·m, °C, Mina Park, and Alpha-X passed.",
+      "After replacing the regex with (?<!\\d)\\d+(?:\\.\\d+)?(?!\\d), both files produced ['12', '35', '80', '14', '2026'] and the report returned PASS: number sequence matches.",
+      "source.txt and translation.txt remained byte-for-byte unchanged.",
+      "A second run stopped because outputs already existed, so the prior report was not overwritten.",
+      "Local recheck on 2026-09-21 with Python 3.12.14: the corrected example passed; source preservation and overwrite protection also passed."
+    ],
+    "limits": [
+      "The article does not provide one exact complete target-language translation.txt example, so a faithful Korean translation preserving the specified protected details was used for execution.",
+      "The corrected regex still does not recognize every localized numeric notation, signed number, thousands separator, or locale-specific decimal format.",
+      "The script cannot verify semantic fidelity, negation, obligation strength, or whether a preserved number remains attached to the correct statement.",
+      "The Python environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the article script or verified results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "title": "Python re documentation",
+      "url": "https://docs.python.org/3/library/re.html"
+    }
+  ],
+  "slug": "ai-translation-check",
+  "category": "ai",
+  "date": "2026-09-21"
+}

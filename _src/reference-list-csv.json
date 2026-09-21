@@ -1,1 +1,247 @@
-{"title": "Manage a reference list in CSV and check duplicate or missing DOIs", "summary": "Keep a small research reference list in CSV, normalize DOI text for comparison, and generate a review file for duplicate and missing DOI values. The workflow preserves the original CSV and does not claim that a DOI is valid merely because it is present.", "tags": ["Python", "DOI", "Research"], "audience": "This guide is for researchers who maintain reference lists in spreadsheets or CSV files and want a simple duplicate and missing-DOI check.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor or spreadsheet program that can save UTF-8 CSV files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv and pathlib."], "sections": [{"id": "define-the-check", "heading": "1. Decide what the DOI check can and cannot tell you", "blocks": [{"type": "p", "text": "This workflow checks two practical problems: a reference has no DOI value, or two rows contain the same DOI after simple text normalization. It does not contact a DOI registry and therefore does not prove that a DOI exists, resolves correctly, or belongs to the cited article."}, {"type": "p", "text": "The script removes common textual prefixes such as https://doi.org/ and doi:, trims whitespace, and converts the remaining DOI text to lowercase for comparison. The original DOI text is preserved in the output beside the normalized value."}, {"type": "callout", "title": "Duplicate DOI does not always mean delete a row", "text": "Two rows with the same DOI are candidates for review. Check titles, authors, versions, and why each row exists before removing anything."}]}, {"id": "create-synthetic-list", "heading": "2. Create a synthetic reference list", "blocks": [{"type": "p", "text": "The following reference list is synthetic and was written specifically for this article. The DOI-like strings are demonstration data and are not presented as real or resolvable publications. Save the file as references.csv."}, {"type": "code"}, {"type": "p", "text": "There are 6 reference rows. Five contain DOI text and one, R004, is missing a DOI. R001 and R003 use different textual forms but normalize to the same value. R005 demonstrates that capitalization and a doi: prefix can also be normalized for comparison."}]}, {"id": "work-out-expected-results", "heading": "3. Work out the expected issues by hand", "blocks": [{"type": "table", "headers": ["ref_id", "Original DOI", "Normalized DOI", "Expected issue"], "rows": [["R001", "10.0000/demo.alpha", "10.0000/demo.alpha", "DUPLICATE_DOI"], ["R002", "10.0000/demo.beta", "10.0000/demo.beta", "None"], ["R003", "https://doi.org/10.0000/demo.alpha", "10.0000/demo.alpha", "DUPLICATE_DOI"], ["R004", "", "", "MISSING_DOI"], ["R005", "doi:10.0000/DEMO.GAMMA", "10.0000/demo.gamma", "None"], ["R006", "10.0000/demo.delta", "10.0000/demo.delta", "None"]]}, {"type": "p", "text": "The expected counts are 6 references, 5 rows with DOI text, 1 row with a missing DOI, and 1 duplicate DOI group containing 2 rows. After normalization, the five nonblank DOI entries contain 4 distinct DOI values."}]}, {"id": "check-the-reference-list", "heading": "4. Normalize DOI text and write review files", "blocks": [{"type": "p", "text": "Save the following script as reference_list_check.py. It writes a normalized copy of the entire reference list and a separate issues.csv containing only rows that need review. The original references.csv is read only."}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected review report", "blocks": [{"type": "p", "text": "issues.csv should contain three data rows: R001 and R003 for the duplicated normalized DOI, plus R004 for the missing DOI."}, {"type": "code"}, {"type": "p", "text": "The expected console output below was derived by hand from the synthetic list and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-errors", "heading": "6. Review the flagged rows instead of deleting automatically", "blocks": [{"type": "ul", "items": ["Confirm that R001 and R003 normalize to the same DOI text.", "Confirm that R004 is retained in the normalized reference list even though its DOI is missing.", "Check the paper title, authors, year, and publication details before deciding whether duplicate-DOI rows should be merged.", "For missing DOI rows, verify whether the publication actually has a DOI before adding one.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous review."]}, {"type": "table", "headers": ["Problem", "What to check"], "rows": [["Same paper entered twice with different DOI formatting", "Normalize common DOI URL and doi: prefixes before comparison."], ["Blank DOI treated as a duplicate", "Keep missing DOI detection separate from duplicate DOI grouping."], ["Different papers share a similar title", "Do not use title similarity alone as proof that records are duplicates."], ["A DOI-looking string is present", "Presence is not proof of validity; verify important references against a trusted metadata source."], ["Existing result is overwritten", "Use a fresh output folder so previous review evidence remains available."]]}]}, {"id": "limits", "heading": "7. Understand the limits of DOI-based deduplication", "blocks": [{"type": "p", "text": "DOI matching is useful when DOI metadata is present, but a missing DOI does not mean a reference is invalid or incomplete. Some publications or document types may not have a DOI, and older records may require other identifiers or manual bibliographic checks."}, {"type": "p", "text": "This script performs text normalization only. It does not resolve DOI links, query Crossref or another registration agency, verify titles or authors, detect retractions, or determine whether two different DOI values refer to related versions of a work."}, {"type": "p", "text": "For a real research database, keep fields such as authors, title, year, journal, volume, pages, DOI, and another local reference ID. Treat automatic duplicate detection as a review aid rather than an instruction to delete bibliographic records."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib · no execution", "items": ["Manually counted 6 synthetic reference rows, 5 DOI-containing rows, and 1 missing DOI row.", "Manually normalized R001 and R003 to the same value, 10.0000/demo.alpha.", "Manually normalized R005 from doi:10.0000/DEMO.GAMMA to 10.0000/demo.gamma.", "Calculated 4 distinct normalized DOI values among the 5 nonblank DOI rows.", "Derived the expected issue report as 2 duplicate-DOI rows plus 1 missing-DOI row.", "Inspected the script for duplicate ref_id checks, DOI normalization, separate missing and duplicate handling, output collision protection, and preservation of the original CSV."], "limits": ["The code was not executed by the author of this response; no CSV output files were created.", "The synthetic DOI-like strings were not checked for registration or resolution and are not presented as real publications.", "DOI validity, bibliographic metadata accuracy, title similarity, retractions, and related article versions were not tested.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}, {"title": "Crossref documentation · Display guidelines", "url": "https://www.crossref.org/display-guidelines/"}], "slug": "reference-list-csv", "category": "research", "date": "2026-09-20"}
+{
+  "title": "Manage a reference list in CSV and check duplicate or missing DOIs",
+  "summary": "Keep a small research reference list in CSV, normalize DOI text for comparison, and generate a review file for duplicate and missing DOI values. The workflow preserves the original CSV and does not claim that a DOI is valid merely because it is present.",
+  "tags": [
+    "Python",
+    "DOI",
+    "Research"
+  ],
+  "audience": "This guide is for researchers who maintain reference lists in spreadsheets or CSV files and want a simple duplicate and missing-DOI check.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor or spreadsheet program that can save UTF-8 CSV files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-the-check",
+      "heading": "1. Decide what the DOI check can and cannot tell you",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This workflow checks two practical problems: a reference has no DOI value, or two rows contain the same DOI after simple text normalization. It does not contact a DOI registry and therefore does not prove that a DOI exists, resolves correctly, or belongs to the cited article."
+        },
+        {
+          "type": "p",
+          "text": "The script removes common textual prefixes such as https://doi.org/ and doi:, trims whitespace, and converts the remaining DOI text to lowercase for comparison. The original DOI text is preserved in the output beside the normalized value."
+        },
+        {
+          "type": "callout",
+          "title": "Duplicate DOI does not always mean delete a row",
+          "text": "Two rows with the same DOI are candidates for review. Check titles, authors, versions, and why each row exists before removing anything."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-list",
+      "heading": "2. Create a synthetic reference list",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following reference list is synthetic and was written specifically for this article. The DOI-like strings are demonstration data and are not presented as real or resolvable publications. Save the file as references.csv."
+        },
+        {
+          "type": "code",
+          "text": "ref_id,title,year,doi\nR001,Synthetic bracket study,2024,10.0000/demo.alpha\nR002,Synthetic vibration study,2025,10.0000/demo.beta\nR003,Synthetic bracket study copy,2024,https://doi.org/10.0000/demo.alpha\nR004,Synthetic fatigue note,2023,\nR005,Synthetic surrogate study,2026,doi:10.0000/DEMO.GAMMA\nR006,Synthetic optimization study,2026,10.0000/demo.delta\n"
+        },
+        {
+          "type": "p",
+          "text": "There are 6 reference rows. Five contain DOI text and one, R004, is missing a DOI. R001 and R003 use different textual forms but normalize to the same value. R005 demonstrates that capitalization and a doi: prefix can also be normalized for comparison."
+        }
+      ]
+    },
+    {
+      "id": "work-out-expected-results",
+      "heading": "3. Work out the expected issues by hand",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "ref_id",
+            "Original DOI",
+            "Normalized DOI",
+            "Expected issue"
+          ],
+          "rows": [
+            [
+              "R001",
+              "10.0000/demo.alpha",
+              "10.0000/demo.alpha",
+              "DUPLICATE_DOI"
+            ],
+            [
+              "R002",
+              "10.0000/demo.beta",
+              "10.0000/demo.beta",
+              "None"
+            ],
+            [
+              "R003",
+              "https://doi.org/10.0000/demo.alpha",
+              "10.0000/demo.alpha",
+              "DUPLICATE_DOI"
+            ],
+            [
+              "R004",
+              "",
+              "",
+              "MISSING_DOI"
+            ],
+            [
+              "R005",
+              "doi:10.0000/DEMO.GAMMA",
+              "10.0000/demo.gamma",
+              "None"
+            ],
+            [
+              "R006",
+              "10.0000/demo.delta",
+              "10.0000/demo.delta",
+              "None"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected counts are 6 references, 5 rows with DOI text, 1 row with a missing DOI, and 1 duplicate DOI group containing 2 rows. After normalization, the five nonblank DOI entries contain 4 distinct DOI values."
+        }
+      ]
+    },
+    {
+      "id": "check-the-reference-list",
+      "heading": "4. Normalize DOI text and write review files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as reference_list_check.py. It writes a normalized copy of the entire reference list and a separate issues.csv containing only rows that need review. The original references.csv is read only."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\n\nSOURCE = Path(\"references.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"reference_list_result\"\nNORMALIZED = OUTPUT_DIR / \"normalized_references.csv\"\nISSUES = OUTPUT_DIR / \"issues.csv\"\nREQUIRED = {\"ref_id\", \"title\", \"year\", \"doi\"}\n\n\ndef normalize_doi(value: str) -> str:\n    text = value.strip()\n    lowered = text.lower()\n    prefixes = (\n        \"https://doi.org/\",\n        \"http://doi.org/\",\n        \"doi:\",\n    )\n    for prefix in prefixes:\n        if lowered.startswith(prefix):\n            text = text[len(prefix):].strip()\n            break\n    return text.lower()\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    rows = []\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        if reader.fieldnames is None or not REQUIRED.issubset(reader.fieldnames):\n            raise ValueError(\"CSV is missing a required column.\")\n\n        seen_ids = set()\n        for row in reader:\n            ref_id = row[\"ref_id\"].strip()\n            if not ref_id:\n                raise ValueError(\"ref_id must not be blank.\")\n            if ref_id in seen_ids:\n                raise ValueError(f\"Duplicate ref_id: {ref_id}\")\n            seen_ids.add(ref_id)\n\n            rows.append({\n                \"ref_id\": ref_id,\n                \"title\": row[\"title\"],\n                \"year\": row[\"year\"],\n                \"doi\": row[\"doi\"],\n                \"normalized_doi\": normalize_doi(row[\"doi\"]),\n            })\n\n    by_doi = {}\n    for row in rows:\n        doi = row[\"normalized_doi\"]\n        if doi:\n            by_doi.setdefault(doi, []).append(row[\"ref_id\"])\n\n    duplicate_dois = {\n        doi: ids for doi, ids in by_doi.items() if len(ids) > 1\n    }\n\n    issue_rows = []\n    for row in rows:\n        doi = row[\"normalized_doi\"]\n        if not doi:\n            issue_rows.append({\n                \"ref_id\": row[\"ref_id\"],\n                \"issue\": \"MISSING_DOI\",\n                \"normalized_doi\": \"\",\n                \"related_ref_ids\": \"\",\n            })\n        elif doi in duplicate_dois:\n            issue_rows.append({\n                \"ref_id\": row[\"ref_id\"],\n                \"issue\": \"DUPLICATE_DOI\",\n                \"normalized_doi\": doi,\n                \"related_ref_ids\": \";\".join(duplicate_dois[doi]),\n            })\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n\n    normalized_fields = [\"ref_id\", \"title\", \"year\", \"doi\", \"normalized_doi\"]\n    with NORMALIZED.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=normalized_fields)\n        writer.writeheader()\n        writer.writerows(rows)\n\n    issue_fields = [\"ref_id\", \"issue\", \"normalized_doi\", \"related_ref_ids\"]\n    with ISSUES.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=issue_fields)\n        writer.writeheader()\n        writer.writerows(issue_rows)\n\n    missing_count = sum(row[\"issue\"] == \"MISSING_DOI\" for row in issue_rows)\n    print(f\"References checked: {len(rows)}.\")\n    print(f\"Missing DOI rows: {missing_count}.\")\n    print(f\"Duplicate DOI groups: {len(duplicate_dois)}.\")\n    print(f\"Issue rows: {len(issue_rows)}.\")\n    print(f\"Output folder: {OUTPUT_DIR.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected review report",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "issues.csv should contain three data rows: R001 and R003 for the duplicated normalized DOI, plus R004 for the missing DOI."
+        },
+        {
+          "type": "code",
+          "text": "ref_id,issue,normalized_doi,related_ref_ids\nR001,DUPLICATE_DOI,10.0000/demo.alpha,R001;R003\nR003,DUPLICATE_DOI,10.0000/demo.alpha,R001;R003\nR004,MISSING_DOI,,\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived by hand from the synthetic list and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "References checked: 6.\nMissing DOI rows: 1.\nDuplicate DOI groups: 1.\nIssue rows: 3.\nOutput folder: outputs/reference_list_result"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-errors",
+      "heading": "6. Review the flagged rows instead of deleting automatically",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that R001 and R003 normalize to the same DOI text.",
+            "Confirm that R004 is retained in the normalized reference list even though its DOI is missing.",
+            "Check the paper title, authors, year, and publication details before deciding whether duplicate-DOI rows should be merged.",
+            "For missing DOI rows, verify whether the publication actually has a DOI before adding one.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous review."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "Same paper entered twice with different DOI formatting",
+              "Normalize common DOI URL and doi: prefixes before comparison."
+            ],
+            [
+              "Blank DOI treated as a duplicate",
+              "Keep missing DOI detection separate from duplicate DOI grouping."
+            ],
+            [
+              "Different papers share a similar title",
+              "Do not use title similarity alone as proof that records are duplicates."
+            ],
+            [
+              "A DOI-looking string is present",
+              "Presence is not proof of validity; verify important references against a trusted metadata source."
+            ],
+            [
+              "Existing result is overwritten",
+              "Use a fresh output folder so previous review evidence remains available."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Understand the limits of DOI-based deduplication",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "DOI matching is useful when DOI metadata is present, but a missing DOI does not mean a reference is invalid or incomplete. Some publications or document types may not have a DOI, and older records may require other identifiers or manual bibliographic checks."
+        },
+        {
+          "type": "p",
+          "text": "This script performs text normalization only. It does not resolve DOI links, query Crossref or another registration agency, verify titles or authors, detect retractions, or determine whether two different DOI values refer to related versions of a work."
+        },
+        {
+          "type": "p",
+          "text": "For a real research database, keep fields such as authors, title, year, journal, volume, pages, DOI, and another local reference ID. Treat automatic duplicate detection as a review aid rather than an instruction to delete bibliographic records."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+    "items": [
+      "Execution completed successfully for 6 references.",
+      "Confirmed 1 missing DOI row: R004.",
+      "Confirmed 1 duplicate DOI group: normalized DOI 10.0000/demo.alpha shared by R001 and R003.",
+      "Confirmed issues.csv contains exactly 3 data rows: R001 DUPLICATE_DOI, R003 DUPLICATE_DOI, and R004 MISSING_DOI.",
+      "Confirmed R005 normalized from doi:10.0000/DEMO.GAMMA to 10.0000/demo.gamma.",
+      "Confirmed there are 4 distinct nonblank normalized DOI values among the 5 DOI-containing rows.",
+      "Console output matched the article exactly: 6 references, 1 missing DOI row, 1 duplicate DOI group, 3 issue rows, and the expected output folder.",
+      "Generated issues.csv matched the article's expected CSV exactly.",
+      "Second execution raised FileExistsError for outputs/reference_list_result, confirming overwrite protection.",
+      "SHA-256 comparison confirmed references.csv was unchanged."
+    ],
+    "limits": [
+      "The script performs text normalization only; DOI registration, resolution, title/author metadata, retractions, and bibliographic correctness were not externally verified.",
+      "The execution environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the script's exit status, generated files, or verification results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    },
+    {
+      "title": "Crossref documentation · Display guidelines",
+      "url": "https://www.crossref.org/display-guidelines/"
+    }
+  ],
+  "slug": "reference-list-csv",
+  "category": "research",
+  "date": "2026-09-20"
+}

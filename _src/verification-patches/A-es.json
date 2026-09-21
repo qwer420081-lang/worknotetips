@@ -1,0 +1,426 @@
+{
+  "file": "A",
+  "lang": "es",
+  "data": {
+    "split-large-csv": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib",
+        "items": [
+          "La ejecución principal imprimió exactamente: 'Verified 7 data records in 3 files.' y 'Output folder: outputs/sample_parts'.",
+          "Se crearon part_0001.csv, part_0002.csv y part_0003.csv con 3, 3 y 1 registros de datos, respectivamente.",
+          "part_0001 contenía R001-R003 y conservó 'starter, pack' como un solo campo y 'two\\nlines' como un único campo multilínea; el total de units fue 28.",
+          "part_0002 contenía R004-R006; el total de units fue 22. part_0003 contenía R007; el total de units fue 10. El total general de units fue 60.",
+          "Cada parte repitió el mismo encabezado de 4 campos y los 7 registros de origen se conservaron una sola vez y en su orden original.",
+          "Los bytes y el texto del archivo original sample.csv no cambiaron tras la ejecución correcta.",
+          "Una segunda ejecución con outputs/sample_parts ya existente se detuvo con FileExistsError antes de crear otra parte.",
+          "Una entrada de 6 registros produjo exactamente 2 partes de 3 registros cada una.",
+          "Una entrada que contenía solo el encabezado terminó correctamente con 0 registros y 0 archivos de parte, dejando vacío el directorio de salida.",
+          "Una entrada completamente vacía fue rechazada con ValueError: 'Missing header or blank column name.'"
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés sobre el rendimiento con archivos grandes, campos CSV inusualmente grandes, modificaciones simultáneas del archivo de origen, variantes de entrada mal formada distintas del caso de archivo vacío, fallos de escritura en disco ni recuperación tras escrituras interrumpidas."
+        ]
+      },
+      "text_fixes": []
+    },
+    "find-duplicate-files": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/hashlib/os/pathlib/stat",
+        "items": [
+          "La preparación creó exactamente 7 archivos de origen normales con un total de 16 bytes: dos archivos de tamaño 0, cuatro de tamaño 3 y uno de tamaño 4.",
+          "La ejecución principal imprimió exactamente: 'Scanned 7 regular file paths; hashed 6.', 'Duplicate candidates: 2 groups, 5 paths.' y 'Review CSV: outputs/duplicate_review/duplicates.csv'.",
+          "duplicates.csv contenía exactamente 5 filas de datos además de su encabezado.",
+          "G001 contenía empty_a.txt y empty_b.txt, ambos de tamaño 0 y con SHA-256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.",
+          "G002 contenía archive/a_saved.txt, notes/a.txt y notes/a_copy.txt, todos de tamaño 3 y con SHA-256 ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad.",
+          "notes/other.txt y unique.txt no aparecieron correctamente en el informe de duplicados.",
+          "Se calcularon hashes para seis archivos: los dos archivos de cero bytes y los cuatro archivos de tres bytes; unique.txt se omitió porque no tenía otro archivo del mismo tamaño.",
+          "El contenido y los hashes de los archivos de origen eran idénticos antes y después del análisis.",
+          "Una segunda ejecución se detuvo con FileExistsError porque outputs/duplicate_review ya existía.",
+          "Una fuente con archivos de 1, 2 y 3 bytes produjo 'hashed 0', cero grupos duplicados y un informe CSV que contenía solo el encabezado.",
+          "Colocar OUTPUT_DIR dentro de SOURCE produjo ValueError: 'The report folder must be outside SOURCE.'",
+          "Al añadir un archivo de enlace simbólico y un directorio de enlace simbólico al origen, el escáner siguió informando solo 7 rutas de archivos normales y los mismos 2 grupos duplicados."
+        ],
+        "limits": [
+          "No se probaron fallos de permisos, mutaciones simultáneas de archivos durante el cálculo de hashes, contabilización de enlaces duros, junctions o mount points de Windows, escrituras interrumpidas, condiciones de carrera hostiles del sistema de archivos ni rendimiento con directorios grandes."
+        ]
+      },
+      "text_fixes": []
+    },
+    "batch-image-resize": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · Pillow 12.3.0",
+        "items": [
+          "Se crearon landscape.png 800×600, portrait.png 600×800, small.png 200×100 y wide.png 1200×300.",
+          "El total real de píxeles de las imágenes originales es 1,340,000, no 1,240,000.",
+          "La ejecución de redimensionado produjo exactamente 300×225, 225×300, 200×100 y 300×75.",
+          "El total de píxeles de salida es 177,500, coincidiendo con el artículo.",
+          "La salida de consola coincidió exactamente con las siete líneas esperadas, incluidas 'Processed 4 images.' y 'Resized: 3; already within limit: 1.'.",
+          "El comprobador opcional imprimió las dimensiones originales y de salida esperadas para los cuatro archivos.",
+          "Había 4 archivos en la carpeta de origen y 4 archivos en la carpeta de salida.",
+          "Los hashes SHA-256 de los cuatro archivos de origen permanecieron sin cambios después del redimensionado, confirmando que los originales no se reescribieron.",
+          "Al ejecutar de nuevo el script de redimensionado con el mismo OUTPUT_DIR se produjo FileExistsError antes de procesar otro lote."
+        ],
+        "limits": [
+          "No se probaron JPEG, WebP, orientación EXIF, imágenes dañadas, animaciones, conservación del perfil de color, conservación de metadatos, fallos de escritura parcial ni casos arbitrarios de redondeo con dimensiones fraccionarias."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "create-synthetic-images",
+          "block_index": 4,
+          "field": "text",
+          "new_value": "Las cuatro imágenes originales contienen en total 1,340,000 píxeles: 480,000 + 480,000 + 20,000 + 360,000. El número de píxeles ayuda a entender el ejemplo, pero no equivale al tamaño del archivo en bytes, ya que la compresión PNG depende del contenido de la imagen.",
+          "type": "p"
+        }
+      ]
+    },
+    "dated-zip-backup": {
+      "verification": {
+        "env": "2026-09-21 · ChatGPT Python tool · Python 3.13.5 · standard library datetime/hashlib/pathlib/zipfile",
+        "items": [
+          "La fuente sintética contenía exactamente 4 archivos normales con un total de 27 bytes: notes.txt=6, reports/week1.txt=5, reports/week2.txt=6, settings.ini=10.",
+          "La ejecución real imprimió 'Verified 4 files totaling 27 bytes.' y 'Archive: outputs/backups/backup_demo_2026-09-21.zip'.",
+          "El nombre de archivo y el ejemplo de consola con fecha 2026-09-20 del artículo están condicionados explícitamente a ejecutar el script el 2026-09-20; el entorno de ejecución utilizó correctamente la fecha local real, 2026-09-21.",
+          "El ZIP contenía exactamente notes.txt, reports/week1.txt, reports/week2.txt y settings.ini en el orden esperado.",
+          "Los tamaños sin comprimir de los miembros del ZIP eran exactamente 6, 5, 6 y 10 bytes.",
+          "ZipFile.testzip() no devolvió ningún miembro defectuoso.",
+          "Los valores SHA-256 de cada miembro archivado coincidían con el archivo de origen correspondiente.",
+          "Todos los hashes SHA-256 de los archivos de origen permanecieron sin cambios después de crear el archivo comprimido.",
+          "Al ejecutar de nuevo el script con el mismo archivo fechado ya existente se produjo FileExistsError en lugar de reemplazarlo."
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés sobre modificaciones simultáneas del origen, fallos de permisos, corrupción del almacenamiento, escrituras interrumpidas, casos límite con enlaces simbólicos, conservación de metadatos del sistema de archivos ni rendimiento con directorios grandes."
+        ]
+      },
+      "text_fixes": []
+    },
+    "excel-merge-sheets": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · openpyxl 3.1.5",
+        "items": [
+          "El libro de origen contenía 2 filas no vacías de East, 2 de West y 2 de Online; la fila de Online dejada intencionadamente en blanco se omitió.",
+          "Los totales amount de origen fueron East=200, West=220 y Online=200, con un total general de 620.",
+          "El script principal imprimió exactamente: 'Merged 3 sheets into 6 data rows.', 'Verified 4 columns and 6 data rows.' y 'Output: outputs/excel_merge_result/merged_orders.xlsx'.",
+          "El libro de salida contenía exactamente una hoja llamada Combined.",
+          "El encabezado de salida era exactamente source_sheet, order_id, customer, amount.",
+          "Los seis registros de salida estaban en el orden esperado: East E001/E002, West W001/W002, Online O001/O002.",
+          "East, West y Online aparecieron exactamente dos veces cada uno en source_sheet.",
+          "El total combinado de amount fue 620.",
+          "La salida contenía 4 columnas y 6 filas de datos, o 7 filas de hoja incluyendo el encabezado.",
+          "El hash SHA-256 de regional_orders.xlsx permaneció sin cambios tras la combinación, confirmando que el libro de origen no se reescribió.",
+          "Una segunda ejecución con outputs/excel_merge_result ya existente produjo FileExistsError antes de sustituir el resultado anterior."
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés específicas sobre rechazo de celdas con fórmulas, discrepancias de encabezados, encabezados duplicados, hojas faltantes, colisiones con el nombre reservado source_sheet, libros dañados, conservación del formato, fechas, hipervínculos, hojas ocultas, fallos de guardado parcial ni comportamiento con libros muy grandes."
+        ]
+      },
+      "text_fixes": []
+    },
+    "pdf-merge-split": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · pypdf 5.9.0",
+        "items": [
+          "Las entradas sintéticas contenían exactamente 2 páginas en alpha.pdf, 1 página en beta.pdf y 3 páginas en gamma.pdf, para un total de 6 páginas.",
+          "El script principal imprimió exactamente: 'Merged 3 PDFs into 6 pages.', 'Extracted pages 2-5: 4 pages.', 'Merged output: outputs/pdf_merge_split_result/merged.pdf' y 'Extracted output: outputs/pdf_merge_split_result/pages_2_to_5.pdf'.",
+          "merged.pdf contenía exactamente 6 páginas con dimensiones, en orden: 100×200, 110×210, 120×220, 130×230, 140×240, 150×250.",
+          "pages_2_to_5.pdf contenía exactamente 4 páginas con dimensiones, en orden: 110×210, 120×220, 130×230, 140×240.",
+          "El rango inclusivo basado en uno 2-5 se implementó correctamente mediante el slice merged_reader.pages[START_PAGE - 1:END_PAGE].",
+          "Los hashes SHA-256 de alpha.pdf, beta.pdf y gamma.pdf eran idénticos antes y después de la combinación y extracción, confirmando que los PDF de origen no se reescribieron.",
+          "Una segunda ejecución con outputs/pdf_merge_split_result ya existente produjo FileExistsError antes de sustituir las salidas anteriores."
+        ],
+        "limits": [
+          "No se probaron PDF cifrados, PDF dañados, anotaciones, formularios, marcadores, archivos adjuntos, firmas digitales, etiquetas de página personalizadas, relaciones complejas entre objetos PDF, fallos de escritura parcial ni equivalencia semántica o de contenido renderizado."
+        ]
+      },
+      "text_fixes": []
+    },
+    "date-format-cleanup": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/datetime/pathlib",
+        "items": [
+          "La ejecución principal imprimió exactamente: 'Processed 8 records.', 'Parsed: 6; unparsed: 2.', 'Cleaned CSV: outputs/date_cleanup_result/cleaned_dates.csv' y 'Review CSV: outputs/date_cleanup_result/unparsed_dates.csv'.",
+          "cleaned_dates.csv contenía los 8 registros de origen junto con standardized_date y date_status.",
+          "R001 a R006 se analizaron exactamente como 2026-09-01 a 2026-09-06.",
+          "El valor 2026-02-30 de R007 fue rechazado por ser una fecha de calendario no válida y se escribió con standardized_date vacío y estado UNPARSED.",
+          "El valor 'Sep 7 2026' de R008 fue rechazado porque no coincide con ninguno de los formatos aprobados y se escribió con standardized_date vacío y estado UNPARSED.",
+          "unparsed_dates.csv contenía exactamente 2 filas de datos: R007 con row_number 8 y R008 con row_number 9.",
+          "El hash SHA-256 de mixed_dates.csv permaneció sin cambios después del procesamiento, confirmando que el archivo de origen no se modificó.",
+          "Una segunda ejecución con outputs/date_cleanup_result ya existente produjo FileExistsError antes de sobrescribir los resultados anteriores."
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés específicas sobre nombres de meses dependientes de la configuración regional, horas, zonas horarias, fechas seriales de Excel, años de dos dígitos, estructuras CSV dañadas, fallos de permisos, fallos de escritura parcial ni archivos muy grandes."
+        ]
+      },
+      "text_fixes": []
+    },
+    "monthly-summary-pandas": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · pandas 2.2.3",
+        "items": [
+          "La ejecución principal imprimió exactamente: 'Source rows: 7.', 'Months: 3.', 'Verified totals: units=18, amount=430.' y 'Output: outputs/monthly_summary_result/monthly_summary.csv'.",
+          "El contenido del CSV generado coincidió exactamente con el artículo: 2026-01,2,5,100; 2026-02,3,7,175; 2026-03,2,6,155.",
+          "Los recuentos mensuales de pedidos se reconciliaron con 7: 2 + 3 + 2.",
+          "Los units mensuales se reconciliaron con 18: 5 + 7 + 6.",
+          "Los amount mensuales se reconciliaron con 430: 100 + 175 + 155.",
+          "La salida contenía exactamente 3 filas de datos ordenadas por month.",
+          "El hash SHA-256 de monthly_orders.csv permaneció sin cambios después del procesamiento, confirmando que el archivo de origen no se modificó.",
+          "Una segunda ejecución con outputs/monthly_summary_result ya existente produjo FileExistsError antes de sobrescribir el resultado anterior."
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés específicas sobre rechazo de ID duplicados, valores obligatorios faltantes, fechas no válidas, units o amount no numéricos, datos monetarios en coma flotante, zonas horarias, reembolsos, cancelaciones, modelos de pedidos por línea, fallos de permisos, fallos de escritura parcial ni conjuntos de datos muy grandes.",
+          "El entorno de Python emitió en stderr una advertencia no relacionada del calentamiento de la herramienta de hojas de cálculo artifact-tool, pero el script del artículo terminó correctamente con código de salida 0 y produjo la salida esperada."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-regex-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/re",
+        "items": [
+          "La ejecución principal imprimió exactamente: 'Cases: 10.', 'AI pattern failures: 1.', 'Revised pattern failures: 0.' y 'Report: outputs/regex_check_result/regex_check.csv'.",
+          "regex_check.csv contenía exactamente 10 filas de datos además de su encabezado.",
+          "El patrón de IA WK-\\d{4}-\\d{4} falló exactamente en C004, aceptando WK-1999-0001 aunque el resultado esperado era NO MATCH.",
+          "Todos los demás casos del patrón de IA coincidieron con sus clasificaciones esperadas.",
+          "El patrón revisado WK-20[0-9]{2}-[0-9]{4} superó los 10 casos sintéticos.",
+          "Por tanto, el resultado revisado tuvo 0 fallos, coincidiendo exactamente con la tabla y la salida de consola esperadas del artículo.",
+          "La segunda ejecución se detuvo con FileExistsError porque outputs/regex_check_result ya existía, tal como se requería."
+        ],
+        "limits": [
+          "Solo se probaron los 10 casos sintéticos del artículo; no se estableció la corrección exhaustiva de la expresión regular.",
+          "No se probó el rendimiento con cadenas muy largas o diseñadas de forma adversaria.",
+          "No se probaron por separado CSV mal formados, valores de etiqueta esperada no válidos, columnas obligatorias faltantes ni fallos de permisos del sistema de archivos."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-sql-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/sqlite3",
+        "items": [
+          "Las filas esperadas calculadas manualmente se confirmaron como (1, Ana, 100), (2, Ben, 25) y (3, Cara, 0), con un total general de 125.",
+          "La consulta de IA devolvió exactamente 2 filas: Ana=100 y Ben=25. Cara se omitió, por lo que el resultado no coincidió con EXPECTED.",
+          "La consulta revisada con LEFT JOIN devolvió exactamente 3 filas: Ana=100, Ben=25 y Cara=0, coincidiendo exactamente con EXPECTED.",
+          "La ejecución principal imprimió exactamente: 'Expected rows: 3.', 'AI rows: 2; matches expected: False.', 'Revised rows: 3; matches expected: True.' y 'Report: outputs/ai_sql_check_result/sql_check.csv'.",
+          "sql_check.csv contenía un encabezado y dos filas de datos. La fila AI registró \"[(1, 'Ana', 100), (2, 'Ben', 25)]\" con False, y la fila REVISED registró \"[(1, 'Ana', 100), (2, 'Ben', 25), (3, 'Cara', 0)]\" con True.",
+          "El resultado de IA seguía sumando 125 a pesar de omitir a Cara, confirmando la afirmación del artículo de que el total general por sí solo no es suficiente.",
+          "El hash SHA-256 de orders.sqlite permaneció sin cambios después de ejecutar el comprobador, confirmando que la base de datos se abrió en modo de solo lectura y no se modificó.",
+          "Una segunda ejecución del comprobador se detuvo con FileExistsError porque outputs/ai_sql_check_result ya existía."
+        ],
+        "limits": [
+          "No se realizaron pruebas de estrés específicas sobre valores amount NULL, relaciones de unión duplicadas, casos adicionales de límites de fechas como el 31 de agosto, marcas de tiempo, zonas horarias, reembolsos, bases de datos dañadas, fallos de permisos ni conjuntos de datos grandes.",
+          "El entorno de Python emitió en stderr una advertencia no relacionada del calentamiento de la herramienta de hojas de cálculo artifact-tool, pero ambos scripts del artículo se ejecutaron correctamente y el comprobador terminó con código 0 en la ejecución de verificación."
+        ]
+      },
+      "text_fixes": []
+    },
+    "few-shot-output-format": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, json, pathlib",
+        "items": [
+          "La entrada esperada produjo exactamente 3 filas PASS y 0 fallos.",
+          "La salida de consola coincidió con: Objects checked: 3; Passed: 3; failed: 0; report path outputs/few_shot_check_result/format_check.csv.",
+          "El informe generado contenía T101, T102 y T103 con PASS y errores vacíos.",
+          "La segunda ejecución se detuvo con FileExistsError debido a la carpeta de salida existente.",
+          "El archivo de origen ai_output.json no se modificó.",
+          "La prueba de clave adicional se detectó como keys; el contenido esperado incorrecto se detectó como content_mismatch."
+        ],
+        "limits": [
+          "No se consultó ningún sistema de IA externo, por lo que no se probó la consistencia de las respuestas few-shot en sí.",
+          "El entorno de ejecución fue Python 3.13.5 en lugar del Python 3.12 objetivo del artículo; el código ejercitado utiliza comportamiento de la biblioteca estándar compatible con esta prueba."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-summary-source-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "Se confirmó que source.txt contiene 6 oraciones de origen y ai_summary.txt contiene 4 oraciones de resumen.",
+          "Se confirmó que summary_review.csv contiene exactamente 4 revisiones: A1 y A3 SUPPORTED; A2 y A4 UNSUPPORTED; sin filas PARTIAL.",
+          "La ejecución terminó correctamente e imprimió: Summary sentences checked: 4; Supported: 2; partial: 0; unsupported: 2; Output: outputs/summary_source_check/validated_review.csv.",
+          "validated_review.csv contenía exactamente 4 filas de datos con el texto de resumen, los veredictos, los ID de evidencia y las razones esperados.",
+          "Todos los ID de origen citados existían y cada ID de resumen se revisó exactamente una vez.",
+          "La segunda ejecución se detuvo con FileExistsError para outputs/summary_source_check, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que source.txt, ai_summary.txt y summary_review.csv no fueron modificados por el script."
+        ],
+        "limits": [
+          "El script comprueba la integridad de la revisión, los ID y la estructura de los veredictos; no determina por sí mismo la verdad semántica ni si el veredicto asignado por una persona es correcto.",
+          "Los juicios sintéticos entre oraciones y fuentes se comprobaron contra el texto de origen proporcionado en el artículo, no contra ninguna fuente externa."
+        ]
+      },
+      "text_fixes": []
+    },
+    "moving-average-filter": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "La ejecución terminó correctamente con 8 muestras de entrada y 6 salidas MA3 de ventana completa.",
+          "Los valores MA3 generados fueron exactamente 0.000, 0.000, 2.000, 7.000, 9.000 y 9.000.",
+          "Los tiempos centrales de ventana generados fueron 0.1, 0.2, 0.3, 0.4, 0.5 y 0.6 s, con un retraso de alineación de 0.1 s para cada ventana completa.",
+          "El filtered_sensor_data.csv generado coincidió exactamente con el CSV esperado del artículo.",
+          "La salida de consola coincidió con los valores y la ruta de salida indicados.",
+          "La segunda ejecución produjo FileExistsError para outputs/moving_average_result, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que sensor_data.csv permaneció sin cambios."
+        ],
+        "limits": [
+          "El entorno de ejecución emitió en stderr una advertencia no relacionada del calentamiento del entorno de hojas de cálculo antes del inicio de Python; no afectó al script del artículo, a su estado de salida en la primera ejecución ni a la salida generada.",
+          "Solo se probó el conjunto de datos sintético suministrado con muestreo uniforme; no se evaluaron muestreo irregular ni datos reales de sensores."
+        ]
+      },
+      "text_fixes": []
+    },
+    "unit-conversion-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, math, pathlib",
+        "items": [
+          "La ejecución terminó correctamente para los 5 registros.",
+          "Las 5 comprobaciones de ida y vuelta fueron correctas.",
+          "La salida de consola coincidió exactamente con el artículo.",
+          "El accel_m_s2 exportado realmente para T004 fue 2.451662; para T005 fue -12.258312.",
+          "El archivo de origen unit_test_data.csv permaneció sin cambios.",
+          "La segunda ejecución produjo FileExistsError para outputs/unit_conversion_result, confirmando la protección contra sobrescritura."
+        ],
+        "limits": [
+          "El entorno de ejecución fue Python 3.13.5 en lugar del Python 3.12 objetivo del artículo.",
+          "Los dos valores de visualización corregidos dependen del formato binario de coma flotante de Python; los productos matemáticos subyacentes siguen siendo 2.4516625 y -12.2583125 antes del redondeo de visualización de coma flotante."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "calculate-by-hand",
+          "block_index": 2,
+          "field": "rows",
+          "new_value": [
+            [
+              "T001",
+              "0",
+              "0.000000",
+              "0",
+              "0.000000"
+            ],
+            [
+              "T002",
+              "36",
+              "10.000000",
+              "1",
+              "9.806650"
+            ],
+            [
+              "T003",
+              "72",
+              "20.000000",
+              "-0.5",
+              "-4.903325"
+            ],
+            [
+              "T004",
+              "90",
+              "25.000000",
+              "0.25",
+              "2.451662"
+            ],
+            [
+              "T005",
+              "108",
+              "30.000000",
+              "-1.25",
+              "-12.258312"
+            ]
+          ],
+          "type": "table"
+        },
+        {
+          "section_id": "expected-output",
+          "block_index": 1,
+          "field": "text",
+          "new_value": "sample_id,speed_kmh,speed_m_s,speed_roundtrip_kmh,accel_g,accel_m_s2,accel_roundtrip_g,roundtrip_check\nT001,0,0.000000,0.000000,0,0.000000,0.000000,PASS\nT002,36,10.000000,36.000000,1,9.806650,1.000000,PASS\nT003,72,20.000000,72.000000,-0.5,-4.903325,-0.500000,PASS\nT004,90,25.000000,90.000000,0.25,2.451662,0.250000,PASS\nT005,108,30.000000,108.000000,-1.25,-12.258312,-1.250000,PASS\n",
+          "type": "code"
+        }
+      ]
+    },
+    "fft-dominant-frequency": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · NumPy 2.3.5 · standard library: csv, pathlib",
+        "items": [
+          "La ejecución terminó correctamente con 8 muestras.",
+          "La frecuencia de muestreo fue de 8.0 Hz y la resolución de frecuencia fue de 1.0 Hz.",
+          "La frecuencia dominante distinta de cero detectada fue exactamente 2.0 Hz.",
+          "Las magnitudes FFT no negativas generadas fueron 0.000000, 0.000000, 4.000000, 0.000000 y 0.000000 en 0, 1, 2, 3 y 4 Hz, respectivamente.",
+          "El spectrum.csv generado coincidió exactamente con el CSV esperado del artículo.",
+          "La salida de consola coincidió exactamente con la salida esperada del artículo.",
+          "La segunda ejecución produjo FileExistsError para outputs/fft_result, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que vibration_data.csv permaneció sin cambios."
+        ],
+        "limits": [
+          "El entorno de ejecución fue Python 3.13.5 en lugar del Python 3.12 objetivo del artículo.",
+          "El entorno de ejecución emitió en stderr una advertencia no relacionada del calentamiento del entorno de hojas de cálculo durante el inicio de Python; no afectó al resultado del script ni a la salida FFT generada.",
+          "Solo se probó la señal sintética ideal suministrada; no se evaluaron fuga espectral, aplicación de ventanas, ruido, muestreo irregular, aliasing ni datos de vibración medidos."
+        ]
+      },
+      "text_fixes": []
+    },
+    "reference-list-csv": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "La ejecución terminó correctamente para 6 referencias.",
+          "Se confirmó 1 fila con DOI faltante: R004.",
+          "Se confirmó 1 grupo de DOI duplicado: el DOI normalizado 10.0000/demo.alpha compartido por R001 y R003.",
+          "Se confirmó que issues.csv contiene exactamente 3 filas de datos: R001 DUPLICATE_DOI, R003 DUPLICATE_DOI y R004 MISSING_DOI.",
+          "Se confirmó que R005 se normalizó de doi:10.0000/DEMO.GAMMA a 10.0000/demo.gamma.",
+          "Se confirmó que hay 4 valores distintos de DOI normalizado no vacío entre las 5 filas que contienen DOI.",
+          "La salida de consola coincidió exactamente con el artículo: 6 referencias, 1 fila con DOI faltante, 1 grupo de DOI duplicado, 3 filas de incidencias y la carpeta de salida esperada.",
+          "El issues.csv generado coincidió exactamente con el CSV esperado del artículo.",
+          "La segunda ejecución produjo FileExistsError para outputs/reference_list_result, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que references.csv permaneció sin cambios."
+        ],
+        "limits": [
+          "El script solo realiza normalización de texto; no se verificaron externamente el registro o resolución de DOI, los metadatos de título o autor, las retractaciones ni la corrección bibliográfica.",
+          "El entorno de ejecución emitió en stderr una advertencia no relacionada del calentamiento del entorno de hojas de cálculo; no afectó al estado de salida del script, a los archivos generados ni a los resultados de verificación."
+        ]
+      },
+      "text_fixes": []
+    },
+    "data-dictionary": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, pathlib, re",
+        "items": [
+          "La ejecución terminó correctamente para 5 filas y 5 columnas del diccionario.",
+          "El validation_issues.csv generado contenía exactamente 4 filas, todas correspondientes a la fila física 6 del CSV (R005): speed_kmh 135 OUT_OF_RANGE, accel_m_s2 fast TYPE_ERROR, road_surface snow ALLOWED_VALUE_ERROR y test_status done ALLOWED_VALUE_ERROR.",
+          "El validation_issues.csv generado coincidió exactamente con el CSV esperado del artículo.",
+          "El data_dictionary.csv generado contenía exactamente las 5 filas SPEC y los valores de metadatos esperados.",
+          "La salida de consola coincidió exactamente: Rows checked: 5; Dictionary columns: 5; Validation issues: 4; Output folder: outputs/data_dictionary_result.",
+          "La segunda ejecución produjo FileExistsError para outputs/data_dictionary_result, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que test_runs.csv permaneció sin cambios."
+        ],
+        "limits": [
+          "El entorno de ejecución fue Python 3.13.5 en lugar del Python 3.12 objetivo del artículo.",
+          "El entorno de ejecución emitió en stderr una advertencia no relacionada del calentamiento del entorno de hojas de cálculo durante el inicio de Python; no afectó a la primera ejecución correcta del script, a los archivos generados ni a la prueba de protección contra sobrescritura.",
+          "El script verifica únicamente las reglas declaradas de estructura, tipo, rango y categoría; no valida la corrección científica de las definiciones de metadatos en sí."
+        ]
+      },
+      "text_fixes": []
+    },
+    "file-naming-rules": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, datetime, pathlib, re",
+        "items": [
+          "El script de preparación creó exactamente 8 archivos.",
+          "El comprobador informó exactamente: Files checked: 8; Passed: 4; failed: 4; Report: outputs/file_naming_result/file_naming_report.csv.",
+          "El informe generado clasificó los cuatro archivos válidos previstos como PASS.",
+          "El informe generado clasificó 2026-09-20_alpha_notes_v01.txt, 20260920_Alpha_notes_v01.txt y 20260920_alpha_notes_final.txt como STRUCTURE_ERROR.",
+          "El informe generado clasificó 20260230_beta_results_v01.csv como INVALID_DATE.",
+          "Los totales del informe coincidieron con el artículo: 4 PASS, 4 FAIL, 3 STRUCTURE_ERROR y 1 INVALID_DATE.",
+          "El orden de salida fue alfabético, tal como se indicaba.",
+          "La segunda ejecución del comprobador produjo FileExistsError para outputs/file_naming_result, confirmando la protección contra sobrescritura.",
+          "La comparación SHA-256 confirmó que los 8 archivos de origen permanecieron sin cambios después de la comprobación."
+        ],
+        "limits": [
+          "El entorno de ejecución emitió en stderr una advertencia no relacionada del calentamiento del entorno de hojas de cálculo durante el inicio de Python; no afectó al comportamiento correcto de la primera ejecución de ninguno de los dos scripts ni al informe generado.",
+          "Solo se probaron archivos directos de la carpeta sintética suministrada; no se evaluaron análisis recursivos, comportamiento en unidades compartidas, referencias dependientes ni diferencias del sistema de archivos entre plataformas."
+        ]
+      },
+      "text_fixes": []
+    }
+  }
+}

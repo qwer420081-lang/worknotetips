@@ -1,1 +1,225 @@
-{"title": "Use few-shot examples to make AI output more consistent and check it automatically", "summary": "Show an AI a few examples of the exact output structure you want, then validate the returned JSON before using it. A small synthetic ticket dataset demonstrates how formatting examples and automatic checks work together.", "tags": ["AI", "Python", "JSON"], "audience": "This guide is for people who use AI to transform repeated work items and need predictable machine-readable output instead of free-form prose.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "Access to an AI assistant where you can paste the example prompt.", "A text editor that can save UTF-8 JSON files.", "Only the Python standard library is required for validation: csv, json, and pathlib."], "sections": [{"id": "define-the-output-contract", "heading": "1. Define the output contract before prompting", "blocks": [{"type": "p", "text": "Suppose you want an AI to convert short support tickets into structured records. Each result must contain exactly four keys: ticket_id, priority, owner_team, and action. priority may be LOW, MEDIUM, or HIGH. owner_team may be IT, FACILITIES, or FINANCE. All four values must be non-empty strings."}, {"type": "p", "text": "The important idea is to define the format independently from the AI response. The AI is producing a candidate record. Your script decides whether that candidate satisfies the required structure."}, {"type": "callout", "title": "Examples help, but they are not validation", "text": "Few-shot examples can make a requested structure more consistent, but they do not guarantee that every future response will be valid. Keep an automatic checker between the AI response and any downstream workflow."}]}, {"id": "create-synthetic-input", "heading": "2. Create three synthetic tickets", "blocks": [{"type": "p", "text": "The following tickets are synthetic and were written specifically for this article. They are deliberately simple so you can determine the intended structured result by hand."}, {"type": "table", "headers": ["ticket_id", "Synthetic ticket text", "Expected classification"], "rows": [["T101", "Payroll spreadsheet cannot be opened before today's payment run.", "HIGH · FINANCE"], ["T102", "Meeting room B light is flickering but the room is still usable.", "LOW · FACILITIES"], ["T103", "New employee laptop cannot connect to the office Wi-Fi.", "MEDIUM · IT"]]}, {"type": "p", "text": "For this tutorial, the expected actions are also fixed in advance: T101 should be Check payroll workbook access, T102 should be Inspect meeting room B light, and T103 should be Troubleshoot laptop Wi-Fi connection. These expected values are part of the synthetic exercise, not general rules for real support operations."}]}, {"id": "write-few-shot-prompt", "heading": "3. Give the AI examples of the exact format", "blocks": [{"type": "p", "text": "A few-shot prompt includes one or more completed examples before the new inputs. The demonstrations below show both the classification style and the exact JSON shape. They use different synthetic tickets from the three items that will be checked."}, {"type": "code"}, {"type": "p", "text": "The examples show more than field names. They demonstrate uppercase category values, short action phrases, quoted JSON strings, and the absence of surrounding commentary. That reduces ambiguity about how the answer should be presented."}]}, {"id": "expected-output", "heading": "4. Define the expected output before seeing the AI response", "blocks": [{"type": "p", "text": "For this synthetic exercise, the expected answer is the JSON array below. Save the actual AI response as ai_output.json before running the checker. Do not silently edit a malformed response first; the purpose of the checker is to reveal whether the original response followed the contract."}, {"type": "code"}, {"type": "p", "text": "There should be exactly 3 objects and 12 field values in total. Each of the three allowed priorities appears once, and each of the three allowed owner teams appears once."}]}, {"id": "validate-the-response", "heading": "5. Validate the AI response automatically", "blocks": [{"type": "p", "text": "Save the following script as check_ai_output.py. It validates JSON syntax, array length, exact keys, data types, allowed category values, ticket IDs, and the expected synthetic classifications. It writes a review CSV only after parsing the AI response."}, {"type": "code"}]}, {"id": "check-the-result", "heading": "6. Check the expected result", "blocks": [{"type": "p", "text": "If ai_output.json exactly matches the expected synthetic output, all 3 objects should pass. The expected console text below is derived by hand and is not an execution log."}, {"type": "code"}, {"type": "ul", "items": ["Confirm that the top level is a JSON array, not prose surrounding an array.", "Confirm that every object contains exactly four required keys.", "Confirm that no ticket is missing or duplicated.", "Confirm that priority and owner_team use only the allowed labels.", "Run the checker again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous report."]}]}, {"id": "errors-and-limits", "heading": "7. Recognize common failures and limits", "blocks": [{"type": "table", "headers": ["Problem", "What the checker should reveal"], "rows": [["AI adds an explanation before the JSON", "json.load fails because the file is not a single valid JSON value."], ["One object uses urgency instead of priority", "Exact-key check fails."], ["priority is urgent", "Allowed-value check fails."], ["T103 appears twice", "Duplicate ticket ID check fails and another expected ID may be missing."], ["JSON structure is valid but the classification is wrong", "content_mismatch is recorded for this synthetic exercise."]]}, {"type": "p", "text": "Few-shot prompting improves guidance but does not guarantee deterministic output. Different AI systems, settings, context, or later prompts may change the response. Keep the validator even after several successful runs."}, {"type": "p", "text": "This example validates a deliberately small schema with handwritten Python checks. Larger production schemas may benefit from a formal schema system and separate semantic validation. Also remember that valid JSON is only a formatting result: the underlying classification can still be factually or operationally wrong."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, json, pathlib · no execution", "items": ["Manually defined 3 synthetic tickets and their expected priority, owner team, and action values.", "Manually checked that the expected JSON contains exactly 3 objects and 4 keys per object.", "Manually confirmed that LOW, MEDIUM, and HIGH each appear once and IT, FACILITIES, and FINANCE each appear once.", "Inspected the checker for JSON parsing, exact-key checks, non-empty string checks, allowed values, duplicate IDs, missing IDs, and expected-content comparison.", "Derived the expected result of 3 passes and 0 failures by hand."], "limits": ["No AI system was queried by the author of this response, so actual model consistency was not tested.", "The Python checker was not executed, and no JSON or CSV files were created.", "The synthetic classifications are exercise-specific expected values, not general support-routing rules.", "Valid structure does not prove that an AI-generated classification is factually correct.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · json", "url": "https://docs.python.org/3.12/library/json.html"}, {"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "few-shot-output-format", "category": "ai", "date": "2026-09-20"}
+{
+  "title": "Use few-shot examples to make AI output more consistent and check it automatically",
+  "summary": "Show an AI a few examples of the exact output structure you want, then validate the returned JSON before using it. A small synthetic ticket dataset demonstrates how formatting examples and automatic checks work together.",
+  "tags": [
+    "AI",
+    "Python",
+    "JSON"
+  ],
+  "audience": "This guide is for people who use AI to transform repeated work items and need predictable machine-readable output instead of free-form prose.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "Access to an AI assistant where you can paste the example prompt.",
+    "A text editor that can save UTF-8 JSON files.",
+    "Only the Python standard library is required for validation: csv, json, and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-the-output-contract",
+      "heading": "1. Define the output contract before prompting",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose you want an AI to convert short support tickets into structured records. Each result must contain exactly four keys: ticket_id, priority, owner_team, and action. priority may be LOW, MEDIUM, or HIGH. owner_team may be IT, FACILITIES, or FINANCE. All four values must be non-empty strings."
+        },
+        {
+          "type": "p",
+          "text": "The important idea is to define the format independently from the AI response. The AI is producing a candidate record. Your script decides whether that candidate satisfies the required structure."
+        },
+        {
+          "type": "callout",
+          "title": "Examples help, but they are not validation",
+          "text": "Few-shot examples can make a requested structure more consistent, but they do not guarantee that every future response will be valid. Keep an automatic checker between the AI response and any downstream workflow."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-input",
+      "heading": "2. Create three synthetic tickets",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following tickets are synthetic and were written specifically for this article. They are deliberately simple so you can determine the intended structured result by hand."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "ticket_id",
+            "Synthetic ticket text",
+            "Expected classification"
+          ],
+          "rows": [
+            [
+              "T101",
+              "Payroll spreadsheet cannot be opened before today's payment run.",
+              "HIGH · FINANCE"
+            ],
+            [
+              "T102",
+              "Meeting room B light is flickering but the room is still usable.",
+              "LOW · FACILITIES"
+            ],
+            [
+              "T103",
+              "New employee laptop cannot connect to the office Wi-Fi.",
+              "MEDIUM · IT"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "For this tutorial, the expected actions are also fixed in advance: T101 should be Check payroll workbook access, T102 should be Inspect meeting room B light, and T103 should be Troubleshoot laptop Wi-Fi connection. These expected values are part of the synthetic exercise, not general rules for real support operations."
+        }
+      ]
+    },
+    {
+      "id": "write-few-shot-prompt",
+      "heading": "3. Give the AI examples of the exact format",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A few-shot prompt includes one or more completed examples before the new inputs. The demonstrations below show both the classification style and the exact JSON shape. They use different synthetic tickets from the three items that will be checked."
+        },
+        {
+          "type": "code",
+          "text": "Convert each ticket into a JSON object.\n\nRules:\n- Return one JSON array only.\n- Do not add explanations or Markdown.\n- Use exactly these keys in every object: ticket_id, priority, owner_team, action.\n- priority must be LOW, MEDIUM, or HIGH.\n- owner_team must be IT, FACILITIES, or FINANCE.\n\nExample 1 input:\nTicket ID: E001\nText: Printer on floor 2 is out of paper.\n\nExample 1 output:\n{\"ticket_id\":\"E001\",\"priority\":\"LOW\",\"owner_team\":\"IT\",\"action\":\"Refill or check floor 2 printer\"}\n\nExample 2 input:\nTicket ID: E002\nText: Expense approval file is unavailable before today's reimbursement deadline.\n\nExample 2 output:\n{\"ticket_id\":\"E002\",\"priority\":\"HIGH\",\"owner_team\":\"FINANCE\",\"action\":\"Check expense approval file access\"}\n\nNow process these tickets:\nT101: Payroll spreadsheet cannot be opened before today's payment run.\nT102: Meeting room B light is flickering but the room is still usable.\nT103: New employee laptop cannot connect to the office Wi-Fi.\n"
+        },
+        {
+          "type": "p",
+          "text": "The examples show more than field names. They demonstrate uppercase category values, short action phrases, quoted JSON strings, and the absence of surrounding commentary. That reduces ambiguity about how the answer should be presented."
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "4. Define the expected output before seeing the AI response",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For this synthetic exercise, the expected answer is the JSON array below. Save the actual AI response as ai_output.json before running the checker. Do not silently edit a malformed response first; the purpose of the checker is to reveal whether the original response followed the contract."
+        },
+        {
+          "type": "code",
+          "text": "[\n  {\n    \"ticket_id\": \"T101\",\n    \"priority\": \"HIGH\",\n    \"owner_team\": \"FINANCE\",\n    \"action\": \"Check payroll workbook access\"\n  },\n  {\n    \"ticket_id\": \"T102\",\n    \"priority\": \"LOW\",\n    \"owner_team\": \"FACILITIES\",\n    \"action\": \"Inspect meeting room B light\"\n  },\n  {\n    \"ticket_id\": \"T103\",\n    \"priority\": \"MEDIUM\",\n    \"owner_team\": \"IT\",\n    \"action\": \"Troubleshoot laptop Wi-Fi connection\"\n  }\n]\n"
+        },
+        {
+          "type": "p",
+          "text": "There should be exactly 3 objects and 12 field values in total. Each of the three allowed priorities appears once, and each of the three allowed owner teams appears once."
+        }
+      ]
+    },
+    {
+      "id": "validate-the-response",
+      "heading": "5. Validate the AI response automatically",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as check_ai_output.py. It validates JSON syntax, array length, exact keys, data types, allowed category values, ticket IDs, and the expected synthetic classifications. It writes a review CSV only after parsing the AI response."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport json\nfrom pathlib import Path\n\nSOURCE = Path(\"ai_output.json\")\nOUTPUT_DIR = Path(\"outputs\") / \"few_shot_check_result\"\nREPORT = OUTPUT_DIR / \"format_check.csv\"\n\nEXPECTED = {\n    \"T101\": (\"HIGH\", \"FINANCE\", \"Check payroll workbook access\"),\n    \"T102\": (\"LOW\", \"FACILITIES\", \"Inspect meeting room B light\"),\n    \"T103\": (\"MEDIUM\", \"IT\", \"Troubleshoot laptop Wi-Fi connection\"),\n}\nREQUIRED_KEYS = {\"ticket_id\", \"priority\", \"owner_team\", \"action\"}\nPRIORITIES = {\"LOW\", \"MEDIUM\", \"HIGH\"}\nTEAMS = {\"IT\", \"FACILITIES\", \"FINANCE\"}\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"AI output not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    with SOURCE.open(\"r\", encoding=\"utf-8\") as stream:\n        data = json.load(stream)\n\n    if not isinstance(data, list):\n        raise ValueError(\"Top-level JSON value must be an array.\")\n    if len(data) != len(EXPECTED):\n        raise ValueError(f\"Expected {len(EXPECTED)} objects, got {len(data)}.\")\n\n    rows = []\n    seen = set()\n    for index, item in enumerate(data, start=1):\n        errors = []\n        if not isinstance(item, dict):\n            raise ValueError(f\"Item {index} is not a JSON object.\")\n\n        if set(item) != REQUIRED_KEYS:\n            errors.append(\"keys\")\n\n        for key in REQUIRED_KEYS:\n            if key not in item or not isinstance(item.get(key), str) or not item.get(key).strip():\n                errors.append(f\"invalid_{key}\")\n\n        ticket_id = item.get(\"ticket_id\", \"\")\n        if ticket_id in seen:\n            errors.append(\"duplicate_ticket_id\")\n        seen.add(ticket_id)\n\n        if item.get(\"priority\") not in PRIORITIES:\n            errors.append(\"priority\")\n        if item.get(\"owner_team\") not in TEAMS:\n            errors.append(\"owner_team\")\n\n        expected = EXPECTED.get(ticket_id)\n        if expected is None:\n            errors.append(\"unexpected_ticket_id\")\n        else:\n            actual = (\n                item.get(\"priority\"),\n                item.get(\"owner_team\"),\n                item.get(\"action\"),\n            )\n            if actual != expected:\n                errors.append(\"content_mismatch\")\n\n        rows.append({\n            \"item\": index,\n            \"ticket_id\": ticket_id,\n            \"status\": \"PASS\" if not errors else \"FAIL\",\n            \"errors\": \";\".join(errors),\n        })\n\n    missing_ids = set(EXPECTED) - seen\n    if missing_ids:\n        raise ValueError(f\"Missing ticket IDs: {sorted(missing_ids)}\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    with REPORT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(\n            stream,\n            fieldnames=[\"item\", \"ticket_id\", \"status\", \"errors\"],\n        )\n        writer.writeheader()\n        writer.writerows(rows)\n\n    failures = sum(row[\"status\"] == \"FAIL\" for row in rows)\n    print(f\"Objects checked: {len(rows)}.\")\n    print(f\"Passed: {len(rows) - failures}; failed: {failures}.\")\n    print(f\"Report: {REPORT.as_posix()}\")\n\n    if failures:\n        raise RuntimeError(\"AI output failed one or more checks.\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "check-the-result",
+      "heading": "6. Check the expected result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If ai_output.json exactly matches the expected synthetic output, all 3 objects should pass. The expected console text below is derived by hand and is not an execution log."
+        },
+        {
+          "type": "code",
+          "text": "Objects checked: 3.\nPassed: 3; failed: 0.\nReport: outputs/few_shot_check_result/format_check.csv"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that the top level is a JSON array, not prose surrounding an array.",
+            "Confirm that every object contains exactly four required keys.",
+            "Confirm that no ticket is missing or duplicated.",
+            "Confirm that priority and owner_team use only the allowed labels.",
+            "Run the checker again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous report."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "errors-and-limits",
+      "heading": "7. Recognize common failures and limits",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What the checker should reveal"
+          ],
+          "rows": [
+            [
+              "AI adds an explanation before the JSON",
+              "json.load fails because the file is not a single valid JSON value."
+            ],
+            [
+              "One object uses urgency instead of priority",
+              "Exact-key check fails."
+            ],
+            [
+              "priority is urgent",
+              "Allowed-value check fails."
+            ],
+            [
+              "T103 appears twice",
+              "Duplicate ticket ID check fails and another expected ID may be missing."
+            ],
+            [
+              "JSON structure is valid but the classification is wrong",
+              "content_mismatch is recorded for this synthetic exercise."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Few-shot prompting improves guidance but does not guarantee deterministic output. Different AI systems, settings, context, or later prompts may change the response. Keep the validator even after several successful runs."
+        },
+        {
+          "type": "p",
+          "text": "This example validates a deliberately small schema with handwritten Python checks. Larger production schemas may benefit from a formal schema system and separate semantic validation. Also remember that valid JSON is only a formatting result: the underlying classification can still be factually or operationally wrong."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library: csv, json, pathlib",
+    "items": [
+      "Expected input produced exactly 3 PASS rows and 0 failures.",
+      "Console output matched: Objects checked: 3; Passed: 3; failed: 0; report path outputs/few_shot_check_result/format_check.csv.",
+      "Generated report contained T101, T102, and T103 with PASS and blank errors.",
+      "Second execution stopped with FileExistsError for the existing output folder.",
+      "The source ai_output.json was not modified.",
+      "Extra-key test was detected as keys; incorrect expected content was detected as content_mismatch."
+    ],
+    "limits": [
+      "No external AI system was queried, so few-shot response consistency itself was not tested.",
+      "The runtime was Python 3.13.5 rather than the article's target Python 3.12; the exercised code uses standard-library behavior compatible with this test."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · json",
+      "url": "https://docs.python.org/3.12/library/json.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "few-shot-output-format",
+  "category": "ai",
+  "date": "2026-09-20"
+}

@@ -1,1 +1,262 @@
-{"title": "Check an AI-written SQL query against hand-computed SQLite results", "summary": "Treat an AI-generated SQL query as a draft and test it on a tiny SQLite database with known answers. Compare the AI result with a manually calculated expected table before using the query on real data.", "tags": ["Python", "SQLite", "AI"], "audience": "This guide is for people who use AI to draft SQL and want a small reproducible test before running the query on important data.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A working folder where the scripts can create folders beneath outputs.", "Basic familiarity with SELECT, JOIN, GROUP BY, and aggregate functions.", "Only the Python standard library is required: csv, pathlib, and sqlite3."], "sections": [{"id": "define-the-question", "heading": "1. State the business question before reviewing SQL", "blocks": [{"type": "p", "text": "Suppose the requirement is: for every customer, report the total value of PAID orders placed during August 2026. Customers with no qualifying orders must still appear with a total of 0."}, {"type": "p", "text": "An AI assistant proposes an INNER JOIN between customers and orders, followed by WHERE conditions for status and date. The query looks reasonable, but the INNER JOIN removes customers who have no matching order rows. That violates the requirement to include zero-total customers."}, {"type": "callout", "title": "Separate the requirement from the query", "text": "Before judging SQL, write down the expected population, filters, grouping level, and treatment of missing matches. A syntactically valid query can still answer the wrong question."}]}, {"id": "create-synthetic-database", "heading": "2. Create a synthetic SQLite database", "blocks": [{"type": "p", "text": "The following database is synthetic and was written specifically for this article. It has three customers and six orders chosen to test paid versus unpaid status, month boundaries, and a customer with no August paid order."}, {"type": "code"}, {"type": "code"}]}, {"id": "calculate-expected-result", "heading": "3. Compute the correct answer by hand", "blocks": [{"type": "p", "text": "Ana has two PAID August orders: 40 and 60, so her total is 100. Her cancelled order does not count. Ben has one qualifying August order worth 25; his September order does not count. Cara has only a cancelled August order, so she must still appear with 0."}, {"type": "table", "headers": ["customer_id", "customer_name", "Expected August paid total"], "rows": [["1", "Ana", "100"], ["2", "Ben", "25"], ["3", "Cara", "0"]]}, {"type": "p", "text": "The expected grand total is 125. There should be exactly 3 output rows because the requirement says every customer must appear."}]}, {"id": "compare-ai-and-revised-sql", "heading": "4. Compare the AI query with a revised query", "blocks": [{"type": "p", "text": "The AI query below filters qualifying orders in the WHERE clause after an INNER JOIN. Cara has no matching PAID August order, so she disappears entirely."}, {"type": "code"}, {"type": "p", "text": "The revised query starts from all customers and uses a LEFT JOIN. The order filters are placed inside the ON condition so nonmatching customers remain. COALESCE converts the resulting NULL aggregate to 0."}, {"type": "code"}]}, {"id": "run-the-checker", "heading": "5. Run both queries and compare them with the expected rows", "blocks": [{"type": "p", "text": "Save the following script as ai_sql_check.py. It runs both queries, compares their results with the hand-computed expected table, and writes a CSV review report. It does not modify the synthetic database."}, {"type": "code"}, {"type": "code"}]}, {"id": "expected-results", "heading": "6. Check the expected output", "blocks": [{"type": "p", "text": "The AI query should return only Ana and Ben, so it produces 2 rows and does not match the expected result. The revised query should return all 3 customers and exactly match the hand-computed table."}, {"type": "table", "headers": ["Query", "Rows returned", "Expected grand total", "Matches expected table"], "rows": [["AI", "2", "125", "No"], ["Revised", "3", "125", "Yes"]]}, {"type": "p", "text": "The AI result can still have the correct grand total of 125 even though it is wrong because Cara's required zero row is missing. This is why checking only totals is insufficient."}, {"type": "code"}]}, {"id": "checks-errors-and-limits", "heading": "7. Add checks and understand the limits", "blocks": [{"type": "ul", "items": ["Check row count as well as totals.", "Include customers with zero matching records in the synthetic data when the requirement says they must appear.", "Test date boundaries such as August 31 and September 1.", "Include excluded statuses such as CANCELLED.", "Run the checker again without changing OUTPUT_DIR. It should stop with FileExistsError rather than overwrite the report."]}, {"type": "table", "headers": ["Common problem", "What to inspect"], "rows": [["Unexpected missing rows", "Check JOIN type and whether filters in WHERE remove unmatched LEFT JOIN rows."], ["Totals too large", "Look for one-to-many joins that duplicate rows before aggregation."], ["Wrong date range", "Use an explicit lower bound and exclusive upper bound appropriate to the stored date format."], ["NULL instead of zero", "Decide whether missing matches should stay NULL or be converted with COALESCE."], ["Correct total but wrong detail", "Compare complete expected rows, not only the grand total."]]}, {"type": "p", "text": "This test proves only that the revised query matches this small synthetic example. Real schemas may contain duplicate relationships, NULL values, timestamps, time zones, refunds, or additional business rules. Expand the test data whenever those conditions matter."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib, sqlite3 · no execution", "items": ["Manually calculated Ana's qualifying August total as 40 + 60 = 100.", "Manually calculated Ben's qualifying August total as 25 and excluded his September order.", "Manually determined that Cara must appear with 0 because her only August order is CANCELLED.", "Manually calculated the expected grand total as 125 and expected row count as 3.", "Inspected the AI query and determined that its INNER JOIN and WHERE filters omit Cara, producing 2 rows.", "Inspected the revised LEFT JOIN query and expected it to return the three hand-computed rows.", "Derived the expected console output and report comparison by hand."], "limits": ["The code was not executed by the author of this response; SQLite and filesystem behavior were not tested here.", "Only the listed synthetic rows were evaluated; NULL amounts, duplicate joins, timestamps, time zones, refunds, and large datasets were not tested.", "Matching this example does not prove the query is correct for every production schema or business rule.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official SQLite documentation · SELECT", "url": "https://www.sqlite.org/lang_select.html"}, {"title": "Official SQLite documentation · Built-in aggregate functions", "url": "https://www.sqlite.org/lang_aggfunc.html"}, {"title": "Official Python 3.12 documentation · sqlite3", "url": "https://docs.python.org/3.12/library/sqlite3.html"}, {"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}], "slug": "ai-sql-check", "category": "ai", "date": "2026-09-20"}
+{
+  "title": "Check an AI-written SQL query against hand-computed SQLite results",
+  "summary": "Treat an AI-generated SQL query as a draft and test it on a tiny SQLite database with known answers. Compare the AI result with a manually calculated expected table before using the query on real data.",
+  "tags": [
+    "Python",
+    "SQLite",
+    "AI"
+  ],
+  "audience": "This guide is for people who use AI to draft SQL and want a small reproducible test before running the query on important data.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A working folder where the scripts can create folders beneath outputs.",
+    "Basic familiarity with SELECT, JOIN, GROUP BY, and aggregate functions.",
+    "Only the Python standard library is required: csv, pathlib, and sqlite3."
+  ],
+  "sections": [
+    {
+      "id": "define-the-question",
+      "heading": "1. State the business question before reviewing SQL",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose the requirement is: for every customer, report the total value of PAID orders placed during August 2026. Customers with no qualifying orders must still appear with a total of 0."
+        },
+        {
+          "type": "p",
+          "text": "An AI assistant proposes an INNER JOIN between customers and orders, followed by WHERE conditions for status and date. The query looks reasonable, but the INNER JOIN removes customers who have no matching order rows. That violates the requirement to include zero-total customers."
+        },
+        {
+          "type": "callout",
+          "title": "Separate the requirement from the query",
+          "text": "Before judging SQL, write down the expected population, filters, grouping level, and treatment of missing matches. A syntactically valid query can still answer the wrong question."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-database",
+      "heading": "2. Create a synthetic SQLite database",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following database is synthetic and was written specifically for this article. It has three customers and six orders chosen to test paid versus unpaid status, month boundaries, and a customer with no August paid order."
+        },
+        {
+          "type": "code",
+          "text": "import sqlite3\nfrom pathlib import Path\n\nSOURCE_DIR = Path(\"outputs\") / \"ai_sql_demo\"\nDATABASE = SOURCE_DIR / \"orders.sqlite\"\n\nCUSTOMERS = [\n    (1, \"Ana\"),\n    (2, \"Ben\"),\n    (3, \"Cara\"),\n]\n\nORDERS = [\n    (101, 1, \"2026-08-03\", \"PAID\", 40),\n    (102, 1, \"2026-08-20\", \"PAID\", 60),\n    (103, 1, \"2026-08-25\", \"CANCELLED\", 30),\n    (104, 2, \"2026-08-10\", \"PAID\", 25),\n    (105, 2, \"2026-09-01\", \"PAID\", 50),\n    (106, 3, \"2026-08-12\", \"CANCELLED\", 80),\n]\n\nSOURCE_DIR.parent.mkdir(parents=True, exist_ok=True)\nSOURCE_DIR.mkdir()  # Stop if the synthetic source already exists.\n\nconnection = sqlite3.connect(DATABASE)\ntry:\n    connection.executescript(\"\"\"\n        CREATE TABLE customers (\n            customer_id INTEGER PRIMARY KEY,\n            customer_name TEXT NOT NULL\n        );\n\n        CREATE TABLE orders (\n            order_id INTEGER PRIMARY KEY,\n            customer_id INTEGER NOT NULL,\n            order_date TEXT NOT NULL,\n            status TEXT NOT NULL,\n            amount INTEGER NOT NULL,\n            FOREIGN KEY (customer_id) REFERENCES customers(customer_id)\n        );\n    \"\"\")\n    connection.executemany(\n        \"INSERT INTO customers VALUES (?, ?)\", CUSTOMERS\n    )\n    connection.executemany(\n        \"INSERT INTO orders VALUES (?, ?, ?, ?, ?)\", ORDERS\n    )\n    connection.commit()\nfinally:\n    connection.close()\n"
+        },
+        {
+          "type": "code",
+          "text": "python create_ai_sql_demo.py"
+        }
+      ]
+    },
+    {
+      "id": "calculate-expected-result",
+      "heading": "3. Compute the correct answer by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Ana has two PAID August orders: 40 and 60, so her total is 100. Her cancelled order does not count. Ben has one qualifying August order worth 25; his September order does not count. Cara has only a cancelled August order, so she must still appear with 0."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "customer_id",
+            "customer_name",
+            "Expected August paid total"
+          ],
+          "rows": [
+            [
+              "1",
+              "Ana",
+              "100"
+            ],
+            [
+              "2",
+              "Ben",
+              "25"
+            ],
+            [
+              "3",
+              "Cara",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected grand total is 125. There should be exactly 3 output rows because the requirement says every customer must appear."
+        }
+      ]
+    },
+    {
+      "id": "compare-ai-and-revised-sql",
+      "heading": "4. Compare the AI query with a revised query",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The AI query below filters qualifying orders in the WHERE clause after an INNER JOIN. Cara has no matching PAID August order, so she disappears entirely."
+        },
+        {
+          "type": "code",
+          "text": "SELECT\n    c.customer_id,\n    c.customer_name,\n    SUM(o.amount) AS august_paid_total\nFROM customers AS c\nJOIN orders AS o\n    ON o.customer_id = c.customer_id\nWHERE o.status = 'PAID'\n  AND o.order_date >= '2026-08-01'\n  AND o.order_date < '2026-09-01'\nGROUP BY c.customer_id, c.customer_name\nORDER BY c.customer_id;"
+        },
+        {
+          "type": "p",
+          "text": "The revised query starts from all customers and uses a LEFT JOIN. The order filters are placed inside the ON condition so nonmatching customers remain. COALESCE converts the resulting NULL aggregate to 0."
+        },
+        {
+          "type": "code",
+          "text": "SELECT\n    c.customer_id,\n    c.customer_name,\n    COALESCE(SUM(o.amount), 0) AS august_paid_total\nFROM customers AS c\nLEFT JOIN orders AS o\n    ON o.customer_id = c.customer_id\n   AND o.status = 'PAID'\n   AND o.order_date >= '2026-08-01'\n   AND o.order_date < '2026-09-01'\nGROUP BY c.customer_id, c.customer_name\nORDER BY c.customer_id;"
+        }
+      ]
+    },
+    {
+      "id": "run-the-checker",
+      "heading": "5. Run both queries and compare them with the expected rows",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as ai_sql_check.py. It runs both queries, compares their results with the hand-computed expected table, and writes a CSV review report. It does not modify the synthetic database."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport sqlite3\nfrom pathlib import Path\n\nDATABASE = Path(\"outputs\") / \"ai_sql_demo\" / \"orders.sqlite\"\nOUTPUT_DIR = Path(\"outputs\") / \"ai_sql_check_result\"\nREPORT = OUTPUT_DIR / \"sql_check.csv\"\n\nAI_SQL = \"\"\"\nSELECT c.customer_id, c.customer_name, SUM(o.amount)\nFROM customers AS c\nJOIN orders AS o ON o.customer_id = c.customer_id\nWHERE o.status = 'PAID'\n  AND o.order_date >= '2026-08-01'\n  AND o.order_date < '2026-09-01'\nGROUP BY c.customer_id, c.customer_name\nORDER BY c.customer_id;\n\"\"\"\n\nREVISED_SQL = \"\"\"\nSELECT c.customer_id, c.customer_name, COALESCE(SUM(o.amount), 0)\nFROM customers AS c\nLEFT JOIN orders AS o\n    ON o.customer_id = c.customer_id\n   AND o.status = 'PAID'\n   AND o.order_date >= '2026-08-01'\n   AND o.order_date < '2026-09-01'\nGROUP BY c.customer_id, c.customer_name\nORDER BY c.customer_id;\n\"\"\"\n\nEXPECTED = [\n    (1, \"Ana\", 100),\n    (2, \"Ben\", 25),\n    (3, \"Cara\", 0),\n]\n\n\ndef run_query(connection, sql):\n    return connection.execute(sql).fetchall()\n\n\ndef main() -> None:\n    if not DATABASE.is_file():\n        raise FileNotFoundError(f\"Database not found: {DATABASE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    connection = sqlite3.connect(f\"file:{DATABASE.resolve()}?mode=ro\", uri=True)\n    try:\n        ai_rows = run_query(connection, AI_SQL)\n        revised_rows = run_query(connection, REVISED_SQL)\n    finally:\n        connection.close()\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n\n    with REPORT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.writer(stream)\n        writer.writerow([\"query\", \"rows\", \"matches_expected\"])\n        writer.writerow([\"AI\", repr(ai_rows), ai_rows == EXPECTED])\n        writer.writerow([\"REVISED\", repr(revised_rows), revised_rows == EXPECTED])\n\n    print(f\"Expected rows: {len(EXPECTED)}.\")\n    print(f\"AI rows: {len(ai_rows)}; matches expected: {ai_rows == EXPECTED}.\")\n    print(\n        f\"Revised rows: {len(revised_rows)}; \"\n        f\"matches expected: {revised_rows == EXPECTED}.\"\n    )\n    print(f\"Report: {REPORT.as_posix()}\")\n\n    if revised_rows != EXPECTED:\n        raise RuntimeError(\"Revised SQL does not match the expected result.\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "code",
+          "text": "python ai_sql_check.py"
+        }
+      ]
+    },
+    {
+      "id": "expected-results",
+      "heading": "6. Check the expected output",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The AI query should return only Ana and Ben, so it produces 2 rows and does not match the expected result. The revised query should return all 3 customers and exactly match the hand-computed table."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Query",
+            "Rows returned",
+            "Expected grand total",
+            "Matches expected table"
+          ],
+          "rows": [
+            [
+              "AI",
+              "2",
+              "125",
+              "No"
+            ],
+            [
+              "Revised",
+              "3",
+              "125",
+              "Yes"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The AI result can still have the correct grand total of 125 even though it is wrong because Cara's required zero row is missing. This is why checking only totals is insufficient."
+        },
+        {
+          "type": "code",
+          "text": "Expected rows: 3.\nAI rows: 2; matches expected: False.\nRevised rows: 3; matches expected: True.\nReport: outputs/ai_sql_check_result/sql_check.csv"
+        }
+      ]
+    },
+    {
+      "id": "checks-errors-and-limits",
+      "heading": "7. Add checks and understand the limits",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Check row count as well as totals.",
+            "Include customers with zero matching records in the synthetic data when the requirement says they must appear.",
+            "Test date boundaries such as August 31 and September 1.",
+            "Include excluded statuses such as CANCELLED.",
+            "Run the checker again without changing OUTPUT_DIR. It should stop with FileExistsError rather than overwrite the report."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Common problem",
+            "What to inspect"
+          ],
+          "rows": [
+            [
+              "Unexpected missing rows",
+              "Check JOIN type and whether filters in WHERE remove unmatched LEFT JOIN rows."
+            ],
+            [
+              "Totals too large",
+              "Look for one-to-many joins that duplicate rows before aggregation."
+            ],
+            [
+              "Wrong date range",
+              "Use an explicit lower bound and exclusive upper bound appropriate to the stored date format."
+            ],
+            [
+              "NULL instead of zero",
+              "Decide whether missing matches should stay NULL or be converted with COALESCE."
+            ],
+            [
+              "Correct total but wrong detail",
+              "Compare complete expected rows, not only the grand total."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This test proves only that the revised query matches this small synthetic example. Real schemas may contain duplicate relationships, NULL values, timestamps, time zones, refunds, or additional business rules. Expand the test data whenever those conditions matter."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/sqlite3",
+    "items": [
+      "The hand-computed expected rows were confirmed as (1, Ana, 100), (2, Ben, 25), and (3, Cara, 0), with grand total 125.",
+      "The AI query returned exactly 2 rows: Ana=100 and Ben=25. Cara was omitted, so the result did not match EXPECTED.",
+      "The revised LEFT JOIN query returned exactly 3 rows: Ana=100, Ben=25, and Cara=0, matching EXPECTED exactly.",
+      "The main run printed exactly: 'Expected rows: 3.', 'AI rows: 2; matches expected: False.', 'Revised rows: 3; matches expected: True.', and 'Report: outputs/ai_sql_check_result/sql_check.csv'.",
+      "sql_check.csv contained a header plus two data rows. The AI row recorded \"[(1, 'Ana', 100), (2, 'Ben', 25)]\" with False, and the REVISED row recorded \"[(1, 'Ana', 100), (2, 'Ben', 25), (3, 'Cara', 0)]\" with True.",
+      "The AI result still summed to 125 despite omitting Cara, confirming the article's statement that the grand total alone is insufficient.",
+      "The SHA-256 hash of orders.sqlite was unchanged after running the checker, confirming the database was opened read-only and not modified.",
+      "A second checker run stopped with FileExistsError because outputs/ai_sql_check_result already existed."
+    ],
+    "limits": [
+      "NULL amounts, duplicate join relationships, additional date-boundary cases such as August 31, timestamps, time zones, refunds, malformed databases, permission failures, and large datasets were not separately stress-tested.",
+      "The Python runtime emitted an unrelated artifact-tool spreadsheet warmup warning on stderr, but both article scripts themselves executed successfully and the checker exited with code 0 on the verification run."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official SQLite documentation · SELECT",
+      "url": "https://www.sqlite.org/lang_select.html"
+    },
+    {
+      "title": "Official SQLite documentation · Built-in aggregate functions",
+      "url": "https://www.sqlite.org/lang_aggfunc.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · sqlite3",
+      "url": "https://docs.python.org/3.12/library/sqlite3.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    }
+  ],
+  "slug": "ai-sql-check",
+  "category": "ai",
+  "date": "2026-09-20"
+}

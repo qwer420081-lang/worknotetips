@@ -1,1 +1,302 @@
-{"title": "Test an AI-written regular expression with positive and negative examples", "summary": "Treat an AI-generated regex as a draft, not a finished rule. Build a small synthetic test table, compare expected and actual matches, revise the pattern, and save a review report before using it on real data.", "tags": ["Python", "Regex", "AI"], "audience": "This guide is for people who use AI to draft regular expressions and want a simple way to check the pattern against known matching and non-matching cases.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor that can save UTF-8 CSV and Python files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv, pathlib, and re."], "sections": [{"id": "define-the-rule", "heading": "1. Write the requirement before testing the regex", "blocks": [{"type": "p", "text": "Suppose an internal work ID must have the form WK-YYYY-NNNN. The prefix must be uppercase WK, the year must be between 2000 and 2099, the separators must be hyphens, and the final part must contain exactly four ASCII digits."}, {"type": "p", "text": "Imagine an AI assistant proposes the pattern WK-\\d{4}-\\d{4}. It looks plausible, but it only requires four digits for the year. It does not enforce the stated 2000-2099 range. The safest next step is not to use it immediately, but to test it against examples with known answers."}, {"type": "callout", "title": "Test requirements, not appearance", "text": "A regex can look reasonable and still violate one boundary condition. Write the accepted format in plain language first, then create examples that challenge each part of that requirement."}]}, {"id": "create-synthetic-cases", "heading": "2. Create a synthetic set of test cases", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save it as regex_cases.csv. It contains three strings that should match and seven that should not."}, {"type": "code"}, {"type": "p", "text": "The cases cover the allowed year boundaries, an out-of-range year, lowercase prefix, short and long sequence fields, wrong separator, leading whitespace, and a non-digit character in the year. These are small enough to classify manually before running any regex."}]}, {"id": "predict-the-results", "heading": "3. Predict what the AI pattern will get wrong", "blocks": [{"type": "p", "text": "The AI pattern WK-\\d{4}-\\d{4} should accept C001, C002, and C003. It should reject C005 through C010 for structural reasons. However, it also accepts C004 because 1999 still consists of four digits."}, {"type": "table", "headers": ["Case", "Expected", "AI pattern", "Result"], "rows": [["C001", "MATCH", "MATCH", "PASS"], ["C002", "MATCH", "MATCH", "PASS"], ["C003", "MATCH", "MATCH", "PASS"], ["C004", "NO MATCH", "MATCH", "FAIL"], ["C005", "NO MATCH", "NO MATCH", "PASS"], ["C006", "NO MATCH", "NO MATCH", "PASS"], ["C007", "NO MATCH", "NO MATCH", "PASS"], ["C008", "NO MATCH", "NO MATCH", "PASS"], ["C009", "NO MATCH", "NO MATCH", "PASS"], ["C010", "NO MATCH", "NO MATCH", "PASS"]]}, {"type": "p", "text": "The revised pattern is WK-20[0-9]{2}-[0-9]{4}. The 20 prefix restricts the year to 2000 through 2099, and [0-9] makes the intended digit set explicit. The script uses fullmatch so the entire input string must satisfy the pattern."}]}, {"id": "run-the-checker", "heading": "4. Compare expected and actual matches automatically", "blocks": [{"type": "p", "text": "Save the following script as ai_regex_check.py. It tests both the AI proposal and the revised pattern, writes every case to a CSV report, and refuses to reuse an existing output folder."}, {"type": "code"}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Check the expected report", "blocks": [{"type": "p", "text": "There are 10 test cases. The AI pattern should fail exactly one case, C004. The revised pattern should pass all 10 cases."}, {"type": "table", "headers": ["Measure", "Expected value"], "rows": [["Cases", "10"], ["AI pattern failures", "1"], ["Revised pattern failures", "0"], ["AI failure case", "C004"], ["Revised passing cases", "10"]]}, {"type": "p", "text": "The expected console output below was derived manually from the test table and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-common-errors", "heading": "6. Add boundary cases and recognize common mistakes", "blocks": [{"type": "ul", "items": ["Include valid minimum and maximum boundaries, such as 2000 and 2099 in this example.", "Include at least one value just outside a boundary, such as 1999.", "Test incorrect case, separators, field lengths, whitespace, and invalid characters.", "Use fullmatch when the requirement says the entire string must conform to the format.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous report."]}, {"type": "table", "headers": ["Mistake", "Why it matters"], "rows": [["Testing only strings that should match", "A permissive regex can appear correct until a negative example is tried."], ["Using an AI pattern without restating the requirement", "The pattern may solve a slightly different problem from the one you intended."], ["Checking only one normal example", "Boundary, length, case, and separator errors remain untested."], ["Using search instead of fullmatch for a whole-field rule", "A valid-looking substring can be found inside an otherwise invalid value."], ["Changing the expected answers after seeing regex output", "The test stops being an independent specification of the required behavior."]]}]}, {"id": "limits", "heading": "7. Understand what regex testing does not prove", "blocks": [{"type": "p", "text": "Passing these 10 tests shows only that the revised pattern behaves correctly for these 10 synthetic examples. It does not mathematically prove that every possible input is handled correctly. Add cases whenever a new boundary or failure mode is discovered."}, {"type": "p", "text": "A regex also validates syntax, not business truth. WK-2026-1234 can match perfectly even if that ID does not exist in your database. Existence, uniqueness, authorization, and relationships with other fields require separate checks."}, {"type": "p", "text": "This small example does not evaluate performance on very long or adversarial input. More complicated AI-generated patterns should be reviewed for both correctness and runtime behavior before being placed in services that process untrusted text."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib, re · no execution", "items": ["Manually classified 3 synthetic values as expected matches and 7 as expected non-matches.", "Manually checked that the AI pattern accepts C004 because 1999 satisfies the four-digit year portion.", "Manually determined that the AI pattern has 1 failing test out of 10.", "Manually checked that the revised 20[0-9]{2} year portion accepts 2000 through 2099 and rejects the listed 1999 example.", "Inspected the script for fullmatch use, expected-versus-actual comparison, output collision protection, and report generation.", "Derived the expected failure counts and console output by hand."], "limits": ["The code was not executed by the author of this response; Python regex behavior and filesystem output were not tested here.", "Only the 10 listed synthetic cases were evaluated by hand; exhaustive correctness was not established.", "Performance on very long or adversarial strings was not tested.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · re", "url": "https://docs.python.org/3.12/library/re.html"}, {"title": "Official Python 3.12 documentation · re.fullmatch", "url": "https://docs.python.org/3.12/library/re.html#re.fullmatch"}, {"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}], "slug": "ai-regex-check", "category": "ai", "date": "2026-09-20"}
+{
+  "title": "Test an AI-written regular expression with positive and negative examples",
+  "summary": "Treat an AI-generated regex as a draft, not a finished rule. Build a small synthetic test table, compare expected and actual matches, revise the pattern, and save a review report before using it on real data.",
+  "tags": [
+    "Python",
+    "Regex",
+    "AI"
+  ],
+  "audience": "This guide is for people who use AI to draft regular expressions and want a simple way to check the pattern against known matching and non-matching cases.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor that can save UTF-8 CSV and Python files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv, pathlib, and re."
+  ],
+  "sections": [
+    {
+      "id": "define-the-rule",
+      "heading": "1. Write the requirement before testing the regex",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose an internal work ID must have the form WK-YYYY-NNNN. The prefix must be uppercase WK, the year must be between 2000 and 2099, the separators must be hyphens, and the final part must contain exactly four ASCII digits."
+        },
+        {
+          "type": "p",
+          "text": "Imagine an AI assistant proposes the pattern WK-\\d{4}-\\d{4}. It looks plausible, but it only requires four digits for the year. It does not enforce the stated 2000-2099 range. The safest next step is not to use it immediately, but to test it against examples with known answers."
+        },
+        {
+          "type": "callout",
+          "title": "Test requirements, not appearance",
+          "text": "A regex can look reasonable and still violate one boundary condition. Write the accepted format in plain language first, then create examples that challenge each part of that requirement."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-cases",
+      "heading": "2. Create a synthetic set of test cases",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save it as regex_cases.csv. It contains three strings that should match and seven that should not."
+        },
+        {
+          "type": "code",
+          "text": "case_id,value,should_match\nC001,WK-2026-0001,yes\nC002,WK-2000-0042,yes\nC003,WK-2099-9999,yes\nC004,WK-1999-0001,no\nC005,wk-2026-0001,no\nC006,WK-2026-001,no\nC007,WK-2026-00001,no\nC008,WK-2026_0001,no\nC009,\" WK-2026-0001\",no\nC010,WK-20A6-0001,no\n"
+        },
+        {
+          "type": "p",
+          "text": "The cases cover the allowed year boundaries, an out-of-range year, lowercase prefix, short and long sequence fields, wrong separator, leading whitespace, and a non-digit character in the year. These are small enough to classify manually before running any regex."
+        }
+      ]
+    },
+    {
+      "id": "predict-the-results",
+      "heading": "3. Predict what the AI pattern will get wrong",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The AI pattern WK-\\d{4}-\\d{4} should accept C001, C002, and C003. It should reject C005 through C010 for structural reasons. However, it also accepts C004 because 1999 still consists of four digits."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Case",
+            "Expected",
+            "AI pattern",
+            "Result"
+          ],
+          "rows": [
+            [
+              "C001",
+              "MATCH",
+              "MATCH",
+              "PASS"
+            ],
+            [
+              "C002",
+              "MATCH",
+              "MATCH",
+              "PASS"
+            ],
+            [
+              "C003",
+              "MATCH",
+              "MATCH",
+              "PASS"
+            ],
+            [
+              "C004",
+              "NO MATCH",
+              "MATCH",
+              "FAIL"
+            ],
+            [
+              "C005",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ],
+            [
+              "C006",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ],
+            [
+              "C007",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ],
+            [
+              "C008",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ],
+            [
+              "C009",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ],
+            [
+              "C010",
+              "NO MATCH",
+              "NO MATCH",
+              "PASS"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The revised pattern is WK-20[0-9]{2}-[0-9]{4}. The 20 prefix restricts the year to 2000 through 2099, and [0-9] makes the intended digit set explicit. The script uses fullmatch so the entire input string must satisfy the pattern."
+        }
+      ]
+    },
+    {
+      "id": "run-the-checker",
+      "heading": "4. Compare expected and actual matches automatically",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as ai_regex_check.py. It tests both the AI proposal and the revised pattern, writes every case to a CSV report, and refuses to reuse an existing output folder."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport re\nfrom pathlib import Path\n\nSOURCE = Path(\"regex_cases.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"regex_check_result\"\nREPORT = OUTPUT_DIR / \"regex_check.csv\"\n\nAI_PATTERN = re.compile(r\"WK-\\d{4}-\\d{4}\")\nREVISED_PATTERN = re.compile(r\"WK-20[0-9]{2}-[0-9]{4}\")\n\n\ndef parse_expected(value: str) -> bool:\n    normalized = value.strip().lower()\n    if normalized == \"yes\":\n        return True\n    if normalized == \"no\":\n        return False\n    raise ValueError(f\"Expected yes or no, got: {value!r}\")\n\n\ndef label(value: bool) -> str:\n    return \"MATCH\" if value else \"NO MATCH\"\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    results = []\n    ai_failures = 0\n    revised_failures = 0\n\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        required = {\"case_id\", \"value\", \"should_match\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise ValueError(\"CSV is missing a required column.\")\n\n        for row_number, row in enumerate(reader, start=2):\n            expected = parse_expected(row[\"should_match\"])\n            text = row[\"value\"]\n            ai_actual = AI_PATTERN.fullmatch(text) is not None\n            revised_actual = REVISED_PATTERN.fullmatch(text) is not None\n            ai_pass = ai_actual == expected\n            revised_pass = revised_actual == expected\n\n            if not ai_pass:\n                ai_failures += 1\n            if not revised_pass:\n                revised_failures += 1\n\n            results.append({\n                \"case_id\": row[\"case_id\"],\n                \"value\": text,\n                \"expected\": label(expected),\n                \"ai_actual\": label(ai_actual),\n                \"ai_test\": \"PASS\" if ai_pass else \"FAIL\",\n                \"revised_actual\": label(revised_actual),\n                \"revised_test\": \"PASS\" if revised_pass else \"FAIL\",\n            })\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    fields = [\n        \"case_id\", \"value\", \"expected\", \"ai_actual\", \"ai_test\",\n        \"revised_actual\", \"revised_test\"\n    ]\n    with REPORT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=fields)\n        writer.writeheader()\n        writer.writerows(results)\n\n    print(f\"Cases: {len(results)}.\")\n    print(f\"AI pattern failures: {ai_failures}.\")\n    print(f\"Revised pattern failures: {revised_failures}.\")\n    print(f\"Report: {REPORT.as_posix()}\")\n\n    if revised_failures:\n        raise RuntimeError(\"Revised pattern still fails one or more tests.\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "code",
+          "text": "python ai_regex_check.py"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Check the expected report",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "There are 10 test cases. The AI pattern should fail exactly one case, C004. The revised pattern should pass all 10 cases."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Measure",
+            "Expected value"
+          ],
+          "rows": [
+            [
+              "Cases",
+              "10"
+            ],
+            [
+              "AI pattern failures",
+              "1"
+            ],
+            [
+              "Revised pattern failures",
+              "0"
+            ],
+            [
+              "AI failure case",
+              "C004"
+            ],
+            [
+              "Revised passing cases",
+              "10"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived manually from the test table and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Cases: 10.\nAI pattern failures: 1.\nRevised pattern failures: 0.\nReport: outputs/regex_check_result/regex_check.csv"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-common-errors",
+      "heading": "6. Add boundary cases and recognize common mistakes",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Include valid minimum and maximum boundaries, such as 2000 and 2099 in this example.",
+            "Include at least one value just outside a boundary, such as 1999.",
+            "Test incorrect case, separators, field lengths, whitespace, and invalid characters.",
+            "Use fullmatch when the requirement says the entire string must conform to the format.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the previous report."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Mistake",
+            "Why it matters"
+          ],
+          "rows": [
+            [
+              "Testing only strings that should match",
+              "A permissive regex can appear correct until a negative example is tried."
+            ],
+            [
+              "Using an AI pattern without restating the requirement",
+              "The pattern may solve a slightly different problem from the one you intended."
+            ],
+            [
+              "Checking only one normal example",
+              "Boundary, length, case, and separator errors remain untested."
+            ],
+            [
+              "Using search instead of fullmatch for a whole-field rule",
+              "A valid-looking substring can be found inside an otherwise invalid value."
+            ],
+            [
+              "Changing the expected answers after seeing regex output",
+              "The test stops being an independent specification of the required behavior."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Understand what regex testing does not prove",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Passing these 10 tests shows only that the revised pattern behaves correctly for these 10 synthetic examples. It does not mathematically prove that every possible input is handled correctly. Add cases whenever a new boundary or failure mode is discovered."
+        },
+        {
+          "type": "p",
+          "text": "A regex also validates syntax, not business truth. WK-2026-1234 can match perfectly even if that ID does not exist in your database. Existence, uniqueness, authorization, and relationships with other fields require separate checks."
+        },
+        {
+          "type": "p",
+          "text": "This small example does not evaluate performance on very long or adversarial input. More complicated AI-generated patterns should be reviewed for both correctness and runtime behavior before being placed in services that process untrusted text."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/re",
+    "items": [
+      "The main run printed exactly: 'Cases: 10.', 'AI pattern failures: 1.', 'Revised pattern failures: 0.', and 'Report: outputs/regex_check_result/regex_check.csv'.",
+      "regex_check.csv contained exactly 10 data rows plus its header.",
+      "The AI pattern WK-\\d{4}-\\d{4} failed exactly C004, accepting WK-1999-0001 even though the expected result was NO MATCH.",
+      "All other AI-pattern cases matched their expected classifications.",
+      "The revised pattern WK-20[0-9]{2}-[0-9]{4} passed all 10 synthetic cases.",
+      "The revised result therefore had 0 failures, exactly matching the article's expected table and console output.",
+      "The second execution stopped with FileExistsError because outputs/regex_check_result already existed, as required."
+    ],
+    "limits": [
+      "Only the 10 synthetic cases in the article were tested; exhaustive regex correctness was not established.",
+      "Performance on very long or adversarial strings was not tested.",
+      "Malformed CSVs, invalid expected-label values, missing required columns, and filesystem permission failures were not separately tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · re",
+      "url": "https://docs.python.org/3.12/library/re.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · re.fullmatch",
+      "url": "https://docs.python.org/3.12/library/re.html#re.fullmatch"
+    },
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    }
+  ],
+  "slug": "ai-regex-check",
+  "category": "ai",
+  "date": "2026-09-20"
+}

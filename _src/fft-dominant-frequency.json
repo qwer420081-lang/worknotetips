@@ -1,1 +1,270 @@
-{"title": "Find the dominant frequency of synthetic vibration data with FFT", "summary": "Use NumPy FFT on a synthetic vibration signal with a known 2 Hz component, inspect the frequency bins, and verify that the detected dominant frequency matches the input. The original CSV remains unchanged and the spectrum is written to a new output folder.", "tags": ["Python", "FFT", "Vibration"], "audience": "This guide is for people who want a small checkable example before applying FFT-based frequency analysis to automotive vibration or sensor data.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "NumPy installed with python -m pip install numpy.", "A working folder where the script can create a new folder beneath outputs.", "Basic understanding that a sampled signal has a sampling frequency and discrete time interval."], "sections": [{"id": "define-the-signal", "heading": "1. Start with a frequency that is known in advance", "blocks": [{"type": "p", "text": "The safest first FFT exercise is a signal whose frequency you already know. This example uses 8 samples per second and a pure 2 Hz synthetic vibration signal. With 8 samples, the FFT frequency spacing is sampling_rate / sample_count = 8 / 8 = 1 Hz."}, {"type": "p", "text": "For real-valued input, NumPy's rfft returns the non-negative frequency bins only. With 8 samples at 8 Hz, those bins are 0, 1, 2, 3, and 4 Hz. The 4 Hz bin is the Nyquist frequency."}, {"type": "callout", "title": "Dominant frequency is not automatically a physical mode", "text": "The largest FFT component identifies the strongest frequency in the analyzed record. It does not by itself prove that the frequency is a structural natural frequency, resonance, fault frequency, or excitation source."}]}, {"id": "create-synthetic-data", "heading": "2. Create the synthetic vibration CSV", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save it as vibration_data.csv. The sampling interval is 0.125 seconds, so the sampling frequency is 1 / 0.125 = 8 Hz."}, {"type": "code"}, {"type": "p", "text": "The values repeat every four samples: 0, 1, 0, -1. At 8 samples per second, four samples correspond to 0.5 seconds, and a period of 0.5 seconds corresponds to 2 Hz. The signal therefore has a known dominant input frequency of 2 Hz."}, {"type": "table", "headers": ["Quantity", "Value"], "rows": [["Samples", "8"], ["Sample interval", "0.125 s"], ["Sampling frequency", "8 Hz"], ["FFT frequency spacing", "1 Hz"], ["Known signal frequency", "2 Hz"], ["Nyquist frequency", "4 Hz"]]}]}, {"id": "predict-the-spectrum", "heading": "3. Predict the FFT result before running code", "blocks": [{"type": "p", "text": "Because the record contains an integer number of cycles and the 2 Hz signal falls exactly on an FFT bin, the synthetic example is deliberately clean. The raw FFT magnitude should be concentrated at 2 Hz."}, {"type": "p", "text": "For the sequence 0, 1, 0, -1, 0, 1, 0, -1, the 2 Hz FFT coefficient has magnitude 4. The other non-negative bins have zero magnitude in exact arithmetic. Small numerical roundoff can appear in computer calculations, so the exported spectrum is rounded to six decimal places."}, {"type": "table", "headers": ["Frequency", "Expected raw FFT magnitude"], "rows": [["0 Hz", "0"], ["1 Hz", "0"], ["2 Hz", "4"], ["3 Hz", "0"], ["4 Hz", "0"]]}, {"type": "p", "text": "The 0 Hz bin represents the mean or DC component. This signal has mean 0. The script subtracts the mean before the FFT anyway, which is a common preparation step when the goal is to inspect oscillatory content rather than a constant sensor offset."}]}, {"id": "run-the-fft", "heading": "4. Calculate the spectrum and dominant frequency", "blocks": [{"type": "p", "text": "Save the following script as fft_dominant_frequency.py. It checks the timestamp spacing, removes the mean, calculates the real FFT, writes the frequency spectrum to a new CSV, and verifies that the strongest nonzero-frequency bin is the expected 2 Hz."}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected spectrum", "blocks": [{"type": "p", "text": "The spectrum CSV should contain five rows because an 8-sample real FFT returns bins from 0 through the 4 Hz Nyquist frequency. Rounded to six decimal places, only the 2 Hz bin should have a nonzero magnitude."}, {"type": "code"}, {"type": "p", "text": "The expected console output below was derived by hand from the synthetic signal and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-errors", "heading": "6. Check the result and common mistakes", "blocks": [{"type": "ul", "items": ["Check the sample interval manually: 0.125 seconds.", "Calculate the sampling frequency manually: 1 / 0.125 = 8 Hz.", "Calculate the frequency spacing: 8 / 8 = 1 Hz.", "Confirm that the largest nonzero FFT magnitude occurs at 2 Hz.", "Confirm that the original vibration_data.csv is unchanged.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the spectrum."]}, {"type": "table", "headers": ["Problem", "What to check"], "rows": [["Dominant frequency is wrong by a scale factor", "Check the time unit and sampling interval used in rfftfreq."], ["0 Hz is the largest component", "A nonzero mean or sensor offset may dominate; decide whether mean removal is appropriate."], ["Energy appears in neighboring bins", "The signal frequency may not fall exactly on an FFT bin, or the record may not contain an integer number of cycles."], ["High-frequency result looks suspicious", "Check the Nyquist limit and whether the sampling rate is high enough for the physical signal."], ["Different runs overwrite results", "Use a fresh output folder; this example deliberately stops when the destination already exists."]]}]}, {"id": "limits", "heading": "7. Understand the limits before using measured vibration data", "blocks": [{"type": "p", "text": "This example is intentionally ideal. Real vibration records rarely align perfectly with FFT bins, so spectral leakage can spread energy into neighboring frequencies. Window functions are commonly used to manage leakage, but they also change amplitude interpretation and require their own checks."}, {"type": "p", "text": "Frequency resolution depends on record length as well as sampling rate. With 8 samples at 8 Hz, the spacing is 1 Hz, so this analysis cannot distinguish frequencies such as 2.1 Hz and 2.4 Hz as separate exact bins. A longer record gives finer frequency spacing when the sampling rate is unchanged."}, {"type": "p", "text": "For measured automotive data, also consider anti-alias filtering, sensor bandwidth, sampling synchronization, dropped samples, detrending, window choice, amplitude scaling, and whether the signal is stationary enough for one FFT to be meaningful. Preserve the raw time-domain data and document every preprocessing step before interpreting peaks physically."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · NumPy required · no execution", "items": ["Manually checked that the 8 timestamps are separated by 0.125 seconds, giving an 8 Hz sampling frequency.", "Manually calculated the FFT frequency spacing as 8 Hz / 8 samples = 1 Hz.", "Identified the repeating four-sample pattern 0, 1, 0, -1 as a 0.5-second period, corresponding to 2 Hz.", "Manually determined the expected non-negative FFT magnitudes as 0, 0, 4, 0, 0 in exact arithmetic.", "Inspected the script for constant-sampling checks, mean removal, rfft, rfftfreq, exclusion of the DC bin from dominant-frequency selection, output collision protection, and preservation of the original CSV.", "Derived the expected spectrum CSV and console output by hand."], "limits": ["The code was not executed by the author of this response; NumPy FFT output and filesystem writes were not tested here.", "Spectral leakage, window functions, amplitude calibration, irregular sampling, aliasing, sensor noise, and long datasets were not tested.", "The synthetic peak at 2 Hz is a known mathematical input and is not claimed to represent a real vehicle resonance or fault frequency.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official NumPy documentation · numpy.fft.rfft", "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html"}, {"title": "Official NumPy documentation · numpy.fft.rfftfreq", "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfftfreq.html"}, {"title": "Official NumPy documentation · Discrete Fourier Transform", "url": "https://numpy.org/doc/stable/reference/routines.fft.html"}], "slug": "fft-dominant-frequency", "category": "automotive", "date": "2026-09-20"}
+{
+  "title": "Find the dominant frequency of synthetic vibration data with FFT",
+  "summary": "Use NumPy FFT on a synthetic vibration signal with a known 2 Hz component, inspect the frequency bins, and verify that the detected dominant frequency matches the input. The original CSV remains unchanged and the spectrum is written to a new output folder.",
+  "tags": [
+    "Python",
+    "FFT",
+    "Vibration"
+  ],
+  "audience": "This guide is for people who want a small checkable example before applying FFT-based frequency analysis to automotive vibration or sensor data.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "NumPy installed with python -m pip install numpy.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Basic understanding that a sampled signal has a sampling frequency and discrete time interval."
+  ],
+  "sections": [
+    {
+      "id": "define-the-signal",
+      "heading": "1. Start with a frequency that is known in advance",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The safest first FFT exercise is a signal whose frequency you already know. This example uses 8 samples per second and a pure 2 Hz synthetic vibration signal. With 8 samples, the FFT frequency spacing is sampling_rate / sample_count = 8 / 8 = 1 Hz."
+        },
+        {
+          "type": "p",
+          "text": "For real-valued input, NumPy's rfft returns the non-negative frequency bins only. With 8 samples at 8 Hz, those bins are 0, 1, 2, 3, and 4 Hz. The 4 Hz bin is the Nyquist frequency."
+        },
+        {
+          "type": "callout",
+          "title": "Dominant frequency is not automatically a physical mode",
+          "text": "The largest FFT component identifies the strongest frequency in the analyzed record. It does not by itself prove that the frequency is a structural natural frequency, resonance, fault frequency, or excitation source."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-data",
+      "heading": "2. Create the synthetic vibration CSV",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save it as vibration_data.csv. The sampling interval is 0.125 seconds, so the sampling frequency is 1 / 0.125 = 8 Hz."
+        },
+        {
+          "type": "code",
+          "text": "time_s,accel_m_s2\n0.000,0\n0.125,1\n0.250,0\n0.375,-1\n0.500,0\n0.625,1\n0.750,0\n0.875,-1\n"
+        },
+        {
+          "type": "p",
+          "text": "The values repeat every four samples: 0, 1, 0, -1. At 8 samples per second, four samples correspond to 0.5 seconds, and a period of 0.5 seconds corresponds to 2 Hz. The signal therefore has a known dominant input frequency of 2 Hz."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Quantity",
+            "Value"
+          ],
+          "rows": [
+            [
+              "Samples",
+              "8"
+            ],
+            [
+              "Sample interval",
+              "0.125 s"
+            ],
+            [
+              "Sampling frequency",
+              "8 Hz"
+            ],
+            [
+              "FFT frequency spacing",
+              "1 Hz"
+            ],
+            [
+              "Known signal frequency",
+              "2 Hz"
+            ],
+            [
+              "Nyquist frequency",
+              "4 Hz"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "predict-the-spectrum",
+      "heading": "3. Predict the FFT result before running code",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Because the record contains an integer number of cycles and the 2 Hz signal falls exactly on an FFT bin, the synthetic example is deliberately clean. The raw FFT magnitude should be concentrated at 2 Hz."
+        },
+        {
+          "type": "p",
+          "text": "For the sequence 0, 1, 0, -1, 0, 1, 0, -1, the 2 Hz FFT coefficient has magnitude 4. The other non-negative bins have zero magnitude in exact arithmetic. Small numerical roundoff can appear in computer calculations, so the exported spectrum is rounded to six decimal places."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Frequency",
+            "Expected raw FFT magnitude"
+          ],
+          "rows": [
+            [
+              "0 Hz",
+              "0"
+            ],
+            [
+              "1 Hz",
+              "0"
+            ],
+            [
+              "2 Hz",
+              "4"
+            ],
+            [
+              "3 Hz",
+              "0"
+            ],
+            [
+              "4 Hz",
+              "0"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The 0 Hz bin represents the mean or DC component. This signal has mean 0. The script subtracts the mean before the FFT anyway, which is a common preparation step when the goal is to inspect oscillatory content rather than a constant sensor offset."
+        }
+      ]
+    },
+    {
+      "id": "run-the-fft",
+      "heading": "4. Calculate the spectrum and dominant frequency",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as fft_dominant_frequency.py. It checks the timestamp spacing, removes the mean, calculates the real FFT, writes the frequency spectrum to a new CSV, and verifies that the strongest nonzero-frequency bin is the expected 2 Hz."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\nimport numpy as np\n\nSOURCE = Path(\"vibration_data.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"fft_result\"\nOUTPUT = OUTPUT_DIR / \"spectrum.csv\"\nEXPECTED_DOMINANT_HZ = 2.0\nDT_TOLERANCE = 1e-12\nFREQUENCY_TOLERANCE = 1e-12\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    times = []\n    values = []\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        required = {\"time_s\", \"accel_m_s2\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise ValueError(\"CSV is missing a required column.\")\n\n        for row in reader:\n            times.append(float(row[\"time_s\"]))\n            values.append(float(row[\"accel_m_s2\"]))\n\n    if len(times) < 2:\n        raise ValueError(\"At least two samples are required.\")\n\n    time_array = np.asarray(times, dtype=float)\n    signal = np.asarray(values, dtype=float)\n    intervals = np.diff(time_array)\n    dt = intervals[0]\n\n    if dt <= 0:\n        raise ValueError(\"Sample interval must be positive.\")\n    if not np.allclose(intervals, dt, rtol=0.0, atol=DT_TOLERANCE):\n        raise ValueError(\"Sampling interval is not constant.\")\n\n    sample_rate = 1.0 / dt\n    centered = signal - signal.mean()\n    spectrum = np.fft.rfft(centered)\n    frequencies = np.fft.rfftfreq(len(centered), d=dt)\n    magnitudes = np.abs(spectrum)\n\n    if len(frequencies) < 2:\n        raise ValueError(\"No nonzero frequency bin is available.\")\n\n    dominant_index = 1 + int(np.argmax(magnitudes[1:]))\n    dominant_frequency = float(frequencies[dominant_index])\n\n    if abs(dominant_frequency - EXPECTED_DOMINANT_HZ) > FREQUENCY_TOLERANCE:\n        raise RuntimeError(\n            f\"Expected {EXPECTED_DOMINANT_HZ} Hz, got {dominant_frequency} Hz.\"\n        )\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    with OUTPUT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.writer(stream)\n        writer.writerow([\"frequency_hz\", \"fft_magnitude\"])\n        for frequency, magnitude in zip(frequencies, magnitudes):\n            writer.writerow([f\"{frequency:.6f}\", f\"{magnitude:.6f}\"])\n\n    resolution = sample_rate / len(centered)\n    print(f\"Samples: {len(centered)}.\")\n    print(f\"Sampling frequency: {sample_rate:.1f} Hz.\")\n    print(f\"Frequency resolution: {resolution:.1f} Hz.\")\n    print(f\"Dominant nonzero frequency: {dominant_frequency:.1f} Hz.\")\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected spectrum",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The spectrum CSV should contain five rows because an 8-sample real FFT returns bins from 0 through the 4 Hz Nyquist frequency. Rounded to six decimal places, only the 2 Hz bin should have a nonzero magnitude."
+        },
+        {
+          "type": "code",
+          "text": "frequency_hz,fft_magnitude\n0.000000,0.000000\n1.000000,0.000000\n2.000000,4.000000\n3.000000,0.000000\n4.000000,0.000000\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived by hand from the synthetic signal and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Samples: 8.\nSampling frequency: 8.0 Hz.\nFrequency resolution: 1.0 Hz.\nDominant nonzero frequency: 2.0 Hz.\nOutput: outputs/fft_result/spectrum.csv"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-errors",
+      "heading": "6. Check the result and common mistakes",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Check the sample interval manually: 0.125 seconds.",
+            "Calculate the sampling frequency manually: 1 / 0.125 = 8 Hz.",
+            "Calculate the frequency spacing: 8 / 8 = 1 Hz.",
+            "Confirm that the largest nonzero FFT magnitude occurs at 2 Hz.",
+            "Confirm that the original vibration_data.csv is unchanged.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of overwriting the spectrum."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "Dominant frequency is wrong by a scale factor",
+              "Check the time unit and sampling interval used in rfftfreq."
+            ],
+            [
+              "0 Hz is the largest component",
+              "A nonzero mean or sensor offset may dominate; decide whether mean removal is appropriate."
+            ],
+            [
+              "Energy appears in neighboring bins",
+              "The signal frequency may not fall exactly on an FFT bin, or the record may not contain an integer number of cycles."
+            ],
+            [
+              "High-frequency result looks suspicious",
+              "Check the Nyquist limit and whether the sampling rate is high enough for the physical signal."
+            ],
+            [
+              "Different runs overwrite results",
+              "Use a fresh output folder; this example deliberately stops when the destination already exists."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Understand the limits before using measured vibration data",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example is intentionally ideal. Real vibration records rarely align perfectly with FFT bins, so spectral leakage can spread energy into neighboring frequencies. Window functions are commonly used to manage leakage, but they also change amplitude interpretation and require their own checks."
+        },
+        {
+          "type": "p",
+          "text": "Frequency resolution depends on record length as well as sampling rate. With 8 samples at 8 Hz, the spacing is 1 Hz, so this analysis cannot distinguish frequencies such as 2.1 Hz and 2.4 Hz as separate exact bins. A longer record gives finer frequency spacing when the sampling rate is unchanged."
+        },
+        {
+          "type": "p",
+          "text": "For measured automotive data, also consider anti-alias filtering, sensor bandwidth, sampling synchronization, dropped samples, detrending, window choice, amplitude scaling, and whether the signal is stationary enough for one FFT to be meaningful. Preserve the raw time-domain data and document every preprocessing step before interpreting peaks physically."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · NumPy 2.3.5 · standard library: csv, pathlib",
+    "items": [
+      "Execution completed successfully with 8 samples.",
+      "Sampling frequency was 8.0 Hz and frequency resolution was 1.0 Hz.",
+      "Detected dominant nonzero frequency was exactly 2.0 Hz.",
+      "Generated non-negative FFT magnitudes were 0.000000, 0.000000, 4.000000, 0.000000, and 0.000000 at 0, 1, 2, 3, and 4 Hz respectively.",
+      "Generated spectrum.csv matched the article's expected CSV exactly.",
+      "Console output matched the article's expected output exactly.",
+      "Second execution raised FileExistsError for outputs/fft_result, confirming overwrite protection.",
+      "SHA-256 comparison confirmed vibration_data.csv was unchanged."
+    ],
+    "limits": [
+      "The runtime was Python 3.13.5 rather than the article's target Python 3.12.",
+      "The execution environment emitted an unrelated spreadsheet-runtime warmup warning on stderr during Python startup; it did not affect the script result or generated FFT output.",
+      "Only the supplied ideal synthetic signal was tested; leakage, windowing, noise, irregular sampling, aliasing, and measured vibration data were not evaluated."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official NumPy documentation · numpy.fft.rfft",
+      "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfft.html"
+    },
+    {
+      "title": "Official NumPy documentation · numpy.fft.rfftfreq",
+      "url": "https://numpy.org/doc/stable/reference/generated/numpy.fft.rfftfreq.html"
+    },
+    {
+      "title": "Official NumPy documentation · Discrete Fourier Transform",
+      "url": "https://numpy.org/doc/stable/reference/routines.fft.html"
+    }
+  ],
+  "slug": "fft-dominant-frequency",
+  "category": "automotive",
+  "date": "2026-09-20"
+}

@@ -1,1 +1,258 @@
-{"title": "Split a large CSV into smaller files without losing the header", "summary": "Split a CSV by data-record count, repeat its header in every output file, and leave the original unchanged. Use a seven-record synthetic example to check the boundaries and verify that all records survive in their original order.", "tags": ["Python", "CSV", "Automation"], "audience": "This guide is for people who need to divide a CSV export into smaller files without editing its contents manually.", "prerequisites": ["Python 3.12, with a terminal command that starts that version.", "A text editor that can save UTF-8 files and preserve quoted multiline text.", "A working folder with permission to read the input and enough disk space for the outputs.", "Only the Python standard library is required: csv and pathlib."], "sections": [{"id": "what-you-will-make", "heading": "1. Define what counts as a row", "blocks": [{"type": "p", "text": "The script creates numbered CSV files containing at most a chosen number of data records. Each file starts with the same header. The header does not count toward the limit. With a limit of 3 and 7 data records, the files contain 3, 3, and 1 data records."}, {"type": "p", "text": "A CSV record is not necessarily a physical text line. A quoted field can contain a line break. The csv module reads records according to CSV quoting rules, so a multiline note stays attached to its record instead of becoming a separate row."}, {"type": "callout", "title": "Keep the source separate", "text": "The source is opened for reading only. Outputs go into a new folder beneath outputs. An existing destination folder causes the script to stop rather than replace or mix files."}]}, {"id": "synthetic-input", "heading": "2. Create the synthetic input", "blocks": [{"type": "p", "text": "This dataset is synthetic and was written specifically for this article. Save it as sample.csv in your working folder. Copy the line break inside the quoted note exactly; it deliberately exercises a case that ordinary line splitting mishandles."}, {"type": "code"}, {"type": "p", "text": "There are 4 columns and 7 data records. The comma in starter, pack belongs inside one field. The note belonging to R003 spans 2 physical lines but remains one field. The units values sum to 60: 12 + 7 + 9 + 5 + 11 + 6 + 10."}]}, {"id": "prepare-the-folder", "heading": "3. Prepare the working folder", "blocks": [{"type": "ol", "items": ["Place sample.csv and a new script named split_large_csv.py in the same working folder.", "Paste the complete Python code from the next section into the script.", "Keep ROWS_PER_FILE at 3 for this example. The value must be a positive integer.", "Open a terminal in the working folder and run the command below."]}, {"type": "code"}, {"type": "p", "text": "Relative paths are resolved from the terminal's working directory, not automatically from the script's location. The parent outputs folder may already exist, but outputs/sample_parts must not exist when this run starts."}]}, {"id": "split-and-verify", "heading": "4. Split records and verify the written files", "blocks": [{"type": "p", "text": "The splitter reads records incrementally and opens each part in exclusive creation mode. After writing, it rereads the source and parts to compare headers, field values, record order, and counts. Success messages appear only after that comparison finishes."}, {"type": "code"}, {"type": "p", "text": "Input decoding accepts UTF-8 with or without a leading byte-order mark. Output uses UTF-8 without that mark. The newline argument lets the csv module handle record endings and embedded line breaks."}]}, {"id": "expected-results", "heading": "5. Check the expected result by hand", "blocks": [{"type": "p", "text": "The expected files are listed below. Their units totals are manual cross-checks, not calculations performed by the splitter. Every file must repeat record_id,team,units,note as its header."}, {"type": "table", "headers": ["File inside outputs/sample_parts", "Record IDs", "Data records", "Units total"], "rows": [["part_0001.csv", "R001, R002, R003", "3", "28"], ["part_0002.csv", "R004, R005, R006", "3", "22"], ["part_0003.csv", "R007", "1", "10"]]}, {"type": "p", "text": "The expected console text is shown below. It was derived by hand and is not a captured execution log."}, {"type": "code"}, {"type": "p", "text": "Check that 28 + 22 + 10 equals the original total of 60. Open the first part in a text editor to inspect the quoted comma and multiline note. Counting visible lines alone will give the wrong data-record count."}]}, {"id": "checks-before-use", "heading": "6. Check before using a larger input", "blocks": [{"type": "ol", "items": ["Confirm that all 3 files have the same 4 header fields and that the header appears only once in each file.", "Read the files in numbered order. R001 through R007 should each appear once, with no missing or repeated record.", "Confirm that the script reports verification success. Its comparison checks field strings, not only counts, so equal counts alone are insufficient.", "Run the script again without changing the destination. It should stop with FileExistsError before writing another part."]}, {"type": "p", "text": "Test boundaries in separate working folders: 6 records should produce 2 parts of 3, not an empty third part. A header-only input should leave an empty output folder. A completely empty input should be rejected. These expectations were inspected, not executed here."}]}, {"id": "common-errors", "heading": "7. Recognize common errors", "blocks": [{"type": "table", "headers": ["Symptom", "What to check"], "rows": [["FileNotFoundError", "Check SOURCE and the terminal's working directory. Confirm the filename is sample.csv rather than sample.csv.txt."], ["FileExistsError", "Review the existing destination, then select a new folder beneath outputs. Even an empty existing destination is refused."], ["UnicodeDecodeError", "Confirm the source encoding. Do not discard decoding errors; obtain or create a correctly decoded copy before splitting."], ["Missing or duplicate header", "Provide nonblank column names. Exact duplicate names are rejected; header text is otherwise preserved."], ["Wrong number of fields or csv.Error", "Inspect delimiters, quotes, and blank records. This script expects comma-separated input with standard double-quote quoting."], ["Failure during writing or verification", "Treat that destination as incomplete. Review the error and use a new destination for a corrected run."]]}, {"type": "p", "text": "A late error can leave partial files. The script closes its current file but does not roll back the folder or automatically delete anything."}]}, {"id": "limits-and-next-size", "heading": "8. Understand the limits before scaling", "blocks": [{"type": "p", "text": "After the example passes on your machine, change SOURCE, choose a fresh OUTPUT_DIR beneath outputs, and increase ROWS_PER_FILE. A record limit is not a byte-size limit: long fields can make equally sized groups occupy very different amounts of disk space."}, {"type": "p", "text": "The script preserves parsed field strings, not original bytes, quoting style, or record-ending format. It does not load the entire dataset, but unusually large fields still require memory and may exceed the CSV parser's field-size limit. Verification adds another read of the source and outputs. Keep the source unchanged throughout; this is not a locked snapshot or transactional backup."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib · no execution", "items": ["Manually counted 4 columns and 7 data records, treating the quoted multiline note as one field.", "Manually assigned records to groups of 3, 3, and 1.", "Manually calculated group totals of 28, 22, and 10, giving 60 overall.", "Inspected the output naming, exclusive creation, header repetition, and sequential comparison logic.", "Derived the expected console text from the example and code."], "limits": ["The code was not executed by the author of this response; no Python runtime or filesystem behavior was tested.", "Boundary inputs, malformed files, and output collisions were considered by inspection only.", "Large-file performance, memory use, concurrent source changes, and recovery after interrupted writes were not tested."]}, "references": [{"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}, {"title": "Official Python 3.12 documentation · open", "url": "https://docs.python.org/3.12/library/functions.html#open"}], "slug": "split-large-csv", "category": "automation", "date": "2026-09-20"}
+{
+  "title": "Split a large CSV into smaller files without losing the header",
+  "summary": "Split a CSV by data-record count, repeat its header in every output file, and leave the original unchanged. Use a seven-record synthetic example to check the boundaries and verify that all records survive in their original order.",
+  "tags": [
+    "Python",
+    "CSV",
+    "Automation"
+  ],
+  "audience": "This guide is for people who need to divide a CSV export into smaller files without editing its contents manually.",
+  "prerequisites": [
+    "Python 3.12, with a terminal command that starts that version.",
+    "A text editor that can save UTF-8 files and preserve quoted multiline text.",
+    "A working folder with permission to read the input and enough disk space for the outputs.",
+    "Only the Python standard library is required: csv and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "what-you-will-make",
+      "heading": "1. Define what counts as a row",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The script creates numbered CSV files containing at most a chosen number of data records. Each file starts with the same header. The header does not count toward the limit. With a limit of 3 and 7 data records, the files contain 3, 3, and 1 data records."
+        },
+        {
+          "type": "p",
+          "text": "A CSV record is not necessarily a physical text line. A quoted field can contain a line break. The csv module reads records according to CSV quoting rules, so a multiline note stays attached to its record instead of becoming a separate row."
+        },
+        {
+          "type": "callout",
+          "title": "Keep the source separate",
+          "text": "The source is opened for reading only. Outputs go into a new folder beneath outputs. An existing destination folder causes the script to stop rather than replace or mix files."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-input",
+      "heading": "2. Create the synthetic input",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This dataset is synthetic and was written specifically for this article. Save it as sample.csv in your working folder. Copy the line break inside the quoted note exactly; it deliberately exercises a case that ordinary line splitting mishandles."
+        },
+        {
+          "type": "code",
+          "text": "record_id,team,units,note\nR001,Support,12,\"starter, pack\"\nR002,Ops,7,repeat\nR003,Support,9,\"two\nlines\"\nR004,Sales,5,normal\nR005,Ops,11,normal\nR006,Sales,6,normal\nR007,Support,10,normal\n"
+        },
+        {
+          "type": "p",
+          "text": "There are 4 columns and 7 data records. The comma in starter, pack belongs inside one field. The note belonging to R003 spans 2 physical lines but remains one field. The units values sum to 60: 12 + 7 + 9 + 5 + 11 + 6 + 10."
+        }
+      ]
+    },
+    {
+      "id": "prepare-the-folder",
+      "heading": "3. Prepare the working folder",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Place sample.csv and a new script named split_large_csv.py in the same working folder.",
+            "Paste the complete Python code from the next section into the script.",
+            "Keep ROWS_PER_FILE at 3 for this example. The value must be a positive integer.",
+            "Open a terminal in the working folder and run the command below."
+          ]
+        },
+        {
+          "type": "code",
+          "text": "python split_large_csv.py"
+        },
+        {
+          "type": "p",
+          "text": "Relative paths are resolved from the terminal's working directory, not automatically from the script's location. The parent outputs folder may already exist, but outputs/sample_parts must not exist when this run starts."
+        }
+      ]
+    },
+    {
+      "id": "split-and-verify",
+      "heading": "4. Split records and verify the written files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The splitter reads records incrementally and opens each part in exclusive creation mode. After writing, it rereads the source and parts to compare headers, field values, record order, and counts. Success messages appear only after that comparison finishes."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\n\nSOURCE = Path(\"sample.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"sample_parts\"\nROWS_PER_FILE = 3\n\n\ndef part_path(number: int) -> Path:\n    return OUTPUT_DIR / f\"part_{number:04d}.csv\"\n\n\ndef split_csv() -> tuple[int, int]:\n    if type(ROWS_PER_FILE) is not int or ROWS_PER_FILE < 1:\n        raise ValueError(\"ROWS_PER_FILE must be a positive integer.\")\n\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as source:\n        reader = csv.reader(source, strict=True)\n        header = next(reader, None)\n        if not header or any(not name.strip() for name in header):\n            raise ValueError(\"Missing header or blank column name.\")\n        if len(set(header)) != len(header):\n            raise ValueError(\"Duplicate column names.\")\n\n        OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n        OUTPUT_DIR.mkdir()  # Refuse to reuse an existing output path.\n        total = 0\n        parts = 0\n        target = None\n        try:\n            for record_no, row in enumerate(reader, start=1):\n                if len(row) != len(header):\n                    raise ValueError(\n                        f\"Data record {record_no}: wrong number of fields.\"\n                    )\n                if total % ROWS_PER_FILE == 0:\n                    if target is not None:\n                        target.close()\n                    parts += 1\n                    target = part_path(parts).open(\n                        \"x\", encoding=\"utf-8\", newline=\"\"\n                    )\n                    writer = csv.writer(target)\n                    writer.writerow(header)\n                writer.writerow(row)\n                total += 1\n        finally:\n            if target is not None:\n                target.close()\n\n    return total, parts\n\n\ndef verify_csv(expected_rows: int, part_count: int) -> None:\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as source:\n        original = csv.reader(source, strict=True)\n        header = next(original, None)\n        seen = 0\n        for number in range(1, part_count + 1):\n            with part_path(number).open(\n                \"r\", encoding=\"utf-8\", newline=\"\"\n            ) as part:\n                rows = csv.reader(part, strict=True)\n                if next(rows, None) != header:\n                    raise ValueError(f\"Header mismatch in part {number}.\")\n                count = 0\n                for row in rows:\n                    if row != next(original, None):\n                        raise ValueError(f\"Data mismatch in part {number}.\")\n                    count += 1\n                required = min(\n                    ROWS_PER_FILE,\n                    expected_rows - (number - 1) * ROWS_PER_FILE,\n                )\n                if count != required:\n                    raise ValueError(f\"Row count mismatch in part {number}.\")\n                seen += count\n        if seen != expected_rows or next(original, None) is not None:\n            raise ValueError(\"Overall row count mismatch.\")\n\n\nif __name__ == \"__main__\":\n    total, parts = split_csv()\n    verify_csv(total, parts)\n    print(f\"Verified {total} data records in {parts} files.\")\n    print(f\"Output folder: {OUTPUT_DIR.as_posix()}\")\n"
+        },
+        {
+          "type": "p",
+          "text": "Input decoding accepts UTF-8 with or without a leading byte-order mark. Output uses UTF-8 without that mark. The newline argument lets the csv module handle record endings and embedded line breaks."
+        }
+      ]
+    },
+    {
+      "id": "expected-results",
+      "heading": "5. Check the expected result by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The expected files are listed below. Their units totals are manual cross-checks, not calculations performed by the splitter. Every file must repeat record_id,team,units,note as its header."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "File inside outputs/sample_parts",
+            "Record IDs",
+            "Data records",
+            "Units total"
+          ],
+          "rows": [
+            [
+              "part_0001.csv",
+              "R001, R002, R003",
+              "3",
+              "28"
+            ],
+            [
+              "part_0002.csv",
+              "R004, R005, R006",
+              "3",
+              "22"
+            ],
+            [
+              "part_0003.csv",
+              "R007",
+              "1",
+              "10"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected console text is shown below. It was derived by hand and is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Verified 7 data records in 3 files.\nOutput folder: outputs/sample_parts"
+        },
+        {
+          "type": "p",
+          "text": "Check that 28 + 22 + 10 equals the original total of 60. Open the first part in a text editor to inspect the quoted comma and multiline note. Counting visible lines alone will give the wrong data-record count."
+        }
+      ]
+    },
+    {
+      "id": "checks-before-use",
+      "heading": "6. Check before using a larger input",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Confirm that all 3 files have the same 4 header fields and that the header appears only once in each file.",
+            "Read the files in numbered order. R001 through R007 should each appear once, with no missing or repeated record.",
+            "Confirm that the script reports verification success. Its comparison checks field strings, not only counts, so equal counts alone are insufficient.",
+            "Run the script again without changing the destination. It should stop with FileExistsError before writing another part."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Test in separate folders: 6 records produce two parts of 3; a header-only input produces no parts; a completely empty file is rejected. The boundary tests and execution results are recorded in the verification section below."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "7. Recognize common errors",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "FileNotFoundError",
+              "Check SOURCE and the terminal's working directory. Confirm the filename is sample.csv rather than sample.csv.txt."
+            ],
+            [
+              "FileExistsError",
+              "Review the existing destination, then select a new folder beneath outputs. Even an empty existing destination is refused."
+            ],
+            [
+              "UnicodeDecodeError",
+              "Confirm the source encoding. Do not discard decoding errors; obtain or create a correctly decoded copy before splitting."
+            ],
+            [
+              "Missing or duplicate header",
+              "Provide nonblank column names. Exact duplicate names are rejected; header text is otherwise preserved."
+            ],
+            [
+              "Wrong number of fields or csv.Error",
+              "Inspect delimiters, quotes, and blank records. This script expects comma-separated input with standard double-quote quoting."
+            ],
+            [
+              "Failure during writing or verification",
+              "Treat that destination as incomplete. Review the error and use a new destination for a corrected run."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A late error can leave partial files. The script closes its current file but does not roll back the folder or automatically delete anything."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-next-size",
+      "heading": "8. Understand the limits before scaling",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the example passes on your machine, change SOURCE, choose a fresh OUTPUT_DIR beneath outputs, and increase ROWS_PER_FILE. A record limit is not a byte-size limit: long fields can make equally sized groups occupy very different amounts of disk space."
+        },
+        {
+          "type": "p",
+          "text": "The script preserves parsed field strings, not original bytes, quoting style, or record-ending format. It does not load the entire dataset, but unusually large fields still require memory and may exceed the CSV parser's field-size limit. Verification adds another read of the source and outputs. Keep the source unchanged throughout; this is not a locked snapshot or transactional backup."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib",
+    "items": [
+      "Main run printed exactly: 'Verified 7 data records in 3 files.' and 'Output folder: outputs/sample_parts'.",
+      "Created part_0001.csv, part_0002.csv, and part_0003.csv with 3, 3, and 1 data records respectively.",
+      "part_0001 contained R001-R003 and preserved 'starter, pack' as one field and 'two\\nlines' as one multiline field; units total = 28.",
+      "part_0002 contained R004-R006; units total = 22. part_0003 contained R007; units total = 10. Overall units total = 60.",
+      "Every part repeated the same 4-field header and all 7 source records survived once in original order.",
+      "The original sample.csv bytes/text were unchanged by the successful run.",
+      "A second run with outputs/sample_parts already present stopped with FileExistsError before creating another part.",
+      "A 6-record input produced exactly 2 parts of 3 records each.",
+      "A header-only input succeeded with 0 records and 0 part files while leaving the output directory empty.",
+      "A completely empty input was rejected with ValueError: 'Missing header or blank column name.'"
+    ],
+    "limits": [
+      "Large-file performance, unusually large CSV fields, concurrent source modification, malformed-input variants beyond the empty-file case, disk-write failures, and interrupted-write recovery were not stress-tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · open",
+      "url": "https://docs.python.org/3.12/library/functions.html#open"
+    }
+  ],
+  "slug": "split-large-csv",
+  "category": "automation",
+  "date": "2026-09-20"
+}

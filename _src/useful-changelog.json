@@ -1,1 +1,197 @@
-{"title": "Write a changelog entry that tells readers what changed and what to do", "summary": "Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change.", "tags": ["Changelog", "Teams", "Python"], "audience": "This guide is for teams that need release notes or project changelogs that tell readers both what changed and what they must do next.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor that can save UTF-8 JSON and text files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: json and pathlib."], "sections": [{"id": "define-useful-changelog", "heading": "1. Separate the change from the reader's action", "blocks": [{"type": "p", "text": "A changelog entry should answer at least three practical questions: what changed, what the reader needs to do, and how the reader can check that the update worked. A list of implementation details may be accurate but still leave another team member unsure whether any action is required."}, {"type": "p", "text": "This tutorial uses a small synthetic release with three changes. Each change has an area, a factual description, and a required action. A separate verification list tells the reader what to check after updating."}, {"type": "callout", "title": "Write for the person receiving the change", "text": "A useful changelog is not a commit log. Internal implementation details belong in the changelog only when they affect how another person uses, configures, validates, or maintains the project."}]}, {"id": "create-synthetic-notes", "heading": "2. Create synthetic raw release notes", "blocks": [{"type": "p", "text": "The following release information is synthetic and was written specifically for this article. Save it as release_notes.json. It describes version 1.4.0 of a fictional CSV export tool."}, {"type": "code"}, {"type": "p", "text": "There are exactly 3 changes, 3 required actions, and 3 verification checks. Because the example is synthetic, these paths, configuration names, and behaviors are demonstration values rather than facts about a real product."}]}, {"id": "write-expected-entry", "heading": "3. Work out the expected changelog entry by hand", "blocks": [{"type": "p", "text": "The entry should begin with the version and date. The change descriptions should stay factual. Required actions should use direct instructions, and verification should be separate so readers can distinguish configuration work from post-update checks."}, {"type": "code"}, {"type": "p", "text": "The expected entry contains one heading line, three section headings, and nine bullet lines: three changes, three actions, and three checks. No action is hidden inside a paragraph describing the change."}]}, {"id": "generate-entry", "heading": "4. Generate and validate the changelog entry", "blocks": [{"type": "p", "text": "Save the following script as useful_changelog.py. It validates the synthetic JSON, creates the changelog text, checks the expected section and bullet counts, and writes the result into a new output folder. The original JSON file is read only."}, {"type": "code"}]}, {"id": "expected-result", "heading": "5. Check the expected result", "blocks": [{"type": "p", "text": "For this synthetic release, the script should report three changes, three required actions, three verification checks, and nine bullet lines. The expected console output below was derived by hand and is not an execution log."}, {"type": "code"}, {"type": "ul", "items": ["Confirm that each change appears once under What changed.", "Confirm that every change has a corresponding instruction under What you need to do.", "Confirm that verification steps are separated from required actions.", "Confirm that paths and configuration names are copied exactly from the synthetic source notes.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous entry."]}]}, {"id": "common-errors", "heading": "6. Recognize changelog entries that are technically correct but not useful", "blocks": [{"type": "table", "headers": ["Weak changelog text", "What is missing"], "rows": [["Updated export logic", "Readers do not know which behavior changed or whether they need to act."], ["Fixed configuration", "The affected key and required replacement are not identified."], ["Improved validation", "The new failure condition and effect on users are unclear."], ["Various bug fixes", "There is no information about impact, scope, or required checks."], ["Please update accordingly", "The action is too vague to execute or verify."]]}, {"type": "p", "text": "Avoid making the reader reconstruct the change from issue trackers, commits, or chat history. If an update changes a path, key, command, file format, or required input, name the old and new behavior directly."}]}, {"id": "limits", "heading": "7. Keep the changelog scoped to user-visible consequences", "blocks": [{"type": "p", "text": "A changelog entry does not replace technical documentation, migration instructions, test evidence, or version control history. Complex changes may need links to those materials, but the changelog should still summarize the consequence and immediate action."}, {"type": "p", "text": "Not every internal refactor needs a changelog entry. If behavior, interfaces, dependencies, required inputs, outputs, configuration, or workflow do not change for the reader, detailed implementation notes may belong elsewhere."}, {"type": "p", "text": "For larger releases, group related changes by area and distinguish required actions from optional recommendations. Preserve older changelog entries instead of rewriting history unless you are correcting a documented error and can record that correction clearly."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: json, pathlib · no execution", "items": ["Manually counted 3 synthetic changes, 3 corresponding required actions, and 3 verification checks.", "Manually derived the expected changelog entry with three named sections.", "Calculated the expected total as 9 bullet lines: 3 changes + 3 actions + 3 checks.", "Checked that the synthetic old and new export paths are reports/ and outputs/reports/ and that the configuration names are report_dir and output_dir.", "Inspected the script for required text validation, section checks, bullet-count validation, output collision protection, and preservation of the source JSON.", "Derived the expected console output by hand."], "limits": ["The code was not executed by the author of this response; no changelog file was created.", "The version, paths, configuration keys, and validation behavior are synthetic examples and do not describe a real product.", "The script validates structure but cannot determine whether a human-written change description is complete or accurate.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · json", "url": "https://docs.python.org/3.12/library/json.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "useful-changelog", "category": "collaboration", "date": "2026-09-20"}
+{
+  "title": "Write a changelog entry that tells readers what changed and what to do",
+  "summary": "Turn raw release notes into a changelog entry that separates changes from required user actions and verification steps. A synthetic software update shows how to make a release note useful to someone who did not make the change.",
+  "tags": [
+    "Changelog",
+    "Teams",
+    "Python"
+  ],
+  "audience": "This guide is for teams that need release notes or project changelogs that tell readers both what changed and what they must do next.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor that can save UTF-8 JSON and text files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: json and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-useful-changelog",
+      "heading": "1. Separate the change from the reader's action",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A changelog entry should answer at least three practical questions: what changed, what the reader needs to do, and how the reader can check that the update worked. A list of implementation details may be accurate but still leave another team member unsure whether any action is required."
+        },
+        {
+          "type": "p",
+          "text": "This tutorial uses a small synthetic release with three changes. Each change has an area, a factual description, and a required action. A separate verification list tells the reader what to check after updating."
+        },
+        {
+          "type": "callout",
+          "title": "Write for the person receiving the change",
+          "text": "A useful changelog is not a commit log. Internal implementation details belong in the changelog only when they affect how another person uses, configures, validates, or maintains the project."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-notes",
+      "heading": "2. Create synthetic raw release notes",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following release information is synthetic and was written specifically for this article. Save it as release_notes.json. It describes version 1.4.0 of a fictional CSV export tool."
+        },
+        {
+          "type": "code",
+          "text": "{\n  \"version\": \"1.4.0\",\n  \"date\": \"2026-09-20\",\n  \"changes\": [\n    {\n      \"area\": \"Export path\",\n      \"change\": \"Default CSV export folder changed from reports/ to outputs/reports/.\",\n      \"action\": \"Update scripts or shortcuts that expect reports/.\"\n    },\n    {\n      \"area\": \"Config key\",\n      \"change\": \"Configuration key report_dir was renamed to output_dir.\",\n      \"action\": \"Rename report_dir to output_dir before the next run.\"\n    },\n    {\n      \"area\": \"Validation\",\n      \"change\": \"Empty customer_id values now stop export instead of being written as blank cells.\",\n      \"action\": \"Fix blank customer_id values before rerunning failed exports.\"\n    }\n  ],\n  \"checks\": [\n    \"Confirm a test export appears under outputs/reports/.\",\n    \"Confirm the configuration uses output_dir.\",\n    \"Confirm a row with a blank customer_id stops with a validation error.\"\n  ]\n}\n"
+        },
+        {
+          "type": "p",
+          "text": "There are exactly 3 changes, 3 required actions, and 3 verification checks. Because the example is synthetic, these paths, configuration names, and behaviors are demonstration values rather than facts about a real product."
+        }
+      ]
+    },
+    {
+      "id": "write-expected-entry",
+      "heading": "3. Work out the expected changelog entry by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The entry should begin with the version and date. The change descriptions should stay factual. Required actions should use direct instructions, and verification should be separate so readers can distinguish configuration work from post-update checks."
+        },
+        {
+          "type": "code",
+          "text": "Version 1.4.0 - 2026-09-20\n\nWhat changed\n- Export path: Default CSV export folder changed from reports/ to outputs/reports/.\n- Config key: Configuration key report_dir was renamed to output_dir.\n- Validation: Empty customer_id values now stop export instead of being written as blank cells.\n\nWhat you need to do\n- Update scripts or shortcuts that expect reports/.\n- Rename report_dir to output_dir before the next run.\n- Fix blank customer_id values before rerunning failed exports.\n\nCheck after updating\n- Confirm a test export appears under outputs/reports/.\n- Confirm the configuration uses output_dir.\n- Confirm a row with a blank customer_id stops with a validation error.\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected entry contains one heading line, three section headings, and nine bullet lines: three changes, three actions, and three checks. No action is hidden inside a paragraph describing the change."
+        }
+      ]
+    },
+    {
+      "id": "generate-entry",
+      "heading": "4. Generate and validate the changelog entry",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as useful_changelog.py. It validates the synthetic JSON, creates the changelog text, checks the expected section and bullet counts, and writes the result into a new output folder. The original JSON file is read only."
+        },
+        {
+          "type": "code",
+          "text": "import json\nfrom pathlib import Path\n\nSOURCE = Path(\"release_notes.json\")\nOUTPUT_DIR = Path(\"outputs\") / \"useful_changelog_result\"\nOUTPUT = OUTPUT_DIR / \"CHANGELOG_ENTRY.txt\"\n\n\ndef require_text(value, name):\n    if not isinstance(value, str) or not value.strip():\n        raise ValueError(f\"{name} must be a non-empty string.\")\n    return value.strip()\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source file not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    with SOURCE.open(\"r\", encoding=\"utf-8\") as stream:\n        data = json.load(stream)\n\n    version = require_text(data.get(\"version\"), \"version\")\n    date = require_text(data.get(\"date\"), \"date\")\n    changes = data.get(\"changes\")\n    checks = data.get(\"checks\")\n\n    if not isinstance(changes, list) or not changes:\n        raise ValueError(\"changes must be a non-empty list.\")\n    if not isinstance(checks, list) or not checks:\n        raise ValueError(\"checks must be a non-empty list.\")\n\n    change_lines = []\n    action_lines = []\n    for index, item in enumerate(changes, start=1):\n        if not isinstance(item, dict):\n            raise ValueError(f\"Change {index} must be an object.\")\n        area = require_text(item.get(\"area\"), f\"change {index} area\")\n        change = require_text(item.get(\"change\"), f\"change {index} description\")\n        action = require_text(item.get(\"action\"), f\"change {index} action\")\n        change_lines.append(f\"- {area}: {change}\")\n        action_lines.append(f\"- {action}\")\n\n    check_lines = [f\"- {require_text(value, 'check')}\" for value in checks]\n\n    lines = [\n        f\"Version {version} - {date}\",\n        \"\",\n        \"What changed\",\n        *change_lines,\n        \"\",\n        \"What you need to do\",\n        *action_lines,\n        \"\",\n        \"Check after updating\",\n        *check_lines,\n    ]\n    text = \"\\n\".join(lines) + \"\\n\"\n\n    if text.count(\"\\nWhat changed\\n\") != 1:\n        raise RuntimeError(\"Missing What changed section.\")\n    if text.count(\"\\nWhat you need to do\\n\") != 1:\n        raise RuntimeError(\"Missing action section.\")\n    if text.count(\"\\nCheck after updating\\n\") != 1:\n        raise RuntimeError(\"Missing verification section.\")\n\n    bullet_count = sum(line.startswith(\"- \") for line in lines)\n    expected_bullets = len(changes) * 2 + len(checks)\n    if bullet_count != expected_bullets:\n        raise RuntimeError(\"Unexpected bullet count.\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    with OUTPUT.open(\"x\", encoding=\"utf-8\") as stream:\n        stream.write(text)\n\n    print(f\"Changes: {len(changes)}.\")\n    print(f\"Required actions: {len(action_lines)}.\")\n    print(f\"Verification checks: {len(checks)}.\")\n    print(f\"Total bullets: {bullet_count}.\")\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-result",
+      "heading": "5. Check the expected result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For this synthetic release, the script should report three changes, three required actions, three verification checks, and nine bullet lines. The expected console output below was derived by hand and is not an execution log."
+        },
+        {
+          "type": "code",
+          "text": "Changes: 3.\nRequired actions: 3.\nVerification checks: 3.\nTotal bullets: 9.\nOutput: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that each change appears once under What changed.",
+            "Confirm that every change has a corresponding instruction under What you need to do.",
+            "Confirm that verification steps are separated from required actions.",
+            "Confirm that paths and configuration names are copied exactly from the synthetic source notes.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous entry."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "6. Recognize changelog entries that are technically correct but not useful",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Weak changelog text",
+            "What is missing"
+          ],
+          "rows": [
+            [
+              "Updated export logic",
+              "Readers do not know which behavior changed or whether they need to act."
+            ],
+            [
+              "Fixed configuration",
+              "The affected key and required replacement are not identified."
+            ],
+            [
+              "Improved validation",
+              "The new failure condition and effect on users are unclear."
+            ],
+            [
+              "Various bug fixes",
+              "There is no information about impact, scope, or required checks."
+            ],
+            [
+              "Please update accordingly",
+              "The action is too vague to execute or verify."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Avoid making the reader reconstruct the change from issue trackers, commits, or chat history. If an update changes a path, key, command, file format, or required input, name the old and new behavior directly."
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Keep the changelog scoped to user-visible consequences",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A changelog entry does not replace technical documentation, migration instructions, test evidence, or version control history. Complex changes may need links to those materials, but the changelog should still summarize the consequence and immediate action."
+        },
+        {
+          "type": "p",
+          "text": "Not every internal refactor needs a changelog entry. If behavior, interfaces, dependencies, required inputs, outputs, configuration, or workflow do not change for the reader, detailed implementation notes may belong elsewhere."
+        },
+        {
+          "type": "p",
+          "text": "For larger releases, group related changes by area and distinguish required actions from optional recommendations. Preserve older changelog entries instead of rewriting history unless you are correcting a documented error and can record that correction clearly."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library: json, pathlib",
+    "items": [
+      "Execution completed successfully with 3 changes, 3 required actions, 3 verification checks, and 9 total bullet lines.",
+      "Generated CHANGELOG_ENTRY.txt matched the article's expected changelog text exactly.",
+      "Console output matched exactly: Changes: 3; Required actions: 3; Verification checks: 3; Total bullets: 9; Output: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt.",
+      "Confirmed each change appears once under What changed, each action appears once under What you need to do, and all 3 checks appear under Check after updating.",
+      "Confirmed reports/ and outputs/reports/, report_dir and output_dir, and customer_id wording were copied exactly from the synthetic source JSON.",
+      "Second execution raised FileExistsError for outputs/useful_changelog_result, confirming overwrite protection.",
+      "SHA-256 comparison confirmed release_notes.json was unchanged."
+    ],
+    "limits": [
+      "The execution environment emitted an unrelated spreadsheet-runtime warmup warning on stderr during Python startup; it did not affect the script's successful first run, generated output, or overwrite-protection behavior.",
+      "The script validates structure, required text, section presence, and bullet counts; it cannot determine whether a human-written changelog description is substantively complete or accurate."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · json",
+      "url": "https://docs.python.org/3.12/library/json.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "useful-changelog",
+  "category": "collaboration",
+  "date": "2026-09-20"
+}

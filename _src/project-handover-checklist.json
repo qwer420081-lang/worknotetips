@@ -1,1 +1,246 @@
-{"title": "Build a project handover checklist with owners, locations, and open issues", "summary": "Turn project handover notes into a structured checklist that records what must be transferred, who owns it, where it is stored, and what remains unresolved. A small synthetic example shows how to detect missing owners, locations, and open-issue details before handover.", "tags": ["Handover", "Checklist", "Python"], "audience": "This guide is for teams transferring a project between people and needing a checklist that makes ownership, file locations, and unresolved work explicit.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor or spreadsheet program that can save UTF-8 CSV files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv and pathlib."], "sections": [{"id": "define-the-handover-fields", "heading": "1. Define what every handover item must answer", "blocks": [{"type": "p", "text": "A useful handover checklist should tell the next person what the item is, who is responsible for it, where the relevant material is located, whether the item is complete, and what remains unresolved. A note such as files are on the drive is usually not specific enough for someone joining the project later."}, {"type": "p", "text": "This example uses six fields: item_id, handover_item, owner, location, status, and open_issue. status may be READY or OPEN. READY items must have an empty open_issue field. OPEN items must explain what remains unresolved."}, {"type": "callout", "title": "Location should be actionable", "text": "Write a location that another person can actually follow, such as a repository path, shared-drive folder, document name, or equipment location. Avoid phrases such as somewhere in Drive or on my laptop."}]}, {"id": "create-synthetic-checklist", "heading": "2. Create a synthetic project handover checklist", "blocks": [{"type": "p", "text": "The following checklist is synthetic and was written specifically for this article. Save it as handover_items.csv. It contains five handover items, with two deliberate problems that should be caught before the checklist is accepted."}, {"type": "code"}, {"type": "p", "text": "H001 through H003 are structurally complete. H004 has no owner even though it is marked READY. H005 describes an open issue but has no location for the bug list. The example therefore contains two validation problems."}]}, {"id": "review-by-hand", "heading": "3. Review the checklist by hand first", "blocks": [{"type": "table", "headers": ["item_id", "Expected result", "Reason"], "rows": [["H001", "PASS", "Owner and location are present; READY has no open issue"], ["H002", "PASS", "Owner and location are present; READY has no open issue"], ["H003", "PASS", "OPEN item includes owner, location, and unresolved issue"], ["H004", "FAIL", "Missing owner"], ["H005", "FAIL", "Missing location"]]}, {"type": "p", "text": "The expected totals are 5 checklist items, 3 valid items, and 2 invalid items. There are 2 OPEN items, H003 and H005, and both contain non-empty issue descriptions. The problems in this example are therefore not missing issue text; they are missing responsibility and location information."}, {"type": "p", "text": "This distinction matters because a project can have legitimate open issues and still be ready for handover if the unresolved work is clearly described, assigned, and locatable."}]}, {"id": "validate-the-checklist", "heading": "4. Validate the handover checklist with Python", "blocks": [{"type": "p", "text": "Save the following script as check_handover.py. It checks required columns, duplicate IDs, owners, locations, allowed status values, and whether the open_issue field is consistent with the status. It writes a review report without changing the original checklist."}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected review report", "blocks": [{"type": "p", "text": "Because the CSV header is row 1, H004 is physical row 5 and H005 is physical row 6. The review report should contain exactly two issue rows."}, {"type": "code"}, {"type": "p", "text": "The expected console output below was derived by hand from the synthetic checklist and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "handover-checks", "heading": "6. Check more than file presence", "blocks": [{"type": "ul", "items": ["Confirm that every item has one clearly named owner, even if ownership will change after handover.", "Open each listed location and verify that the next person can actually access it.", "For OPEN items, state the unresolved issue, current status, and next expected action.", "Check that READY items do not hide unresolved work in comments, chat messages, or private notes.", "Record credentials through an approved password or access-management process rather than placing secrets in the checklist.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous review."]}, {"type": "p", "text": "A path can be syntactically present but still useless if permissions are missing or the referenced file is outdated. The checklist should therefore be reviewed by the receiving person, not only by the person leaving the project."}]}, {"id": "common-errors", "heading": "7. Recognize common handover failures", "blocks": [{"type": "table", "headers": ["Weak handover entry", "Why it is insufficient"], "rows": [["Owner: Team", "Responsibility is unclear if no person or defined role is accountable."], ["Location: Drive", "The receiving person still has to search for the actual file or folder."], ["Status: Done", "Done is ambiguous unless the team's definition of completion is clear."], ["Open issue: Needs work", "The problem and next action are not specific enough."], ["Credentials included in CSV", "A general handover checklist is not an appropriate place for passwords or secrets."]]}, {"type": "p", "text": "Do not mark an item READY simply because a file exists. A usable handover also depends on access, current documentation, ownership, and whether the receiving person understands unresolved decisions."}]}, {"id": "limits", "heading": "8. Expand the checklist for larger projects", "blocks": [{"type": "p", "text": "A real project may need additional fields such as receiving_owner, due_date, repository branch, access_required, last_verified_date, dependency, contact person, equipment location, approval status, and next milestone. Add fields only when they improve transfer clarity."}, {"type": "p", "text": "This script validates completeness and internal consistency, not whether a location is reachable or an open issue description is technically correct. Access checks, file freshness, repository state, equipment condition, and knowledge transfer require separate review."}, {"type": "p", "text": "The checklist should be versioned or dated and retained with the project records. After the receiving person verifies the handover, record that acceptance separately instead of silently rewriting the original transfer state."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib · no execution", "items": ["Manually counted 5 synthetic handover items and 2 items with OPEN status.", "Manually checked H001, H002, and H003 as structurally valid.", "Identified H004 as missing its owner and H005 as missing its location.", "Confirmed that both OPEN items contain non-empty open_issue descriptions.", "Derived the expected physical CSV rows as row 5 for H004 and row 6 for H005.", "Inspected the script for required headers, duplicate IDs, owner and location checks, status consistency, output collision protection, and preservation of the original CSV."], "limits": ["The code was not executed by the author of this response; no review CSV was created.", "The script does not test whether listed paths are accessible, current, or correct.", "The synthetic owners, locations, and issues are examples and do not describe a real project.", "Secrets, permission transfer, repository state, equipment condition, and actual knowledge-transfer quality were not tested.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "project-handover-checklist", "category": "collaboration", "date": "2026-09-20"}
+{
+  "title": "Build a project handover checklist with owners, locations, and open issues",
+  "summary": "Turn project handover notes into a structured checklist that records what must be transferred, who owns it, where it is stored, and what remains unresolved. A small synthetic example shows how to detect missing owners, locations, and open-issue details before handover.",
+  "tags": [
+    "Handover",
+    "Checklist",
+    "Python"
+  ],
+  "audience": "This guide is for teams transferring a project between people and needing a checklist that makes ownership, file locations, and unresolved work explicit.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor or spreadsheet program that can save UTF-8 CSV files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-the-handover-fields",
+      "heading": "1. Define what every handover item must answer",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A useful handover checklist should tell the next person what the item is, who is responsible for it, where the relevant material is located, whether the item is complete, and what remains unresolved. A note such as files are on the drive is usually not specific enough for someone joining the project later."
+        },
+        {
+          "type": "p",
+          "text": "This example uses six fields: item_id, handover_item, owner, location, status, and open_issue. status may be READY or OPEN. READY items must have an empty open_issue field. OPEN items must explain what remains unresolved."
+        },
+        {
+          "type": "callout",
+          "title": "Location should be actionable",
+          "text": "Write a location that another person can actually follow, such as a repository path, shared-drive folder, document name, or equipment location. Avoid phrases such as somewhere in Drive or on my laptop."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-checklist",
+      "heading": "2. Create a synthetic project handover checklist",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following checklist is synthetic and was written specifically for this article. Save it as handover_items.csv. It contains five handover items, with two deliberate problems that should be caught before the checklist is accepted."
+        },
+        {
+          "type": "code",
+          "text": "item_id,handover_item,owner,location,status,open_issue\nH001,Source code,Min,repo/main,READY,\nH002,Test dataset,Jae,shared-drive/project/data,READY,\nH003,Calibration procedure,Min,shared-drive/project/docs/calibration.pdf,OPEN,Final approval is still pending\nH004,Supplier contact list,,shared-drive/project/admin/suppliers.csv,READY,\nH005,Open bug list,Jae,,OPEN,Two export bugs remain under review\n"
+        },
+        {
+          "type": "p",
+          "text": "H001 through H003 are structurally complete. H004 has no owner even though it is marked READY. H005 describes an open issue but has no location for the bug list. The example therefore contains two validation problems."
+        }
+      ]
+    },
+    {
+      "id": "review-by-hand",
+      "heading": "3. Review the checklist by hand first",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "item_id",
+            "Expected result",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "H001",
+              "PASS",
+              "Owner and location are present; READY has no open issue"
+            ],
+            [
+              "H002",
+              "PASS",
+              "Owner and location are present; READY has no open issue"
+            ],
+            [
+              "H003",
+              "PASS",
+              "OPEN item includes owner, location, and unresolved issue"
+            ],
+            [
+              "H004",
+              "FAIL",
+              "Missing owner"
+            ],
+            [
+              "H005",
+              "FAIL",
+              "Missing location"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The expected totals are 5 checklist items, 3 valid items, and 2 invalid items. There are 2 OPEN items, H003 and H005, and both contain non-empty issue descriptions. The problems in this example are therefore not missing issue text; they are missing responsibility and location information."
+        },
+        {
+          "type": "p",
+          "text": "This distinction matters because a project can have legitimate open issues and still be ready for handover if the unresolved work is clearly described, assigned, and locatable."
+        }
+      ]
+    },
+    {
+      "id": "validate-the-checklist",
+      "heading": "4. Validate the handover checklist with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as check_handover.py. It checks required columns, duplicate IDs, owners, locations, allowed status values, and whether the open_issue field is consistent with the status. It writes a review report without changing the original checklist."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\n\nSOURCE = Path(\"handover_items.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"handover_check_result\"\nREPORT = OUTPUT_DIR / \"handover_review.csv\"\nREQUIRED_COLUMNS = [\n    \"item_id\", \"handover_item\", \"owner\", \"location\", \"status\", \"open_issue\"\n]\nVALID_STATUS = {\"READY\", \"OPEN\"}\n\n\ndef add_issue(issues, row_number, item_id, issue):\n    issues.append({\n        \"row_number\": row_number,\n        \"item_id\": item_id,\n        \"issue\": issue,\n    })\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    issues = []\n    seen_ids = set()\n    item_count = 0\n    open_count = 0\n\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        if reader.fieldnames != REQUIRED_COLUMNS:\n            raise ValueError(\n                f\"Header mismatch. Expected {REQUIRED_COLUMNS}, got {reader.fieldnames}.\"\n            )\n\n        for row_number, row in enumerate(reader, start=2):\n            item_count += 1\n            item_id = row[\"item_id\"].strip()\n            handover_item = row[\"handover_item\"].strip()\n            owner = row[\"owner\"].strip()\n            location = row[\"location\"].strip()\n            status = row[\"status\"].strip()\n            open_issue = row[\"open_issue\"].strip()\n\n            if not item_id:\n                add_issue(issues, row_number, item_id, \"MISSING_ITEM_ID\")\n            elif item_id in seen_ids:\n                add_issue(issues, row_number, item_id, \"DUPLICATE_ITEM_ID\")\n            seen_ids.add(item_id)\n\n            if not handover_item:\n                add_issue(issues, row_number, item_id, \"MISSING_ITEM_NAME\")\n            if not owner:\n                add_issue(issues, row_number, item_id, \"MISSING_OWNER\")\n            if not location:\n                add_issue(issues, row_number, item_id, \"MISSING_LOCATION\")\n            if status not in VALID_STATUS:\n                add_issue(issues, row_number, item_id, \"INVALID_STATUS\")\n            elif status == \"OPEN\":\n                open_count += 1\n                if not open_issue:\n                    add_issue(issues, row_number, item_id, \"MISSING_OPEN_ISSUE\")\n            elif open_issue:\n                add_issue(issues, row_number, item_id, \"READY_HAS_OPEN_ISSUE\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    with REPORT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(\n            stream,\n            fieldnames=[\"row_number\", \"item_id\", \"issue\"],\n        )\n        writer.writeheader()\n        writer.writerows(issues)\n\n    affected_items = len({row[\"item_id\"] for row in issues})\n    print(f\"Checklist items: {item_count}.\")\n    print(f\"Open items: {open_count}.\")\n    print(f\"Validation issues: {len(issues)}.\")\n    print(f\"Affected items: {affected_items}.\")\n    print(f\"Report: {REPORT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected review report",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Because the CSV header is row 1, H004 is physical row 5 and H005 is physical row 6. The review report should contain exactly two issue rows."
+        },
+        {
+          "type": "code",
+          "text": "row_number,item_id,issue\n5,H004,MISSING_OWNER\n6,H005,MISSING_LOCATION\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived by hand from the synthetic checklist and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Checklist items: 5.\nOpen items: 2.\nValidation issues: 2.\nAffected items: 2.\nReport: outputs/handover_check_result/handover_review.csv"
+        }
+      ]
+    },
+    {
+      "id": "handover-checks",
+      "heading": "6. Check more than file presence",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that every item has one clearly named owner, even if ownership will change after handover.",
+            "Open each listed location and verify that the next person can actually access it.",
+            "For OPEN items, state the unresolved issue, current status, and next expected action.",
+            "Check that READY items do not hide unresolved work in comments, chat messages, or private notes.",
+            "Record credentials through an approved password or access-management process rather than placing secrets in the checklist.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous review."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A path can be syntactically present but still useless if permissions are missing or the referenced file is outdated. The checklist should therefore be reviewed by the receiving person, not only by the person leaving the project."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "7. Recognize common handover failures",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Weak handover entry",
+            "Why it is insufficient"
+          ],
+          "rows": [
+            [
+              "Owner: Team",
+              "Responsibility is unclear if no person or defined role is accountable."
+            ],
+            [
+              "Location: Drive",
+              "The receiving person still has to search for the actual file or folder."
+            ],
+            [
+              "Status: Done",
+              "Done is ambiguous unless the team's definition of completion is clear."
+            ],
+            [
+              "Open issue: Needs work",
+              "The problem and next action are not specific enough."
+            ],
+            [
+              "Credentials included in CSV",
+              "A general handover checklist is not an appropriate place for passwords or secrets."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Do not mark an item READY simply because a file exists. A usable handover also depends on access, current documentation, ownership, and whether the receiving person understands unresolved decisions."
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "8. Expand the checklist for larger projects",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A real project may need additional fields such as receiving_owner, due_date, repository branch, access_required, last_verified_date, dependency, contact person, equipment location, approval status, and next milestone. Add fields only when they improve transfer clarity."
+        },
+        {
+          "type": "p",
+          "text": "This script validates completeness and internal consistency, not whether a location is reachable or an open issue description is technically correct. Access checks, file freshness, repository state, equipment condition, and knowledge transfer require separate review."
+        },
+        {
+          "type": "p",
+          "text": "The checklist should be versioned or dated and retained with the project records. After the receiving person verifies the handover, record that acceptance separately instead of silently rewriting the original transfer state."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library csv, pathlib",
+    "items": [
+      "The first run completed successfully.",
+      "Console output matched exactly: 5 checklist items, 2 open items, 2 validation issues, 2 affected items, and the stated report path.",
+      "The generated report contained exactly row 5 H004 MISSING_OWNER and row 6 H005 MISSING_LOCATION.",
+      "The source handover_items.csv was byte-for-byte unchanged after execution.",
+      "The only generated article output was outputs/handover_check_result/handover_review.csv.",
+      "A second run stopped with FileExistsError because outputs/handover_check_result already existed, so the previous report was not overwritten."
+    ],
+    "limits": [
+      "The Python environment emitted an unrelated spreadsheet-runtime warmup warning on stderr; it did not affect the script's execution or results.",
+      "External documentation URLs were not checked because the verification task concerned the executable article example."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "project-handover-checklist",
+  "category": "collaboration",
+  "date": "2026-09-20"
+}

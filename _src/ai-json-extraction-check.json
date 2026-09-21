@@ -1,1 +1,253 @@
-{"title": "Extract Messy Text into JSON with AI and Validate the Result in Python", "summary": "AI can turn unstructured notes into structured JSON, but the result still needs validation. This guide uses a tiny synthetic example and a Python schema check to verify required fields, types, allowed values, and basic consistency.", "seo_title": "AI JSON Extraction Check with Python Schema Validation", "seo_desc": "Extract fields from messy text into JSON with AI, then validate required keys, types and allowed values with a small Python standard-library script.", "tags": ["JSON extraction", "AI verification", "Python"], "audience": "People who use an AI chat assistant to convert notes, emails, forms, or other messy text into structured JSON and need a repeatable validation step.", "prerequisites": ["Python 3.12", "Basic familiarity with JSON objects, strings, numbers, and lists"], "sections": [{"id": "why-validate-ai-json", "heading": "Why validate AI-extracted JSON", "blocks": [{"type": "p", "text": "AI is useful for turning irregular text into structured fields, but a response that looks like valid JSON can still be wrong. A required key may be missing, a number may be returned as text, a field may contain an unsupported value, or the AI may infer information that was never present in the source."}, {"type": "p", "text": "The safest workflow separates extraction from validation. First ask the AI to map the source text into a fixed structure. Then check the returned JSON against explicit rules. Validation does not prove that every extracted fact is correct, but it catches many structural errors before the data is copied into a spreadsheet, database, script, or workflow."}, {"type": "callout", "title": "Validation rule", "text": "Treat AI-generated JSON as untrusted structured data until required fields, types, allowed values, and source support have been checked."}]}, {"id": "synthetic-source-and-schema", "heading": "Define a small synthetic source and schema", "blocks": [{"type": "p", "text": "This example is synthetic. Suppose a short service note contains a customer name, ticket number, priority, affected products, and an optional callback time."}, {"type": "p", "text": "Source text: \"Ticket 1842. Customer: Mira Lee. Login fails on the desktop app and web portal. Priority is high. Please call after 15:30. Products affected: Desktop, Web.\""}, {"type": "table", "headers": ["Field", "Rule"], "rows": [["ticket_id", "Required integer"], ["customer", "Required non-empty string"], ["priority", "Required: low, medium, or high"], ["products", "Required non-empty list of strings"], ["callback_time", "String in HH:MM form or null"]]}, {"type": "p", "text": "The schema is deliberately simple and can be checked with the Python standard library. The rules are stricter than merely asking whether the response can be parsed as JSON."}]}, {"id": "ask-ai-for-json", "heading": "Ask the AI for a constrained JSON object", "blocks": [{"type": "p", "text": "Tell the AI exactly which fields are allowed and how to handle missing information. For example: \"Extract the following text into one JSON object with exactly these keys: ticket_id, customer, priority, products, callback_time. ticket_id must be an integer. priority must be low, medium, or high. products must be a list of strings. Use null for callback_time if it is not stated. Do not infer missing facts. Return JSON only.\""}, {"type": "p", "text": "A correct result for the synthetic note would be: ticket_id 1842, customer Mira Lee, priority high, products Desktop and Web, and callback_time 15:30."}, {"type": "p", "text": "A plausible but defective AI result might instead return ticket_id as the string \"1842\", priority as \"urgent\", and add an unsupported field such as issue_summary. It may still look structured and readable, but it does not satisfy the agreed schema."}]}, {"id": "validate-json-with-python", "heading": "Validate the JSON with Python", "blocks": [{"type": "p", "text": "The following script uses only the Python standard library. It loads a synthetic AI response, checks that no unexpected keys are present, verifies required keys and types, tests the allowed priority values, checks the product list, and validates the callback time format. It writes a report to outputs and stops if the report already exists."}, {"type": "code"}]}, {"id": "interpret-validation-results", "heading": "Interpret structural validation correctly", "blocks": [{"type": "p", "text": "For the defective synthetic response, validation should fail for three reasons. ticket_id is a string instead of an integer. priority is urgent, which is outside the allowed set. issue_summary is an unexpected key. The products list and callback_time format satisfy their structural rules."}, {"type": "table", "headers": ["Check", "AI value", "Expected", "Result"], "rows": [["ticket_id", "\"1842\"", "integer", "FAIL"], ["customer", "\"Mira Lee\"", "non-empty string", "PASS"], ["priority", "\"urgent\"", "low, medium, or high", "FAIL"], ["products", "[\"Desktop\", \"Web\"]", "non-empty string list", "PASS"], ["callback_time", "\"15:30\"", "HH:MM or null", "PASS"], ["extra keys", "issue_summary", "none", "FAIL"]]}, {"type": "p", "text": "A schema failure should normally send the result back for correction rather than silently coercing it. Automatically converting \"1842\" to 1842 may hide the fact that the extraction instructions were not followed. Whether coercion is acceptable depends on the downstream workflow."}]}, {"id": "compare-fields-to-source", "heading": "Check extracted values against the source text", "blocks": [{"type": "p", "text": "Structural validation is only one layer. You should also compare important fields with the original text. In this example, ticket 1842, Mira Lee, high priority, Desktop, Web, and 15:30 all appear explicitly in the source. The source does not use the word urgent, so replacing high with urgent changes the stated value rather than merely reformatting it."}, {"type": "ul", "items": ["Confirm identifiers and names against the exact source text.", "Check that enum-like fields such as priority use the source meaning and the allowed schema value.", "Verify that list items were actually mentioned rather than inferred.", "Use null for optional fields that are absent instead of guessing.", "Reject added fields unless the schema explicitly allows additional properties.", "Distinguish normalization from invention; changing capitalization may be acceptable while adding a missing deadline is not."]}, {"type": "callout", "title": "Schema-valid can still be factually wrong", "text": "A response can pass every type and format check while containing a wrong name, number, or category. Structural validation must be paired with source comparison when factual accuracy matters."}]}, {"id": "common-mistakes-and-limits", "heading": "Common mistakes and limits", "blocks": [{"type": "p", "text": "A common mistake is checking only whether json.loads accepts the response. Successful parsing proves that the syntax is valid JSON, not that required keys, types, or values are correct. Another mistake is allowing arbitrary extra fields, which can make downstream code depend on information that was never part of the specification."}, {"type": "p", "text": "For larger schemas, hand-written validation code becomes harder to maintain. A dedicated schema system or validation library may be appropriate, but the same basic questions remain: which fields are required, what types are allowed, what values are permitted, and whether missing information may be represented as null."}, {"type": "p", "text": "Validation also does not establish that the original text is complete or trustworthy. If the source itself contains an incorrect ticket number or ambiguous wording, a structurally correct extraction will preserve that problem. Keep the original source available so important fields can be traced back when a validation or business rule fails."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["Checked the synthetic source text contains ticket 1842, customer Mira Lee, priority high, products Desktop and Web, and callback time 15:30.", "Checked that the intended schema contains exactly five allowed keys: ticket_id, customer, priority, products, and callback_time.", "Checked that the defective sample uses the string \"1842\" instead of integer 1842.", "Checked that urgent is outside the allowed priority set low, medium, high.", "Checked that issue_summary is an unexpected key under the stated schema.", "Checked that [\"Desktop\", \"Web\"] satisfies the non-empty list-of-strings rule.", "Checked that 15:30 matches the stated 24-hour HH:MM pattern.", "Checked that the script writes only to outputs/json_validation.txt and stops if that file already exists."], "limits": ["The Python code was not executed by me; the synthetic example, validation branches, and expected failures were checked by inspection.", "This hand-written validator covers only the small schema shown here and is not a general JSON Schema implementation.", "Structural validation cannot prove that extracted values are factually correct; important values still need comparison with the source text.", "The example does not automatically send failed output back to an AI for correction or perform security filtering on arbitrary input text."]}, "references": [{"title": "json — JSON encoder and decoder", "url": "https://docs.python.org/3/library/json.html"}, {"title": "re — Regular expression operations", "url": "https://docs.python.org/3/library/re.html"}, {"title": "pathlib — Object-oriented filesystem paths", "url": "https://docs.python.org/3/library/pathlib.html"}], "slug": "ai-json-extraction-check", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Extract Messy Text into JSON with AI and Validate the Result in Python",
+  "summary": "AI can turn unstructured notes into structured JSON, but the result still needs validation. This guide uses a tiny synthetic example and a Python schema check to verify required fields, types, allowed values, and basic consistency.",
+  "seo_title": "AI JSON Extraction Check with Python Schema Validation",
+  "seo_desc": "Extract fields from messy text into JSON with AI, then validate required keys, types and allowed values with a small Python standard-library script.",
+  "tags": [
+    "JSON extraction",
+    "AI verification",
+    "Python"
+  ],
+  "audience": "People who use an AI chat assistant to convert notes, emails, forms, or other messy text into structured JSON and need a repeatable validation step.",
+  "prerequisites": [
+    "Python 3.12",
+    "Basic familiarity with JSON objects, strings, numbers, and lists"
+  ],
+  "sections": [
+    {
+      "id": "why-validate-ai-json",
+      "heading": "Why validate AI-extracted JSON",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "AI is useful for turning irregular text into structured fields, but a response that looks like valid JSON can still be wrong. A required key may be missing, a number may be returned as text, a field may contain an unsupported value, or the AI may infer information that was never present in the source."
+        },
+        {
+          "type": "p",
+          "text": "The safest workflow separates extraction from validation. First ask the AI to map the source text into a fixed structure. Then check the returned JSON against explicit rules. Validation does not prove that every extracted fact is correct, but it catches many structural errors before the data is copied into a spreadsheet, database, script, or workflow."
+        },
+        {
+          "type": "callout",
+          "title": "Validation rule",
+          "text": "Treat AI-generated JSON as untrusted structured data until required fields, types, allowed values, and source support have been checked."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-source-and-schema",
+      "heading": "Define a small synthetic source and schema",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example is synthetic. Suppose a short service note contains a customer name, ticket number, priority, affected products, and an optional callback time."
+        },
+        {
+          "type": "p",
+          "text": "Source text: \"Ticket 1842. Customer: Mira Lee. Login fails on the desktop app and web portal. Priority is high. Please call after 15:30. Products affected: Desktop, Web.\""
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Field",
+            "Rule"
+          ],
+          "rows": [
+            [
+              "ticket_id",
+              "Required integer"
+            ],
+            [
+              "customer",
+              "Required non-empty string"
+            ],
+            [
+              "priority",
+              "Required: low, medium, or high"
+            ],
+            [
+              "products",
+              "Required non-empty list of strings"
+            ],
+            [
+              "callback_time",
+              "String in HH:MM form or null"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The schema is deliberately simple and can be checked with the Python standard library. The rules are stricter than merely asking whether the response can be parsed as JSON."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-json",
+      "heading": "Ask the AI for a constrained JSON object",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Tell the AI exactly which fields are allowed and how to handle missing information. For example: \"Extract the following text into one JSON object with exactly these keys: ticket_id, customer, priority, products, callback_time. ticket_id must be an integer. priority must be low, medium, or high. products must be a list of strings. Use null for callback_time if it is not stated. Do not infer missing facts. Return JSON only.\""
+        },
+        {
+          "type": "p",
+          "text": "A correct result for the synthetic note would be: ticket_id 1842, customer Mira Lee, priority high, products Desktop and Web, and callback_time 15:30."
+        },
+        {
+          "type": "p",
+          "text": "A plausible but defective AI result might instead return ticket_id as the string \"1842\", priority as \"urgent\", and add an unsupported field such as issue_summary. It may still look structured and readable, but it does not satisfy the agreed schema."
+        }
+      ]
+    },
+    {
+      "id": "validate-json-with-python",
+      "heading": "Validate the JSON with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following script uses only the Python standard library. It loads a synthetic AI response, checks that no unexpected keys are present, verifies required keys and types, tests the allowed priority values, checks the product list, and validates the callback time format. It writes a report to outputs and stops if the report already exists."
+        },
+        {
+          "type": "code",
+          "text": "import json\nimport re\nfrom pathlib import Path\n\nAI_RESPONSE = '''{\n  \"ticket_id\": \"1842\",\n  \"customer\": \"Mira Lee\",\n  \"priority\": \"urgent\",\n  \"products\": [\"Desktop\", \"Web\"],\n  \"callback_time\": \"15:30\",\n  \"issue_summary\": \"Login problem\"\n}'''\n\nREQUIRED_KEYS = {\n    \"ticket_id\",\n    \"customer\",\n    \"priority\",\n    \"products\",\n    \"callback_time\",\n}\n\nALLOWED_PRIORITIES = {\"low\", \"medium\", \"high\"}\nTIME_PATTERN = re.compile(r\"^(?:[01]\\d|2[0-3]):[0-5]\\d$\")\n\nerrors = []\n\ntry:\n    data = json.loads(AI_RESPONSE)\nexcept json.JSONDecodeError as exc:\n    raise SystemExit(f\"Invalid JSON: {exc}\")\n\nif not isinstance(data, dict):\n    errors.append(\"Top-level value must be a JSON object.\")\nelse:\n    actual_keys = set(data)\n    missing = REQUIRED_KEYS - actual_keys\n    unexpected = actual_keys - REQUIRED_KEYS\n\n    if missing:\n        errors.append(\"Missing keys: \" + \", \".join(sorted(missing)))\n    if unexpected:\n        errors.append(\"Unexpected keys: \" + \", \".join(sorted(unexpected)))\n\n    if \"ticket_id\" in data and not isinstance(data[\"ticket_id\"], int):\n        errors.append(\"ticket_id must be an integer.\")\n\n    if \"customer\" in data:\n        customer = data[\"customer\"]\n        if not isinstance(customer, str) or not customer.strip():\n            errors.append(\"customer must be a non-empty string.\")\n\n    if \"priority\" in data:\n        priority = data[\"priority\"]\n        if not isinstance(priority, str) or priority not in ALLOWED_PRIORITIES:\n            errors.append(\"priority must be low, medium, or high.\")\n\n    if \"products\" in data:\n        products = data[\"products\"]\n        if not isinstance(products, list) or not products:\n            errors.append(\"products must be a non-empty list.\")\n        elif not all(isinstance(item, str) and item.strip() for item in products):\n            errors.append(\"Every product must be a non-empty string.\")\n\n    if \"callback_time\" in data:\n        callback = data[\"callback_time\"]\n        if callback is not None:\n            if not isinstance(callback, str) or not TIME_PATTERN.fullmatch(callback):\n                errors.append(\"callback_time must be HH:MM or null.\")\n\nstatus = \"PASS\" if not errors else \"FAIL\"\nlines = [f\"Validation: {status}\"]\nlines.extend(f\"- {error}\" for error in errors)\n\noutput_dir = Path(\"outputs\")\noutput_dir.mkdir(exist_ok=True)\noutput_file = output_dir / \"json_validation.txt\"\n\nif output_file.exists():\n    raise SystemExit(f\"Stop: {output_file} already exists.\")\n\noutput_file.write_text(\"\\n\".join(lines) + \"\\n\", encoding=\"utf-8\")\nprint(f\"Wrote {output_file}\")\n"
+        }
+      ]
+    },
+    {
+      "id": "interpret-validation-results",
+      "heading": "Interpret structural validation correctly",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the defective synthetic response, validation should fail for three reasons. ticket_id is a string instead of an integer. priority is urgent, which is outside the allowed set. issue_summary is an unexpected key. The products list and callback_time format satisfy their structural rules."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check",
+            "AI value",
+            "Expected",
+            "Result"
+          ],
+          "rows": [
+            [
+              "ticket_id",
+              "\"1842\"",
+              "integer",
+              "FAIL"
+            ],
+            [
+              "customer",
+              "\"Mira Lee\"",
+              "non-empty string",
+              "PASS"
+            ],
+            [
+              "priority",
+              "\"urgent\"",
+              "low, medium, or high",
+              "FAIL"
+            ],
+            [
+              "products",
+              "[\"Desktop\", \"Web\"]",
+              "non-empty string list",
+              "PASS"
+            ],
+            [
+              "callback_time",
+              "\"15:30\"",
+              "HH:MM or null",
+              "PASS"
+            ],
+            [
+              "extra keys",
+              "issue_summary",
+              "none",
+              "FAIL"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A schema failure should normally send the result back for correction rather than silently coercing it. Automatically converting \"1842\" to 1842 may hide the fact that the extraction instructions were not followed. Whether coercion is acceptable depends on the downstream workflow."
+        }
+      ]
+    },
+    {
+      "id": "compare-fields-to-source",
+      "heading": "Check extracted values against the source text",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Structural validation is only one layer. You should also compare important fields with the original text. In this example, ticket 1842, Mira Lee, high priority, Desktop, Web, and 15:30 all appear explicitly in the source. The source does not use the word urgent, so replacing high with urgent changes the stated value rather than merely reformatting it."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm identifiers and names against the exact source text.",
+            "Check that enum-like fields such as priority use the source meaning and the allowed schema value.",
+            "Verify that list items were actually mentioned rather than inferred.",
+            "Use null for optional fields that are absent instead of guessing.",
+            "Reject added fields unless the schema explicitly allows additional properties.",
+            "Distinguish normalization from invention; changing capitalization may be acceptable while adding a missing deadline is not."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Schema-valid can still be factually wrong",
+          "text": "A response can pass every type and format check while containing a wrong name, number, or category. Structural validation must be paired with source comparison when factual accuracy matters."
+        }
+      ]
+    },
+    {
+      "id": "common-mistakes-and-limits",
+      "heading": "Common mistakes and limits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A common mistake is checking only whether json.loads accepts the response. Successful parsing proves that the syntax is valid JSON, not that required keys, types, or values are correct. Another mistake is allowing arbitrary extra fields, which can make downstream code depend on information that was never part of the specification."
+        },
+        {
+          "type": "p",
+          "text": "For larger schemas, hand-written validation code becomes harder to maintain. A dedicated schema system or validation library may be appropriate, but the same basic questions remain: which fields are required, what types are allowed, what values are permitted, and whether missing information may be represented as null."
+        },
+        {
+          "type": "p",
+          "text": "Validation also does not establish that the original text is complete or trustworthy. If the source itself contains an incorrect ticket number or ambiguous wording, a structurally correct extraction will preserve that problem. Keep the original source available so important fields can be traced back when a validation or business rule fails."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script ran successfully and wrote outputs/json_validation.txt.",
+      "The report contained Validation: FAIL with exactly three errors: unexpected issue_summary, ticket_id not integer, and invalid priority.",
+      "products=[\"Desktop\", \"Web\"] passed the non-empty string-list rule.",
+      "callback_time=15:30 passed the HH:MM validation rule.",
+      "The reported three failure reasons match the article text and table.",
+      "A second execution stopped with 'Stop: outputs/json_validation.txt already exists.' and did not overwrite the report.",
+      "The source example explicitly supports ticket 1842, Mira Lee, priority high, Desktop, Web, and callback time 15:30."
+    ],
+    "limits": [
+      "The validator checks structure and format only; factual agreement with arbitrary source text still requires source comparison."
+    ]
+  },
+  "references": [
+    {
+      "title": "json — JSON encoder and decoder",
+      "url": "https://docs.python.org/3/library/json.html"
+    },
+    {
+      "title": "re — Regular expression operations",
+      "url": "https://docs.python.org/3/library/re.html"
+    },
+    {
+      "title": "pathlib — Object-oriented filesystem paths",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-json-extraction-check",
+  "category": "ai",
+  "date": "2026-09-21"
+}

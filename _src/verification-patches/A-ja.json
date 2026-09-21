@@ -1,0 +1,426 @@
+{
+  "file": "A",
+  "lang": "ja",
+  "data": {
+    "split-large-csv": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib",
+        "items": [
+          "メイン実行では正確に 'Verified 7 data records in 3 files.' と 'Output folder: outputs/sample_parts' が出力された。",
+          "part_0001.csv、part_0002.csv、part_0003.csv が作成され、それぞれデータレコード数は 3、3、1 だった。",
+          "part_0001 には R001-R003 が含まれ、'starter, pack' は1つのフィールドとして、'two\\nlines' は1つの複数行フィールドとして保持された。units の合計は 28 だった。",
+          "part_0002 には R004-R006 が含まれ、units の合計は 22 だった。part_0003 には R007 が含まれ、units の合計は 10 だった。全体の units 合計は 60 だった。",
+          "すべての分割ファイルで同じ4フィールドのヘッダーが繰り返され、元の7レコードは元の順序のまま各1回ずつすべて保持された。",
+          "正常実行の前後で元の sample.csv のバイト列およびテキストは変更されなかった。",
+          "outputs/sample_parts がすでに存在する状態で2回目に実行すると、別の分割ファイルを作成する前に FileExistsError で停止した。",
+          "6レコードの入力では、各3レコードを含む分割ファイルが正確に2個生成された。",
+          "ヘッダーのみの入力は0レコード、0個の分割ファイルで正常終了し、出力ディレクトリは空のままだった。",
+          "完全に空の入力は ValueError: 'Missing header or blank column name.' で拒否された。"
+        ],
+        "limits": [
+          "大規模ファイルでの性能、異常に大きいCSVフィールド、処理中の元ファイル変更、空ファイル以外の不正入力パターン、ディスク書き込み障害、中断された書き込みからの復旧はストレステストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "find-duplicate-files": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/hashlib/os/pathlib/stat",
+        "items": [
+          "セットアップでは通常ファイルが正確に7個作成され、合計サイズは16バイトだった。内訳はサイズ0のファイルが2個、サイズ3のファイルが4個、サイズ4のファイルが1個だった。",
+          "メイン実行では正確に 'Scanned 7 regular file paths; hashed 6.', 'Duplicate candidates: 2 groups, 5 paths.', 'Review CSV: outputs/duplicate_review/duplicates.csv' が出力された。",
+          "duplicates.csv にはヘッダーに加えて正確に5行のデータが含まれていた。",
+          "G001 には empty_a.txt と empty_b.txt が含まれ、どちらもサイズ0で、SHA-256 は e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 だった。",
+          "G002 には archive/a_saved.txt、notes/a.txt、notes/a_copy.txt が含まれ、すべてサイズ3で、SHA-256 は ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad だった。",
+          "notes/other.txt と unique.txt は重複レポートに正しく含まれていなかった。",
+          "ハッシュ計算されたファイルは6個だった。サイズ0の2ファイルとサイズ3の4ファイルすべてが対象となり、unique.txt は同じサイズの相手がなかったためスキップされた。",
+          "スキャン前後で元ファイルの内容とハッシュは同一だった。",
+          "outputs/duplicate_review がすでに存在していたため、2回目の実行は FileExistsError で停止した。",
+          "ファイルサイズが1、2、3バイトの元データでは 'hashed 0'、重複グループ0件、ヘッダーのみのCSVレポートが生成された。",
+          "OUTPUT_DIR を SOURCE の配下に配置すると ValueError: 'The report folder must be outside SOURCE.' が発生した。",
+          "元データにシンボリックリンクファイルとシンボリックリンクディレクトリを追加しても、スキャナーは通常ファイルパスを7件だけ報告し、同じ2つの重複グループを検出した。"
+        ],
+        "limits": [
+          "権限エラー、ハッシュ計算中のファイル変更、ハードリンクの扱い、Windows の junction や mount point、中断された書き込み、悪意あるファイルシステム競合、大規模ディレクトリでの性能はテストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "batch-image-resize": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · Pillow 12.3.0",
+        "items": [
+          "landscape.png 800×600、portrait.png 600×800、small.png 200×100、wide.png 1200×300 を作成した。",
+          "実際の元画像の総ピクセル数は 1,240,000 ではなく 1,340,000 だった。",
+          "リサイズ実行では正確に 300×225、225×300、200×100、300×75 が生成された。",
+          "出力画像の総ピクセル数は 177,500 で、記事の値と一致した。",
+          "コンソール出力は 'Processed 4 images.' と 'Resized: 3; already within limit: 1.' を含む、想定された7行と正確に一致した。",
+          "任意のチェッカーは4ファイルすべてについて、想定された元サイズと出力サイズを表示した。",
+          "元フォルダには4ファイル、出力フォルダにも4ファイルが存在した。",
+          "リサイズ後も4つの元ファイルすべての SHA-256 ハッシュは変化せず、元画像が書き換えられていないことを確認した。",
+          "同じ OUTPUT_DIR でリサイズスクリプトを再実行すると、別のバッチを処理する前に FileExistsError が発生した。"
+        ],
+        "limits": [
+          "JPEG、WebP、EXIF orientation、破損画像、アニメーション、カラープロファイル保持、メタデータ保持、部分書き込み失敗、任意の小数寸法の丸めケースはテストしていない。"
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "create-synthetic-images",
+          "block_index": 4,
+          "field": "text",
+          "new_value": "4枚の元画像に含まれる総ピクセル数は 1,340,000 です。内訳は 480,000 + 480,000 + 20,000 + 360,000 です。ピクセル数はこの例を理解するうえで役立ちますが、PNG の圧縮率は画像内容によって変わるため、バイト単位のファイルサイズとは同じではありません。",
+          "type": "p"
+        }
+      ]
+    },
+    "dated-zip-backup": {
+      "verification": {
+        "env": "2026-09-21 · ChatGPT Python tool · Python 3.13.5 · standard library datetime/hashlib/pathlib/zipfile",
+        "items": [
+          "合成された元データには通常ファイルが正確に4個あり、合計サイズは27バイトだった。内訳は notes.txt=6、reports/week1.txt=5、reports/week2.txt=6、settings.ini=10 だった。",
+          "実際の実行では 'Verified 4 files totaling 27 bytes.' と 'Archive: outputs/backups/backup_demo_2026-09-21.zip' が出力された。",
+          "記事内の 2026-09-20 というファイル名とコンソール例は、スクリプトを 2026-09-20 に実行する場合のものだと明示されている。実行環境では実際のローカル日付である 2026-09-21 が正しく使用された。",
+          "ZIP には notes.txt、reports/week1.txt、reports/week2.txt、settings.ini が想定された順序で正確に含まれていた。",
+          "ZIP 内メンバーの非圧縮サイズは正確に 6、5、6、10 バイトだった。",
+          "ZipFile.testzip() は問題のあるメンバーがないことを返した。",
+          "アーカイブされたすべてのメンバーの SHA-256 値は、対応する元ファイルと一致した。",
+          "アーカイブ作成後も、すべての元ファイルの SHA-256 ハッシュは変化しなかった。",
+          "同じ日付のアーカイブがすでに存在する状態で再実行すると、置き換えずに FileExistsError が発生した。"
+        ],
+        "limits": [
+          "処理中の元データ変更、権限エラー、ストレージ破損、中断された書き込み、シンボリックリンクの境界ケース、ファイルシステムメタデータ保持、大規模ディレクトリでの性能はストレステストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "excel-merge-sheets": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · openpyxl 3.1.5",
+        "items": [
+          "元のワークブックには空でない East 行が2行、West 行が2行、Online 行が2行あり、意図的に空にした Online 行はスキップされた。",
+          "元データの amount 合計は East=200、West=220、Online=200 で、全体では 620 だった。",
+          "メインスクリプトは正確に 'Merged 3 sheets into 6 data rows.', 'Verified 4 columns and 6 data rows.', 'Output: outputs/excel_merge_result/merged_orders.xlsx' を出力した。",
+          "出力ワークブックには Combined という名前のワークシートが正確に1つ含まれていた。",
+          "出力ヘッダーは正確に source_sheet, order_id, customer, amount だった。",
+          "出力された6レコードは想定順序どおり East E001/E002、West W001/W002、Online O001/O002 だった。",
+          "source_sheet には East、West、Online がそれぞれ正確に2回ずつ現れた。",
+          "マージ後の amount 合計は 620 だった。",
+          "出力は4列、6データ行で、ヘッダーを含めるとワークシート上は7行だった。",
+          "マージ後も regional_orders.xlsx の SHA-256 ハッシュは変化せず、元ワークブックが書き換えられていないことを確認した。",
+          "outputs/excel_merge_result がすでに存在する状態で2回目に実行すると、以前の結果を置き換える前に FileExistsError が発生した。"
+        ],
+        "limits": [
+          "数式セルの拒否、ヘッダー不一致、重複ヘッダー、シート欠落、予約済み source_sheet との衝突、不正なワークブック、書式保持、日付、ハイパーリンク、非表示シート、部分保存失敗、非常に大きなワークブックでの挙動は個別にストレステストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "pdf-merge-split": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · pypdf 5.9.0",
+        "items": [
+          "合成入力には alpha.pdf が2ページ、beta.pdf が1ページ、gamma.pdf が3ページ含まれ、合計6ページだった。",
+          "メインスクリプトは正確に 'Merged 3 PDFs into 6 pages.', 'Extracted pages 2-5: 4 pages.', 'Merged output: outputs/pdf_merge_split_result/merged.pdf', 'Extracted output: outputs/pdf_merge_split_result/pages_2_to_5.pdf' を出力した。",
+          "merged.pdf は正確に6ページで、ページ寸法は順に 100×200、110×210、120×220、130×230、140×240、150×250 だった。",
+          "pages_2_to_5.pdf は正確に4ページで、ページ寸法は順に 110×210、120×220、130×230、140×240 だった。",
+          "1始まりの両端を含む範囲 2-5 は merged_reader.pages[START_PAGE - 1:END_PAGE] というスライスで正しく実装されていた。",
+          "マージおよび抽出実行の前後で alpha.pdf、beta.pdf、gamma.pdf の SHA-256 ハッシュは同一で、元PDFが書き換えられていないことを確認した。",
+          "outputs/pdf_merge_split_result がすでに存在する状態で2回目に実行すると、以前の出力を置き換える前に FileExistsError が発生した。"
+        ],
+        "limits": [
+          "暗号化PDF、不正なPDF、注釈、フォーム、ブックマーク、添付ファイル、デジタル署名、カスタムページラベル、複雑なPDFオブジェクト関係、部分書き込み失敗、意味内容またはレンダリング内容の同等性はテストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "date-format-cleanup": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/datetime/pathlib",
+        "items": [
+          "メイン実行では正確に 'Processed 8 records.', 'Parsed: 6; unparsed: 2.', 'Cleaned CSV: outputs/date_cleanup_result/cleaned_dates.csv', 'Review CSV: outputs/date_cleanup_result/unparsed_dates.csv' が出力された。",
+          "cleaned_dates.csv には元の8レコードすべてに standardized_date と date_status を加えた内容が含まれていた。",
+          "R001 から R006 は正確に 2026-09-01 から 2026-09-06 に変換された。",
+          "R007 の値 2026-02-30 は無効な暦日として拒否され、standardized_date は空、date_status は UNPARSED として記録された。",
+          "R008 の値 'Sep 7 2026' は承認済み形式のどれにも一致しないため拒否され、standardized_date は空、date_status は UNPARSED として記録された。",
+          "unparsed_dates.csv には正確に2データ行が含まれ、R007 の row_number は 8、R008 の row_number は 9 だった。",
+          "処理後も mixed_dates.csv の SHA-256 ハッシュは変化せず、元ファイルが変更されていないことを確認した。",
+          "outputs/date_cleanup_result がすでに存在する状態で2回目に実行すると、以前の結果を上書きする前に FileExistsError が発生した。"
+        ],
+        "limits": [
+          "ロケール固有の月名、時刻、タイムゾーン、Excel シリアル日付、2桁年、不正なCSV構造、権限エラー、部分書き込み失敗、非常に大きなファイルは個別にストレステストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "monthly-summary-pandas": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · pandas 2.2.3",
+        "items": [
+          "メイン実行では正確に 'Source rows: 7.', 'Months: 3.', 'Verified totals: units=18, amount=430.', 'Output: outputs/monthly_summary_result/monthly_summary.csv' が出力された。",
+          "生成されたCSV内容は記事と正確に一致した: 2026-01,2,5,100; 2026-02,3,7,175; 2026-03,2,6,155.",
+          "月別注文件数の合計は 2 + 3 + 2 = 7 となり、元データと一致した。",
+          "月別 units の合計は 5 + 7 + 6 = 18 となり、元データと一致した。",
+          "月別 amount の合計は 100 + 175 + 155 = 430 となり、元データと一致した。",
+          "出力には month 順に並んだ正確に3つのデータ行が含まれていた。",
+          "処理後も monthly_orders.csv の SHA-256 ハッシュは変化せず、元ファイルが変更されていないことを確認した。",
+          "outputs/monthly_summary_result がすでに存在する状態で2回目に実行すると、以前の結果を上書きする前に FileExistsError が発生した。"
+        ],
+        "limits": [
+          "重複IDの拒否、必須値の欠落、無効な日付、数値でない units または amount、浮動小数点の金額データ、タイムゾーン、返金、キャンセル、明細行ベースの注文モデル、権限エラー、部分書き込み失敗、非常に大きなデータセットは個別にストレステストしていない。",
+          "Python 環境では無関係な artifact-tool のスプレッドシートウォームアップ警告が stderr に出力されたが、記事のスクリプト自体は exit code 0 で正常終了し、想定された出力を生成した。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-regex-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/re",
+        "items": [
+          "メイン実行では正確に 'Cases: 10.', 'AI pattern failures: 1.', 'Revised pattern failures: 0.', 'Report: outputs/regex_check_result/regex_check.csv' が出力された。",
+          "regex_check.csv にはヘッダーに加えて正確に10行のデータが含まれていた。",
+          "AI パターン WK-\\d{4}-\\d{4} は C004 だけで失敗し、想定結果が NO MATCH であるにもかかわらず WK-1999-0001 を受け入れた。",
+          "その他のすべての AI パターンケースは想定された分類と一致した。",
+          "修正版パターン WK-20[0-9]{2}-[0-9]{4} は10件の合成ケースすべてに合格した。",
+          "そのため修正版の失敗件数は0となり、記事の想定表およびコンソール出力と正確に一致した。",
+          "2回目の実行は outputs/regex_check_result がすでに存在したため、要件どおり FileExistsError で停止した。"
+        ],
+        "limits": [
+          "記事に含まれる10件の合成ケースのみをテストしており、正規表現の完全な正しさまでは確認していない。",
+          "非常に長い文字列や敵対的な文字列での性能はテストしていない。",
+          "不正なCSV、無効な期待ラベル値、必須列の欠落、ファイルシステム権限エラーは個別にテストしていない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-sql-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library csv/pathlib/sqlite3",
+        "items": [
+          "手計算による想定行は (1, Ana, 100)、(2, Ben, 25)、(3, Cara, 0) であることを確認し、総合計は 125 だった。",
+          "AI クエリは正確に2行、Ana=100 と Ben=25 を返した。Cara が欠落していたため、結果は EXPECTED と一致しなかった。",
+          "修正版の LEFT JOIN クエリは正確に3行、Ana=100、Ben=25、Cara=0 を返し、EXPECTED と正確に一致した。",
+          "メイン実行では正確に 'Expected rows: 3.', 'AI rows: 2; matches expected: False.', 'Revised rows: 3; matches expected: True.', 'Report: outputs/ai_sql_check_result/sql_check.csv' が出力された。",
+          "sql_check.csv にはヘッダーと2つのデータ行が含まれていた。AI 行には \"[(1, 'Ana', 100), (2, 'Ben', 25)]\" と False、REVISED 行には \"[(1, 'Ana', 100), (2, 'Ben', 25), (3, 'Cara', 0)]\" と True が記録された。",
+          "Cara が欠落しているにもかかわらず AI 結果の合計は 125 のままであり、総合計だけでは不十分だという記事の説明を確認できた。",
+          "チェッカー実行後も orders.sqlite の SHA-256 ハッシュは変化せず、データベースが読み取り専用で開かれ、変更されていないことを確認した。",
+          "2回目のチェッカー実行は outputs/ai_sql_check_result がすでに存在したため FileExistsError で停止した。"
+        ],
+        "limits": [
+          "NULL の amount、重複する結合関係、8月31日など追加の日付境界ケース、タイムスタンプ、タイムゾーン、返金、不正なデータベース、権限エラー、大規模データセットは個別にストレステストしていない。",
+          "Python ランタイムでは無関係な artifact-tool のスプレッドシートウォームアップ警告が stderr に出力されたが、記事の2つのスクリプトはいずれも正常に実行され、検証実行ではチェッカーが exit code 0 で終了した。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "few-shot-output-format": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, json, pathlib",
+        "items": [
+          "想定入力では正確に3件の PASS と0件の失敗が生成された。",
+          "コンソール出力は Objects checked: 3; Passed: 3; failed: 0; report path outputs/few_shot_check_result/format_check.csv と一致した。",
+          "生成レポートには T101、T102、T103 が PASS および空の errors とともに含まれていた。",
+          "2回目の実行は既存の出力フォルダに対する FileExistsError で停止した。",
+          "元の ai_output.json は変更されなかった。",
+          "追加キーのテストは keys として検出され、期待内容の不一致は content_mismatch として検出された。"
+        ],
+        "limits": [
+          "外部 AI システムへの問い合わせは行っていないため、few-shot 応答の一貫性自体はテストしていない。",
+          "実行環境は記事の対象である Python 3.12 ではなく Python 3.13.5 だったが、実行されたコードはこのテストと互換性のある標準ライブラリの動作のみを使用している。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-summary-source-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "source.txt に元文が6文、ai_summary.txt に要約文が4文含まれていることを確認した。",
+          "summary_review.csv には正確に4件のレビューが含まれ、A1 と A3 は SUPPORTED、A2 と A4 は UNSUPPORTED で、PARTIAL 行はなかった。",
+          "実行は正常に完了し、Summary sentences checked: 4; Supported: 2; partial: 0; unsupported: 2; Output: outputs/summary_source_check/validated_review.csv. と出力された。",
+          "validated_review.csv には、想定された要約テキスト、判定、根拠ID、理由を含む正確に4行のデータがあった。",
+          "引用されたすべての元文IDが存在し、各要約IDは正確に1回ずつレビューされていた。",
+          "2回目の実行は outputs/summary_source_check に対する FileExistsError で停止し、上書き防止が機能することを確認した。",
+          "SHA-256 比較により source.txt、ai_summary.txt、summary_review.csv がスクリプトによって変更されていないことを確認した。"
+        ],
+        "limits": [
+          "スクリプトはレビューの完全性、ID、判定構造を確認するが、意味上の真偽や人間が付けた判定自体の正しさを判定するものではない。",
+          "合成された文と元文の対応判断は、外部情報ではなく記事に提示された元テキストに基づいて確認した。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "moving-average-filter": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "入力サンプル8件と、完全なウィンドウによる MA3 出力6件で実行は正常に完了した。",
+          "生成された MA3 値は正確に 0.000、0.000、2.000、7.000、9.000、9.000 だった。",
+          "生成されたウィンドウ中心時刻は 0.1、0.2、0.3、0.4、0.5、0.6 s で、すべての完全なウィンドウに対するアライメント遅延は 0.1 s だった。",
+          "生成された filtered_sensor_data.csv は記事の想定CSVと正確に一致した。",
+          "コンソール出力は記事で示された値および出力パスと一致した。",
+          "2回目の実行は outputs/moving_average_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により sensor_data.csv は変更されていないことを確認した。"
+        ],
+        "limits": [
+          "実行環境では Python 起動前に無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事のスクリプト、初回実行の終了状態、生成出力には影響しなかった。",
+          "提供された等間隔サンプリングの合成データセットのみをテストし、不規則サンプリングや実測センサーデータは評価していない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "unit-conversion-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, math, pathlib",
+        "items": [
+          "5件すべてのレコードについて実行が正常に完了した。",
+          "5件すべての往復変換チェックが PASS した。",
+          "コンソール出力は記事と正確に一致した。",
+          "実際に出力された T004 の accel_m_s2 は 2.451662、T005 の accel_m_s2 は -12.258312 だった。",
+          "元の unit_test_data.csv は変更されなかった。",
+          "2回目の実行は outputs/unit_conversion_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。"
+        ],
+        "limits": [
+          "実行環境は記事の対象である Python 3.12 ではなく Python 3.13.5 だった。",
+          "修正された2つの表示値は Python の2進浮動小数点形式に依存し、表示上の丸め前の数学的な積はそれぞれ 2.4516625 と -12.2583125 のままである。"
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "calculate-by-hand",
+          "block_index": 2,
+          "field": "rows",
+          "new_value": [
+            [
+              "T001",
+              "0",
+              "0.000000",
+              "0",
+              "0.000000"
+            ],
+            [
+              "T002",
+              "36",
+              "10.000000",
+              "1",
+              "9.806650"
+            ],
+            [
+              "T003",
+              "72",
+              "20.000000",
+              "-0.5",
+              "-4.903325"
+            ],
+            [
+              "T004",
+              "90",
+              "25.000000",
+              "0.25",
+              "2.451662"
+            ],
+            [
+              "T005",
+              "108",
+              "30.000000",
+              "-1.25",
+              "-12.258312"
+            ]
+          ],
+          "type": "table"
+        },
+        {
+          "section_id": "expected-output",
+          "block_index": 1,
+          "field": "text",
+          "new_value": "sample_id,speed_kmh,speed_m_s,speed_roundtrip_kmh,accel_g,accel_m_s2,accel_roundtrip_g,roundtrip_check\nT001,0,0.000000,0.000000,0,0.000000,0.000000,PASS\nT002,36,10.000000,36.000000,1,9.806650,1.000000,PASS\nT003,72,20.000000,72.000000,-0.5,-4.903325,-0.500000,PASS\nT004,90,25.000000,90.000000,0.25,2.451662,0.250000,PASS\nT005,108,30.000000,108.000000,-1.25,-12.258312,-1.250000,PASS\n",
+          "type": "code"
+        }
+      ]
+    },
+    "fft-dominant-frequency": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · NumPy 2.3.5 · standard library: csv, pathlib",
+        "items": [
+          "8サンプルで実行が正常に完了した。",
+          "サンプリング周波数は 8.0 Hz、周波数分解能は 1.0 Hz だった。",
+          "検出された0以外の支配周波数は正確に 2.0 Hz だった。",
+          "生成された非負周波数側の FFT 振幅は、0、1、2、3、4 Hz に対してそれぞれ 0.000000、0.000000、4.000000、0.000000、0.000000 だった。",
+          "生成された spectrum.csv は記事の想定CSVと正確に一致した。",
+          "コンソール出力は記事の想定出力と正確に一致した。",
+          "2回目の実行は outputs/fft_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により vibration_data.csv は変更されていないことを確認した。"
+        ],
+        "limits": [
+          "実行環境は記事の対象である Python 3.12 ではなく Python 3.13.5 だった。",
+          "Python 起動時に実行環境から無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、スクリプトの結果や生成された FFT 出力には影響しなかった。",
+          "提供された理想的な合成信号のみをテストし、リーケージ、ウィンドウ処理、ノイズ、不規則サンプリング、エイリアシング、実測振動データは評価していない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "reference-list-csv": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, pathlib",
+        "items": [
+          "6件の参考文献について実行が正常に完了した。",
+          "DOI が欠落している行は R004 の1件であることを確認した。",
+          "重複 DOI グループは1件で、正規化された DOI 10.0000/demo.alpha を R001 と R003 が共有していた。",
+          "issues.csv には正確に3行のデータがあり、R001 DUPLICATE_DOI、R003 DUPLICATE_DOI、R004 MISSING_DOI だった。",
+          "R005 が doi:10.0000/DEMO.GAMMA から 10.0000/demo.gamma に正規化されたことを確認した。",
+          "DOI を含む5行のうち、空でない正規化済み DOI の異なる値は4件であることを確認した。",
+          "コンソール出力は記事と正確に一致した。参考文献6件、DOI欠落行1件、重複DOIグループ1件、問題行3件、想定された出力フォルダだった。",
+          "生成された issues.csv は記事の想定CSVと正確に一致した。",
+          "2回目の実行は outputs/reference_list_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により references.csv は変更されていないことを確認した。"
+        ],
+        "limits": [
+          "スクリプトはテキスト正規化のみを行い、DOI 登録、解決可能性、タイトル・著者メタデータ、撤回情報、書誌情報の正確性は外部検証していない。",
+          "実行環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、スクリプトの終了状態、生成ファイル、検証結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "data-dictionary": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.13.5 · standard library: csv, pathlib, re",
+        "items": [
+          "5行、5つの辞書列について実行が正常に完了した。",
+          "生成された validation_issues.csv には正確に4行あり、すべて物理CSV行6の R005 に対するものだった。speed_kmh 135 OUT_OF_RANGE、accel_m_s2 fast TYPE_ERROR、road_surface snow ALLOWED_VALUE_ERROR、test_status done ALLOWED_VALUE_ERROR だった。",
+          "生成された validation_issues.csv は記事の想定CSVと正確に一致した。",
+          "生成された data_dictionary.csv には正確に5つの SPEC 行と想定されたメタデータ値が含まれていた。",
+          "コンソール出力は正確に一致した: Rows checked: 5; Dictionary columns: 5; Validation issues: 4; Output folder: outputs/data_dictionary_result.",
+          "2回目の実行は outputs/data_dictionary_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により test_runs.csv は変更されていないことを確認した。"
+        ],
+        "limits": [
+          "実行環境は記事の対象である Python 3.12 ではなく Python 3.13.5 だった。",
+          "Python 起動時に実行環境から無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、スクリプトの正常な初回実行、生成ファイル、上書き防止テストには影響しなかった。",
+          "スクリプトは記載された構造・型・範囲・カテゴリ規則のみを検証し、メタデータ定義自体の科学的な正しさまでは検証しない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "file-naming-rules": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: csv, datetime, pathlib, re",
+        "items": [
+          "セットアップスクリプトは正確に8個のファイルを作成した。",
+          "チェッカーは正確に次の内容を報告した: Files checked: 8; Passed: 4; failed: 4; Report: outputs/file_naming_result/file_naming_report.csv.",
+          "生成されたレポートは、意図された有効ファイル4件を PASS と分類した。",
+          "生成されたレポートは 2026-09-20_alpha_notes_v01.txt、20260920_Alpha_notes_v01.txt、20260920_alpha_notes_final.txt を STRUCTURE_ERROR と分類した。",
+          "生成されたレポートは 20260230_beta_results_v01.csv を INVALID_DATE と分類した。",
+          "レポートの合計は記事と一致した。PASS 4件、FAIL 4件、STRUCTURE_ERROR 3件、INVALID_DATE 1件だった。",
+          "出力順は記事の記載どおりアルファベット順だった。",
+          "2回目のチェッカー実行は outputs/file_naming_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により、チェック後も8個すべての元ファイルが変更されていないことを確認した。"
+        ],
+        "limits": [
+          "Python 起動時に実行環境から無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、両スクリプトの正常な初回実行動作や生成レポートには影響しなかった。",
+          "提供された合成フォルダ直下のファイルのみをテストしており、再帰スキャン、共有ドライブでの動作、依存参照、プラットフォーム間のファイルシステム差異は評価していない。"
+        ]
+      },
+      "text_fixes": []
+    }
+  }
+}

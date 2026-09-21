@@ -1,1 +1,296 @@
-{"title": "Make a dated ZIP backup and verify what was archived", "summary": "Create a dated ZIP archive from a folder without changing the originals, then verify that every source file appears in the archive with matching content. A small synthetic folder makes the expected paths, sizes, and totals easy to check by hand.", "tags": ["Python", "ZIP", "Backup"], "audience": "This guide is for people who want a simple dated folder backup with an explicit verification step instead of assuming that archive creation succeeded.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A working folder where the scripts can create folders beneath outputs.", "Read permission for the source files and enough disk space for the ZIP archive.", "Only the Python standard library is required: datetime, hashlib, pathlib, and zipfile."], "sections": [{"id": "define-the-backup", "heading": "1. Define what the backup should contain", "blocks": [{"type": "p", "text": "The script will archive regular files from one source folder, including files in nested subfolders. Paths inside the ZIP are stored relative to the source folder, so a file such as reports/week1.txt stays reports/week1.txt instead of becoming an absolute filesystem path."}, {"type": "p", "text": "The archive name contains the current local calendar date in YYYY-MM-DD form. If the example is run on 2026-09-20, the expected filename is backup_demo_2026-09-20.zip. Running it again on the same day with the same destination causes the script to stop instead of replacing the previous backup."}, {"type": "callout", "title": "Verification is part of the workflow", "text": "A ZIP file existing on disk is not enough evidence that all intended files were stored correctly. This example checks archive integrity, member names, uncompressed sizes, and SHA-256 hashes against the source files."}]}, {"id": "create-synthetic-source", "heading": "2. Create a synthetic source folder", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save the setup script as create_backup_demo.py. It creates four files with exact byte contents, including one file in a nested reports folder."}, {"type": "code"}, {"type": "code"}, {"type": "table", "headers": ["Relative path", "Exact content", "Bytes"], "rows": [["notes.txt", "alpha plus newline", "6"], ["reports/week1.txt", "beta plus newline", "5"], ["reports/week2.txt", "gamma plus newline", "6"], ["settings.ini", "mode=test plus newline", "10"]]}, {"type": "p", "text": "The source contains 4 regular files totaling 27 bytes of uncompressed content: 6 + 5 + 6 + 10. The size of the final ZIP file itself cannot be predicted from that total because ZIP compression and archive metadata add their own overhead."}]}, {"id": "prepare-the-run", "heading": "3. Prepare the dated backup run", "blocks": [{"type": "ol", "items": ["Save the main script as dated_zip_backup.py beside the setup script.", "Keep SOURCE set to outputs/backup_demo for this example.", "Keep BACKUP_DIR set to outputs/backups so the archive is outside the source folder.", "Run the script from the same working directory."]}, {"type": "code"}, {"type": "p", "text": "The script checks that the source exists and that the backup directory is not inside the source directory. The backup parent folder may already exist. The dated ZIP file itself must not exist."}]}, {"id": "create-and-verify", "heading": "4. Create the ZIP and verify every member", "blocks": [{"type": "p", "text": "The script first builds a sorted list of source files. It creates the archive with exclusive file creation, writes each file with ZIP_DEFLATED compression, and then reopens the archive for verification. Verification compares the intended member list, checks CRC integrity with testzip, and compares source and archived SHA-256 hashes."}, {"type": "code"}, {"type": "p", "text": "The code skips symbolic links and archives regular files only. The expected hashes are calculated from the source immediately before each file is added. For a normal local folder that remains unchanged during the run, this provides a useful content-level comparison after the archive is created."}]}, {"id": "expected-result", "heading": "5. Check the expected archive by hand", "blocks": [{"type": "p", "text": "If the script is run on 2026-09-20, the expected archive path is outputs/backups/backup_demo_2026-09-20.zip. The ZIP should contain exactly the following four member paths."}, {"type": "table", "headers": ["Archive member", "Uncompressed bytes"], "rows": [["notes.txt", "6"], ["reports/week1.txt", "5"], ["reports/week2.txt", "6"], ["settings.ini", "10"]]}, {"type": "p", "text": "The nested reports folder is represented by the member paths themselves. The script does not need a separate directory entry for reports because the files already carry that relative path."}, {"type": "p", "text": "The expected console output below is derived manually for a run on 2026-09-20. It is not a captured execution log."}, {"type": "code"}]}, {"id": "manual-checks", "heading": "6. Perform a few independent checks", "blocks": [{"type": "ol", "items": ["Open the ZIP with an archive viewer and confirm that there are exactly 4 files with the expected relative paths.", "Extract the archive into a separate temporary location and compare the text contents with the 4 source files.", "Confirm that the original files still exist in outputs/backup_demo after the backup completes.", "Run the backup script again on the same date without changing the destination. It should stop with FileExistsError instead of replacing the existing archive.", "Change a copied source file in a separate test and create a new backup on a different archive name if you want to confirm that verification follows the new content."]}, {"type": "p", "text": "Do not use the archive file size as the primary verification check. Compression means a valid archive can be smaller or larger than the uncompressed source total, depending on the data and metadata."}]}, {"id": "common-errors", "heading": "7. Recognize common errors", "blocks": [{"type": "table", "headers": ["Symptom", "What to check"], "rows": [["FileNotFoundError", "Check SOURCE and the terminal's working directory. Run the synthetic setup script first for this example."], ["FileExistsError", "A backup with the same dated filename already exists. Review it and choose a different destination or wait for a different intended backup date instead of overwriting it."], ["PermissionError", "Confirm that the script can read every source file and create files inside BACKUP_DIR."], ["CRC check failed", "Treat the archive as failed. Do not rely on it as a backup; investigate storage or write errors and create a fresh archive."], ["Member list mismatch", "The source may have changed during the run, or the archive contents may not match the file list assembled at the beginning."], ["Hash or size mismatch", "Treat verification as failed. Keep the original source unchanged and create a new archive after investigating the mismatch."]]}, {"type": "p", "text": "If an exception occurs after the ZIP file has been created, a partial or unverified archive can remain in the backup folder. The script does not automatically delete it because automatic cleanup can hide evidence useful for diagnosing the failure."}]}, {"id": "limits-and-backup-scope", "heading": "8. Understand what this backup does not guarantee", "blocks": [{"type": "p", "text": "This is a file-copy archive workflow, not a transactional filesystem snapshot. If another application modifies a file while it is being hashed or archived, the result can become inconsistent. For important data, stop writes to the source or use a snapshot-capable backup system."}, {"type": "p", "text": "The example does not preserve every filesystem property. Permissions, ownership, access-control lists, extended attributes, alternate data streams, symbolic links, and application-specific metadata may require a different backup tool. ZIP is useful for portable file collections, but it is not a complete image of a filesystem."}, {"type": "p", "text": "A verified archive is still only one copy. A real backup plan should consider multiple copies, storage failure, accidental deletion, ransomware, retention periods, encryption, and whether recovery has actually been tested. Verification here shows that this archive matched the source content observed during this run; it does not establish a complete disaster-recovery strategy."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: datetime, hashlib, pathlib, zipfile · no execution", "items": ["Manually checked the four synthetic file sizes as 6, 5, 6, and 10 bytes.", "Manually calculated the uncompressed source total as 27 bytes.", "Manually listed the expected archive member paths, including the two nested reports paths.", "Inspected the code to confirm that source files are read, the ZIP is written beneath outputs, and an existing dated archive causes the run to stop.", "Inspected the verification logic for CRC testing, member-list comparison, uncompressed-size comparison, and SHA-256 comparison.", "Derived the expected 2026-09-20 archive filename and console output by hand."], "limits": ["The code was not executed by the author of this response; no ZIP archive was created or opened.", "SHA-256 values and CRC results were not calculated manually because the comparison logic is the relevant check for this example.", "Concurrent source changes, permission failures, storage corruption, interrupted writes, symbolic links, and large-directory performance were not tested.", "Compressed archive size was not predicted because it depends on compression results and ZIP metadata.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · zipfile", "url": "https://docs.python.org/3.12/library/zipfile.html"}, {"title": "Official Python 3.12 documentation · hashlib", "url": "https://docs.python.org/3.12/library/hashlib.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}, {"title": "Official Python 3.12 documentation · datetime", "url": "https://docs.python.org/3.12/library/datetime.html"}], "slug": "dated-zip-backup", "category": "automation", "date": "2026-09-20"}
+{
+  "title": "Make a dated ZIP backup and verify what was archived",
+  "summary": "Create a dated ZIP archive from a folder without changing the originals, then verify that every source file appears in the archive with matching content. A small synthetic folder makes the expected paths, sizes, and totals easy to check by hand.",
+  "tags": [
+    "Python",
+    "ZIP",
+    "Backup"
+  ],
+  "audience": "This guide is for people who want a simple dated folder backup with an explicit verification step instead of assuming that archive creation succeeded.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A working folder where the scripts can create folders beneath outputs.",
+    "Read permission for the source files and enough disk space for the ZIP archive.",
+    "Only the Python standard library is required: datetime, hashlib, pathlib, and zipfile."
+  ],
+  "sections": [
+    {
+      "id": "define-the-backup",
+      "heading": "1. Define what the backup should contain",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The script will archive regular files from one source folder, including files in nested subfolders. Paths inside the ZIP are stored relative to the source folder, so a file such as reports/week1.txt stays reports/week1.txt instead of becoming an absolute filesystem path."
+        },
+        {
+          "type": "p",
+          "text": "The archive name contains the current local calendar date in YYYY-MM-DD form. If the example is run on 2026-09-20, the expected filename is backup_demo_2026-09-20.zip. Running it again on the same day with the same destination causes the script to stop instead of replacing the previous backup."
+        },
+        {
+          "type": "callout",
+          "title": "Verification is part of the workflow",
+          "text": "A ZIP file existing on disk is not enough evidence that all intended files were stored correctly. This example checks archive integrity, member names, uncompressed sizes, and SHA-256 hashes against the source files."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-source",
+      "heading": "2. Create a synthetic source folder",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save the setup script as create_backup_demo.py. It creates four files with exact byte contents, including one file in a nested reports folder."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\n\nSOURCE = Path(\"outputs\") / \"backup_demo\"\nFILES = {\n    \"notes.txt\": b\"alpha\\n\",\n    \"reports/week1.txt\": b\"beta\\n\",\n    \"reports/week2.txt\": b\"gamma\\n\",\n    \"settings.ini\": b\"mode=test\\n\",\n}\n\nSOURCE.parent.mkdir(parents=True, exist_ok=True)\nSOURCE.mkdir()  # Stop if the synthetic source already exists.\n\nfor relative_name, content in FILES.items():\n    target = SOURCE / relative_name\n    target.parent.mkdir(parents=True, exist_ok=True)\n    with target.open(\"xb\") as stream:\n        stream.write(content)\n"
+        },
+        {
+          "type": "code",
+          "text": "python create_backup_demo.py"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Relative path",
+            "Exact content",
+            "Bytes"
+          ],
+          "rows": [
+            [
+              "notes.txt",
+              "alpha plus newline",
+              "6"
+            ],
+            [
+              "reports/week1.txt",
+              "beta plus newline",
+              "5"
+            ],
+            [
+              "reports/week2.txt",
+              "gamma plus newline",
+              "6"
+            ],
+            [
+              "settings.ini",
+              "mode=test plus newline",
+              "10"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The source contains 4 regular files totaling 27 bytes of uncompressed content: 6 + 5 + 6 + 10. The size of the final ZIP file itself cannot be predicted from that total because ZIP compression and archive metadata add their own overhead."
+        }
+      ]
+    },
+    {
+      "id": "prepare-the-run",
+      "heading": "3. Prepare the dated backup run",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Save the main script as dated_zip_backup.py beside the setup script.",
+            "Keep SOURCE set to outputs/backup_demo for this example.",
+            "Keep BACKUP_DIR set to outputs/backups so the archive is outside the source folder.",
+            "Run the script from the same working directory."
+          ]
+        },
+        {
+          "type": "code",
+          "text": "python dated_zip_backup.py"
+        },
+        {
+          "type": "p",
+          "text": "The script checks that the source exists and that the backup directory is not inside the source directory. The backup parent folder may already exist. The dated ZIP file itself must not exist."
+        }
+      ]
+    },
+    {
+      "id": "create-and-verify",
+      "heading": "4. Create the ZIP and verify every member",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The script first builds a sorted list of source files. It creates the archive with exclusive file creation, writes each file with ZIP_DEFLATED compression, and then reopens the archive for verification. Verification compares the intended member list, checks CRC integrity with testzip, and compares source and archived SHA-256 hashes."
+        },
+        {
+          "type": "code",
+          "text": "from datetime import date\nimport hashlib\nfrom pathlib import Path\nfrom zipfile import ZIP_DEFLATED, ZipFile\n\nSOURCE = Path(\"outputs\") / \"backup_demo\"\nBACKUP_DIR = Path(\"outputs\") / \"backups\"\nCHUNK_SIZE = 1024 * 1024\n\n\ndef hash_file(path: Path) -> str:\n    digest = hashlib.sha256()\n    with path.open(\"rb\") as stream:\n        while chunk := stream.read(CHUNK_SIZE):\n            digest.update(chunk)\n    return digest.hexdigest()\n\n\ndef hash_member(archive: ZipFile, member_name: str) -> str:\n    digest = hashlib.sha256()\n    with archive.open(member_name, \"r\") as stream:\n        while chunk := stream.read(CHUNK_SIZE):\n            digest.update(chunk)\n    return digest.hexdigest()\n\n\ndef main() -> None:\n    source_root = SOURCE.resolve(strict=True)\n    if not source_root.is_dir():\n        raise ValueError(\"SOURCE must be a directory.\")\n\n    backup_root = BACKUP_DIR.resolve()\n    if backup_root.is_relative_to(source_root):\n        raise ValueError(\"BACKUP_DIR must be outside SOURCE.\")\n\n    files = sorted(\n        path for path in source_root.rglob(\"*\")\n        if path.is_file() and not path.is_symlink()\n    )\n    if not files:\n        raise ValueError(\"SOURCE contains no regular files to back up.\")\n\n    BACKUP_DIR.mkdir(parents=True, exist_ok=True)\n    archive_name = f\"{source_root.name}_{date.today().isoformat()}.zip\"\n    archive_path = BACKUP_DIR / archive_name\n    if archive_path.exists():\n        raise FileExistsError(f\"Backup already exists: {archive_path}\")\n\n    expected = {}\n    with archive_path.open(\"xb\") as raw:\n        with ZipFile(raw, \"w\", compression=ZIP_DEFLATED) as archive:\n            for path in files:\n                relative = path.relative_to(source_root).as_posix()\n                expected[relative] = (path.stat().st_size, hash_file(path))\n                archive.write(path, arcname=relative)\n\n    with ZipFile(archive_path, \"r\") as archive:\n        bad_member = archive.testzip()\n        if bad_member is not None:\n            raise RuntimeError(f\"CRC check failed: {bad_member}\")\n\n        members = [info for info in archive.infolist() if not info.is_dir()]\n        actual_names = [info.filename for info in members]\n        expected_names = list(expected)\n        if actual_names != expected_names:\n            raise RuntimeError(\"Archive member list does not match the source list.\")\n\n        for info in members:\n            expected_size, expected_hash = expected[info.filename]\n            if info.file_size != expected_size:\n                raise RuntimeError(f\"Size mismatch: {info.filename}\")\n            if hash_member(archive, info.filename) != expected_hash:\n                raise RuntimeError(f\"Hash mismatch: {info.filename}\")\n\n    total_bytes = sum(size for size, _ in expected.values())\n    print(f\"Verified {len(expected)} files totaling {total_bytes} bytes.\")\n    print(f\"Archive: {archive_path.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "p",
+          "text": "The code skips symbolic links and archives regular files only. The expected hashes are calculated from the source immediately before each file is added. For a normal local folder that remains unchanged during the run, this provides a useful content-level comparison after the archive is created."
+        }
+      ]
+    },
+    {
+      "id": "expected-result",
+      "heading": "5. Check the expected archive by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If the script is run on 2026-09-20, the expected archive path is outputs/backups/backup_demo_2026-09-20.zip. The ZIP should contain exactly the following four member paths."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Archive member",
+            "Uncompressed bytes"
+          ],
+          "rows": [
+            [
+              "notes.txt",
+              "6"
+            ],
+            [
+              "reports/week1.txt",
+              "5"
+            ],
+            [
+              "reports/week2.txt",
+              "6"
+            ],
+            [
+              "settings.ini",
+              "10"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The nested reports folder is represented by the member paths themselves. The script does not need a separate directory entry for reports because the files already carry that relative path."
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below is derived manually for a run on 2026-09-20. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Verified 4 files totaling 27 bytes.\nArchive: outputs/backups/backup_demo_2026-09-20.zip"
+        }
+      ]
+    },
+    {
+      "id": "manual-checks",
+      "heading": "6. Perform a few independent checks",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Open the ZIP with an archive viewer and confirm that there are exactly 4 files with the expected relative paths.",
+            "Extract the archive into a separate temporary location and compare the text contents with the 4 source files.",
+            "Confirm that the original files still exist in outputs/backup_demo after the backup completes.",
+            "Run the backup script again on the same date without changing the destination. It should stop with FileExistsError instead of replacing the existing archive.",
+            "Change a copied source file in a separate test and create a new backup on a different archive name if you want to confirm that verification follows the new content."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Do not use the archive file size as the primary verification check. Compression means a valid archive can be smaller or larger than the uncompressed source total, depending on the data and metadata."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "7. Recognize common errors",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "FileNotFoundError",
+              "Check SOURCE and the terminal's working directory. Run the synthetic setup script first for this example."
+            ],
+            [
+              "FileExistsError",
+              "A backup with the same dated filename already exists. Review it and choose a different destination or wait for a different intended backup date instead of overwriting it."
+            ],
+            [
+              "PermissionError",
+              "Confirm that the script can read every source file and create files inside BACKUP_DIR."
+            ],
+            [
+              "CRC check failed",
+              "Treat the archive as failed. Do not rely on it as a backup; investigate storage or write errors and create a fresh archive."
+            ],
+            [
+              "Member list mismatch",
+              "The source may have changed during the run, or the archive contents may not match the file list assembled at the beginning."
+            ],
+            [
+              "Hash or size mismatch",
+              "Treat verification as failed. Keep the original source unchanged and create a new archive after investigating the mismatch."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If an exception occurs after the ZIP file has been created, a partial or unverified archive can remain in the backup folder. The script does not automatically delete it because automatic cleanup can hide evidence useful for diagnosing the failure."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-backup-scope",
+      "heading": "8. Understand what this backup does not guarantee",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This is a file-copy archive workflow, not a transactional filesystem snapshot. If another application modifies a file while it is being hashed or archived, the result can become inconsistent. For important data, stop writes to the source or use a snapshot-capable backup system."
+        },
+        {
+          "type": "p",
+          "text": "The example does not preserve every filesystem property. Permissions, ownership, access-control lists, extended attributes, alternate data streams, symbolic links, and application-specific metadata may require a different backup tool. ZIP is useful for portable file collections, but it is not a complete image of a filesystem."
+        },
+        {
+          "type": "p",
+          "text": "A verified archive is still only one copy. A real backup plan should consider multiple copies, storage failure, accidental deletion, ransomware, retention periods, encryption, and whether recovery has actually been tested. Verification here shows that this archive matched the source content observed during this run; it does not establish a complete disaster-recovery strategy."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "2026-09-21 · ChatGPT Python tool · Python 3.13.5 · standard library datetime/hashlib/pathlib/zipfile",
+    "items": [
+      "The synthetic source contained exactly 4 regular files totaling 27 bytes: notes.txt=6, reports/week1.txt=5, reports/week2.txt=6, settings.ini=10.",
+      "The actual run printed 'Verified 4 files totaling 27 bytes.' and 'Archive: outputs/backups/backup_demo_2026-09-21.zip'.",
+      "The article's 2026-09-20 filename and console example are explicitly conditional on running the script on 2026-09-20; the runtime correctly used the actual local date, 2026-09-21.",
+      "The ZIP contained exactly notes.txt, reports/week1.txt, reports/week2.txt, and settings.ini in the expected order.",
+      "ZIP member uncompressed sizes were exactly 6, 5, 6, and 10 bytes.",
+      "ZipFile.testzip() returned no bad member.",
+      "SHA-256 values of every archived member matched the corresponding source file.",
+      "All source-file SHA-256 hashes were unchanged after archive creation.",
+      "Running the script again with the same dated archive present raised FileExistsError instead of replacing it."
+    ],
+    "limits": [
+      "Concurrent source modification, permission failures, storage corruption, interrupted writes, symbolic-link edge cases, filesystem metadata preservation, and large-directory performance were not stress-tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · zipfile",
+      "url": "https://docs.python.org/3.12/library/zipfile.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · hashlib",
+      "url": "https://docs.python.org/3.12/library/hashlib.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · datetime",
+      "url": "https://docs.python.org/3.12/library/datetime.html"
+    }
+  ],
+  "slug": "dated-zip-backup",
+  "category": "automation",
+  "date": "2026-09-20"
+}

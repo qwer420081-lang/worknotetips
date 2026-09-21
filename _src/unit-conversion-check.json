@@ -1,1 +1,282 @@
-{"title": "Convert automotive test data between km/h, m/s, g, and m/s²", "summary": "Convert synthetic vehicle speed and acceleration data into consistent SI units, then convert the results back to check the arithmetic. The script preserves the original CSV and writes the converted values to a new output folder.", "tags": ["Python", "Units", "Automotive"], "audience": "This guide is for people who work with vehicle or test data containing mixed speed and acceleration units and want simple conversion checks before analysis.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor that can save UTF-8 CSV and Python files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv, math, and pathlib."], "sections": [{"id": "define-the-conversions", "heading": "1. Write the conversion rules before touching the data", "blocks": [{"type": "p", "text": "This example standardizes speed to metres per second and acceleration to metres per second squared. Speed conversion is based on 1 kilometre = 1000 metres and 1 hour = 3600 seconds, so km/h is divided by 3.6 to obtain m/s. The reverse conversion multiplies m/s by 3.6."}, {"type": "p", "text": "For acceleration, this tutorial uses the conventional standard gravity value g0 = 9.80665 m/s². A value expressed in g is multiplied by 9.80665 to obtain m/s². The reverse conversion divides m/s² by 9.80665."}, {"type": "table", "headers": ["Conversion", "Rule"], "rows": [["km/h to m/s", "km/h ÷ 3.6"], ["m/s to km/h", "m/s × 3.6"], ["g to m/s²", "g × 9.80665"], ["m/s² to g", "m/s² ÷ 9.80665"]]}, {"type": "callout", "title": "Keep unit names in column headers", "text": "A number such as 9.8 is ambiguous without a unit. Put units in column names or a data dictionary so a later script does not have to guess whether a value is km/h, m/s, g, or m/s²."}]}, {"id": "create-synthetic-data", "heading": "2. Create a small synthetic test dataset", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save it as unit_test_data.csv. The values are chosen so that the speed conversions are easy to verify by hand while the acceleration examples include positive, negative, and fractional g values."}, {"type": "code"}, {"type": "p", "text": "There are 5 records. Negative acceleration values are preserved as negative values; the conversion changes the unit, not the sign. This dataset is only a numerical example and is not intended to represent a specific vehicle manoeuvre or sensor."}]}, {"id": "calculate-by-hand", "heading": "3. Calculate the expected values by hand", "blocks": [{"type": "p", "text": "The speed conversions are direct. For example, 72 km/h ÷ 3.6 = 20 m/s, and 90 km/h ÷ 3.6 = 25 m/s. Converting back gives 20 × 3.6 = 72 km/h and 25 × 3.6 = 90 km/h."}, {"type": "p", "text": "For acceleration, 1 g becomes 9.80665 m/s². A value of -0.5 g becomes -4.903325 m/s². A value of 0.25 g becomes 2.4516625 m/s². A value of -1.25 g becomes -12.2583125 m/s²."}, {"type": "table", "headers": ["sample_id", "speed_kmh", "Expected speed_m_s", "accel_g", "Expected accel_m_s2"], "rows": [["T001", "0", "0.000000", "0", "0.000000"], ["T002", "36", "10.000000", "1", "9.806650"], ["T003", "72", "20.000000", "-0.5", "-4.903325"], ["T004", "90", "25.000000", "0.25", "2.451663"], ["T005", "108", "30.000000", "-1.25", "-12.258313"]]}, {"type": "p", "text": "The displayed acceleration values are rounded to six decimal places. The calculation itself should use the full 9.80665 factor rather than repeatedly using already rounded output text."}]}, {"id": "convert-and-check", "heading": "4. Convert the CSV and perform round-trip checks", "blocks": [{"type": "p", "text": "Save the following script as unit_conversion_check.py. It reads the original values, performs both forward conversions, converts the results back to the original units, and checks the round trip with a small numerical tolerance. The original CSV is never rewritten."}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected converted file", "blocks": [{"type": "p", "text": "Every row should return to its original speed and acceleration after the reverse conversion. The six-decimal output is shown below. The internal calculations use floating-point values before formatting."}, {"type": "code"}, {"type": "p", "text": "The expected console text below was derived by hand from the synthetic data and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-errors", "heading": "6. Perform independent checks and recognize common errors", "blocks": [{"type": "ul", "items": ["Check 36 km/h manually: 36 ÷ 3.6 = 10 m/s.", "Check 108 km/h manually: 108 ÷ 3.6 = 30 m/s.", "Check -0.5 g manually: -0.5 × 9.80665 = -4.903325 m/s².", "Confirm that signs remain unchanged during unit conversion.", "Confirm that all five rows show PASS in roundtrip_check.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the result."]}, {"type": "table", "headers": ["Problem", "What to check"], "rows": [["Speed differs by a factor of 3.6", "Check whether a value labeled m/s was mistakenly treated as km/h or the reverse."], ["Acceleration differs by about a factor of 9.8", "Check whether g and m/s² were confused."], ["Negative acceleration becomes positive", "Do not apply absolute value unless the analysis specifically requires magnitude."], ["Unexpected rounding differences", "Keep full precision for calculations and round only when displaying or exporting values."], ["Round trip passes but source units were mislabeled", "A mathematically reversible conversion cannot detect an incorrect unit label in the original data."]]}]}, {"id": "limits", "heading": "7. Understand the limits before using real test data", "blocks": [{"type": "p", "text": "A successful unit conversion only shows that the arithmetic and declared units are internally consistent. It does not prove that the original sensor channel was calibrated correctly, that the unit label was correct, or that the recorded value represents the physical quantity you think it does."}, {"type": "p", "text": "The g conversion here uses conventional standard gravity, 9.80665 m/s². Local gravitational acceleration can differ from that conventional reference. In many engineering datasets, g is used as a normalized acceleration unit, so the declared convention should be documented."}, {"type": "p", "text": "Real vehicle test datasets may also mix wheel speed, vehicle speed, rotational speed, force, pressure, and temperature units. Build a data dictionary and convert each channel according to its physical dimension. Never infer a unit solely from the magnitude of the numbers."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, math, pathlib · no execution", "items": ["Manually converted the five speeds as 0, 10, 20, 25, and 30 m/s.", "Manually calculated acceleration values using 9.80665 m/s² per g.", "Checked -0.5 g as -4.903325 m/s², 0.25 g as 2.4516625 m/s², and -1.25 g as -12.2583125 m/s² before display rounding.", "Manually checked the reverse speed conversions by multiplying by 3.6.", "Inspected the code for required columns, duplicate sample IDs, round-trip comparisons, output collision protection, and preservation of the original CSV.", "Derived the expected CSV and console output by hand."], "limits": ["The code was not executed by the author of this response; no converted CSV was created.", "Sensor calibration, metadata correctness, local gravitational acceleration, and unit labels in real acquisition systems were not tested.", "Only km/h, m/s, g, and m/s² are covered in this example.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "BIPM · The International System of Units SI Brochure", "url": "https://www.bipm.org/en/publications/si-brochure"}, {"title": "Official Python 3.12 documentation · math", "url": "https://docs.python.org/3.12/library/math.html"}, {"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "unit-conversion-check", "category": "automotive", "date": "2026-09-20"}
+{
+  "title": "Convert automotive test data between km/h, m/s, g, and m/s²",
+  "summary": "Convert synthetic vehicle speed and acceleration data into consistent SI units, then convert the results back to check the arithmetic. The script preserves the original CSV and writes the converted values to a new output folder.",
+  "tags": [
+    "Python",
+    "Units",
+    "Automotive"
+  ],
+  "audience": "This guide is for people who work with vehicle or test data containing mixed speed and acceleration units and want simple conversion checks before analysis.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor that can save UTF-8 CSV and Python files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv, math, and pathlib."
+  ],
+  "sections": [
+    {
+      "id": "define-the-conversions",
+      "heading": "1. Write the conversion rules before touching the data",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example standardizes speed to metres per second and acceleration to metres per second squared. Speed conversion is based on 1 kilometre = 1000 metres and 1 hour = 3600 seconds, so km/h is divided by 3.6 to obtain m/s. The reverse conversion multiplies m/s by 3.6."
+        },
+        {
+          "type": "p",
+          "text": "For acceleration, this tutorial uses the conventional standard gravity value g0 = 9.80665 m/s². A value expressed in g is multiplied by 9.80665 to obtain m/s². The reverse conversion divides m/s² by 9.80665."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Conversion",
+            "Rule"
+          ],
+          "rows": [
+            [
+              "km/h to m/s",
+              "km/h ÷ 3.6"
+            ],
+            [
+              "m/s to km/h",
+              "m/s × 3.6"
+            ],
+            [
+              "g to m/s²",
+              "g × 9.80665"
+            ],
+            [
+              "m/s² to g",
+              "m/s² ÷ 9.80665"
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Keep unit names in column headers",
+          "text": "A number such as 9.8 is ambiguous without a unit. Put units in column names or a data dictionary so a later script does not have to guess whether a value is km/h, m/s, g, or m/s²."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-data",
+      "heading": "2. Create a small synthetic test dataset",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save it as unit_test_data.csv. The values are chosen so that the speed conversions are easy to verify by hand while the acceleration examples include positive, negative, and fractional g values."
+        },
+        {
+          "type": "code",
+          "text": "sample_id,speed_kmh,accel_g\nT001,0,0\nT002,36,1\nT003,72,-0.5\nT004,90,0.25\nT005,108,-1.25\n"
+        },
+        {
+          "type": "p",
+          "text": "There are 5 records. Negative acceleration values are preserved as negative values; the conversion changes the unit, not the sign. This dataset is only a numerical example and is not intended to represent a specific vehicle manoeuvre or sensor."
+        }
+      ]
+    },
+    {
+      "id": "calculate-by-hand",
+      "heading": "3. Calculate the expected values by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The speed conversions are direct. For example, 72 km/h ÷ 3.6 = 20 m/s, and 90 km/h ÷ 3.6 = 25 m/s. Converting back gives 20 × 3.6 = 72 km/h and 25 × 3.6 = 90 km/h."
+        },
+        {
+          "type": "p",
+          "text": "For acceleration, 1 g becomes 9.80665 m/s². A value of -0.5 g becomes -4.903325 m/s². A value of 0.25 g becomes 2.4516625 m/s². A value of -1.25 g becomes -12.2583125 m/s²."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "sample_id",
+            "speed_kmh",
+            "Expected speed_m_s",
+            "accel_g",
+            "Expected accel_m_s2"
+          ],
+          "rows": [
+            [
+              "T001",
+              "0",
+              "0.000000",
+              "0",
+              "0.000000"
+            ],
+            [
+              "T002",
+              "36",
+              "10.000000",
+              "1",
+              "9.806650"
+            ],
+            [
+              "T003",
+              "72",
+              "20.000000",
+              "-0.5",
+              "-4.903325"
+            ],
+            [
+              "T004",
+              "90",
+              "25.000000",
+              "0.25",
+              "2.451662"
+            ],
+            [
+              "T005",
+              "108",
+              "30.000000",
+              "-1.25",
+              "-12.258312"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The displayed acceleration values are rounded to six decimal places. The calculation itself should use the full 9.80665 factor rather than repeatedly using already rounded output text."
+        }
+      ]
+    },
+    {
+      "id": "convert-and-check",
+      "heading": "4. Convert the CSV and perform round-trip checks",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as unit_conversion_check.py. It reads the original values, performs both forward conversions, converts the results back to the original units, and checks the round trip with a small numerical tolerance. The original CSV is never rewritten."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport math\nfrom pathlib import Path\n\nSOURCE = Path(\"unit_test_data.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"unit_conversion_result\"\nOUTPUT = OUTPUT_DIR / \"converted_test_data.csv\"\nSTANDARD_GRAVITY = 9.80665\nTOLERANCE = 1e-12\n\n\ndef kmh_to_ms(value: float) -> float:\n    return value / 3.6\n\n\ndef ms_to_kmh(value: float) -> float:\n    return value * 3.6\n\n\ndef g_to_ms2(value: float) -> float:\n    return value * STANDARD_GRAVITY\n\n\ndef ms2_to_g(value: float) -> float:\n    return value / STANDARD_GRAVITY\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    output_rows = []\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        required = {\"sample_id\", \"speed_kmh\", \"accel_g\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise ValueError(\"CSV is missing a required column.\")\n\n        seen_ids = set()\n        for row in reader:\n            sample_id = row[\"sample_id\"].strip()\n            if not sample_id:\n                raise ValueError(\"sample_id must not be blank.\")\n            if sample_id in seen_ids:\n                raise ValueError(f\"Duplicate sample_id: {sample_id}\")\n            seen_ids.add(sample_id)\n\n            speed_kmh = float(row[\"speed_kmh\"])\n            accel_g = float(row[\"accel_g\"])\n            speed_ms = kmh_to_ms(speed_kmh)\n            accel_ms2 = g_to_ms2(accel_g)\n            speed_roundtrip = ms_to_kmh(speed_ms)\n            accel_roundtrip = ms2_to_g(accel_ms2)\n\n            speed_ok = math.isclose(\n                speed_kmh, speed_roundtrip,\n                rel_tol=TOLERANCE, abs_tol=TOLERANCE\n            )\n            accel_ok = math.isclose(\n                accel_g, accel_roundtrip,\n                rel_tol=TOLERANCE, abs_tol=TOLERANCE\n            )\n            if not speed_ok or not accel_ok:\n                raise RuntimeError(f\"Round-trip check failed: {sample_id}\")\n\n            output_rows.append({\n                \"sample_id\": sample_id,\n                \"speed_kmh\": f\"{speed_kmh:g}\",\n                \"speed_m_s\": f\"{speed_ms:.6f}\",\n                \"speed_roundtrip_kmh\": f\"{speed_roundtrip:.6f}\",\n                \"accel_g\": f\"{accel_g:g}\",\n                \"accel_m_s2\": f\"{accel_ms2:.6f}\",\n                \"accel_roundtrip_g\": f\"{accel_roundtrip:.6f}\",\n                \"roundtrip_check\": \"PASS\",\n            })\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    fields = [\n        \"sample_id\", \"speed_kmh\", \"speed_m_s\", \"speed_roundtrip_kmh\",\n        \"accel_g\", \"accel_m_s2\", \"accel_roundtrip_g\", \"roundtrip_check\"\n    ]\n    with OUTPUT.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=fields)\n        writer.writeheader()\n        writer.writerows(output_rows)\n\n    print(f\"Converted records: {len(output_rows)}.\")\n    print(f\"Round-trip checks passed: {len(output_rows)}.\")\n    print(f\"Standard gravity used: {STANDARD_GRAVITY} m/s^2.\")\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected converted file",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Every row should return to its original speed and acceleration after the reverse conversion. The six-decimal output is shown below. The internal calculations use floating-point values before formatting."
+        },
+        {
+          "type": "code",
+          "text": "sample_id,speed_kmh,speed_m_s,speed_roundtrip_kmh,accel_g,accel_m_s2,accel_roundtrip_g,roundtrip_check\nT001,0,0.000000,0.000000,0,0.000000,0.000000,PASS\nT002,36,10.000000,36.000000,1,9.806650,1.000000,PASS\nT003,72,20.000000,72.000000,-0.5,-4.903325,-0.500000,PASS\nT004,90,25.000000,90.000000,0.25,2.451662,0.250000,PASS\nT005,108,30.000000,108.000000,-1.25,-12.258312,-1.250000,PASS\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console text below was derived by hand from the synthetic data and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Converted records: 5.\nRound-trip checks passed: 5.\nStandard gravity used: 9.80665 m/s^2.\nOutput: outputs/unit_conversion_result/converted_test_data.csv"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-errors",
+      "heading": "6. Perform independent checks and recognize common errors",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Check 36 km/h manually: 36 ÷ 3.6 = 10 m/s.",
+            "Check 108 km/h manually: 108 ÷ 3.6 = 30 m/s.",
+            "Check -0.5 g manually: -0.5 × 9.80665 = -4.903325 m/s².",
+            "Confirm that signs remain unchanged during unit conversion.",
+            "Confirm that all five rows show PASS in roundtrip_check.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the result."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "Speed differs by a factor of 3.6",
+              "Check whether a value labeled m/s was mistakenly treated as km/h or the reverse."
+            ],
+            [
+              "Acceleration differs by about a factor of 9.8",
+              "Check whether g and m/s² were confused."
+            ],
+            [
+              "Negative acceleration becomes positive",
+              "Do not apply absolute value unless the analysis specifically requires magnitude."
+            ],
+            [
+              "Unexpected rounding differences",
+              "Keep full precision for calculations and round only when displaying or exporting values."
+            ],
+            [
+              "Round trip passes but source units were mislabeled",
+              "A mathematically reversible conversion cannot detect an incorrect unit label in the original data."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Understand the limits before using real test data",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A successful unit conversion only shows that the arithmetic and declared units are internally consistent. It does not prove that the original sensor channel was calibrated correctly, that the unit label was correct, or that the recorded value represents the physical quantity you think it does."
+        },
+        {
+          "type": "p",
+          "text": "The g conversion here uses conventional standard gravity, 9.80665 m/s². Local gravitational acceleration can differ from that conventional reference. In many engineering datasets, g is used as a normalized acceleration unit, so the declared convention should be documented."
+        },
+        {
+          "type": "p",
+          "text": "Real vehicle test datasets may also mix wheel speed, vehicle speed, rotational speed, force, pressure, and temperature units. Build a data dictionary and convert each channel according to its physical dimension. Never infer a unit solely from the magnitude of the numbers."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library: csv, math, pathlib",
+    "items": [
+      "Execution completed successfully for all 5 records.",
+      "All 5 round-trip checks passed.",
+      "Console output matched the article exactly.",
+      "Actual exported T004 accel_m_s2 was 2.451662; actual T005 accel_m_s2 was -12.258312.",
+      "The source unit_test_data.csv was unchanged.",
+      "Second execution raised FileExistsError for outputs/unit_conversion_result, confirming overwrite protection.",
+      "Local recheck on 2026-09-21 with Python 3.12.14: the corrected example passed; source preservation and overwrite protection also passed."
+    ],
+    "limits": [
+      "The runtime was Python 3.13.5 rather than the article's target Python 3.12.",
+      "The two corrected display values depend on Python binary floating-point formatting; the underlying mathematical products remain 2.4516625 and -12.2583125 before floating-point display rounding."
+    ]
+  },
+  "references": [
+    {
+      "title": "BIPM · The International System of Units SI Brochure",
+      "url": "https://www.bipm.org/en/publications/si-brochure"
+    },
+    {
+      "title": "Official Python 3.12 documentation · math",
+      "url": "https://docs.python.org/3.12/library/math.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "unit-conversion-check",
+  "category": "automotive",
+  "date": "2026-09-20"
+}

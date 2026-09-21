@@ -1,1 +1,317 @@
-{"title": "Measure AI Support-Ticket Classification Accuracy with a Confusion Matrix", "summary": "AI can label support tickets quickly, but the labels should be measured against a small hand-labeled reference set before being trusted. This guide uses a tiny synthetic example, compares AI predictions with known labels, and calculates accuracy plus a confusion matrix in Python.", "seo_title": "AI Classification Accuracy with Confusion Matrix", "seo_desc": "Label support tickets with AI, compare predictions with hand-labeled data, and calculate accuracy and a confusion matrix using a small Python script.", "tags": ["AI classification", "confusion matrix", "Python"], "audience": "For people who use an AI chat assistant to classify short text such as support tickets and want a simple way to measure labeling accuracy.", "prerequisites": ["Python 3.12", "Basic familiarity with CSV files and classification labels"], "sections": [{"id": "why-measure-classification", "heading": "Why measure AI classification instead of trusting examples", "blocks": [{"type": "p", "text": "An AI chat assistant can assign categories to support tickets, emails, comments, or short notes, but a few convincing examples do not show how accurate the classifier is overall. The useful question is not whether individual predictions look plausible. It is how often the AI agrees with a reference set that has already been labeled by a person."}, {"type": "p", "text": "A small hand-labeled test set gives you a fixed answer key. You can compare each AI prediction with that key, calculate accuracy, and inspect a confusion matrix to see which classes are being mixed up. Accuracy gives one overall number, while the confusion matrix shows the pattern behind the mistakes."}, {"type": "callout", "title": "Important assumption", "text": "The hand-labeled set is treated as the reference for this test. If those labels are inconsistent or wrong, the measured accuracy will also be misleading."}]}, {"id": "synthetic-ticket-set", "heading": "Create a tiny synthetic labeled set", "blocks": [{"type": "p", "text": "The following eight support tickets are synthetic examples created only for this tutorial. Use three labels: billing for payment or invoice issues, login for access problems, and bug for software behavior that appears broken. The hand_label column is the reference label assigned before asking the AI."}, {"type": "table", "headers": ["id", "ticket", "hand_label"], "rows": [["T1", "I was charged twice for the same order.", "billing"], ["T2", "My password reset link says it has expired.", "login"], ["T3", "The app closes whenever I open the reports page.", "bug"], ["T4", "Where can I download last month's invoice?", "billing"], ["T5", "I cannot sign in after changing my email address.", "login"], ["T6", "The export button does nothing when I click it.", "bug"], ["T7", "My card was declined but the bank says it is fine.", "billing"], ["T8", "The dashboard shows a blank screen after login.", "bug"]]}, {"type": "p", "text": "Because the dataset is small, every expected label can be reviewed manually. That makes it suitable for checking the evaluation workflow itself before applying the same method to a larger labeled sample."}]}, {"id": "ask-the-ai", "heading": "Ask the AI to return one controlled label per ticket", "blocks": [{"type": "p", "text": "Classification prompts are easier to evaluate when the allowed labels and output format are fixed. Do not ask for free-form explanations unless you need them separately, because extra wording makes comparison harder."}, {"type": "ol", "items": ["Define the only allowed labels: billing, login, and bug.", "Give short definitions for each label.", "Require exactly one label per ticket.", "Require the ticket ID to remain unchanged.", "Tell the AI not to invent new categories when a ticket is ambiguous."]}, {"type": "callout", "title": "Example request to the AI", "text": "Classify each support ticket into exactly one of these labels: billing = payment, charge, invoice, or card issue; login = authentication or account access issue; bug = software behavior that appears broken. Return only ticket_id,label with one row per ticket. Use only billing, login, or bug."}]}, {"id": "typical-ai-output", "heading": "Compare the AI output with the reference labels", "blocks": [{"type": "p", "text": "Suppose the AI produces the following synthetic predictions. Six are correct. T7 is predicted as login even though the reference label is billing, and T8 is predicted as login even though the reference label is bug."}, {"type": "table", "headers": ["id", "hand_label", "ai_label", "correct"], "rows": [["T1", "billing", "billing", "yes"], ["T2", "login", "login", "yes"], ["T3", "bug", "bug", "yes"], ["T4", "billing", "billing", "yes"], ["T5", "login", "login", "yes"], ["T6", "bug", "bug", "yes"], ["T7", "billing", "login", "no"], ["T8", "bug", "login", "no"]]}, {"type": "p", "text": "The overall accuracy is therefore 6 correct predictions out of 8 tickets. Calculated by hand, 6 ÷ 8 = 0.75, so the accuracy is 75%."}]}, {"id": "confusion-matrix", "heading": "Read the confusion matrix instead of accuracy alone", "blocks": [{"type": "p", "text": "A confusion matrix counts reference labels by predicted labels. For this example, use rows for the hand labels and columns for the AI labels. The diagonal cells are correct predictions; off-diagonal cells are errors."}, {"type": "table", "headers": ["hand \\ predicted", "billing", "login", "bug"], "rows": [["billing", "2", "1", "0"], ["login", "0", "2", "0"], ["bug", "0", "1", "2"]]}, {"type": "p", "text": "The matrix explains the two errors immediately. One billing ticket was classified as login, and one bug ticket was also classified as login. The AI did not incorrectly predict billing or bug for any login ticket in this small example. That does not prove login is generally the strongest class; it only describes these eight synthetic cases."}, {"type": "callout", "title": "Why the matrix matters", "text": "Two models can have the same accuracy but make different kinds of mistakes. The confusion matrix shows which label pairs need closer review."}]}, {"id": "calculate-with-python", "heading": "Calculate accuracy and the matrix with Python", "blocks": [{"type": "p", "text": "Save the comparison data in ticket_labels.csv with the columns id, hand_label, and ai_label. The script below validates the labels, counts correct predictions, builds the confusion matrix, and writes a report to outputs/classification_report.txt. It uses only the Python 3.12 standard library, does not change the input file, and stops if the output file already exists."}, {"type": "code"}]}, {"id": "check-mistakes-and-limits", "heading": "Review the mistakes before using the classifier", "blocks": [{"type": "p", "text": "The two incorrect tickets deserve more attention than the 75% score alone. T7 mentions a card, so a weak prompt might associate it with account access even though the defined reference category is billing. T8 contains the phrase after login, but the actual reported problem is a blank dashboard, which the reference scheme treats as a bug. These cases show why category definitions should describe the underlying issue rather than rely on isolated keywords."}, {"type": "ul", "items": ["Check every disagreement manually before changing the prompt or label definitions.", "Keep the same label definitions when comparing different prompts or AI runs.", "Do not mix training examples into the test set if you want the test to remain an independent evaluation.", "Use more than overall accuracy when classes are uneven or some mistakes matter more than others.", "Increase the hand-labeled sample before drawing conclusions about production performance."]}, {"type": "p", "text": "A confusion matrix is descriptive evidence for the tested sample, not proof of future performance. A small balanced example is useful for learning the workflow, but a real evaluation should include enough hand-labeled tickets to represent actual wording, ambiguous cases, and class frequencies."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["All eight support tickets and labels in this article are synthetic examples.", "The example contains 8 tickets and 6 correct AI predictions.", "Accuracy was checked by hand: 6 ÷ 8 = 0.75, or 75%.", "The billing row of the confusion matrix was checked by hand: 2 predicted billing, 1 predicted login, 0 predicted bug.", "The login row was checked by hand: 0 predicted billing, 2 predicted login, 0 predicted bug.", "The bug row was checked by hand: 0 predicted billing, 1 predicted login, 2 predicted bug.", "The confusion matrix totals 8 cases, matching the number of example tickets.", "The shown Python logic uses only csv, collections, and pathlib from the Python standard library and protects an existing output file from overwrite."], "limits": ["The Python code was not executed by the author of this article; its behavior was reviewed manually.", "This eight-ticket synthetic dataset is too small to estimate real production accuracy reliably.", "Accuracy can hide class-specific problems, especially when class frequencies are imbalanced.", "The measured result depends on the quality and consistency of the hand-labeled reference set."]}, "references": [{"title": "Python csv documentation", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python collections documentation", "url": "https://docs.python.org/3/library/collections.html"}, {"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}], "slug": "ai-classification-accuracy", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Measure AI Support-Ticket Classification Accuracy with a Confusion Matrix",
+  "summary": "AI can label support tickets quickly, but the labels should be measured against a small hand-labeled reference set before being trusted. This guide uses a tiny synthetic example, compares AI predictions with known labels, and calculates accuracy plus a confusion matrix in Python.",
+  "seo_title": "AI Classification Accuracy with Confusion Matrix",
+  "seo_desc": "Label support tickets with AI, compare predictions with hand-labeled data, and calculate accuracy and a confusion matrix using a small Python script.",
+  "tags": [
+    "AI classification",
+    "confusion matrix",
+    "Python"
+  ],
+  "audience": "For people who use an AI chat assistant to classify short text such as support tickets and want a simple way to measure labeling accuracy.",
+  "prerequisites": [
+    "Python 3.12",
+    "Basic familiarity with CSV files and classification labels"
+  ],
+  "sections": [
+    {
+      "id": "why-measure-classification",
+      "heading": "Why measure AI classification instead of trusting examples",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI chat assistant can assign categories to support tickets, emails, comments, or short notes, but a few convincing examples do not show how accurate the classifier is overall. The useful question is not whether individual predictions look plausible. It is how often the AI agrees with a reference set that has already been labeled by a person."
+        },
+        {
+          "type": "p",
+          "text": "A small hand-labeled test set gives you a fixed answer key. You can compare each AI prediction with that key, calculate accuracy, and inspect a confusion matrix to see which classes are being mixed up. Accuracy gives one overall number, while the confusion matrix shows the pattern behind the mistakes."
+        },
+        {
+          "type": "callout",
+          "title": "Important assumption",
+          "text": "The hand-labeled set is treated as the reference for this test. If those labels are inconsistent or wrong, the measured accuracy will also be misleading."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-ticket-set",
+      "heading": "Create a tiny synthetic labeled set",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following eight support tickets are synthetic examples created only for this tutorial. Use three labels: billing for payment or invoice issues, login for access problems, and bug for software behavior that appears broken. The hand_label column is the reference label assigned before asking the AI."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "id",
+            "ticket",
+            "hand_label"
+          ],
+          "rows": [
+            [
+              "T1",
+              "I was charged twice for the same order.",
+              "billing"
+            ],
+            [
+              "T2",
+              "My password reset link says it has expired.",
+              "login"
+            ],
+            [
+              "T3",
+              "The app closes whenever I open the reports page.",
+              "bug"
+            ],
+            [
+              "T4",
+              "Where can I download last month's invoice?",
+              "billing"
+            ],
+            [
+              "T5",
+              "I cannot sign in after changing my email address.",
+              "login"
+            ],
+            [
+              "T6",
+              "The export button does nothing when I click it.",
+              "bug"
+            ],
+            [
+              "T7",
+              "My card was declined but the bank says it is fine.",
+              "billing"
+            ],
+            [
+              "T8",
+              "The dashboard shows a blank screen after login.",
+              "bug"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Because the dataset is small, every expected label can be reviewed manually. That makes it suitable for checking the evaluation workflow itself before applying the same method to a larger labeled sample."
+        }
+      ]
+    },
+    {
+      "id": "ask-the-ai",
+      "heading": "Ask the AI to return one controlled label per ticket",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Classification prompts are easier to evaluate when the allowed labels and output format are fixed. Do not ask for free-form explanations unless you need them separately, because extra wording makes comparison harder."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Define the only allowed labels: billing, login, and bug.",
+            "Give short definitions for each label.",
+            "Require exactly one label per ticket.",
+            "Require the ticket ID to remain unchanged.",
+            "Tell the AI not to invent new categories when a ticket is ambiguous."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Classify each support ticket into exactly one of these labels: billing = payment, charge, invoice, or card issue; login = authentication or account access issue; bug = software behavior that appears broken. Return only ticket_id,label with one row per ticket. Use only billing, login, or bug."
+        }
+      ]
+    },
+    {
+      "id": "typical-ai-output",
+      "heading": "Compare the AI output with the reference labels",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Suppose the AI produces the following synthetic predictions. Six are correct. T7 is predicted as login even though the reference label is billing, and T8 is predicted as login even though the reference label is bug."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "id",
+            "hand_label",
+            "ai_label",
+            "correct"
+          ],
+          "rows": [
+            [
+              "T1",
+              "billing",
+              "billing",
+              "yes"
+            ],
+            [
+              "T2",
+              "login",
+              "login",
+              "yes"
+            ],
+            [
+              "T3",
+              "bug",
+              "bug",
+              "yes"
+            ],
+            [
+              "T4",
+              "billing",
+              "billing",
+              "yes"
+            ],
+            [
+              "T5",
+              "login",
+              "login",
+              "yes"
+            ],
+            [
+              "T6",
+              "bug",
+              "bug",
+              "yes"
+            ],
+            [
+              "T7",
+              "billing",
+              "login",
+              "no"
+            ],
+            [
+              "T8",
+              "bug",
+              "login",
+              "no"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The overall accuracy is therefore 6 correct predictions out of 8 tickets. Calculated by hand, 6 ÷ 8 = 0.75, so the accuracy is 75%."
+        }
+      ]
+    },
+    {
+      "id": "confusion-matrix",
+      "heading": "Read the confusion matrix instead of accuracy alone",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A confusion matrix counts reference labels by predicted labels. For this example, use rows for the hand labels and columns for the AI labels. The diagonal cells are correct predictions; off-diagonal cells are errors."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "hand \\ predicted",
+            "billing",
+            "login",
+            "bug"
+          ],
+          "rows": [
+            [
+              "billing",
+              "2",
+              "1",
+              "0"
+            ],
+            [
+              "login",
+              "0",
+              "2",
+              "0"
+            ],
+            [
+              "bug",
+              "0",
+              "1",
+              "2"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The matrix explains the two errors immediately. One billing ticket was classified as login, and one bug ticket was also classified as login. The AI did not incorrectly predict billing or bug for any login ticket in this small example. That does not prove login is generally the strongest class; it only describes these eight synthetic cases."
+        },
+        {
+          "type": "callout",
+          "title": "Why the matrix matters",
+          "text": "Two models can have the same accuracy but make different kinds of mistakes. The confusion matrix shows which label pairs need closer review."
+        }
+      ]
+    },
+    {
+      "id": "calculate-with-python",
+      "heading": "Calculate accuracy and the matrix with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the comparison data in ticket_labels.csv with the columns id, hand_label, and ai_label. The script below validates the labels, counts correct predictions, builds the confusion matrix, and writes a report to outputs/classification_report.txt. It uses only the Python 3.12 standard library, does not change the input file, and stops if the output file already exists."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom collections import Counter\nfrom pathlib import Path\n\nINPUT_FILE = Path(\"ticket_labels.csv\")\nOUTPUT_DIR = Path(\"outputs\")\nOUTPUT_FILE = OUTPUT_DIR / \"classification_report.txt\"\nLABELS = [\"billing\", \"login\", \"bug\"]\n\n\ndef main():\n    if not INPUT_FILE.is_file():\n        raise SystemExit(f\"Input file not found: {INPUT_FILE}\")\n\n    if OUTPUT_FILE.exists():\n        raise SystemExit(f\"Output already exists: {OUTPUT_FILE}\")\n\n    rows = []\n    with INPUT_FILE.open(\"r\", encoding=\"utf-8\", newline=\"\") as file:\n        reader = csv.DictReader(file)\n        required = {\"id\", \"hand_label\", \"ai_label\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise SystemExit(\"ticket_labels.csv is missing required columns.\")\n\n        for row_number, row in enumerate(reader, start=2):\n            hand = row[\"hand_label\"].strip()\n            predicted = row[\"ai_label\"].strip()\n\n            if hand not in LABELS:\n                raise SystemExit(f\"Invalid hand_label on row {row_number}: {hand}\")\n            if predicted not in LABELS:\n                raise SystemExit(f\"Invalid ai_label on row {row_number}: {predicted}\")\n\n            rows.append((row[\"id\"].strip(), hand, predicted))\n\n    if not rows:\n        raise SystemExit(\"No labeled rows found.\")\n\n    correct = sum(1 for _, hand, predicted in rows if hand == predicted)\n    accuracy = correct / len(rows)\n\n    counts = Counter((hand, predicted) for _, hand, predicted in rows)\n\n    report = []\n    report.append(f\"tickets={len(rows)}\")\n    report.append(f\"correct={correct}\")\n    report.append(f\"accuracy={accuracy:.3f}\")\n    report.append(\"\")\n    report.append(\"confusion_matrix\")\n    report.append(\"hand\\\\predicted\\t\" + \"\\t\".join(LABELS))\n\n    for hand in LABELS:\n        values = [str(counts[(hand, predicted)]) for predicted in LABELS]\n        report.append(hand + \"\\t\" + \"\\t\".join(values))\n\n    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)\n    OUTPUT_FILE.write_text(\"\\n\".join(report) + \"\\n\", encoding=\"utf-8\")\n    print(f\"Wrote: {OUTPUT_FILE}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "check-mistakes-and-limits",
+      "heading": "Review the mistakes before using the classifier",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The two incorrect tickets deserve more attention than the 75% score alone. T7 mentions a card, so a weak prompt might associate it with account access even though the defined reference category is billing. T8 contains the phrase after login, but the actual reported problem is a blank dashboard, which the reference scheme treats as a bug. These cases show why category definitions should describe the underlying issue rather than rely on isolated keywords."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Check every disagreement manually before changing the prompt or label definitions.",
+            "Keep the same label definitions when comparing different prompts or AI runs.",
+            "Do not mix training examples into the test set if you want the test to remain an independent evaluation.",
+            "Use more than overall accuracy when classes are uneven or some mistakes matter more than others.",
+            "Increase the hand-labeled sample before drawing conclusions about production performance."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A confusion matrix is descriptive evidence for the tested sample, not proof of future performance. A small balanced example is useful for learning the workflow, but a real evaluation should include enough hand-labeled tickets to represent actual wording, ambiguous cases, and class frequencies."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script processed exactly 8 tickets.",
+      "The script calculated correct=6 and accuracy=0.750, matching the stated 75%.",
+      "The confusion matrix matched the article exactly: billing=[2,1,0], login=[0,2,0], bug=[0,1,2].",
+      "The confusion-matrix cells total 8 cases.",
+      "The script wrote outputs/classification_report.txt without modifying ticket_labels.csv.",
+      "A second execution stopped with 'Output already exists: outputs/classification_report.txt', confirming the no-overwrite behavior."
+    ],
+    "limits": [
+      "The 8-ticket dataset is synthetic and too small to establish real-world classification performance.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python execution environment; it did not affect script execution or results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python csv documentation",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python collections documentation",
+      "url": "https://docs.python.org/3/library/collections.html"
+    },
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-classification-accuracy",
+  "category": "ai",
+  "date": "2026-09-21"
+}

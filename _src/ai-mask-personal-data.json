@@ -1,1 +1,267 @@
-{"title": "Mask names, emails, and phone numbers before pasting text into an AI tool", "summary": "Remove or replace obvious personal data before sending text to an AI chat assistant, then review both the masked text and a detection report for anything the script missed. This tutorial uses a small synthetic example and keeps the original file unchanged.", "seo_title": "Mask personal data before using AI: names, email, phone", "seo_desc": "Mask names, email addresses, and phone numbers before pasting text into an AI tool, then review a report to find personal data the rules missed.", "tags": ["data masking", "AI privacy", "Python"], "audience": "For people who want a practical pre-check before sending work text containing possible names, email addresses, or phone numbers to an AI assistant.", "prerequisites": ["Python 3.12", "A text editor and an AI chat assistant"], "sections": [{"id": "start-with-synthetic-text", "heading": "Start with a small synthetic message", "blocks": [{"type": "p", "text": "This example is entirely synthetic. The names, email addresses, phone numbers, company details, and message content are invented for the tutorial. The purpose is to practice removing obvious personal data before text leaves your local workspace."}, {"type": "p", "text": "Save the following text as message.txt. It contains two names, two email addresses, two phone numbers, and one deliberately awkward reference that a simple masking rule will miss."}, {"type": "code"}, {"type": "callout", "title": "Mask before sharing", "text": "Do not treat masking as permission to paste any confidential text into an AI service. First decide whether the text is allowed to be shared at all under your organization, contract, research, or legal requirements."}]}, {"id": "ask-ai-for-mask-plan", "heading": "Ask AI for a masking plan, not for the sensitive text", "blocks": [{"type": "p", "text": "You can ask an AI assistant how to design masking rules without sending it the actual sensitive document. Describe the categories and use invented examples instead."}, {"type": "callout", "title": "Example prompt", "text": "I need to prepare work text before sending it to an AI tool. I want to replace full names, email addresses, and Korean-style phone numbers with consistent placeholders. Suggest conservative detection rules using Python standard-library tools. Do not assume that regex can identify every name. Explain likely false positives and false negatives, and recommend a manual review step."}, {"type": "p", "text": "A useful answer should distinguish structured identifiers from unstructured language. Email addresses and phone numbers often have recognizable patterns. Human names are harder: ordinary words can be names, names can contain initials or multiple scripts, and the same person may be referenced in several forms."}]}, {"id": "review-typical-rules", "heading": "Convert the AI answer into explicit masking rules", "blocks": [{"type": "p", "text": "For this synthetic example, use a small approved list for names and regular expressions for email addresses and phone numbers. This is intentionally narrower than a general personal-data detector."}, {"type": "table", "headers": ["Data type", "Rule", "Placeholder"], "rows": [["Full name", "Replace only exact approved names Alice Kim and Bob Lee", "[NAME_1], [NAME_2]"], ["Email", "Match common address-like patterns containing a local part, @, and domain", "[EMAIL_1], [EMAIL_2]"], ["Phone", "Match the two phone formats present in this example", "[PHONE_1], [PHONE_2]"], ["Other text", "Leave unchanged for manual review", "No automatic replacement"]]}, {"type": "p", "text": "Consistent placeholders are useful because repeated references can remain understandable without retaining the original identifier. The script below gives the same placeholder to repeated occurrences of the same detected value."}, {"type": "callout", "title": "Expected limitation", "text": "A. Kim is not in the approved full-name list, so this simple rule will not mask it. That miss is intentional: the tutorial uses it to show why a second review is necessary."}]}, {"id": "apply-masking-locally", "heading": "Apply the rules to a local copy", "blocks": [{"type": "p", "text": "The following Python script reads message.txt, applies the approved rules, and writes results into a new outputs folder. It also writes a replacements.csv report containing every detected original value and its placeholder. It stops if outputs already exists and never overwrites message.txt."}, {"type": "code"}, {"type": "p", "text": "Place mask_personal_data.py beside message.txt and run python mask_personal_data.py. For this exact example, the expected summary is 2 unique names, 2 unique emails, and 2 unique phone numbers masked."}]}, {"id": "check-expected-output", "heading": "Check the replacements against the source", "blocks": [{"type": "p", "text": "Work out the expected replacements before relying on the result. The script should record six unique detected values."}, {"type": "table", "headers": ["Type", "Original", "Replacement"], "rows": [["NAME", "Alice Kim", "[NAME_1]"], ["NAME", "Bob Lee", "[NAME_2]"], ["EMAIL", "alice.kim@example.com", "[EMAIL_1]"], ["EMAIL", "bob.lee@example.com", "[EMAIL_2]"], ["PHONE", "010-1234-5678", "[PHONE_1]"], ["PHONE", "02-345-6789", "[PHONE_2]"]]}, {"type": "p", "text": "Alice Kim appears twice in the source but should use [NAME_1] both times. The report contains unique detected values rather than one row for every occurrence."}]}, {"id": "review-what-was-missed", "heading": "Review what the automatic rules missed", "blocks": [{"type": "p", "text": "Automatic replacement is only the first pass. Open outputs/message_masked.txt and read the entire result before pasting it anywhere. In this example, the last paragraph still contains A. Kim. The script cannot know from its approved list that this may refer to Alice Kim."}, {"type": "ol", "items": ["Search the masked file for @ and confirm that no email address remains.", "Search for 010- and 02- and confirm that the two expected phone formats are gone.", "Search for Alice Kim and Bob Lee and confirm that the approved full names are gone.", "Read every line manually for initials, nicknames, signatures, addresses, employee IDs, account numbers, project-specific identifiers, or other identifying context.", "Notice that A. Kim remains. Decide manually whether it identifies a person in the real document and mask it if necessary.", "Compare replacements.csv with the source and confirm that each listed replacement corresponds to the intended text."]}, {"type": "callout", "title": "A clean regex report is not proof of anonymity", "text": "Removing names, emails, and phone numbers does not necessarily make text anonymous. Job titles, rare project details, addresses, dates, customer references, or combinations of facts may still identify someone."}]}, {"id": "mistakes-and-limits", "heading": "Common mistakes and limits", "blocks": [{"type": "ul", "items": ["Do not paste the original sensitive text into an AI tool merely to ask the AI what should be masked.", "Do not assume a regular expression can reliably identify arbitrary human names.", "Do not rely on one phone-number pattern if your source may contain spaces, country codes, extensions, parentheses, or other formats.", "Do not delete the mapping report until you have finished checking the masked text, but protect that report because it contains the original identifiers.", "Do not overwrite the source file. Keep the original separate from the masked copy.", "Do not assume masking three categories removes confidential business information, credentials, financial data, health information, or other sensitive content."]}, {"type": "p", "text": "For real workflows, define what must be removed based on the document, applicable policy, and purpose of the AI task. When possible, provide only the minimum text required for the task instead of masking a large document and sending the whole thing."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["I checked the synthetic source text and expected replacements by hand.", "The expected detection set contains 2 unique full names, 2 unique email addresses, and 2 unique phone numbers.", "Alice Kim occurs twice but should consistently map to [NAME_1].", "The deliberately abbreviated reference A. Kim is expected to remain unmasked and demonstrates a false negative.", "The script reads message.txt and writes only outputs/message_masked.txt and outputs/replacements.csv.", "The script stops if outputs already exists instead of replacing a previous review."], "limits": ["I did not execute the Python code; the small example and expected results were checked manually.", "The full-name detection uses an explicit two-name list and is not a general named-entity recognition system.", "The email regular expression covers common address-like forms but is not intended to implement every valid email syntax.", "The phone regular expression covers only the two formats used in this synthetic example.", "Masking obvious identifiers does not guarantee anonymization or compliance with any specific privacy law or organizational policy."]}, "references": [{"title": "Python documentation: re — Regular expression operations", "url": "https://docs.python.org/3/library/re.html"}, {"title": "Python documentation: pathlib — Object-oriented filesystem paths", "url": "https://docs.python.org/3/library/pathlib.html"}, {"title": "Python documentation: csv — CSV File Reading and Writing", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "NIST Privacy Framework", "url": "https://www.nist.gov/privacy-framework"}], "slug": "ai-mask-personal-data", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Mask names, emails, and phone numbers before pasting text into an AI tool",
+  "summary": "Remove or replace obvious personal data before sending text to an AI chat assistant, then review both the masked text and a detection report for anything the script missed. This tutorial uses a small synthetic example and keeps the original file unchanged.",
+  "seo_title": "Mask personal data before using AI: names, email, phone",
+  "seo_desc": "Mask names, email addresses, and phone numbers before pasting text into an AI tool, then review a report to find personal data the rules missed.",
+  "tags": [
+    "data masking",
+    "AI privacy",
+    "Python"
+  ],
+  "audience": "For people who want a practical pre-check before sending work text containing possible names, email addresses, or phone numbers to an AI assistant.",
+  "prerequisites": [
+    "Python 3.12",
+    "A text editor and an AI chat assistant"
+  ],
+  "sections": [
+    {
+      "id": "start-with-synthetic-text",
+      "heading": "Start with a small synthetic message",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example is entirely synthetic. The names, email addresses, phone numbers, company details, and message content are invented for the tutorial. The purpose is to practice removing obvious personal data before text leaves your local workspace."
+        },
+        {
+          "type": "p",
+          "text": "Save the following text as message.txt. It contains two names, two email addresses, two phone numbers, and one deliberately awkward reference that a simple masking rule will miss."
+        },
+        {
+          "type": "code",
+          "text": "Project review notes\n\nAlice Kim asked us to send the revised table to alice.kim@example.com.\nIf the file is delayed, call Alice at 010-1234-5678.\n\nBob Lee will review the second draft. His email is bob.lee@example.com and his office number is 02-345-6789.\n\nThe final approval should also be checked with A. Kim before Friday.\n"
+        },
+        {
+          "type": "callout",
+          "title": "Mask before sharing",
+          "text": "Do not treat masking as permission to paste any confidential text into an AI service. First decide whether the text is allowed to be shared at all under your organization, contract, research, or legal requirements."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-mask-plan",
+      "heading": "Ask AI for a masking plan, not for the sensitive text",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "You can ask an AI assistant how to design masking rules without sending it the actual sensitive document. Describe the categories and use invented examples instead."
+        },
+        {
+          "type": "callout",
+          "title": "Example prompt",
+          "text": "I need to prepare work text before sending it to an AI tool. I want to replace full names, email addresses, and Korean-style phone numbers with consistent placeholders. Suggest conservative detection rules using Python standard-library tools. Do not assume that regex can identify every name. Explain likely false positives and false negatives, and recommend a manual review step."
+        },
+        {
+          "type": "p",
+          "text": "A useful answer should distinguish structured identifiers from unstructured language. Email addresses and phone numbers often have recognizable patterns. Human names are harder: ordinary words can be names, names can contain initials or multiple scripts, and the same person may be referenced in several forms."
+        }
+      ]
+    },
+    {
+      "id": "review-typical-rules",
+      "heading": "Convert the AI answer into explicit masking rules",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For this synthetic example, use a small approved list for names and regular expressions for email addresses and phone numbers. This is intentionally narrower than a general personal-data detector."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Data type",
+            "Rule",
+            "Placeholder"
+          ],
+          "rows": [
+            [
+              "Full name",
+              "Replace only exact approved names Alice Kim and Bob Lee",
+              "[NAME_1], [NAME_2]"
+            ],
+            [
+              "Email",
+              "Match common address-like patterns containing a local part, @, and domain",
+              "[EMAIL_1], [EMAIL_2]"
+            ],
+            [
+              "Phone",
+              "Match the two phone formats present in this example",
+              "[PHONE_1], [PHONE_2]"
+            ],
+            [
+              "Other text",
+              "Leave unchanged for manual review",
+              "No automatic replacement"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Consistent placeholders are useful because repeated references can remain understandable without retaining the original identifier. The script below gives the same placeholder to repeated occurrences of the same detected value."
+        },
+        {
+          "type": "callout",
+          "title": "Expected limitation",
+          "text": "A. Kim is not in the approved full-name list, so this simple rule will not mask it. That miss is intentional: the tutorial uses it to show why a second review is necessary."
+        }
+      ]
+    },
+    {
+      "id": "apply-masking-locally",
+      "heading": "Apply the rules to a local copy",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following Python script reads message.txt, applies the approved rules, and writes results into a new outputs folder. It also writes a replacements.csv report containing every detected original value and its placeholder. It stops if outputs already exists and never overwrites message.txt."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport re\nimport sys\nfrom pathlib import Path\n\nINPUT = Path(\"message.txt\")\nOUTPUT_DIR = Path(\"outputs\")\nMASKED_FILE = OUTPUT_DIR / \"message_masked.txt\"\nREPORT_FILE = OUTPUT_DIR / \"replacements.csv\"\n\nKNOWN_NAMES = [\"Alice Kim\", \"Bob Lee\"]\n\nEMAIL_RE = re.compile(\n    r\"\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b\"\n)\nPHONE_RE = re.compile(\n    r\"(?<!\\d)(?:010-\\d{4}-\\d{4}|02-\\d{3}-\\d{4})(?!\\d)\"\n)\n\n\ndef make_replacer(kind, mapping, rows):\n    def replace(match):\n        original = match.group(0)\n        if original not in mapping:\n            placeholder = f\"[{kind}_{len(mapping) + 1}]\"\n            mapping[original] = placeholder\n            rows.append(\n                {\n                    \"type\": kind,\n                    \"original\": original,\n                    \"replacement\": placeholder,\n                }\n            )\n        return mapping[original]\n\n    return replace\n\n\ndef mask_known_names(text, mapping, rows):\n    for name in KNOWN_NAMES:\n        if name not in text:\n            continue\n        if name not in mapping:\n            placeholder = f\"[NAME_{len(mapping) + 1}]\"\n            mapping[name] = placeholder\n            rows.append(\n                {\n                    \"type\": \"NAME\",\n                    \"original\": name,\n                    \"replacement\": placeholder,\n                }\n            )\n        text = text.replace(name, mapping[name])\n    return text\n\n\ndef main():\n    if not INPUT.is_file():\n        sys.exit(f\"Input file not found: {INPUT}\")\n\n    if OUTPUT_DIR.exists():\n        sys.exit(f\"Stop: {OUTPUT_DIR} already exists. Review or rename it first.\")\n\n    original = INPUT.read_text(encoding=\"utf-8\")\n    rows = []\n\n    name_map = {}\n    email_map = {}\n    phone_map = {}\n\n    masked = mask_known_names(original, name_map, rows)\n    masked = EMAIL_RE.sub(make_replacer(\"EMAIL\", email_map, rows), masked)\n    masked = PHONE_RE.sub(make_replacer(\"PHONE\", phone_map, rows), masked)\n\n    OUTPUT_DIR.mkdir()\n    MASKED_FILE.write_text(masked, encoding=\"utf-8\")\n\n    with REPORT_FILE.open(\"x\", encoding=\"utf-8\", newline=\"\") as target:\n        writer = csv.DictWriter(\n            target,\n            fieldnames=[\"type\", \"original\", \"replacement\"],\n        )\n        writer.writeheader()\n        writer.writerows(rows)\n\n    print(f\"Unique names masked: {len(name_map)}\")\n    print(f\"Unique emails masked: {len(email_map)}\")\n    print(f\"Unique phones masked: {len(phone_map)}\")\n    print(f\"Masked copy: {MASKED_FILE}\")\n    print(f\"Replacement report: {REPORT_FILE}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "p",
+          "text": "Place mask_personal_data.py beside message.txt and run python mask_personal_data.py. For this exact example, the expected summary is 2 unique names, 2 unique emails, and 2 unique phone numbers masked."
+        }
+      ]
+    },
+    {
+      "id": "check-expected-output",
+      "heading": "Check the replacements against the source",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Work out the expected replacements before relying on the result. The script should record six unique detected values."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Type",
+            "Original",
+            "Replacement"
+          ],
+          "rows": [
+            [
+              "NAME",
+              "Alice Kim",
+              "[NAME_1]"
+            ],
+            [
+              "NAME",
+              "Bob Lee",
+              "[NAME_2]"
+            ],
+            [
+              "EMAIL",
+              "alice.kim@example.com",
+              "[EMAIL_1]"
+            ],
+            [
+              "EMAIL",
+              "bob.lee@example.com",
+              "[EMAIL_2]"
+            ],
+            [
+              "PHONE",
+              "010-1234-5678",
+              "[PHONE_1]"
+            ],
+            [
+              "PHONE",
+              "02-345-6789",
+              "[PHONE_2]"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The exact full name Alice Kim appears once in the source and is replaced with [NAME_1]. The later shorter reference Alice is not an exact match for the approved full-name list, so it remains unmasked and should be caught during manual review. The report contains unique detected values rather than one row for every occurrence."
+        }
+      ]
+    },
+    {
+      "id": "review-what-was-missed",
+      "heading": "Review what the automatic rules missed",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Automatic replacement is only the first pass. Open outputs/message_masked.txt and read the entire result before pasting it anywhere. In this example, the last paragraph still contains A. Kim. The script cannot know from its approved list that this may refer to Alice Kim."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Search the masked file for @ and confirm that no email address remains.",
+            "Search for 010- and 02- and confirm that the two expected phone formats are gone.",
+            "Search for Alice Kim and Bob Lee and confirm that the approved full names are gone.",
+            "Read every line manually for initials, nicknames, signatures, addresses, employee IDs, account numbers, project-specific identifiers, or other identifying context.",
+            "Notice that A. Kim remains. Decide manually whether it identifies a person in the real document and mask it if necessary.",
+            "Compare replacements.csv with the source and confirm that each listed replacement corresponds to the intended text."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "A clean regex report is not proof of anonymity",
+          "text": "Removing names, emails, and phone numbers does not necessarily make text anonymous. Job titles, rare project details, addresses, dates, customer references, or combinations of facts may still identify someone."
+        }
+      ]
+    },
+    {
+      "id": "mistakes-and-limits",
+      "heading": "Common mistakes and limits",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Do not paste the original sensitive text into an AI tool merely to ask the AI what should be masked.",
+            "Do not assume a regular expression can reliably identify arbitrary human names.",
+            "Do not rely on one phone-number pattern if your source may contain spaces, country codes, extensions, parentheses, or other formats.",
+            "Do not delete the mapping report until you have finished checking the masked text, but protect that report because it contains the original identifiers.",
+            "Do not overwrite the source file. Keep the original separate from the masked copy.",
+            "Do not assume masking three categories removes confidential business information, credentials, financial data, health information, or other sensitive content."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "For real workflows, define what must be removed based on the document, applicable policy, and purpose of the AI task. When possible, provide only the minimum text required for the task instead of masking a large document and sending the whole thing."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The first execution completed successfully.",
+      "The console reported 2 unique names, 2 unique emails, and 2 unique phone numbers masked.",
+      "replacements.csv contained exactly 6 rows: Alice Kim -> [NAME_1], Bob Lee -> [NAME_2], two email replacements, and two phone replacements.",
+      "outputs/message_masked.txt replaced both approved full names, both emails, and both phone numbers.",
+      "The shorter reference 'Alice' remained unmasked because the code replaces only the exact approved name 'Alice Kim'.",
+      "The deliberately abbreviated reference 'A. Kim' also remained unmasked as expected.",
+      "message.txt was not modified.",
+      "A second execution stopped because outputs already existed, confirming the no-overwrite behavior.",
+      "Local recheck on 2026-09-21 with Python 3.12.14: the corrected example passed; source preservation and overwrite protection also passed."
+    ],
+    "limits": [
+      "The full-name logic is intentionally an exact two-name allowlist and is not a general personal-data detector.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python environment; it did not affect the script's execution or generated files."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python documentation: re — Regular expression operations",
+      "url": "https://docs.python.org/3/library/re.html"
+    },
+    {
+      "title": "Python documentation: pathlib — Object-oriented filesystem paths",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    },
+    {
+      "title": "Python documentation: csv — CSV File Reading and Writing",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "NIST Privacy Framework",
+      "url": "https://www.nist.gov/privacy-framework"
+    }
+  ],
+  "slug": "ai-mask-personal-data",
+  "category": "ai",
+  "date": "2026-09-21"
+}

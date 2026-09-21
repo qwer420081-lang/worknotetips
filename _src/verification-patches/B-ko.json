@@ -1,0 +1,361 @@
+{
+  "file": "B",
+  "lang": "ko",
+  "data": {
+    "useful-changelog": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: json, pathlib",
+        "items": [
+          "3개의 변경사항, 3개의 필수 조치, 3개의 검증 항목, 총 9개의 글머리표 줄로 실행이 성공적으로 완료되었다.",
+          "생성된 CHANGELOG_ENTRY.txt는 문서의 예상 변경 로그 텍스트와 정확히 일치했다.",
+          "콘솔 출력은 정확히 일치했다: Changes: 3; Required actions: 3; Verification checks: 3; Total bullets: 9; Output: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt.",
+          "각 변경사항은 What changed 아래에 한 번씩, 각 조치는 What you need to do 아래에 한 번씩 나타났으며, 3개의 검증 항목은 모두 Check after updating 아래에 포함되었음을 확인했다.",
+          "reports/와 outputs/reports/, report_dir와 output_dir, 그리고 customer_id 문구가 합성 원본 JSON에서 정확히 그대로 복사되었음을 확인했다.",
+          "두 번째 실행은 outputs/useful_changelog_result에 대해 FileExistsError를 발생시켜 덮어쓰기 방지가 동작함을 확인했다.",
+          "SHA-256 비교 결과 release_notes.json은 변경되지 않았다."
+        ],
+        "limits": [
+          "Python 시작 중 실행 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 스크립트의 성공적인 첫 실행, 생성된 출력, 덮어쓰기 방지 동작에는 영향을 주지 않았다.",
+          "스크립트는 구조, 필수 텍스트, 섹션 존재 여부, 글머리표 수를 검증하지만 사람이 작성한 변경 로그 설명이 내용적으로 완전하거나 정확한지는 판단할 수 없다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "project-handover-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, pathlib",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되었다.",
+          "콘솔 출력은 정확히 일치했다: 체크리스트 항목 5개, 미완료 항목 2개, 검증 문제 2개, 영향받은 항목 2개, 그리고 명시된 보고서 경로.",
+          "생성된 보고서에는 정확히 row 5 H004 MISSING_OWNER와 row 6 H005 MISSING_LOCATION이 포함되었다.",
+          "원본 handover_items.csv는 실행 후에도 바이트 단위로 완전히 동일했다.",
+          "문서 예제에서 생성된 유일한 출력은 outputs/handover_check_result/handover_review.csv였다.",
+          "두 번째 실행은 outputs/handover_check_result가 이미 존재하여 FileExistsError로 중단되었고, 이전 보고서는 덮어쓰지 않았다."
+        ],
+        "limits": [
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 스크립트의 실행이나 결과에는 영향을 주지 않았다.",
+          "외부 문서 URL은 확인하지 않았다. 이번 검증 작업은 실행 가능한 문서 예제를 대상으로 했기 때문이다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-email-draft-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, sys",
+        "items": [
+          "스크립트가 성공적으로 실행되어 outputs/email_check_report.txt를 생성했다.",
+          "문서의 원래 예시 초안을 사용했을 때 quantity, unit price, total, October 7, October 9는 PASS였지만, recipient Mina Park와 company Example Parts는 해당 정확한 문자열이 없어서 CHECK를 반환했다.",
+          "목록에 있는 위험한 약속 표현은 감지되지 않았다.",
+          "계산된 총액은 정확히 24 x $18.50 = $444.00이었다.",
+          "draft_email.txt는 실행 후에도 바이트 단위로 완전히 동일했다.",
+          "두 번째 실행은 outputs가 이미 존재하여 중단되었고, 보고서는 덮어쓰지 않았다.",
+          "제안된 텍스트 수정은 코드를 변경하지 않고도 대표 예시 초안을 스크립트의 필수 텍스트 검사와 일치하게 만든다."
+        ],
+        "limits": [
+          "스크립트는 실제 To, CC, BCC 필드, 첨부 파일, 조직 내 권한, 문체, 또는 고정 목록에 없는 표현으로 이루어진 약속을 검증할 수 없다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "ask-ai-for-draft",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "일반적인 AI 답변은 다음과 같을 수 있다. 'Hello Mina Park, We would like to request 24 sample units from Example Parts at $18.50 per unit, for a total of $444.00. If possible, please arrange delivery by October 7, 2026, as our internal review is scheduled for October 9. Please let us know whether this delivery date is feasible. Best regards.' 합리적인 초안이지만 여전히 검증이 필요하다.",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-meeting-minutes-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, sys",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되어 outputs/minutes_check_report.txt를 생성했다.",
+          "5개의 검사 항목이 모두 PASS를 반환했다: revised-template 결정, Leo의 October 6 조치, Sara의 review 조치, 미해결 appendix 결정, 확정되지 않은 October 8 supplier-data 날짜.",
+          "생성된 보고서에는 정확히 5개의 PASS 줄과 그 뒤에 명시된 4개의 수동 검토 알림이 포함되었다.",
+          "transcript는 실행 후에도 바이트 단위로 완전히 동일했다.",
+          "두 번째 실행은 outputs가 이미 존재하여 명시된 메시지와 함께 중단되었고, 이전 보고서는 덮어쓰지 않았다.",
+          "문서의 해석은 transcript와 일치한다: Sara에게는 달력상 마감일이 없고, October 8은 가능한 supplier-data 도착일에만 해당하며, appendix는 여전히 미해결이고 supplier 날짜도 명시적으로 확정되지 않았다."
+        ],
+        "limits": [
+          "정확한 구문 일치는 바꿔 쓴 표현이나 더 넓은 transcript 맥락을 검증할 수 없다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 검증된 출력에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-excel-formula-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, datetime, csv, sys",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되어 outputs/formula_check_report.txt를 생성했다.",
+          "생성된 결과는 정확히 다음과 같았다: Row 2 = 20.00%, Row 3 = 0.00%, Row 4 = blank, Rows 5-8 = CHECK.",
+          "결과는 문서에 제시된 순서인 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, CHECK와 일치했다.",
+          "ISO 날짜 행 2026-10-01부터 2026-10-08까지는 올바르게 감지되어 CHECK로 표시되었다.",
+          "원본 formula_cases.csv는 실행 후에도 바이트 단위로 완전히 동일했다.",
+          "두 번째 실행은 outputs가 이미 존재하여 명시된 메시지와 함께 중단되었고, 이전 보고서는 덮어쓰지 않았다.",
+          "스크립트는 Python 표준 라이브러리 모듈만 사용하며 제공된 합성 CSV에 대해 명시된 업무 규칙과 일치하게 동작했다."
+        ],
+        "limits": [
+          "Python 테스트는 실제 Excel 통합 문서 안의 Excel 수식 동작이 아니라 독립적인 CSV 규칙을 검증한다.",
+          "실제 Excel 날짜가 숫자 일련번호이므로 ISNUMBER를 통과한다는 문서의 설명은 이번 검증에서 Excel로 직접 실행하지 않았다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 출력에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-translation-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, re, sys",
+        "items": [
+          "원래 스크립트는 성공적으로 실행되어 outputs/translation_check_report.txt를 생성했다.",
+          "유효한 한국어 번역을 사용했을 때 원래 정규식은 원문 숫자 ['12', '35', '80', '14', '2026']를 추출했지만 번역문 숫자는 ['35', '80', '14']만 추출하여 Unicode 단어 경계 동작 때문에 잘못된 불일치를 보여 주었다.",
+          "보호 대상 문자열 N·m, °C, Mina Park, Alpha-X는 모두 PASS했다.",
+          "정규식을 (?<!\\d)\\d+(?:\\.\\d+)?(?!\\d)로 교체한 후에는 두 파일 모두 ['12', '35', '80', '14', '2026']를 생성했고 보고서는 PASS: number sequence matches를 반환했다.",
+          "source.txt와 translation.txt는 바이트 단위로 완전히 동일하게 유지되었다.",
+          "두 번째 실행은 outputs가 이미 존재하여 중단되었고, 이전 보고서는 덮어쓰지 않았다."
+        ],
+        "limits": [
+          "문서에는 완전한 목표 언어 translation.txt 예제가 하나로 명시되어 있지 않아, 지정된 보호 정보를 유지하는 충실한 한국어 번역을 실행에 사용했다.",
+          "수정된 정규식도 모든 지역화 숫자 표기, 부호 있는 숫자, 천 단위 구분자, 지역별 소수점 표기를 인식하지는 않는다.",
+          "스크립트는 의미적 충실성, 부정 표현, 의무 강도의 차이, 또는 보존된 숫자가 올바른 문장에 연결되어 있는지를 검증할 수 없다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 검증 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-data-cleaning-rules": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, sys, decimal, pathlib",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되었다.",
+          "콘솔 출력은 문서와 정확히 일치했다: 5 rows written, 9 changed cells.",
+          "변경 로그에는 정확히 9개의 변경사항이 포함되었다: row 1에서 3개, row 3에서 3개, row 4에서 2개, row 5에서 1개.",
+          "9개의 변경사항은 예상 표와 정확히 일치했다: row 1 name/email/department; row 3 email/department/hours; row 4 department/hours; row 5 department.",
+          "Row 2는 변경 로그에 나타나지 않았다.",
+          "정리된 CSV는 5개 행을 모두 원래 순서대로 유지했고 모든 row_id를 보존했다.",
+          "정리된 값은 의도한 대로였으며, 8.0 -> 8, NA -> blank, department 정규화, 공백 제거, 비어 있지 않은 email 주소의 소문자 변환이 포함되었다.",
+          "sample_people.csv는 실행 후에도 바이트 단위로 완전히 동일했다.",
+          "두 번째 실행은 'Stop: outputs already exists. Review or rename it first.'와 함께 중단되었고 이전 출력을 덮어쓰지 않았다."
+        ],
+        "limits": [
+          "테스트는 제공된 합성 CSV와 승인된 규칙만 다루며, 더 광범위한 department 매핑, 손상된 CSV 입력, 특이한 인코딩, 여러 줄 필드, 도메인별 데이터 규칙은 검증하지 않는다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-chart-claims-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되어 outputs/claims_check.txt를 작성했다.",
+          "보고서는 annual_total에 대해 PASS를 생성했다: AI=490, recomputed=490.00.",
+          "보고서는 quarterly_average에 대해 FAIL을 생성했다: AI=120, recomputed=122.50.",
+          "보고서는 q4_share_percent에 대해 FAIL을 생성했다: AI=32.6, recomputed=30.61.",
+          "보고서는 q1_to_q4_change_percent에 대해 PASS를 생성했다: AI=50.0, recomputed=50.00.",
+          "보고서는 largest_qoq_absolute_change에 대해 PASS를 생성했다: AI=30, recomputed=30.00.",
+          "보고서는 largest_qoq_percent_change에 대해 PASS를 생성했다: AI=25.0, recomputed=25.00.",
+          "보고된 가장 큰 분기 간 변화 구간은 Q3 to Q4였다.",
+          "수치 결과는 문서의 해석 표와 본문 설명과 정확히 일치했다: 총합 490, 평균 122.5, Q4 비중 약 30.61%, Q1에서 Q4까지 증가율 50%, Q3에서 Q4까지 증가는 30 또는 25%.",
+          "두 번째 실행은 'Stop: outputs/claims_check.txt already exists.'와 함께 종료되었고 기존 보고서를 교체하지 않았다."
+        ],
+        "limits": [
+          "스크립트는 ai_claims에 명시적으로 인코딩된 6개 주장만 검증하며 임의의 AI 작성 차트 요약을 파싱하지 않는다.",
+          "예시 허용오차 0.05는 제공된 값에 대해서만 테스트되었다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "prompt-template-library": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, string",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되어 'Wrote outputs/weekly_summary_prompt.txt'를 출력했다.",
+          "생성된 파일 경로는 정확히 outputs/weekly_summary_prompt.txt와 일치했다.",
+          "렌더링된 프롬프트에는 Project: Atlas와 Audience: engineering team이 포함되었다.",
+          "제공된 4개의 작업 로그 줄은 모두 정확히 유지되었으며 날짜 2026-09-14, 2026-09-16과 값 120도 포함되었다.",
+          "렌더링된 프롬프트에는 $project, $audience, $log_text와 같은 placeholder가 남아 있지 않았다.",
+          "선택된 template에는 필수 변수 project, audience, log_text가 정확히 3개 있었고 모두 비어 있지 않은 값으로 제공되었다.",
+          "생성된 프롬프트에는 명시된 task 지침, 4개의 규칙, 예시 형식, 3개의 checklist 항목, source work log가 포함되었다.",
+          "두 번째 실행은 'Stop: outputs/weekly_summary_prompt.txt already exists.'와 함께 종료되었고 기존 렌더링 프롬프트를 덮어쓰지 않았다."
+        ],
+        "limits": [
+          "문서 코드에서는 선택된 weekly_summary 분기만 실행되므로 meeting_actions template은 소스에서 확인했지만 이 정확한 실행에서는 렌더링하지 않았다.",
+          "스크립트는 프롬프트 구성을 검증하는 것이며 이후 AI가 렌더링된 프롬프트를 올바르게 따를지는 검증하지 않는다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 stderr에 출력되었지만 문서 스크립트나 출력에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-json-extraction-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트가 성공적으로 실행되어 outputs/json_validation.txt를 작성했다.",
+          "보고서에는 Validation: FAIL과 정확히 3개의 오류가 포함되었다: unexpected issue_summary, ticket_id not integer, invalid priority.",
+          "products=[\"Desktop\", \"Web\"]는 비어 있지 않은 문자열 목록 규칙을 통과했다.",
+          "callback_time=15:30은 HH:MM 검증 규칙을 통과했다.",
+          "보고된 3개의 실패 이유는 문서의 본문과 표와 일치했다.",
+          "두 번째 실행은 'Stop: outputs/json_validation.txt already exists.'와 함께 중단되었고 보고서를 덮어쓰지 않았다.",
+          "원문 예시는 ticket 1842, Mira Lee, priority high, Desktop, Web, callback time 15:30을 명시적으로 뒷받침한다."
+        ],
+        "limits": [
+          "검증기는 구조와 형식만 확인하며 임의의 원문과의 사실적 일치 여부는 여전히 원문 비교가 필요하다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-classification-accuracy": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 정확히 8개의 ticket을 처리했다.",
+          "스크립트는 correct=6, accuracy=0.750을 계산했으며, 이는 명시된 75%와 일치했다.",
+          "혼동행렬은 문서와 정확히 일치했다: billing=[2,1,0], login=[0,2,0], bug=[0,1,2].",
+          "혼동행렬의 셀 합계는 8개 사례였다.",
+          "스크립트는 ticket_labels.csv를 수정하지 않고 outputs/classification_report.txt를 작성했다.",
+          "두 번째 실행은 'Output already exists: outputs/classification_report.txt'와 함께 중단되어 덮어쓰기 방지 동작을 확인했다."
+        ],
+        "limits": [
+          "8개 ticket 데이터셋은 합성 데이터이며 실제 분류 성능을 입증하기에는 너무 작다.",
+          "Python 실행 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 스크립트 실행이나 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-mask-personal-data": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "첫 번째 실행은 성공적으로 완료되었다.",
+          "콘솔은 고유 이름 2개, 고유 email 2개, 고유 phone number 2개가 마스킹되었다고 보고했다.",
+          "replacements.csv에는 정확히 6개의 행이 있었다: Alice Kim -> [NAME_1], Bob Lee -> [NAME_2], email 대체 2개, phone 대체 2개.",
+          "outputs/message_masked.txt에서는 승인된 두 full name, 두 email, 두 phone number가 모두 대체되었다.",
+          "짧은 참조인 'Alice'는 코드가 승인된 정확한 이름 'Alice Kim'만 대체하므로 마스킹되지 않은 채 남았다.",
+          "의도적으로 축약한 참조 'A. Kim'도 예상대로 마스킹되지 않은 채 남았다.",
+          "message.txt는 수정되지 않았다.",
+          "두 번째 실행은 outputs가 이미 존재하여 중단되었고 덮어쓰기 방지 동작을 확인했다."
+        ],
+        "limits": [
+          "full-name 로직은 의도적으로 두 이름만 포함한 정확 일치 allowlist이며 일반적인 개인정보 탐지기가 아니다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 스크립트 실행이나 생성 파일에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "check-expected-output",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "정확한 전체 이름 Alice Kim은 원문에 한 번 나타나며 [NAME_1]로 대체된다. 이후에 나오는 짧은 참조 Alice는 승인된 전체 이름 목록과 정확히 일치하지 않으므로 마스킹되지 않은 채 남으며 수동 검토에서 확인해야 한다. 보고서에는 각 발생 위치마다 한 행씩 기록하는 것이 아니라 감지된 고유 값이 포함된다.",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-code-review-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 명시된 합성 입력에서 성공적으로 완료되었다.",
+          "생성된 보고서에는 total_quantity=6, total_revenue=44.50이 포함되었으며 문서의 수작업 계산 및 표와 일치했다.",
+          "산술 결과는 정확히 일치했다: 2×10.00=20.00, 3×5.50=16.50, 1×8.00=8.00.",
+          "입력 orders.csv는 변경되지 않았다.",
+          "스크립트는 명시된 대로 outputs/order_summary.txt를 생성했다.",
+          "두 번째 실행은 'Output already exists: outputs/order_summary.txt'와 함께 중단되어 덮어쓰기 방지 동작을 확인했다.",
+          "코드는 Python 표준 라이브러리의 csv, decimal, pathlib만 사용한다."
+        ],
+        "limits": [
+          "문서에서는 추가 edge-case 테스트를 설명하지만 이는 실행됐다고 주장하는 결과가 아니라 검토 권고사항이므로, 검증 실행은 정확한 합성 예제와 덮어쓰기 방지 동작에 집중했다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 스크립트 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-document-qa-citations": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 document_lines=7, citations_found=2를 계산했다.",
+          "[L2-L3]은 유효한 것으로 승인되었고 정확히 L2와 L3을 추출했다.",
+          "[L5-L6]은 유효한 것으로 승인되었고 정확히 L5와 L6을 추출했다.",
+          "보고서는 invalid_citations=0으로 끝났으며 문서와 일치했다.",
+          "추출된 L2-L3 텍스트는 변경된 prototype-test 날짜와 replacement-sensor 지연 이유를 뒷받침한다.",
+          "추출된 L5-L6 텍스트는 18 Sep draft 마감일과 21 Sep final review meeting을 뒷받침한다.",
+          "[L8]을 포함한 별도 답변에서는 valid_range=False, source=INVALID LINE RANGE, invalid_citations=1이 생성되었다.",
+          "원래 사례에 대한 두 번째 실행은 'Output already exists: outputs/citation_check.txt'와 함께 중단되어 덮어쓰기 방지 동작을 확인했다.",
+          "정규식 동작은 문서에 명시된 citation 형식과 일치한다."
+        ],
+        "limits": [
+          "스크립트는 citation 문법과 line-range 존재 여부를 검증하며 의미적 근거 여부는 여전히 사람이 검토해야 한다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 스크립트 결과에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-paper-summary-table": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 성공적으로 완료되어 outputs/paper_table_check.txt를 작성했다.",
+          "보고서에는 cells_checked=5, evidence_not_found=0이 포함되었다.",
+          "P1 method, data_size, result는 모두 EVIDENCE_FOUND로 보고되었다.",
+          "P2 limitation='Not stated'는 REVIEW_NOT_STATED로 보고되었으며 스크립트 로직 및 문서 설명과 일치했다.",
+          "P3 result는 EVIDENCE_FOUND로 보고되었다.",
+          "제공된 비어 있지 않은 4개의 evidence fragment는 각각 해당 abstract에서 문자 그대로 발견되었다.",
+          "문서의 핵심 표 주장은 합성 abstract와 일치했으며, P1은 30-sample test set에서 MAE 0.18 mm, P2는 validation cases의 90%에서 error below 4%, P3는 Gaussian process regression의 lower RMSE를 포함한다.",
+          "두 번째 실행은 'Output already exists: outputs/paper_table_check.txt'와 함께 중단되어 덮어쓰기 방지 동작을 확인했다."
+        ],
+        "limits": [
+          "문자열 그대로의 evidence 일치는 바꿔 쓴 값이 원문의 모든 한정 조건이나 전체 의미를 보존하는지 입증하지 않는다.",
+          "'Not stated' 분기는 검토를 위해 해당 셀을 표시하지만 해당 정보가 abstract에 실제로 없다는 사실을 자동으로 입증하지는 않는다.",
+          "Python 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 스크립트 실행이나 출력에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-reference-existence-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 성공적으로 완료되어 outputs/reference_check.json을 생성했다.",
+          "출력에는 urllib.request, json, 합성 fake reference에 해당하는 정확히 3개의 결과 객체가 포함되었다.",
+          "Python 실행 환경에서 외부 DNS를 확인할 수 없었기 때문에 세 요청 모두 스크립트를 중단시키지 않고 URLError 값으로 처리되었다.",
+          "접근할 수 없는 URL의 경우 reachable은 false로 유지되었고 status와 final_url은 null, term_matches는 빈 상태였으며 error 필드에는 의도대로 네트워크 실패가 기록되었다.",
+          "스크립트는 Python 표준 라이브러리 모듈만 사용한다: pathlib, urllib.request, urllib.error, html, json, re.",
+          "스크립트는 기존 검토 결과를 덮어쓰지 않았다. 두 번째 실행은 'outputs already exists; remove or rename it before running again'과 함께 중단되었다.",
+          "생성된 보고서 파일명은 정확히 outputs/reference_check.json으로 문서와 일치했다."
+        ],
+        "limits": [
+          "ChatGPT Python 실행 환경에서는 검증 당시 외부 DNS/네트워크 접근이 동작하지 않았기 때문에 두 Python 문서 URL의 현재 HTTP 상태 코드, redirect, 다운로드된 페이지 텍스트, term match를 스크립트 실행으로 검증할 수 없었다.",
+          "페이지를 가져오지 못했으므로 실제 reachable-and-terms-found 분기는 실행해 볼 수 없었다.",
+          "키워드 존재 여부는 관련 가능성을 선별하는 데만 사용할 수 있으며 인용된 페이지가 전체 주장을 의미적으로 뒷받침한다는 사실을 입증하지 않는다.",
+          "Python 시작 중 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 문서 스크립트 실행에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-weekly-report-from-log": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "스크립트는 정확한 합성 작업 로그에서 성공적으로 완료되었다.",
+          "출력은 Rows: 6을 보고했다.",
+          "출력은 Total hours: 10.5를 보고했으며 2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5와 일치했다.",
+          "출력은 Completed activities: 5를 보고했다.",
+          "출력은 In-progress activities: 1을 보고했다.",
+          "이 값들은 문서의 expected-values 표와 AI-report 비교 표와 일치했다.",
+          "스크립트는 명시된 4개의 reconciliation metric을 정확히 포함하는 outputs/weekly_reconciliation.txt를 생성했다.",
+          "work_log.csv는 실행 후에도 변경되지 않았다.",
+          "두 번째 실행은 'outputs already exists; remove or rename it before running again'과 함께 중단되어 명시된 덮어쓰기 방지 동작을 확인했다."
+        ],
+        "limits": [
+          "스크립트는 기록된 hours와 status count를 검증하지만 원래 work-log 항목 자체가 사실적으로 완전하거나 정확한지는 판단할 수 없다.",
+          "counting rule은 문서에 명시된 대로 각 CSV row를 하나의 activity로 처리한다.",
+          "Python 실행 환경에서 관련 없는 스프레드시트 런타임 워밍업 경고가 발생했지만 문서 스크립트나 출력에는 영향을 주지 않았다."
+        ]
+      },
+      "text_fixes": []
+    }
+  }
+}

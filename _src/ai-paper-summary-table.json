@@ -1,1 +1,309 @@
-{"title": "Summarize Papers into a Comparison Table and Check Every Cell", "summary": "AI can turn several paper abstracts into a compact comparison table, but each cell should be traceable to the source text. This guide uses three tiny synthetic abstracts, asks an AI chat assistant to build a table, and checks every table cell against the abstracts before accepting it.", "seo_title": "AI Paper Summary Table with Abstract Verification", "seo_desc": "Summarize several papers into a comparison table with AI, then verify every method, dataset, result, and limitation cell against the abstracts.", "tags": ["paper summary", "AI research workflow", "verification"], "audience": "For students and researchers who use an AI chat assistant to compare several papers and want to verify that each table cell is supported by the supplied abstracts.", "prerequisites": ["Python 3.12", "Basic familiarity with paper abstracts and CSV files"], "sections": [{"id": "why-check-every-cell", "heading": "Why a paper comparison table needs cell-level checking", "blocks": [{"type": "p", "text": "A comparison table is useful because it compresses several papers into the same structure: objective, method, data, result, and limitation. The risk is that an AI chat assistant may make the rows look consistent even when the abstracts do not provide the same level of detail. One abstract may name a dataset, another may only describe a sample, and a third may say nothing about limitations. Filling those gaps with plausible wording creates a neat table but weak evidence."}, {"type": "p", "text": "The safest rule is simple: every factual table cell should be supported by text from the supplied abstract. If the abstract does not state something, the cell should say Not stated rather than infer it from common practice or the paper title. This is especially important when the table will later be used for a literature review, research proposal, or method-selection discussion."}, {"type": "callout", "title": "Review rule", "text": "Treat each table cell as a separate claim. Ask which sentence in the abstract supports it, and mark unsupported cells instead of completing them from background knowledge."}]}, {"id": "synthetic-abstracts", "heading": "Use three tiny synthetic abstracts", "blocks": [{"type": "p", "text": "The following abstracts are synthetic examples created only for this tutorial. They are intentionally short so that every extracted table cell can be checked manually."}, {"type": "table", "headers": ["Paper", "Synthetic abstract"], "rows": [["P1", "We predict beam deflection using linear regression from 120 finite-element samples. The model achieved a mean absolute error of 0.18 mm on a 30-sample test set. The study considers only linear-elastic cases."], ["P2", "A random forest surrogate was trained on 500 simulated bracket designs using thickness and hole diameter as inputs. Prediction error for maximum von Mises stress was below 4% for 90% of the validation cases."], ["P3", "We compare Gaussian process regression and a neural network for estimating plate displacement from 200 simulation cases. Gaussian process regression produced lower RMSE than the neural network. Training time increased substantially as the dataset grew."]]}]}, {"id": "ask-the-ai", "heading": "Ask the AI for a constrained comparison table", "blocks": [{"type": "p", "text": "Do not ask only for a summary of the papers. Define the columns and force the AI to use only information explicitly present in the abstracts. Also require a source field for every nonempty cell so that the claims can be checked later."}, {"type": "ol", "items": ["Provide the abstracts with stable IDs such as P1, P2, and P3.", "Ask for fixed columns: method, data size, inputs or target, reported result, and limitation.", "Require Not stated when an abstract does not provide the requested information.", "Require a short supporting quote or source fragment for every factual cell.", "Tell the AI not to infer experimental details, model settings, or limitations from general knowledge."]}, {"type": "callout", "title": "Example request to the AI", "text": "Using only abstracts P1, P2, and P3, create a comparison table with columns Paper, Method, Data size, Inputs or target, Reported result, and Limitation. For every factual cell, also provide the exact abstract fragment that supports it. If a field is not stated, write Not stated. Do not infer missing details."}]}, {"id": "typical-ai-answer", "heading": "Inspect a typical AI-produced table", "blocks": [{"type": "p", "text": "A reasonable table would identify linear regression for P1, random forest for P2, and both Gaussian process regression and a neural network for P3. It should report 120 finite-element samples for P1, 500 simulated bracket designs for P2, and 200 simulation cases for P3. However, some columns are intentionally incomplete. For example, P2 does not state a limitation, so that cell should remain Not stated."}, {"type": "table", "headers": ["Paper", "Method", "Data size", "Inputs or target", "Reported result", "Limitation"], "rows": [["P1", "Linear regression", "120 finite-element samples", "Beam deflection", "MAE 0.18 mm on a 30-sample test set", "Only linear-elastic cases"], ["P2", "Random forest", "500 simulated bracket designs", "Thickness and hole diameter to maximum von Mises stress", "Error below 4% for 90% of validation cases", "Not stated"], ["P3", "Gaussian process regression and neural network", "200 simulation cases", "Plate displacement", "Gaussian process regression had lower RMSE", "Training time increased as dataset grew"]]}, {"type": "p", "text": "This table is concise, but it should not be accepted simply because every row looks complete. Each cell still needs a direct link back to the abstract text."}]}, {"id": "prepare-cell-check-file", "heading": "Store the AI table with supporting evidence", "blocks": [{"type": "p", "text": "For automatic checking, save a simplified CSV named paper_table.csv. Give each factual row a paper_id, field, value, and evidence column. The evidence should contain the exact fragment that the AI claims supports the value. A row with Not stated can use an empty evidence field."}, {"type": "table", "headers": ["paper_id", "field", "value", "evidence"], "rows": [["P1", "method", "Linear regression", "linear regression"], ["P1", "data_size", "120 finite-element samples", "120 finite-element samples"], ["P1", "result", "MAE 0.18 mm", "mean absolute error of 0.18 mm"], ["P2", "limitation", "Not stated", ""], ["P3", "result", "GPR lower RMSE", "Gaussian process regression produced lower RMSE than the neural network"]]}]}, {"id": "automatic-cell-check", "heading": "Check every evidence fragment with Python", "blocks": [{"type": "p", "text": "Save the three abstracts in abstracts.txt using one line per paper in the format P1<TAB>abstract text. The script below reads abstracts.txt and paper_table.csv, checks whether each claimed evidence fragment actually appears in the corresponding abstract, and writes results to outputs/paper_table_check.txt. It does not modify the input files and stops if the output file already exists."}, {"type": "code"}]}, {"id": "manual-semantic-check", "heading": "Then check whether the evidence actually means the same thing", "blocks": [{"type": "p", "text": "Finding the evidence text is only the first check. The reviewer must still compare the table value with the abstract wording. For example, P2 says prediction error was below 4% for 90% of validation cases. Rewriting that as prediction error was below 4% would be too strong because it removes the 90% condition."}, {"type": "table", "headers": ["Cell", "Abstract support", "Manual verdict"], "rows": [["P1 result: MAE 0.18 mm", "mean absolute error of 0.18 mm on a 30-sample test set", "Supported, but keep the test-set context."], ["P2 result: error below 4% for 90% of cases", "Prediction error ... below 4% for 90% of the validation cases", "Supported."], ["P2 limitation: Not stated", "No limitation sentence appears in the synthetic abstract", "Keep Not stated; do not invent one."], ["P3 result: GPR lower RMSE", "Gaussian process regression produced lower RMSE than the neural network", "Supported."]]}, {"type": "callout", "title": "Common mistake", "text": "Matching a phrase is not enough if the summary removes qualifiers such as test set, validation cases, 90%, only, or compared with. Preserve conditions that materially change the claim."}]}, {"id": "limits-and-review-rules", "heading": "Know the limits of abstract-only comparison", "blocks": [{"type": "ul", "items": ["Do not treat an abstract as a substitute for the full paper when methods, datasets, or evaluation details matter.", "Do not convert Not stated into No limitation or None; absence from the abstract is not evidence that the limitation does not exist.", "Do not normalize different metrics into a ranking unless they are actually comparable.", "Do not infer sample splits, hyperparameters, statistical significance, or implementation details unless the abstract states them.", "Preserve qualifiers such as validation set, test set, percentage of cases, and comparison baseline."]}, {"type": "p", "text": "Abstract-only comparison is useful for screening and organizing papers, but it is not sufficient for detailed methodological evaluation. The automatic script checks whether claimed evidence fragments are present in the correct abstract. It does not determine whether the paraphrase is accurate, whether two metrics are comparable, or whether a paper's full text would change the interpretation."}, {"type": "p", "text": "A reliable workflow is therefore: give each paper a stable ID, require fixed table columns, use Not stated for missing information, attach evidence to every factual cell, check the evidence automatically, and then review the meaning manually. This keeps the convenience of an AI-generated comparison table without treating a polished table as verified evidence."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["All three abstracts in this article are synthetic examples, not real papers.", "P1 was checked by hand: method is linear regression, data size is 120 finite-element samples, MAE is 0.18 mm on a 30-sample test set, and the stated limitation is linear-elastic cases only.", "P2 was checked by hand: method is random forest, data size is 500 simulated bracket designs, inputs are thickness and hole diameter, and error was below 4% for 90% of validation cases.", "P2 does not state a limitation in the synthetic abstract, so the comparison table correctly uses Not stated.", "P3 was checked by hand: it compares Gaussian process regression and a neural network on 200 simulation cases, reports lower RMSE for Gaussian process regression, and states that training time increased as the dataset grew.", "The shown Python logic checks literal evidence presence within the matching abstract and protects the existing output file from overwrite."], "limits": ["The Python code was not executed by the author of this article; its behavior was reviewed manually.", "Literal evidence matching does not prove that a paraphrased table cell preserves the exact meaning or all qualifiers of the source sentence.", "Abstracts may omit important details that appear in the full paper, so this workflow is suitable for preliminary comparison rather than complete paper evaluation."]}, "references": [{"title": "Python csv documentation", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}], "slug": "ai-paper-summary-table", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Summarize Papers into a Comparison Table and Check Every Cell",
+  "summary": "AI can turn several paper abstracts into a compact comparison table, but each cell should be traceable to the source text. This guide uses three tiny synthetic abstracts, asks an AI chat assistant to build a table, and checks every table cell against the abstracts before accepting it.",
+  "seo_title": "AI Paper Summary Table with Abstract Verification",
+  "seo_desc": "Summarize several papers into a comparison table with AI, then verify every method, dataset, result, and limitation cell against the abstracts.",
+  "tags": [
+    "paper summary",
+    "AI research workflow",
+    "verification"
+  ],
+  "audience": "For students and researchers who use an AI chat assistant to compare several papers and want to verify that each table cell is supported by the supplied abstracts.",
+  "prerequisites": [
+    "Python 3.12",
+    "Basic familiarity with paper abstracts and CSV files"
+  ],
+  "sections": [
+    {
+      "id": "why-check-every-cell",
+      "heading": "Why a paper comparison table needs cell-level checking",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A comparison table is useful because it compresses several papers into the same structure: objective, method, data, result, and limitation. The risk is that an AI chat assistant may make the rows look consistent even when the abstracts do not provide the same level of detail. One abstract may name a dataset, another may only describe a sample, and a third may say nothing about limitations. Filling those gaps with plausible wording creates a neat table but weak evidence."
+        },
+        {
+          "type": "p",
+          "text": "The safest rule is simple: every factual table cell should be supported by text from the supplied abstract. If the abstract does not state something, the cell should say Not stated rather than infer it from common practice or the paper title. This is especially important when the table will later be used for a literature review, research proposal, or method-selection discussion."
+        },
+        {
+          "type": "callout",
+          "title": "Review rule",
+          "text": "Treat each table cell as a separate claim. Ask which sentence in the abstract supports it, and mark unsupported cells instead of completing them from background knowledge."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-abstracts",
+      "heading": "Use three tiny synthetic abstracts",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following abstracts are synthetic examples created only for this tutorial. They are intentionally short so that every extracted table cell can be checked manually."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Paper",
+            "Synthetic abstract"
+          ],
+          "rows": [
+            [
+              "P1",
+              "We predict beam deflection using linear regression from 120 finite-element samples. The model achieved a mean absolute error of 0.18 mm on a 30-sample test set. The study considers only linear-elastic cases."
+            ],
+            [
+              "P2",
+              "A random forest surrogate was trained on 500 simulated bracket designs using thickness and hole diameter as inputs. Prediction error for maximum von Mises stress was below 4% for 90% of the validation cases."
+            ],
+            [
+              "P3",
+              "We compare Gaussian process regression and a neural network for estimating plate displacement from 200 simulation cases. Gaussian process regression produced lower RMSE than the neural network. Training time increased substantially as the dataset grew."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ask-the-ai",
+      "heading": "Ask the AI for a constrained comparison table",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Do not ask only for a summary of the papers. Define the columns and force the AI to use only information explicitly present in the abstracts. Also require a source field for every nonempty cell so that the claims can be checked later."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Provide the abstracts with stable IDs such as P1, P2, and P3.",
+            "Ask for fixed columns: method, data size, inputs or target, reported result, and limitation.",
+            "Require Not stated when an abstract does not provide the requested information.",
+            "Require a short supporting quote or source fragment for every factual cell.",
+            "Tell the AI not to infer experimental details, model settings, or limitations from general knowledge."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Using only abstracts P1, P2, and P3, create a comparison table with columns Paper, Method, Data size, Inputs or target, Reported result, and Limitation. For every factual cell, also provide the exact abstract fragment that supports it. If a field is not stated, write Not stated. Do not infer missing details."
+        }
+      ]
+    },
+    {
+      "id": "typical-ai-answer",
+      "heading": "Inspect a typical AI-produced table",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A reasonable table would identify linear regression for P1, random forest for P2, and both Gaussian process regression and a neural network for P3. It should report 120 finite-element samples for P1, 500 simulated bracket designs for P2, and 200 simulation cases for P3. However, some columns are intentionally incomplete. For example, P2 does not state a limitation, so that cell should remain Not stated."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Paper",
+            "Method",
+            "Data size",
+            "Inputs or target",
+            "Reported result",
+            "Limitation"
+          ],
+          "rows": [
+            [
+              "P1",
+              "Linear regression",
+              "120 finite-element samples",
+              "Beam deflection",
+              "MAE 0.18 mm on a 30-sample test set",
+              "Only linear-elastic cases"
+            ],
+            [
+              "P2",
+              "Random forest",
+              "500 simulated bracket designs",
+              "Thickness and hole diameter to maximum von Mises stress",
+              "Error below 4% for 90% of validation cases",
+              "Not stated"
+            ],
+            [
+              "P3",
+              "Gaussian process regression and neural network",
+              "200 simulation cases",
+              "Plate displacement",
+              "Gaussian process regression had lower RMSE",
+              "Training time increased as dataset grew"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This table is concise, but it should not be accepted simply because every row looks complete. Each cell still needs a direct link back to the abstract text."
+        }
+      ]
+    },
+    {
+      "id": "prepare-cell-check-file",
+      "heading": "Store the AI table with supporting evidence",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For automatic checking, save a simplified CSV named paper_table.csv. Give each factual row a paper_id, field, value, and evidence column. The evidence should contain the exact fragment that the AI claims supports the value. A row with Not stated can use an empty evidence field."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "paper_id",
+            "field",
+            "value",
+            "evidence"
+          ],
+          "rows": [
+            [
+              "P1",
+              "method",
+              "Linear regression",
+              "linear regression"
+            ],
+            [
+              "P1",
+              "data_size",
+              "120 finite-element samples",
+              "120 finite-element samples"
+            ],
+            [
+              "P1",
+              "result",
+              "MAE 0.18 mm",
+              "mean absolute error of 0.18 mm"
+            ],
+            [
+              "P2",
+              "limitation",
+              "Not stated",
+              ""
+            ],
+            [
+              "P3",
+              "result",
+              "GPR lower RMSE",
+              "Gaussian process regression produced lower RMSE than the neural network"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "automatic-cell-check",
+      "heading": "Check every evidence fragment with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the three abstracts in abstracts.txt using one line per paper in the format P1<TAB>abstract text. The script below reads abstracts.txt and paper_table.csv, checks whether each claimed evidence fragment actually appears in the corresponding abstract, and writes results to outputs/paper_table_check.txt. It does not modify the input files and stops if the output file already exists."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nfrom pathlib import Path\n\nABSTRACTS_FILE = Path(\"abstracts.txt\")\nTABLE_FILE = Path(\"paper_table.csv\")\nOUTPUT_DIR = Path(\"outputs\")\nOUTPUT_FILE = OUTPUT_DIR / \"paper_table_check.txt\"\n\n\ndef load_abstracts(path):\n    abstracts = {}\n    with path.open(\"r\", encoding=\"utf-8\") as file:\n        for line_number, line in enumerate(file, start=1):\n            line = line.rstrip(\"\\n\")\n            if not line:\n                continue\n            if \"\\t\" not in line:\n                raise SystemExit(f\"Invalid abstract line {line_number}.\")\n            paper_id, text = line.split(\"\\t\", 1)\n            abstracts[paper_id] = text\n    return abstracts\n\n\ndef main():\n    if not ABSTRACTS_FILE.is_file():\n        raise SystemExit(f\"Abstracts file not found: {ABSTRACTS_FILE}\")\n    if not TABLE_FILE.is_file():\n        raise SystemExit(f\"Table file not found: {TABLE_FILE}\")\n    if OUTPUT_FILE.exists():\n        raise SystemExit(f\"Output already exists: {OUTPUT_FILE}\")\n\n    abstracts = load_abstracts(ABSTRACTS_FILE)\n    report = []\n    checked = 0\n    unsupported = 0\n\n    with TABLE_FILE.open(\"r\", encoding=\"utf-8\", newline=\"\") as file:\n        reader = csv.DictReader(file)\n        required = {\"paper_id\", \"field\", \"value\", \"evidence\"}\n        if reader.fieldnames is None or not required.issubset(reader.fieldnames):\n            raise SystemExit(\"paper_table.csv is missing required columns.\")\n\n        for row_number, row in enumerate(reader, start=2):\n            paper_id = row[\"paper_id\"].strip()\n            field = row[\"field\"].strip()\n            value = row[\"value\"].strip()\n            evidence = row[\"evidence\"].strip()\n\n            if paper_id not in abstracts:\n                raise SystemExit(f\"Unknown paper_id on row {row_number}: {paper_id}\")\n\n            checked += 1\n            if value == \"Not stated\":\n                status = \"REVIEW_NOT_STATED\"\n            elif evidence and evidence in abstracts[paper_id]:\n                status = \"EVIDENCE_FOUND\"\n            else:\n                status = \"EVIDENCE_NOT_FOUND\"\n                unsupported += 1\n\n            report.append(\n                f\"{paper_id}\\t{field}\\t{status}\\tvalue={value}\\tevidence={evidence}\"\n            )\n\n    report.append(\"\")\n    report.append(f\"cells_checked={checked}\")\n    report.append(f\"evidence_not_found={unsupported}\")\n\n    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)\n    OUTPUT_FILE.write_text(\"\\n\".join(report) + \"\\n\", encoding=\"utf-8\")\n    print(f\"Wrote: {OUTPUT_FILE}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "manual-semantic-check",
+      "heading": "Then check whether the evidence actually means the same thing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Finding the evidence text is only the first check. The reviewer must still compare the table value with the abstract wording. For example, P2 says prediction error was below 4% for 90% of validation cases. Rewriting that as prediction error was below 4% would be too strong because it removes the 90% condition."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Cell",
+            "Abstract support",
+            "Manual verdict"
+          ],
+          "rows": [
+            [
+              "P1 result: MAE 0.18 mm",
+              "mean absolute error of 0.18 mm on a 30-sample test set",
+              "Supported, but keep the test-set context."
+            ],
+            [
+              "P2 result: error below 4% for 90% of cases",
+              "Prediction error ... below 4% for 90% of the validation cases",
+              "Supported."
+            ],
+            [
+              "P2 limitation: Not stated",
+              "No limitation sentence appears in the synthetic abstract",
+              "Keep Not stated; do not invent one."
+            ],
+            [
+              "P3 result: GPR lower RMSE",
+              "Gaussian process regression produced lower RMSE than the neural network",
+              "Supported."
+            ]
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Common mistake",
+          "text": "Matching a phrase is not enough if the summary removes qualifiers such as test set, validation cases, 90%, only, or compared with. Preserve conditions that materially change the claim."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-review-rules",
+      "heading": "Know the limits of abstract-only comparison",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Do not treat an abstract as a substitute for the full paper when methods, datasets, or evaluation details matter.",
+            "Do not convert Not stated into No limitation or None; absence from the abstract is not evidence that the limitation does not exist.",
+            "Do not normalize different metrics into a ranking unless they are actually comparable.",
+            "Do not infer sample splits, hyperparameters, statistical significance, or implementation details unless the abstract states them.",
+            "Preserve qualifiers such as validation set, test set, percentage of cases, and comparison baseline."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Abstract-only comparison is useful for screening and organizing papers, but it is not sufficient for detailed methodological evaluation. The automatic script checks whether claimed evidence fragments are present in the correct abstract. It does not determine whether the paraphrase is accurate, whether two metrics are comparable, or whether a paper's full text would change the interpretation."
+        },
+        {
+          "type": "p",
+          "text": "A reliable workflow is therefore: give each paper a stable ID, require fixed table columns, use Not stated for missing information, attach evidence to every factual cell, check the evidence automatically, and then review the meaning manually. This keeps the convenience of an AI-generated comparison table without treating a polished table as verified evidence."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script completed successfully and wrote outputs/paper_table_check.txt.",
+      "The report contained cells_checked=5 and evidence_not_found=0.",
+      "P1 method, data_size, and result were all reported as EVIDENCE_FOUND.",
+      "P2 limitation='Not stated' was reported as REVIEW_NOT_STATED, matching the script logic and article explanation.",
+      "P3 result was reported as EVIDENCE_FOUND.",
+      "All four supplied non-empty evidence fragments were found literally in their corresponding abstracts.",
+      "The article's substantive table claims match the synthetic abstracts, including P1 MAE 0.18 mm on a 30-sample test set, P2 error below 4% for 90% of validation cases, and P3 lower RMSE for Gaussian process regression.",
+      "A second execution stopped with 'Output already exists: outputs/paper_table_check.txt', confirming the no-overwrite behavior."
+    ],
+    "limits": [
+      "Literal evidence matching does not prove that a paraphrased value preserves every qualifier or the full semantic meaning of the source.",
+      "The 'Not stated' branch flags the cell for review but does not automatically prove that the information is absent from the abstract.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python environment; it did not affect the script execution or output."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python csv documentation",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-paper-summary-table",
+  "category": "ai",
+  "date": "2026-09-21"
+}

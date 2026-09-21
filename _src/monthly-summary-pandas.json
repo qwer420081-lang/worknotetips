@@ -1,1 +1,265 @@
-{"title": "Build a monthly summary with pandas groupby and check the totals", "summary": "Summarize order-level CSV data by month with pandas, then reconcile the grouped counts, units, and amounts against the source. A small synthetic example makes every expected result easy to verify by hand.", "tags": ["Python", "pandas", "Summary"], "audience": "This guide is for people who need a repeatable monthly CSV summary and want explicit checks that aggregation did not lose records.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "pandas installed with python -m pip install pandas.", "A working folder where the script can create a new folder beneath outputs.", "The source CSV must contain order_id, order_date, units, and amount columns."], "sections": [{"id": "define-the-summary", "heading": "1. Define the monthly measures", "blocks": [{"type": "p", "text": "This example produces one row per calendar month with three measures: order count, total units, and total amount. The synthetic source uses one row per order, so counting rows is equivalent to counting orders in this specific dataset."}, {"type": "p", "text": "The important step is reconciliation. After groupby, the monthly values are added again and compared with the source totals. A summary can look reasonable even when rows were accidentally filtered, duplicated, or dropped."}, {"type": "callout", "title": "State the counting rule", "text": "If a real dataset contains several line items for one order, row count is not order count. In that case, use a rule such as unique order_id count instead."}]}, {"id": "create-synthetic-input", "heading": "2. Create the synthetic CSV", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save it as monthly_orders.csv. It contains seven orders across January, February, and March 2026."}, {"type": "code"}, {"type": "p", "text": "The source totals are simple enough to check manually. There are 7 orders. Units total 18: 2 + 3 + 1 + 4 + 2 + 5 + 1. Amount totals 430: 40 + 60 + 25 + 100 + 50 + 125 + 30."}, {"type": "table", "headers": ["Measure", "Source total"], "rows": [["Orders", "7"], ["Units", "18"], ["Amount", "430"]]}]}, {"id": "calculate-expected-months", "heading": "3. Calculate the expected monthly rows by hand", "blocks": [{"type": "p", "text": "January contains O001 and O002. February contains O003, O004, and O005. March contains O006 and O007. Adding each group gives the expected monthly table."}, {"type": "table", "headers": ["month", "orders", "units", "amount"], "rows": [["2026-01", "2", "5", "100"], ["2026-02", "3", "7", "175"], ["2026-03", "2", "6", "155"]]}, {"type": "p", "text": "The monthly totals reconcile with the source: 2 + 3 + 2 = 7 orders, 5 + 7 + 6 = 18 units, and 100 + 175 + 155 = 430 amount."}]}, {"id": "build-the-summary", "heading": "4. Build and verify the summary with pandas", "blocks": [{"type": "p", "text": "Save the following script as monthly_summary_pandas.py. It validates required columns, rejects missing or duplicate order IDs, parses dates with one explicit format, converts numeric columns, groups by month, reconciles the totals, and writes the result only after those checks pass."}, {"type": "code"}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected output", "blocks": [{"type": "p", "text": "The output should contain three data rows sorted by month. The expected CSV contents are shown below."}, {"type": "code"}, {"type": "p", "text": "The expected console output below was derived by hand from the synthetic data and code. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-errors", "heading": "6. Reconcile the result and recognize common errors", "blocks": [{"type": "ol", "items": ["Count the source rows: 7.", "Add monthly orders: 2 + 3 + 2 = 7.", "Add monthly units: 5 + 7 + 6 = 18.", "Add monthly amount: 100 + 175 + 155 = 430.", "Confirm that the output contains exactly 2026-01, 2026-02, and 2026-03.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the existing result."]}, {"type": "table", "headers": ["Symptom", "What to check"], "rows": [["ModuleNotFoundError for pandas", "Install pandas into the same Python environment with python -m pip install pandas."], ["Missing required columns", "Check the CSV header before changing the expected schema."], ["Date parsing error", "Confirm that every order_date uses YYYY-MM-DD."], ["Numeric conversion error", "Inspect units and amount for text, currency symbols, or separators that require an explicit cleanup rule."], ["Duplicate order_id found", "Determine whether the repeated ID is an accidental duplicate or represents a different data model."], ["FileExistsError", "Review the previous result and use a fresh output folder rather than overwriting it."]]}, {"type": "p", "text": "Matching grand totals do not prove that every month is correct because two monthly errors can offset each other. For important reports, also inspect several known source rows and month-level subtotals."}]}, {"id": "limits-and-scaling", "heading": "7. Understand the limits", "blocks": [{"type": "p", "text": "The example assumes one row per order and whole-number amounts. If one order spans several line-item rows, use a rule such as order_id.nunique() instead of row count. Real monetary data may also need fixed-point integer units or Decimal-based processing instead of ordinary floating-point arithmetic."}, {"type": "p", "text": "Month is derived directly from a date with no time-zone handling. If real data contains timestamps from several zones, define the business time zone before grouping. Refunds, cancellations, filters, and missing records also need explicit business rules; arithmetic reconciliation alone cannot determine whether those rows belong in the report."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · pandas required · no execution", "items": ["Manually counted 7 source records across January, February, and March 2026.", "Manually calculated source totals of 18 units and 430 amount.", "Manually calculated January as 2 orders, 5 units, 100 amount; February as 3 orders, 7 units, 175 amount; and March as 2 orders, 6 units, 155 amount.", "Manually reconciled the monthly totals back to 7 orders, 18 units, and 430 amount.", "Inspected the script for required-column checks, duplicate IDs, explicit date parsing, numeric conversion, groupby aggregation, reconciliation, saved-file comparison, and output collision protection.", "Derived the expected CSV and console output by hand."], "limits": ["The code was not executed by the author of this response; pandas behavior and filesystem writes were not tested here.", "Decimal currency, time zones, refunds, cancellations, line-item order data, and very large files were not tested.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official pandas documentation · DataFrame.groupby", "url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html"}, {"title": "Official pandas documentation · GroupBy", "url": "https://pandas.pydata.org/docs/reference/groupby.html"}, {"title": "Official pandas documentation · to_datetime", "url": "https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html"}, {"title": "Official pandas documentation · read_csv", "url": "https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html"}], "slug": "monthly-summary-pandas", "category": "office", "date": "2026-09-20"}
+{
+  "title": "Build a monthly summary with pandas groupby and check the totals",
+  "summary": "Summarize order-level CSV data by month with pandas, then reconcile the grouped counts, units, and amounts against the source. A small synthetic example makes every expected result easy to verify by hand.",
+  "tags": [
+    "Python",
+    "pandas",
+    "Summary"
+  ],
+  "audience": "This guide is for people who need a repeatable monthly CSV summary and want explicit checks that aggregation did not lose records.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "pandas installed with python -m pip install pandas.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "The source CSV must contain order_id, order_date, units, and amount columns."
+  ],
+  "sections": [
+    {
+      "id": "define-the-summary",
+      "heading": "1. Define the monthly measures",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This example produces one row per calendar month with three measures: order count, total units, and total amount. The synthetic source uses one row per order, so counting rows is equivalent to counting orders in this specific dataset."
+        },
+        {
+          "type": "p",
+          "text": "The important step is reconciliation. After groupby, the monthly values are added again and compared with the source totals. A summary can look reasonable even when rows were accidentally filtered, duplicated, or dropped."
+        },
+        {
+          "type": "callout",
+          "title": "State the counting rule",
+          "text": "If a real dataset contains several line items for one order, row count is not order count. In that case, use a rule such as unique order_id count instead."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-input",
+      "heading": "2. Create the synthetic CSV",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save it as monthly_orders.csv. It contains seven orders across January, February, and March 2026."
+        },
+        {
+          "type": "code",
+          "text": "order_id,order_date,team,units,amount\nO001,2026-01-05,North,2,40\nO002,2026-01-20,South,3,60\nO003,2026-02-02,North,1,25\nO004,2026-02-18,South,4,100\nO005,2026-02-28,North,2,50\nO006,2026-03-03,South,5,125\nO007,2026-03-15,North,1,30\n"
+        },
+        {
+          "type": "p",
+          "text": "The source totals are simple enough to check manually. There are 7 orders. Units total 18: 2 + 3 + 1 + 4 + 2 + 5 + 1. Amount totals 430: 40 + 60 + 25 + 100 + 50 + 125 + 30."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Measure",
+            "Source total"
+          ],
+          "rows": [
+            [
+              "Orders",
+              "7"
+            ],
+            [
+              "Units",
+              "18"
+            ],
+            [
+              "Amount",
+              "430"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calculate-expected-months",
+      "heading": "3. Calculate the expected monthly rows by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "January contains O001 and O002. February contains O003, O004, and O005. March contains O006 and O007. Adding each group gives the expected monthly table."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "month",
+            "orders",
+            "units",
+            "amount"
+          ],
+          "rows": [
+            [
+              "2026-01",
+              "2",
+              "5",
+              "100"
+            ],
+            [
+              "2026-02",
+              "3",
+              "7",
+              "175"
+            ],
+            [
+              "2026-03",
+              "2",
+              "6",
+              "155"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The monthly totals reconcile with the source: 2 + 3 + 2 = 7 orders, 5 + 7 + 6 = 18 units, and 100 + 175 + 155 = 430 amount."
+        }
+      ]
+    },
+    {
+      "id": "build-the-summary",
+      "heading": "4. Build and verify the summary with pandas",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as monthly_summary_pandas.py. It validates required columns, rejects missing or duplicate order IDs, parses dates with one explicit format, converts numeric columns, groups by month, reconciles the totals, and writes the result only after those checks pass."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nimport pandas as pd\n\nSOURCE = Path(\"monthly_orders.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"monthly_summary_result\"\nOUTPUT = OUTPUT_DIR / \"monthly_summary.csv\"\nREQUIRED = [\"order_id\", \"order_date\", \"units\", \"amount\"]\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    data = pd.read_csv(SOURCE, dtype={\"order_id\": \"string\"})\n\n    missing = [name for name in REQUIRED if name not in data.columns]\n    if missing:\n        raise ValueError(f\"Missing required columns: {missing}\")\n    if data.empty:\n        raise ValueError(\"Source CSV contains no data rows.\")\n    if data[REQUIRED].isna().any().any():\n        raise ValueError(\"A required field contains a missing value.\")\n    if data[\"order_id\"].str.strip().eq(\"\").any():\n        raise ValueError(\"order_id contains a blank value.\")\n    if data[\"order_id\"].duplicated().any():\n        raise ValueError(\"Duplicate order_id found.\")\n\n    data[\"order_date\"] = pd.to_datetime(\n        data[\"order_date\"], format=\"%Y-%m-%d\", errors=\"raise\"\n    )\n    data[\"units\"] = pd.to_numeric(data[\"units\"], errors=\"raise\")\n    data[\"amount\"] = pd.to_numeric(data[\"amount\"], errors=\"raise\")\n    data[\"month\"] = data[\"order_date\"].dt.to_period(\"M\").astype(str)\n\n    summary = (\n        data.groupby(\"month\", as_index=False, sort=True)\n        .agg(\n            orders=(\"order_id\", \"count\"),\n            units=(\"units\", \"sum\"),\n            amount=(\"amount\", \"sum\"),\n        )\n    )\n\n    source_totals = (len(data), data[\"units\"].sum(), data[\"amount\"].sum())\n    summary_totals = (\n        summary[\"orders\"].sum(),\n        summary[\"units\"].sum(),\n        summary[\"amount\"].sum(),\n    )\n    if summary_totals != source_totals:\n        raise RuntimeError(\"Monthly totals do not reconcile with the source.\")\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n    summary.to_csv(OUTPUT, index=False)\n\n    check = pd.read_csv(OUTPUT)\n    if check.to_dict(\"records\") != summary.to_dict(\"records\"):\n        raise RuntimeError(\"Saved CSV does not match the calculated summary.\")\n\n    print(f\"Source rows: {len(data)}.\")\n    print(f\"Months: {len(summary)}.\")\n    print(f\"Verified totals: units={source_totals[1]}, amount={source_totals[2]}.\")\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "code",
+          "text": "python monthly_summary_pandas.py"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected output",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The output should contain three data rows sorted by month. The expected CSV contents are shown below."
+        },
+        {
+          "type": "code",
+          "text": "month,orders,units,amount\n2026-01,2,5,100\n2026-02,3,7,175\n2026-03,2,6,155\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived by hand from the synthetic data and code. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Source rows: 7.\nMonths: 3.\nVerified totals: units=18, amount=430.\nOutput: outputs/monthly_summary_result/monthly_summary.csv"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-errors",
+      "heading": "6. Reconcile the result and recognize common errors",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Count the source rows: 7.",
+            "Add monthly orders: 2 + 3 + 2 = 7.",
+            "Add monthly units: 5 + 7 + 6 = 18.",
+            "Add monthly amount: 100 + 175 + 155 = 430.",
+            "Confirm that the output contains exactly 2026-01, 2026-02, and 2026-03.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the existing result."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "ModuleNotFoundError for pandas",
+              "Install pandas into the same Python environment with python -m pip install pandas."
+            ],
+            [
+              "Missing required columns",
+              "Check the CSV header before changing the expected schema."
+            ],
+            [
+              "Date parsing error",
+              "Confirm that every order_date uses YYYY-MM-DD."
+            ],
+            [
+              "Numeric conversion error",
+              "Inspect units and amount for text, currency symbols, or separators that require an explicit cleanup rule."
+            ],
+            [
+              "Duplicate order_id found",
+              "Determine whether the repeated ID is an accidental duplicate or represents a different data model."
+            ],
+            [
+              "FileExistsError",
+              "Review the previous result and use a fresh output folder rather than overwriting it."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Matching grand totals do not prove that every month is correct because two monthly errors can offset each other. For important reports, also inspect several known source rows and month-level subtotals."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-scaling",
+      "heading": "7. Understand the limits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The example assumes one row per order and whole-number amounts. If one order spans several line-item rows, use a rule such as order_id.nunique() instead of row count. Real monetary data may also need fixed-point integer units or Decimal-based processing instead of ordinary floating-point arithmetic."
+        },
+        {
+          "type": "p",
+          "text": "Month is derived directly from a date with no time-zone handling. If real data contains timestamps from several zones, define the business time zone before grouping. Refunds, cancellations, filters, and missing records also need explicit business rules; arithmetic reconciliation alone cannot determine whether those rows belong in the report."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · pandas 2.2.3",
+    "items": [
+      "The main run printed exactly: 'Source rows: 7.', 'Months: 3.', 'Verified totals: units=18, amount=430.', and 'Output: outputs/monthly_summary_result/monthly_summary.csv'.",
+      "The generated CSV contents exactly matched the article: 2026-01,2,5,100; 2026-02,3,7,175; 2026-03,2,6,155.",
+      "The monthly order counts reconciled to 7: 2 + 3 + 2.",
+      "The monthly units reconciled to 18: 5 + 7 + 6.",
+      "The monthly amount reconciled to 430: 100 + 175 + 155.",
+      "The output contained exactly 3 data rows sorted by month.",
+      "The SHA-256 hash of monthly_orders.csv was unchanged after processing, confirming the source file was not modified.",
+      "A second run with outputs/monthly_summary_result already present raised FileExistsError before overwriting the previous result."
+    ],
+    "limits": [
+      "Duplicate-ID rejection, missing required values, invalid dates, nonnumeric units or amounts, floating-point monetary data, time zones, refunds, cancellations, line-item order models, permission failures, partial-write failures, and very large datasets were not separately stress-tested.",
+      "The Python environment emitted an unrelated artifact-tool spreadsheet warmup warning on stderr, but the article script itself completed successfully with exit code 0 and produced the expected output."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official pandas documentation · DataFrame.groupby",
+      "url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html"
+    },
+    {
+      "title": "Official pandas documentation · GroupBy",
+      "url": "https://pandas.pydata.org/docs/reference/groupby.html"
+    },
+    {
+      "title": "Official pandas documentation · to_datetime",
+      "url": "https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html"
+    },
+    {
+      "title": "Official pandas documentation · read_csv",
+      "url": "https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html"
+    }
+  ],
+  "slug": "monthly-summary-pandas",
+  "category": "office",
+  "date": "2026-09-20"
+}

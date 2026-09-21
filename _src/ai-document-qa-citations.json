@@ -1,1 +1,236 @@
-{"title": "Ask AI Questions About a Document and Check Line Citations", "summary": "AI answers about documents are easier to verify when every claim includes line-number citations. This guide uses a tiny synthetic note, asks an AI chat assistant for cited answers, and checks each citation range automatically with Python.", "seo_title": "AI Document Q&A with Line Citation Checking", "seo_desc": "Ask AI questions about a document with line-number citations, then use Python to verify every cited range and inspect the supporting source lines.", "tags": ["AI document Q&A", "citations", "Python"], "audience": "For people who use an AI chat assistant to answer questions from reports, notes, policies, or other text documents and want a simple citation-checking workflow.", "prerequisites": ["Python 3.12", "A plain-text document whose line numbering can remain fixed during review"], "sections": [{"id": "why-line-citations", "heading": "Why require line-number citations", "blocks": [{"type": "p", "text": "When an AI chat assistant answers questions about a document, the main problem is not whether the answer sounds fluent. The important question is whether each claim is supported by the supplied document. Requiring line-number citations gives the reviewer a direct path back to the source instead of asking them to search the entire file manually."}, {"type": "p", "text": "A useful workflow separates two checks. First, software can verify that every citation points to real line numbers and can reproduce those lines for inspection. Second, a person checks whether the cited text actually supports the claim. The automatic check catches broken or impossible references, but it does not prove semantic support by itself."}, {"type": "callout", "title": "Important distinction", "text": "A valid citation range means the referenced lines exist. It does not automatically mean those lines justify the AI's claim."}]}, {"id": "synthetic-document", "heading": "Create a tiny synthetic document", "blocks": [{"type": "p", "text": "Consider this synthetic project note. Save the seven lines exactly as shown in a plain-text file named project_note.txt. Because the example is intentionally small, every answer and citation can be checked manually."}, {"type": "table", "headers": ["Line", "Text"], "rows": [["L1", "Project Atlas weekly note"], ["L2", "Prototype test moved from 12 Sep to 16 Sep."], ["L3", "Reason: replacement sensor arrived late."], ["L4", "Analysis owner: Mina."], ["L5", "Draft results due 18 Sep."], ["L6", "Final review meeting scheduled 21 Sep."], ["L7", "Budget status unchanged."]]}, {"type": "p", "text": "Suppose the question is: What schedule changed, why did it change, and what deadlines follow? The source clearly states that the prototype test moved from 12 Sep to 16 Sep, the reason was a late replacement sensor, draft results are due 18 Sep, and the final review meeting is scheduled for 21 Sep."}]}, {"id": "ask-the-ai", "heading": "Require a strict citation format in the prompt", "blocks": [{"type": "p", "text": "Do not merely ask the AI to cite the document. Define the exact format so that a script can parse the answer later. In this example, every factual sentence must end with a citation such as [L2-L3] or [L5]."}, {"type": "ol", "items": ["Tell the AI to use only the supplied document.", "Require citations in the exact form [Lx] or [Lx-Ly].", "Ask it not to cite lines that do not directly support the preceding claim.", "Tell it to say that the document does not provide an answer when evidence is missing.", "Keep the source file unchanged while reviewing so its line numbers remain stable."]}, {"type": "callout", "title": "Example request to the AI", "text": "Using only project_note.txt, answer: What schedule changed, why did it change, and what deadlines follow? Put a line-number citation after every factual sentence. Use only [Lx] or [Lx-Ly], where the numbers refer to the original document. Do not invent information that is not stated in the document."}]}, {"id": "typical-ai-answer", "heading": "Inspect a typical cited answer", "blocks": [{"type": "p", "text": "A suitable answer might be: The prototype test moved from 12 Sep to 16 Sep because the replacement sensor arrived late. [L2-L3] Draft results are due 18 Sep, followed by the final review meeting on 21 Sep. [L5-L6]"}, {"type": "p", "text": "This answer contains two citation ranges. The first should resolve to lines 2 and 3, and the second should resolve to lines 5 and 6. Before trusting the answer, a checker can confirm that those ranges exist and print the exact source text associated with each citation."}]}, {"id": "automatic-citation-check", "heading": "Check every citation automatically with Python", "blocks": [{"type": "p", "text": "Save the AI answer in ai_answer.txt. The script below reads project_note.txt and ai_answer.txt, extracts citations with a regular expression, rejects invalid ranges, and writes a review report to outputs/citation_check.txt. It never modifies the original document or AI answer, and it stops if the output report already exists."}, {"type": "code"}]}, {"id": "check-the-result", "heading": "Compare each claim with the extracted lines", "blocks": [{"type": "p", "text": "For the synthetic answer, the checker should find two citations and zero invalid citation ranges. [L2-L3] maps to the test-date change and the late replacement sensor. [L5-L6] maps to the draft-results deadline and final review meeting."}, {"type": "table", "headers": ["Citation", "Expected extracted lines", "Manual conclusion"], "rows": [["[L2-L3]", "L2 and L3", "Supports the changed test date and stated reason."], ["[L5-L6]", "L5 and L6", "Supports the draft deadline and final review date."]]}, {"type": "p", "text": "Now deliberately try a bad citation such as [L8]. Because the synthetic document has only seven lines, the script should mark that range as invalid. This is useful for catching citations that look convincing in prose but cannot refer to the actual source."}, {"type": "callout", "title": "What still requires human review", "text": "Read the claim and the extracted source together. The script checks citation mechanics; you still decide whether the cited wording supports the claim without exaggeration or omitted qualifications."}]}, {"id": "common-mistakes-and-limits", "heading": "Avoid common mistakes and understand the limits", "blocks": [{"type": "ul", "items": ["Do not edit the source document after generating the AI answer; inserted or removed lines will change the numbering.", "Do not accept citations such as page names or vague phrases if your checker expects [Lx] syntax.", "Do not assume that an existing line proves the claim merely because the citation range is valid.", "Check whether the AI combines two facts from separate parts of a document but cites only one of them.", "Require the AI to state when the document lacks evidence instead of filling gaps from general knowledge.", "For long documents, preserve a stable source copy so later reviewers can reproduce the same line numbering."]}, {"type": "p", "text": "This approach works well for plain-text review, but PDFs, spreadsheets, OCR output, and dynamically generated documents may not have stable line boundaries. In those cases, a different citation unit such as page number, paragraph ID, section ID, or table cell may be more reliable."}, {"type": "p", "text": "The workflow therefore has two layers: automatic validation for citation syntax and line ranges, followed by human verification of whether each cited passage actually supports the answer. Used together, they make document Q&A easier to audit than an uncited AI response."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["The synthetic document contains exactly 7 lines as listed in the article.", "The example answer contains exactly 2 citation ranges: [L2-L3] and [L5-L6].", "[L2-L3] was checked by hand against the synthetic source and contains the changed prototype test date and the stated reason.", "[L5-L6] was checked by hand against the synthetic source and contains the draft-results deadline and final review meeting date.", "A citation to [L8] would be outside the 7-line document and should therefore be marked as an invalid range by the shown logic.", "The regular expression accepts the intended forms [L2], [L2-L3], and [L2-3]."], "limits": ["The Python code was not executed by the author of this article; its behavior was reviewed manually.", "The script validates citation syntax and whether referenced line ranges exist; it does not determine whether a claim is semantically supported by those lines.", "The example assumes stable plain-text line numbering and does not address OCR errors, PDF layout changes, tables, or documents whose lines are reformatted between review steps."]}, "references": [{"title": "Python re documentation", "url": "https://docs.python.org/3/library/re.html"}, {"title": "Python pathlib documentation", "url": "https://docs.python.org/3/library/pathlib.html"}], "slug": "ai-document-qa-citations", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Ask AI Questions About a Document and Check Line Citations",
+  "summary": "AI answers about documents are easier to verify when every claim includes line-number citations. This guide uses a tiny synthetic note, asks an AI chat assistant for cited answers, and checks each citation range automatically with Python.",
+  "seo_title": "AI Document Q&A with Line Citation Checking",
+  "seo_desc": "Ask AI questions about a document with line-number citations, then use Python to verify every cited range and inspect the supporting source lines.",
+  "tags": [
+    "AI document Q&A",
+    "citations",
+    "Python"
+  ],
+  "audience": "For people who use an AI chat assistant to answer questions from reports, notes, policies, or other text documents and want a simple citation-checking workflow.",
+  "prerequisites": [
+    "Python 3.12",
+    "A plain-text document whose line numbering can remain fixed during review"
+  ],
+  "sections": [
+    {
+      "id": "why-line-citations",
+      "heading": "Why require line-number citations",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When an AI chat assistant answers questions about a document, the main problem is not whether the answer sounds fluent. The important question is whether each claim is supported by the supplied document. Requiring line-number citations gives the reviewer a direct path back to the source instead of asking them to search the entire file manually."
+        },
+        {
+          "type": "p",
+          "text": "A useful workflow separates two checks. First, software can verify that every citation points to real line numbers and can reproduce those lines for inspection. Second, a person checks whether the cited text actually supports the claim. The automatic check catches broken or impossible references, but it does not prove semantic support by itself."
+        },
+        {
+          "type": "callout",
+          "title": "Important distinction",
+          "text": "A valid citation range means the referenced lines exist. It does not automatically mean those lines justify the AI's claim."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-document",
+      "heading": "Create a tiny synthetic document",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Consider this synthetic project note. Save the seven lines exactly as shown in a plain-text file named project_note.txt. Because the example is intentionally small, every answer and citation can be checked manually."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Line",
+            "Text"
+          ],
+          "rows": [
+            [
+              "L1",
+              "Project Atlas weekly note"
+            ],
+            [
+              "L2",
+              "Prototype test moved from 12 Sep to 16 Sep."
+            ],
+            [
+              "L3",
+              "Reason: replacement sensor arrived late."
+            ],
+            [
+              "L4",
+              "Analysis owner: Mina."
+            ],
+            [
+              "L5",
+              "Draft results due 18 Sep."
+            ],
+            [
+              "L6",
+              "Final review meeting scheduled 21 Sep."
+            ],
+            [
+              "L7",
+              "Budget status unchanged."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Suppose the question is: What schedule changed, why did it change, and what deadlines follow? The source clearly states that the prototype test moved from 12 Sep to 16 Sep, the reason was a late replacement sensor, draft results are due 18 Sep, and the final review meeting is scheduled for 21 Sep."
+        }
+      ]
+    },
+    {
+      "id": "ask-the-ai",
+      "heading": "Require a strict citation format in the prompt",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Do not merely ask the AI to cite the document. Define the exact format so that a script can parse the answer later. In this example, every factual sentence must end with a citation such as [L2-L3] or [L5]."
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Tell the AI to use only the supplied document.",
+            "Require citations in the exact form [Lx] or [Lx-Ly].",
+            "Ask it not to cite lines that do not directly support the preceding claim.",
+            "Tell it to say that the document does not provide an answer when evidence is missing.",
+            "Keep the source file unchanged while reviewing so its line numbers remain stable."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Example request to the AI",
+          "text": "Using only project_note.txt, answer: What schedule changed, why did it change, and what deadlines follow? Put a line-number citation after every factual sentence. Use only [Lx] or [Lx-Ly], where the numbers refer to the original document. Do not invent information that is not stated in the document."
+        }
+      ]
+    },
+    {
+      "id": "typical-ai-answer",
+      "heading": "Inspect a typical cited answer",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A suitable answer might be: The prototype test moved from 12 Sep to 16 Sep because the replacement sensor arrived late. [L2-L3] Draft results are due 18 Sep, followed by the final review meeting on 21 Sep. [L5-L6]"
+        },
+        {
+          "type": "p",
+          "text": "This answer contains two citation ranges. The first should resolve to lines 2 and 3, and the second should resolve to lines 5 and 6. Before trusting the answer, a checker can confirm that those ranges exist and print the exact source text associated with each citation."
+        }
+      ]
+    },
+    {
+      "id": "automatic-citation-check",
+      "heading": "Check every citation automatically with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the AI answer in ai_answer.txt. The script below reads project_note.txt and ai_answer.txt, extracts citations with a regular expression, rejects invalid ranges, and writes a review report to outputs/citation_check.txt. It never modifies the original document or AI answer, and it stops if the output report already exists."
+        },
+        {
+          "type": "code",
+          "text": "import re\nfrom pathlib import Path\n\nDOCUMENT_FILE = Path(\"project_note.txt\")\nANSWER_FILE = Path(\"ai_answer.txt\")\nOUTPUT_DIR = Path(\"outputs\")\nOUTPUT_FILE = OUTPUT_DIR / \"citation_check.txt\"\n\nCITATION_RE = re.compile(r\"\\[L(\\d+)(?:-L?(\\d+))?\\]\")\n\n\ndef main():\n    if not DOCUMENT_FILE.is_file():\n        raise SystemExit(f\"Document not found: {DOCUMENT_FILE}\")\n\n    if not ANSWER_FILE.is_file():\n        raise SystemExit(f\"AI answer not found: {ANSWER_FILE}\")\n\n    if OUTPUT_FILE.exists():\n        raise SystemExit(f\"Output already exists: {OUTPUT_FILE}\")\n\n    lines = DOCUMENT_FILE.read_text(encoding=\"utf-8\").splitlines()\n    answer = ANSWER_FILE.read_text(encoding=\"utf-8\")\n    matches = list(CITATION_RE.finditer(answer))\n\n    if not matches:\n        raise SystemExit(\"No citations found in AI answer.\")\n\n    report = []\n    report.append(f\"document_lines={len(lines)}\")\n    report.append(f\"citations_found={len(matches)}\")\n    report.append(\"\")\n\n    invalid_count = 0\n\n    for index, match in enumerate(matches, start=1):\n        start = int(match.group(1))\n        end = int(match.group(2)) if match.group(2) else start\n        citation = match.group(0)\n\n        valid = 1 <= start <= end <= len(lines)\n        report.append(f\"citation_{index}={citation}\")\n        report.append(f\"valid_range={valid}\")\n\n        if not valid:\n            invalid_count += 1\n            report.append(\"source=INVALID LINE RANGE\")\n            report.append(\"\")\n            continue\n\n        for line_number in range(start, end + 1):\n            source_text = lines[line_number - 1]\n            report.append(f\"L{line_number}: {source_text}\")\n\n        report.append(\"\")\n\n    report.append(f\"invalid_citations={invalid_count}\")\n\n    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)\n    OUTPUT_FILE.write_text(\"\\n\".join(report) + \"\\n\", encoding=\"utf-8\")\n    print(f\"Wrote: {OUTPUT_FILE}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "check-the-result",
+      "heading": "Compare each claim with the extracted lines",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the synthetic answer, the checker should find two citations and zero invalid citation ranges. [L2-L3] maps to the test-date change and the late replacement sensor. [L5-L6] maps to the draft-results deadline and final review meeting."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Citation",
+            "Expected extracted lines",
+            "Manual conclusion"
+          ],
+          "rows": [
+            [
+              "[L2-L3]",
+              "L2 and L3",
+              "Supports the changed test date and stated reason."
+            ],
+            [
+              "[L5-L6]",
+              "L5 and L6",
+              "Supports the draft deadline and final review date."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Now deliberately try a bad citation such as [L8]. Because the synthetic document has only seven lines, the script should mark that range as invalid. This is useful for catching citations that look convincing in prose but cannot refer to the actual source."
+        },
+        {
+          "type": "callout",
+          "title": "What still requires human review",
+          "text": "Read the claim and the extracted source together. The script checks citation mechanics; you still decide whether the cited wording supports the claim without exaggeration or omitted qualifications."
+        }
+      ]
+    },
+    {
+      "id": "common-mistakes-and-limits",
+      "heading": "Avoid common mistakes and understand the limits",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Do not edit the source document after generating the AI answer; inserted or removed lines will change the numbering.",
+            "Do not accept citations such as page names or vague phrases if your checker expects [Lx] syntax.",
+            "Do not assume that an existing line proves the claim merely because the citation range is valid.",
+            "Check whether the AI combines two facts from separate parts of a document but cites only one of them.",
+            "Require the AI to state when the document lacks evidence instead of filling gaps from general knowledge.",
+            "For long documents, preserve a stable source copy so later reviewers can reproduce the same line numbering."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This approach works well for plain-text review, but PDFs, spreadsheets, OCR output, and dynamically generated documents may not have stable line boundaries. In those cases, a different citation unit such as page number, paragraph ID, section ID, or table cell may be more reliable."
+        },
+        {
+          "type": "p",
+          "text": "The workflow therefore has two layers: automatic validation for citation syntax and line ranges, followed by human verification of whether each cited passage actually supports the answer. Used together, they make document Q&A easier to audit than an uncited AI response."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script counted document_lines=7 and citations_found=2.",
+      "[L2-L3] was accepted as valid and extracted exactly L2 and L3.",
+      "[L5-L6] was accepted as valid and extracted exactly L5 and L6.",
+      "The report ended with invalid_citations=0, matching the article.",
+      "The extracted L2-L3 text supports the changed prototype-test date and late replacement-sensor reason.",
+      "The extracted L5-L6 text supports the 18 Sep draft deadline and 21 Sep final review meeting.",
+      "A separate answer containing [L8] produced valid_range=False, source=INVALID LINE RANGE, and invalid_citations=1.",
+      "A second execution on the original case stopped with 'Output already exists: outputs/citation_check.txt', confirming no-overwrite behavior.",
+      "The regular expression behavior is consistent with the article's stated citation forms."
+    ],
+    "limits": [
+      "The script verifies citation syntax and line-range existence; semantic support still requires human review.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python environment and did not affect the script results."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python re documentation",
+      "url": "https://docs.python.org/3/library/re.html"
+    },
+    {
+      "title": "Python pathlib documentation",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-document-qa-citations",
+  "category": "ai",
+  "date": "2026-09-21"
+}

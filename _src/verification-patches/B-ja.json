@@ -1,0 +1,361 @@
+{
+  "file": "B",
+  "lang": "ja",
+  "data": {
+    "useful-changelog": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library: json, pathlib",
+        "items": [
+          "3件の変更、3件の必須対応、3件の検証項目、合計9行の箇条書きで実行が正常に完了した。",
+          "生成された CHANGELOG_ENTRY.txt は記事の想定された変更履歴テキストと正確に一致した。",
+          "コンソール出力は正確に一致した: Changes: 3; Required actions: 3; Verification checks: 3; Total bullets: 9; Output: outputs/useful_changelog_result/CHANGELOG_ENTRY.txt.",
+          "各変更が What changed の下に1回ずつ、各対応が What you need to do の下に1回ずつ現れ、3件すべての確認項目が Check after updating の下に含まれていることを確認した。",
+          "reports/ と outputs/reports/、report_dir と output_dir、customer_id の表現が合成元JSONから正確にそのままコピーされていることを確認した。",
+          "2回目の実行は outputs/useful_changelog_result に対して FileExistsError を発生させ、上書き防止が機能することを確認した。",
+          "SHA-256 比較により release_notes.json は変更されていないことを確認した。"
+        ],
+        "limits": [
+          "Python 起動時に実行環境から無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、スクリプトの正常な初回実行、生成出力、上書き防止動作には影響しなかった。",
+          "スクリプトは構造、必須テキスト、セクションの存在、箇条書き数を検証するが、人が書いた変更履歴の説明が内容的に完全または正確かどうかは判断できない。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "project-handover-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, pathlib",
+        "items": [
+          "最初の実行は正常に完了した。",
+          "コンソール出力は正確に一致した: チェックリスト項目5件、未完了項目2件、検証上の問題2件、影響を受けた項目2件、および記載されたレポートパス。",
+          "生成されたレポートには正確に row 5 H004 MISSING_OWNER と row 6 H005 MISSING_LOCATION が含まれていた。",
+          "元の handover_items.csv は実行後もバイト単位で完全に同一だった。",
+          "記事例で生成された唯一の出力は outputs/handover_check_result/handover_review.csv だった。",
+          "2回目の実行は outputs/handover_check_result がすでに存在したため FileExistsError で停止し、以前のレポートは上書きされなかった。"
+        ],
+        "limits": [
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、スクリプトの実行や結果には影響しなかった。",
+          "外部ドキュメントURLは確認していない。今回の検証作業は実行可能な記事例を対象としていたためである。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-email-draft-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, sys",
+        "items": [
+          "スクリプトは正常に実行され、outputs/email_check_report.txt を作成した。",
+          "記事の元のサンプル下書きを使用した場合、quantity、unit price、total、October 7、October 9 は PASS したが、recipient Mina Park と company Example Parts はその正確な文字列が存在しなかったため CHECK を返した。",
+          "一覧にある危険な約束表現は検出されなかった。",
+          "計算された合計は正確に 24 x $18.50 = $444.00 だった。",
+          "draft_email.txt は実行後もバイト単位で完全に同一だった。",
+          "2回目の実行は outputs がすでに存在したため停止し、レポートは上書きされなかった。",
+          "提案されたテキスト修正により、コードを変更せずに代表的な下書きをスクリプトの必須テキストチェックと整合させることができる。"
+        ],
+        "limits": [
+          "スクリプトは実際の To、CC、BCC フィールド、添付ファイル、組織上の権限、文体、または固定リスト外の表現で示された約束を検証できない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "ask-ai-for-draft",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "一般的なAIの回答例は次のようになります。'Hello Mina Park, We would like to request 24 sample units from Example Parts at $18.50 per unit, for a total of $444.00. If possible, please arrange delivery by October 7, 2026, as our internal review is scheduled for October 9. Please let us know whether this delivery date is feasible. Best regards.' 妥当な下書きですが、引き続き検証が必要です。",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-meeting-minutes-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, sys",
+        "items": [
+          "最初の実行は正常に完了し、outputs/minutes_check_report.txt を作成した。",
+          "5件のチェックはすべて PASS を返した: revised-template の決定、Leo の October 6 の対応、Sara の review 対応、未解決の appendix の決定、不確定な October 8 の supplier-data 日付。",
+          "生成されたレポートには正確に5行の PASS と、その後に記載された4件の手動確認リマインダーが含まれていた。",
+          "transcript は実行後もバイト単位で完全に同一だった。",
+          "2回目の実行は outputs がすでに存在したため記載されたメッセージとともに停止し、以前のレポートは上書きされなかった。",
+          "記事の解釈は transcript と一致する: Sara にはカレンダー上の締切がなく、October 8 は supplier-data が到着する可能性のある日付にのみ該当し、appendix は未解決のままで、supplier の日付も明示的に未確定である。"
+        ],
+        "limits": [
+          "完全一致によるフレーズ照合では、言い換えやより広い transcript の文脈を検証できない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや検証済み出力には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-excel-formula-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, decimal, datetime, csv, sys",
+        "items": [
+          "最初の実行は正常に完了し、outputs/formula_check_report.txt を作成した。",
+          "生成結果は正確に次のとおりだった: Row 2 = 20.00%, Row 3 = 0.00%, Row 4 = blank, Rows 5-8 = CHECK.",
+          "結果は記事で示された順序 20.00%, 0.00%, blank, CHECK, CHECK, CHECK, CHECK と一致した。",
+          "ISO 日付の行 2026-10-01 から 2026-10-08 は正しく検出され、CHECK と表示された。",
+          "元の formula_cases.csv は実行後もバイト単位で完全に同一だった。",
+          "2回目の実行は outputs がすでに存在したため記載されたメッセージとともに停止し、以前のレポートは上書きされなかった。",
+          "スクリプトは Python 標準ライブラリのモジュールのみを使用し、提供された合成CSVに対して記載された業務ルールどおりに動作した。"
+        ],
+        "limits": [
+          "Python テストは、実際の Excel ワークブック内の Excel 数式の動作ではなく、独立したCSVルールを検証する。",
+          "実際の Excel 日付は数値シリアル値なので ISNUMBER を通過するという記事の説明は、今回の検証では Excel 上で実行していない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや出力には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-translation-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, re, sys",
+        "items": [
+          "元のスクリプトは正常に実行され、outputs/translation_check_report.txt を作成した。",
+          "有効な韓国語翻訳を使用した場合、元の正規表現は原文から ['12', '35', '80', '14', '2026'] を抽出したが、翻訳文からは ['35', '80', '14'] のみを抽出し、Unicode の単語境界動作による誤った不一致を示した。",
+          "保護対象の4つの文字列 N·m、°C、Mina Park、Alpha-X はすべて PASS した。",
+          "正規表現を (?<!\\d)\\d+(?:\\.\\d+)?(?!\\d) に置き換えた後は、両ファイルとも ['12', '35', '80', '14', '2026'] を生成し、レポートは PASS: number sequence matches を返した。",
+          "source.txt と translation.txt はバイト単位で完全に同一のままだった。",
+          "2回目の実行は outputs がすでに存在したため停止し、以前のレポートは上書きされなかった。"
+        ],
+        "limits": [
+          "記事には完全な対象言語の translation.txt 例が1つに定まって提示されていないため、指定された保護情報を保持する忠実な韓国語翻訳を実行に使用した。",
+          "修正版の正規表現でも、あらゆるローカライズされた数値表記、符号付き数値、桁区切り、ロケール固有の小数点表記を認識できるわけではない。",
+          "スクリプトは意味上の忠実性、否定表現、義務の強さ、または保持された数値が正しい文に対応しているかを検証できない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや検証結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-data-cleaning-rules": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library csv, sys, decimal, pathlib",
+        "items": [
+          "最初の実行は正常に完了した。",
+          "コンソール出力は記事と正確に一致した: 5 rows written、9 changed cells。",
+          "変更ログには正確に9件の変更が含まれていた: row 1 に3件、row 3 に3件、row 4 に2件、row 5 に1件。",
+          "9件の変更は予想表と正確に一致した: row 1 name/email/department; row 3 email/department/hours; row 4 department/hours; row 5 department.",
+          "Row 2 は変更ログに現れなかった。",
+          "クリーンアップ後のCSVは5行すべてを元の順序で保持し、すべての row_id を維持した。",
+          "クリーンアップ後の値は意図どおりで、8.0 -> 8、NA -> blank、department の正規化、空白の除去、空でない email アドレスの小文字化が含まれていた。",
+          "sample_people.csv は実行後もバイト単位で完全に同一だった。",
+          "2回目の実行は 'Stop: outputs already exists. Review or rename it first.' とともに停止し、以前の出力を上書きしなかった。"
+        ],
+        "limits": [
+          "テスト対象は提供された合成CSVと承認済みルールのみであり、より広範な department マッピング、不正なCSV入力、特殊なエンコーディング、複数行フィールド、ドメイン固有のデータルールは検証していない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-chart-claims-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib",
+        "items": [
+          "最初の実行は正常に完了し、outputs/claims_check.txt を書き出した。",
+          "レポートは annual_total に対して PASS を生成した: AI=490, recomputed=490.00.",
+          "レポートは quarterly_average に対して FAIL を生成した: AI=120, recomputed=122.50.",
+          "レポートは q4_share_percent に対して FAIL を生成した: AI=32.6, recomputed=30.61.",
+          "レポートは q1_to_q4_change_percent に対して PASS を生成した: AI=50.0, recomputed=50.00.",
+          "レポートは largest_qoq_absolute_change に対して PASS を生成した: AI=30, recomputed=30.00.",
+          "レポートは largest_qoq_percent_change に対して PASS を生成した: AI=25.0, recomputed=25.00.",
+          "報告された最大の四半期間変化は Q3 to Q4 だった。",
+          "数値結果は記事の解釈表と本文説明に正確に一致した: 合計 490、平均 122.5、Q4 の比率は約 30.61%、Q1 から Q4 への増加率は 50%、Q3 から Q4 の増加は 30 または 25%。",
+          "2回目の実行は 'Stop: outputs/claims_check.txt already exists.' とともに終了し、既存のレポートを置き換えなかった。"
+        ],
+        "limits": [
+          "スクリプトは ai_claims に明示的にエンコードされた6件の主張のみを検証し、任意のAI作成チャート要約を解析するものではない。",
+          "例示された許容誤差 0.05 は、提供された値についてのみテストされた。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "prompt-template-library": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library pathlib, string",
+        "items": [
+          "最初の実行は正常に完了し、'Wrote outputs/weekly_summary_prompt.txt' を出力した。",
+          "生成されたファイルパスは正確に outputs/weekly_summary_prompt.txt と一致した。",
+          "レンダリングされたプロンプトには Project: Atlas と Audience: engineering team が含まれていた。",
+          "提供された4行の作業ログはすべて正確に保持され、日付 2026-09-14 と 2026-09-16、および値 120 も含まれていた。",
+          "レンダリングされたプロンプトには $project、$audience、$log_text のようなプレースホルダーは残っていなかった。",
+          "選択された template には必須変数 project、audience、log_text が正確に3つあり、すべて空でない値で提供されていた。",
+          "生成されたプロンプトには、記載された task 指示、4つのルール、例示形式、3つの checklist 項目、source work log が含まれていた。",
+          "2回目の実行は 'Stop: outputs/weekly_summary_prompt.txt already exists.' とともに終了し、既存のレンダリング済みプロンプトを上書きしなかった。"
+        ],
+        "limits": [
+          "記事コードでは選択された weekly_summary ブランチのみが実行されるため、meeting_actions template はソースで確認したが、この正確な実行ではレンダリングしていない。",
+          "スクリプトはプロンプト構築を検証するものであり、その後のAIがレンダリングされたプロンプトに正しく従うかどうかは検証しない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が stderr に出力されたが、記事スクリプトや出力には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-json-extraction-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは正常に実行され、outputs/json_validation.txt を書き出した。",
+          "レポートには Validation: FAIL と正確に3件のエラーが含まれていた: unexpected issue_summary、ticket_id not integer、invalid priority。",
+          "products=[\"Desktop\", \"Web\"] は空でない文字列リストのルールに合格した。",
+          "callback_time=15:30 は HH:MM 検証ルールに合格した。",
+          "報告された3つの失敗理由は記事本文と表に一致した。",
+          "2回目の実行は 'Stop: outputs/json_validation.txt already exists.' とともに停止し、レポートを上書きしなかった。",
+          "元の例は ticket 1842、Mira Lee、priority high、Desktop、Web、callback time 15:30 を明示的に裏付けている。"
+        ],
+        "limits": [
+          "バリデーターは構造と形式のみを確認し、任意の元テキストとの事実一致については引き続き元テキストとの比較が必要である。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-classification-accuracy": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは正確に8件の ticket を処理した。",
+          "スクリプトは correct=6、accuracy=0.750 を計算し、記載された 75% と一致した。",
+          "混同行列は記事と正確に一致した: billing=[2,1,0], login=[0,2,0], bug=[0,1,2].",
+          "混同行列のセル合計は8ケースだった。",
+          "スクリプトは ticket_labels.csv を変更せずに outputs/classification_report.txt を書き出した。",
+          "2回目の実行は 'Output already exists: outputs/classification_report.txt' とともに停止し、上書き防止動作を確認した。"
+        ],
+        "limits": [
+          "8件の ticket データセットは合成データであり、実運用での分類性能を確立するには小さすぎる。",
+          "Python 実行環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、スクリプト実行や結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-mask-personal-data": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "最初の実行は正常に完了した。",
+          "コンソールは一意の名前2件、一意の email 2件、一意の phone number 2件がマスクされたと報告した。",
+          "replacements.csv には正確に6行が含まれていた: Alice Kim -> [NAME_1]、Bob Lee -> [NAME_2]、email の置換2件、phone の置換2件。",
+          "outputs/message_masked.txt では、承認済みの2つの full name、2つの email、2つの phone number がすべて置換された。",
+          "短い参照 'Alice' は、コードが承認済みの正確な名前 'Alice Kim' のみを置換するため、マスクされずに残った。",
+          "意図的に省略された参照 'A. Kim' も想定どおりマスクされずに残った。",
+          "message.txt は変更されなかった。",
+          "2回目の実行は outputs がすでに存在したため停止し、上書き防止動作を確認した。"
+        ],
+        "limits": [
+          "full-name ロジックは意図的に2つの名前だけを対象とする完全一致の allowlist であり、一般的な個人情報検出器ではない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、スクリプトの実行や生成ファイルには影響しなかった。"
+        ]
+      },
+      "text_fixes": [
+        {
+          "section_id": "check-expected-output",
+          "block_index": 2,
+          "field": "text",
+          "new_value": "正確なフルネーム Alice Kim は元テキストに1回現れ、[NAME_1] に置き換えられます。後に出てくる短い参照 Alice は、承認済みのフルネーム一覧と完全一致しないためマスクされずに残り、手動レビューで確認する必要があります。レポートには、出現ごとに1行ずつではなく、検出された一意の値が記録されます。",
+          "type": "p"
+        }
+      ]
+    },
+    "ai-code-review-checklist": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは記載された合成入力で正常に完了した。",
+          "生成されたレポートには total_quantity=6 と total_revenue=44.50 が含まれ、記事の手計算および表と一致した。",
+          "計算は正確に一致した: 2×10.00=20.00、3×5.50=16.50、1×8.00=8.00。",
+          "入力 orders.csv は変更されなかった。",
+          "スクリプトは記載どおり outputs/order_summary.txt を作成した。",
+          "2回目の実行は 'Output already exists: outputs/order_summary.txt' とともに停止し、上書き防止動作を確認した。",
+          "コードは Python 標準ライブラリの csv、decimal、pathlib のみを使用する。"
+        ],
+        "limits": [
+          "記事では追加の edge-case テストについて説明しているが、これらは実行済み結果として主張されているのではなくレビュー推奨事項であるため、検証実行では正確な合成例と上書き防止動作に焦点を当てた。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、スクリプト結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-document-qa-citations": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは document_lines=7、citations_found=2 を数えた。",
+          "[L2-L3] は有効として受け入れられ、正確に L2 と L3 を抽出した。",
+          "[L5-L6] は有効として受け入れられ、正確に L5 と L6 を抽出した。",
+          "レポートは invalid_citations=0 で終了し、記事と一致した。",
+          "抽出された L2-L3 のテキストは、変更された prototype-test の日付と replacement-sensor の遅延理由を裏付けている。",
+          "抽出された L5-L6 のテキストは、18 Sep の draft 締切と 21 Sep の final review meeting を裏付けている。",
+          "[L8] を含む別の回答では valid_range=False、source=INVALID LINE RANGE、invalid_citations=1 が生成された。",
+          "元のケースに対する2回目の実行は 'Output already exists: outputs/citation_check.txt' とともに停止し、上書き防止動作を確認した。",
+          "正規表現の動作は記事に記載された citation 形式と一致している。"
+        ],
+        "limits": [
+          "スクリプトは citation の構文と line-range の存在を検証するが、意味的な裏付けについては引き続き人による確認が必要である。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、スクリプト結果には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-paper-summary-table": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは正常に完了し、outputs/paper_table_check.txt を書き出した。",
+          "レポートには cells_checked=5 と evidence_not_found=0 が含まれていた。",
+          "P1 method、data_size、result はすべて EVIDENCE_FOUND と報告された。",
+          "P2 limitation='Not stated' は REVIEW_NOT_STATED と報告され、スクリプトのロジックおよび記事の説明と一致した。",
+          "P3 result は EVIDENCE_FOUND と報告された。",
+          "提供された空でない4つの evidence fragment は、それぞれ対応する abstract 内に文字列どおり存在した。",
+          "記事の実質的な表の主張は合成 abstract と一致しており、P1 の 30-sample test set における MAE 0.18 mm、P2 の validation cases の 90% で error below 4%、P3 の Gaussian process regression における lower RMSE が含まれる。",
+          "2回目の実行は 'Output already exists: outputs/paper_table_check.txt' とともに停止し、上書き防止動作を確認した。"
+        ],
+        "limits": [
+          "文字列としての evidence 一致は、言い換えられた値が元情報のすべての条件や完全な意味を維持していることを証明するものではない。",
+          "'Not stated' ブランチはセルをレビュー対象として示すが、その情報が abstract に実際に存在しないことを自動的に証明するものではない。",
+          "Python 環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、スクリプト実行や出力には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-reference-existence-check": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは正常に完了し、outputs/reference_check.json を作成した。",
+          "出力には urllib.request、json、合成 fake reference に対応する正確に3つの結果オブジェクトが含まれていた。",
+          "Python 実行環境では外部DNSを解決できなかったため、3件すべてのリクエストはスクリプトをクラッシュさせることなく URLError 値として処理された。",
+          "到達不能なURLでは reachable は false のまま、status と final_url は null、term_matches は空のままとなり、error フィールドには意図どおりネットワーク障害が記録された。",
+          "スクリプトは Python 標準ライブラリのモジュールのみを使用する: pathlib, urllib.request, urllib.error, html, json, re.",
+          "スクリプトは既存のレビューを上書きしなかった。2回目の実行は 'outputs already exists; remove or rename it before running again' とともに停止した。",
+          "生成されたレポートファイル名は正確に outputs/reference_check.json で、記事と一致した。"
+        ],
+        "limits": [
+          "検証時の ChatGPT Python 実行環境では外部DNS/ネットワークアクセスが機能しなかったため、2つの Python ドキュメントURLについて、現在のHTTPステータスコード、リダイレクト、取得されたページテキスト、term match をこのスクリプトの実行によって検証できなかった。",
+          "ページを取得できなかったため、実際の reachable-and-terms-found ブランチは実行できなかった。",
+          "キーワードの存在は関連可能性を絞り込むためのものにすぎず、引用ページが主張全体を意味的に裏付けることを証明するものではない。",
+          "Python 起動時に無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、記事スクリプトの実行には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    },
+    "ai-weekly-report-from-log": {
+      "verification": {
+        "env": "2026-09-22 · ChatGPT Python tool · Python 3.x · standard library only",
+        "items": [
+          "スクリプトは正確な合成作業ログで正常に完了した。",
+          "出力は Rows: 6 と報告した。",
+          "出力は Total hours: 10.5 と報告し、2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5 と一致した。",
+          "出力は Completed activities: 5 と報告した。",
+          "出力は In-progress activities: 1 と報告した。",
+          "これらの値は記事の expected-values 表および AI-report 比較表と一致した。",
+          "スクリプトは記載された4つの reconciliation metric を正確に含む outputs/weekly_reconciliation.txt を作成した。",
+          "work_log.csv は実行後も変更されなかった。",
+          "2回目の実行は 'outputs already exists; remove or rename it before running again' とともに停止し、記載された上書き防止動作を確認した。"
+        ],
+        "limits": [
+          "スクリプトは記録された hours と status count を検証するが、元の work-log エントリ自体が事実上完全または正確かどうかは判断できない。",
+          "counting rule は記事に記載されたとおり、各 CSV row を1つの activity として扱う。",
+          "Python 実行環境では無関係なスプレッドシートランタイムのウォームアップ警告が発生したが、記事スクリプトや出力には影響しなかった。"
+        ]
+      },
+      "text_fixes": []
+    }
+  }
+}

@@ -1,1 +1,281 @@
-{"title": "Turn a Daily Work Log into a Weekly Report with AI and Reconcile the Numbers", "summary": "An AI chat assistant can turn terse daily notes into a readable weekly report, but totals such as hours and completed-task counts should be checked separately. This guide uses a small synthetic work log, an AI drafting prompt, and a Python reconciliation script.", "seo_title": "Create a Weekly Report from Work Logs with AI", "seo_desc": "Turn daily work logs into a weekly report with AI, then verify reported hours and task counts against the original log using Python.", "tags": ["AI reporting", "work logs", "Python"], "audience": "For people who keep short daily work logs and want AI to draft weekly reports without losing control of hours, counts, and factual details.", "prerequisites": ["Python 3.12", "A plain CSV file containing the daily work log"], "sections": [{"id": "why-reconcile-report-numbers", "heading": "Why reconcile an AI-written weekly report?", "blocks": [{"type": "p", "text": "AI is useful for reorganizing terse work notes into readable prose, but it should not be treated as the source of truth for arithmetic. A weekly report can sound coherent while quietly changing a total, counting one activity twice, or presenting a planned task as completed. A safer workflow separates narrative drafting from numerical reconciliation."}, {"type": "ul", "items": ["Use the work log as the factual source.", "Ask the AI to summarize only what appears in the log.", "Calculate hours and counts independently from the structured data.", "Compare the AI report with the independently calculated totals.", "Correct the report before sending or publishing it."]}, {"type": "callout", "title": "Narrative and arithmetic are different checks", "text": "A report can be well written and still contain the wrong totals. Treat wording quality and numerical accuracy as separate review tasks."}]}, {"id": "synthetic-work-log", "heading": "Start with a small synthetic work log", "blocks": [{"type": "p", "text": "The following work log is synthetic. Each row records one activity, the hours spent, and whether the activity was completed during the week. Keeping these fields structured makes later reconciliation much easier."}, {"type": "table", "headers": ["date", "task", "hours", "status"], "rows": [["2026-09-14", "Clean customer CSV", "2.0", "completed"], ["2026-09-14", "Draft import script", "1.5", "completed"], ["2026-09-15", "Test import script", "2.5", "completed"], ["2026-09-16", "Investigate duplicate IDs", "1.0", "completed"], ["2026-09-17", "Update validation rules", "2.0", "completed"], ["2026-09-18", "Prepare user notes", "1.5", "in progress"]]}, {"type": "p", "text": "By hand, the hours are 2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5 = 10.5 hours. Five of the six activities have status completed, so the completed-task count is 5. The final activity is still in progress and must not be counted as completed."}]}, {"id": "ask-ai-for-report", "heading": "Ask the AI to draft from the log, not from memory", "blocks": [{"type": "p", "text": "Paste the log into an AI chat assistant and explicitly limit the task to rewriting and organizing the supplied data. Also ask it to state its totals so they can be checked."}, {"type": "p", "text": "Prompt to the AI: Using only the work log below, write a concise weekly report with three parts: work completed, work still in progress, and weekly totals. Do not invent outcomes or tasks. State the total logged hours and the number of completed activities. Keep the original task meanings."}, {"type": "p", "text": "A typical AI answer might say: This week, customer data was cleaned, an import script was drafted and tested, duplicate IDs were investigated, and validation rules were updated. User notes remain in progress. Total logged time was 10.5 hours, with 5 completed activities."}, {"type": "callout", "title": "Do not trust a correct-looking total yet", "text": "Even if the AI says 10.5 hours and 5 completed activities, calculate those values independently from the log before accepting the report."}]}, {"id": "prepare-csv", "heading": "Keep a structured copy for reconciliation", "blocks": [{"type": "p", "text": "Save the same synthetic example as work_log.csv with the columns date, task, hours, and status. The reconciliation script should read this source file directly rather than trying to recover numbers from the AI-written prose."}, {"type": "table", "headers": ["Metric", "Expected value from the log"], "rows": [["Rows", "6"], ["Total hours", "10.5"], ["Completed activities", "5"], ["In-progress activities", "1"]]}, {"type": "p", "text": "This separation is important: the CSV is the evidence, while the weekly report is a presentation of that evidence."}]}, {"id": "python-reconciliation", "heading": "Recalculate hours and counts with Python", "blocks": [{"type": "p", "text": "The following Python 3.12 script reads work_log.csv, validates the required fields, totals the hours, counts statuses, and writes a reconciliation report to outputs/weekly_reconciliation.txt. It does not overwrite an existing outputs directory."}, {"type": "code"}]}, {"id": "compare-ai-and-log", "heading": "Compare the AI report with the calculated values", "blocks": [{"type": "p", "text": "For this example, the independently expected values are 10.5 total hours and 5 completed activities. Compare those values with every numerical statement in the AI draft."}, {"type": "table", "headers": ["Check", "Log result", "AI draft", "Decision"], "rows": [["Total hours", "10.5", "10.5", "Matches"], ["Completed activities", "5", "5", "Matches"], ["In-progress activities", "1", "User notes remain in progress", "Consistent"]]}, {"type": "ol", "items": ["Check every number in the AI report against the reconciliation output.", "Confirm that completed and in-progress work were not mixed.", "Compare task wording with the original log so outcomes were not invented.", "If the AI total differs, use the structured log calculation and revise the prose."]}]}, {"id": "common-mistakes-and-limits", "heading": "Common mistakes and limits", "blocks": [{"type": "ul", "items": ["Summing numbers from the AI report instead of from the original log.", "Counting every row as completed even when some rows are still in progress.", "Treating several log rows about the same project as one task without defining that counting rule.", "Allowing the AI to infer achievements that are not explicitly recorded.", "Changing status wording between the log and the script without updating the accepted values.", "Ignoring missing rows, invalid hour values, or duplicated entries before calculating totals."]}, {"type": "p", "text": "This example counts completed activities by row. A real organization may instead count tickets, deliverables, projects, or milestones, so the counting rule must be defined before reconciliation. The script also checks arithmetic and simple statuses only; it cannot determine whether a work-log entry itself is accurate or whether the reported work quality was sufficient."}]}], "verification": {"env": "2026-09-21 · hand-checked example · Python 3.12", "items": ["Checked by hand that the six synthetic rows contain 2.0, 1.5, 2.5, 1.0, 2.0, and 1.5 hours.", "Checked by hand that those values sum to 10.5 hours.", "Checked by hand that five rows are marked completed and one row is marked in progress.", "Checked that the comparison table uses the same 10.5-hour and 5-completed-activity results.", "Checked that the script reads work_log.csv, validates required columns and statuses, and writes only to outputs/weekly_reconciliation.txt.", "Checked that the script stops if the outputs directory already exists rather than overwriting a previous result."], "limits": ["The code was not executed by me.", "The example is synthetic and does not represent a real employee, organization, or reporting system.", "The script assumes each CSV row represents one countable activity.", "The script can reconcile recorded hours and statuses but cannot verify whether the original log entries are truthful, complete, or correctly classified."]}, "references": [{"title": "Python documentation: csv — CSV File Reading and Writing", "url": "https://docs.python.org/3/library/csv.html"}, {"title": "Python documentation: pathlib — Object-oriented filesystem paths", "url": "https://docs.python.org/3/library/pathlib.html"}], "slug": "ai-weekly-report-from-log", "category": "ai", "date": "2026-09-21"}
+{
+  "title": "Turn a Daily Work Log into a Weekly Report with AI and Reconcile the Numbers",
+  "summary": "An AI chat assistant can turn terse daily notes into a readable weekly report, but totals such as hours and completed-task counts should be checked separately. This guide uses a small synthetic work log, an AI drafting prompt, and a Python reconciliation script.",
+  "seo_title": "Create a Weekly Report from Work Logs with AI",
+  "seo_desc": "Turn daily work logs into a weekly report with AI, then verify reported hours and task counts against the original log using Python.",
+  "tags": [
+    "AI reporting",
+    "work logs",
+    "Python"
+  ],
+  "audience": "For people who keep short daily work logs and want AI to draft weekly reports without losing control of hours, counts, and factual details.",
+  "prerequisites": [
+    "Python 3.12",
+    "A plain CSV file containing the daily work log"
+  ],
+  "sections": [
+    {
+      "id": "why-reconcile-report-numbers",
+      "heading": "Why reconcile an AI-written weekly report?",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "AI is useful for reorganizing terse work notes into readable prose, but it should not be treated as the source of truth for arithmetic. A weekly report can sound coherent while quietly changing a total, counting one activity twice, or presenting a planned task as completed. A safer workflow separates narrative drafting from numerical reconciliation."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Use the work log as the factual source.",
+            "Ask the AI to summarize only what appears in the log.",
+            "Calculate hours and counts independently from the structured data.",
+            "Compare the AI report with the independently calculated totals.",
+            "Correct the report before sending or publishing it."
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Narrative and arithmetic are different checks",
+          "text": "A report can be well written and still contain the wrong totals. Treat wording quality and numerical accuracy as separate review tasks."
+        }
+      ]
+    },
+    {
+      "id": "synthetic-work-log",
+      "heading": "Start with a small synthetic work log",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following work log is synthetic. Each row records one activity, the hours spent, and whether the activity was completed during the week. Keeping these fields structured makes later reconciliation much easier."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "date",
+            "task",
+            "hours",
+            "status"
+          ],
+          "rows": [
+            [
+              "2026-09-14",
+              "Clean customer CSV",
+              "2.0",
+              "completed"
+            ],
+            [
+              "2026-09-14",
+              "Draft import script",
+              "1.5",
+              "completed"
+            ],
+            [
+              "2026-09-15",
+              "Test import script",
+              "2.5",
+              "completed"
+            ],
+            [
+              "2026-09-16",
+              "Investigate duplicate IDs",
+              "1.0",
+              "completed"
+            ],
+            [
+              "2026-09-17",
+              "Update validation rules",
+              "2.0",
+              "completed"
+            ],
+            [
+              "2026-09-18",
+              "Prepare user notes",
+              "1.5",
+              "in progress"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "By hand, the hours are 2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5 = 10.5 hours. Five of the six activities have status completed, so the completed-task count is 5. The final activity is still in progress and must not be counted as completed."
+        }
+      ]
+    },
+    {
+      "id": "ask-ai-for-report",
+      "heading": "Ask the AI to draft from the log, not from memory",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Paste the log into an AI chat assistant and explicitly limit the task to rewriting and organizing the supplied data. Also ask it to state its totals so they can be checked."
+        },
+        {
+          "type": "p",
+          "text": "Prompt to the AI: Using only the work log below, write a concise weekly report with three parts: work completed, work still in progress, and weekly totals. Do not invent outcomes or tasks. State the total logged hours and the number of completed activities. Keep the original task meanings."
+        },
+        {
+          "type": "p",
+          "text": "A typical AI answer might say: This week, customer data was cleaned, an import script was drafted and tested, duplicate IDs were investigated, and validation rules were updated. User notes remain in progress. Total logged time was 10.5 hours, with 5 completed activities."
+        },
+        {
+          "type": "callout",
+          "title": "Do not trust a correct-looking total yet",
+          "text": "Even if the AI says 10.5 hours and 5 completed activities, calculate those values independently from the log before accepting the report."
+        }
+      ]
+    },
+    {
+      "id": "prepare-csv",
+      "heading": "Keep a structured copy for reconciliation",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the same synthetic example as work_log.csv with the columns date, task, hours, and status. The reconciliation script should read this source file directly rather than trying to recover numbers from the AI-written prose."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Metric",
+            "Expected value from the log"
+          ],
+          "rows": [
+            [
+              "Rows",
+              "6"
+            ],
+            [
+              "Total hours",
+              "10.5"
+            ],
+            [
+              "Completed activities",
+              "5"
+            ],
+            [
+              "In-progress activities",
+              "1"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This separation is important: the CSV is the evidence, while the weekly report is a presentation of that evidence."
+        }
+      ]
+    },
+    {
+      "id": "python-reconciliation",
+      "heading": "Recalculate hours and counts with Python",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following Python 3.12 script reads work_log.csv, validates the required fields, totals the hours, counts statuses, and writes a reconciliation report to outputs/weekly_reconciliation.txt. It does not overwrite an existing outputs directory."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nimport csv\n\ninput_path = Path(\"work_log.csv\")\noutput_dir = Path(\"outputs\")\n\nif output_dir.exists():\n    raise SystemExit(\"outputs already exists; remove or rename it before running again\")\n\nif not input_path.exists():\n    raise SystemExit(\"work_log.csv was not found\")\n\nrequired_fields = {\"date\", \"task\", \"hours\", \"status\"}\nrows = []\n\nwith input_path.open(\"r\", encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.DictReader(f)\n\n    if reader.fieldnames is None:\n        raise SystemExit(\"CSV has no header\")\n\n    missing = required_fields - set(reader.fieldnames)\n    if missing:\n        raise SystemExit(f\"Missing columns: {sorted(missing)}\")\n\n    for line_number, row in enumerate(reader, start=2):\n        try:\n            hours = float(row[\"hours\"])\n        except ValueError:\n            raise SystemExit(f\"Invalid hours value on line {line_number}\")\n\n        if hours < 0:\n            raise SystemExit(f\"Negative hours on line {line_number}\")\n\n        status = row[\"status\"].strip().lower()\n        if status not in {\"completed\", \"in progress\"}:\n            raise SystemExit(f\"Unexpected status on line {line_number}: {status}\")\n\n        rows.append({\n            \"date\": row[\"date\"].strip(),\n            \"task\": row[\"task\"].strip(),\n            \"hours\": hours,\n            \"status\": status,\n        })\n\ntotal_hours = sum(row[\"hours\"] for row in rows)\ncompleted_count = sum(row[\"status\"] == \"completed\" for row in rows)\nin_progress_count = sum(row[\"status\"] == \"in progress\" for row in rows)\n\noutput_dir.mkdir()\nreport_path = output_dir / \"weekly_reconciliation.txt\"\n\nreport = (\n    f\"Rows: {len(rows)}\\n\"\n    f\"Total hours: {total_hours:.1f}\\n\"\n    f\"Completed activities: {completed_count}\\n\"\n    f\"In-progress activities: {in_progress_count}\\n\"\n)\n\nreport_path.write_text(report, encoding=\"utf-8\")\n\nprint(report, end=\"\")\nprint(f\"Saved: {report_path}\")"
+        }
+      ]
+    },
+    {
+      "id": "compare-ai-and-log",
+      "heading": "Compare the AI report with the calculated values",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For this example, the independently expected values are 10.5 total hours and 5 completed activities. Compare those values with every numerical statement in the AI draft."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check",
+            "Log result",
+            "AI draft",
+            "Decision"
+          ],
+          "rows": [
+            [
+              "Total hours",
+              "10.5",
+              "10.5",
+              "Matches"
+            ],
+            [
+              "Completed activities",
+              "5",
+              "5",
+              "Matches"
+            ],
+            [
+              "In-progress activities",
+              "1",
+              "User notes remain in progress",
+              "Consistent"
+            ]
+          ]
+        },
+        {
+          "type": "ol",
+          "items": [
+            "Check every number in the AI report against the reconciliation output.",
+            "Confirm that completed and in-progress work were not mixed.",
+            "Compare task wording with the original log so outcomes were not invented.",
+            "If the AI total differs, use the structured log calculation and revise the prose."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "common-mistakes-and-limits",
+      "heading": "Common mistakes and limits",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Summing numbers from the AI report instead of from the original log.",
+            "Counting every row as completed even when some rows are still in progress.",
+            "Treating several log rows about the same project as one task without defining that counting rule.",
+            "Allowing the AI to infer achievements that are not explicitly recorded.",
+            "Changing status wording between the log and the script without updating the accepted values.",
+            "Ignoring missing rows, invalid hour values, or duplicated entries before calculating totals."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This example counts completed activities by row. A real organization may instead count tickets, deliverables, projects, or milestones, so the counting rule must be defined before reconciliation. The script also checks arithmetic and simple statuses only; it cannot determine whether a work-log entry itself is accurate or whether the reported work quality was sufficient."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.x · standard library only",
+    "items": [
+      "The script completed successfully on the exact synthetic work log.",
+      "The output reported Rows: 6.",
+      "The output reported Total hours: 10.5, matching 2.0 + 1.5 + 2.5 + 1.0 + 2.0 + 1.5.",
+      "The output reported Completed activities: 5.",
+      "The output reported In-progress activities: 1.",
+      "These values match the article's expected-values table and AI-report comparison table.",
+      "The script created outputs/weekly_reconciliation.txt with exactly the stated four reconciliation metrics.",
+      "work_log.csv remained unchanged after execution.",
+      "A second execution stopped with 'outputs already exists; remove or rename it before running again', confirming the stated no-overwrite behavior."
+    ],
+    "limits": [
+      "The script verifies recorded hours and status counts but cannot determine whether the original work-log entries are factually complete or accurate.",
+      "The counting rule treats each CSV row as one activity, as stated in the article.",
+      "An unrelated spreadsheet-runtime warmup warning was emitted by the Python execution environment; it did not affect the article script or its output."
+    ]
+  },
+  "references": [
+    {
+      "title": "Python documentation: csv — CSV File Reading and Writing",
+      "url": "https://docs.python.org/3/library/csv.html"
+    },
+    {
+      "title": "Python documentation: pathlib — Object-oriented filesystem paths",
+      "url": "https://docs.python.org/3/library/pathlib.html"
+    }
+  ],
+  "slug": "ai-weekly-report-from-log",
+  "category": "ai",
+  "date": "2026-09-21"
+}

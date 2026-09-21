@@ -1,1 +1,255 @@
-{"title": "Write a data dictionary with meanings, units, types, and allowed values", "summary": "Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation.", "tags": ["Python", "Metadata", "Research"], "audience": "This guide is for researchers who need a clear column-level description of a dataset that other people can read and check.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "A text editor or spreadsheet program that can save UTF-8 CSV files.", "A working folder where the script can create a new folder beneath outputs.", "Only the Python standard library is required: csv, pathlib, and re."], "sections": [{"id": "define-the-purpose", "heading": "1. Treat the data dictionary as part of the dataset", "blocks": [{"type": "p", "text": "A column name is rarely enough to describe research data. speed could mean vehicle speed, wheel speed, or angular speed. accel could mean longitudinal, lateral, or total acceleration. A data dictionary records the intended meaning so later analysis does not depend on guessing."}, {"type": "p", "text": "This tutorial records six pieces of information for each column: column name, meaning, unit, data type, allowed values, and an example. The allowed-values field can describe categories, numeric ranges, uniqueness rules, or simple text patterns."}, {"type": "callout", "title": "Units belong in metadata", "text": "Do not rely on magnitude to infer units. A value of 50 could mean 50 km/h, 50 m/s, 50 N, or something else entirely."}]}, {"id": "create-synthetic-dataset", "heading": "2. Create a small synthetic research dataset", "blocks": [{"type": "p", "text": "The following dataset is synthetic and was written specifically for this article. Save it as test_runs.csv. Four rows follow the intended rules. The fifth row deliberately contains four problems so the dictionary can be used as a validation reference."}, {"type": "code"}, {"type": "p", "text": "There are 5 rows and 5 columns. R005 has a speed above the allowed range, a nonnumeric acceleration value, an unsupported road-surface category, and an unsupported test-status value. Its run_id itself is valid."}]}, {"id": "write-the-dictionary", "heading": "3. Write the expected data dictionary by hand", "blocks": [{"type": "p", "text": "The dictionary should be understandable without opening the analysis code. Keep the meaning specific enough that another researcher can distinguish the column from similar measurements."}, {"type": "table", "headers": ["column_name", "meaning", "unit", "type", "allowed_values", "example"], "rows": [["run_id", "Unique identifier for one test run", "", "string", "R followed by exactly 3 digits; unique", "R001"], ["speed_kmh", "Vehicle speed at the start of the record", "km/h", "integer", "0 to 120 inclusive", "50"], ["accel_m_s2", "Longitudinal acceleration", "m/s^2", "float", "-5.0 to 5.0 inclusive", "-1.2"], ["road_surface", "Road-surface condition used for the test", "", "category", "dry;wet", "wet"], ["test_status", "Review state of the test record", "", "category", "complete;review", "complete"]]}, {"type": "p", "text": "An empty unit is intentional for identifiers and categorical labels because they are dimensionless metadata, not measured physical quantities. The type field describes the intended data representation rather than whatever a spreadsheet happens to infer automatically."}]}, {"id": "generate-and-validate", "heading": "4. Generate the dictionary and validate the dataset", "blocks": [{"type": "p", "text": "Save the following script as data_dictionary_check.py. The column specification is written once in SPEC. The script exports that specification as data_dictionary.csv and checks each row against the same rules. The original test_runs.csv is read only."}, {"type": "code"}]}, {"id": "expected-validation", "heading": "5. Compare the expected validation issues", "blocks": [{"type": "p", "text": "Only R005 should produce issues. Because the CSV header is row 1, R005 is physical CSV row 6. Four issue rows should be written."}, {"type": "code"}, {"type": "p", "text": "The expected console output below was derived by hand from the synthetic dataset and script. It is not a captured execution log."}, {"type": "code"}]}, {"id": "checks-and-errors", "heading": "6. Check that the dictionary and data stay aligned", "blocks": [{"type": "ul", "items": ["Confirm that every dataset column has exactly one dictionary row.", "Check that physical units are explicit for measured quantities.", "Confirm that categorical allowed values use the same spelling and capitalization as the dataset.", "Review every validation issue instead of automatically deleting bad rows.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous dictionary and report."]}, {"type": "table", "headers": ["Problem", "What to check"], "rows": [["A new dataset column has no dictionary entry", "Update the dictionary before analysis so the meaning and unit are documented."], ["The same concept appears with different units", "Use separate columns or standardize units explicitly; do not rely on memory."], ["Category labels drift over time", "Define allowed values and document intentional additions such as a new road condition."], ["Spreadsheet changes integer IDs into numbers", "Store identifiers as strings when leading zeros or patterns are meaningful."], ["Validation passes but meaning is wrong", "Structural checks cannot detect an incorrect scientific definition or mislabeled sensor channel."]]}]}, {"id": "limits", "heading": "7. Expand the dictionary as the project grows", "blocks": [{"type": "p", "text": "A practical research data dictionary often needs more than the six fields shown here. Depending on the project, add source system, sensor location, coordinate direction, sampling rate, nullable status, precision, calculation method, valid range, missing-value code, and responsible owner."}, {"type": "p", "text": "Allowed values should reflect scientific meaning rather than simply the minimum and maximum currently observed. If speed values happen to range from 30 to 70 km/h in one file, that does not automatically mean 30 to 70 is the valid engineering range."}, {"type": "p", "text": "Version the dictionary together with the dataset or analysis code. If a column definition, unit, sign convention, or category changes, record when the change happened. A data dictionary is most useful when it describes the exact version of the data being analyzed."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · standard library: csv, pathlib, re · no execution", "items": ["Manually counted 5 synthetic rows and 5 dataset columns.", "Manually checked that R001 through R004 satisfy the stated dictionary rules.", "Identified four issues in R005: speed 135 above the 0-120 range, accel value fast not numeric, road_surface snow not allowed, and test_status done not allowed.", "Confirmed that R005 itself matches the run_id pattern R followed by three digits.", "Manually derived physical CSV row 6 for all four R005 validation issues.", "Inspected the script for exact-header checking, unique run IDs, numeric range checks, categorical checks, output collision protection, and preservation of the original CSV."], "limits": ["The code was not executed by the author of this response; no dictionary or validation CSV was created.", "The synthetic ranges and categories are exercise-specific and are not general automotive engineering limits.", "Scientific meaning, sensor calibration, coordinate conventions, missing-value policies, and metadata versioning were not automatically validated.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official Python 3.12 documentation · csv", "url": "https://docs.python.org/3.12/library/csv.html"}, {"title": "Official Python 3.12 documentation · re", "url": "https://docs.python.org/3.12/library/re.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "data-dictionary", "category": "research", "date": "2026-09-20"}
+{
+  "title": "Write a data dictionary with meanings, units, types, and allowed values",
+  "summary": "Document what every dataset column means before analysis, including its unit, data type, and allowed values. A small synthetic test dataset shows how the same dictionary can also support simple automated validation.",
+  "tags": [
+    "Python",
+    "Metadata",
+    "Research"
+  ],
+  "audience": "This guide is for researchers who need a clear column-level description of a dataset that other people can read and check.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "A text editor or spreadsheet program that can save UTF-8 CSV files.",
+    "A working folder where the script can create a new folder beneath outputs.",
+    "Only the Python standard library is required: csv, pathlib, and re."
+  ],
+  "sections": [
+    {
+      "id": "define-the-purpose",
+      "heading": "1. Treat the data dictionary as part of the dataset",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A column name is rarely enough to describe research data. speed could mean vehicle speed, wheel speed, or angular speed. accel could mean longitudinal, lateral, or total acceleration. A data dictionary records the intended meaning so later analysis does not depend on guessing."
+        },
+        {
+          "type": "p",
+          "text": "This tutorial records six pieces of information for each column: column name, meaning, unit, data type, allowed values, and an example. The allowed-values field can describe categories, numeric ranges, uniqueness rules, or simple text patterns."
+        },
+        {
+          "type": "callout",
+          "title": "Units belong in metadata",
+          "text": "Do not rely on magnitude to infer units. A value of 50 could mean 50 km/h, 50 m/s, 50 N, or something else entirely."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-dataset",
+      "heading": "2. Create a small synthetic research dataset",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following dataset is synthetic and was written specifically for this article. Save it as test_runs.csv. Four rows follow the intended rules. The fifth row deliberately contains four problems so the dictionary can be used as a validation reference."
+        },
+        {
+          "type": "code",
+          "text": "run_id,speed_kmh,accel_m_s2,road_surface,test_status\nR001,30,0.5,dry,complete\nR002,50,-1.2,wet,complete\nR003,70,0.0,dry,review\nR004,40,-0.8,wet,complete\nR005,135,fast,snow,done\n"
+        },
+        {
+          "type": "p",
+          "text": "There are 5 rows and 5 columns. R005 has a speed above the allowed range, a nonnumeric acceleration value, an unsupported road-surface category, and an unsupported test-status value. Its run_id itself is valid."
+        }
+      ]
+    },
+    {
+      "id": "write-the-dictionary",
+      "heading": "3. Write the expected data dictionary by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The dictionary should be understandable without opening the analysis code. Keep the meaning specific enough that another researcher can distinguish the column from similar measurements."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "column_name",
+            "meaning",
+            "unit",
+            "type",
+            "allowed_values",
+            "example"
+          ],
+          "rows": [
+            [
+              "run_id",
+              "Unique identifier for one test run",
+              "",
+              "string",
+              "R followed by exactly 3 digits; unique",
+              "R001"
+            ],
+            [
+              "speed_kmh",
+              "Vehicle speed at the start of the record",
+              "km/h",
+              "integer",
+              "0 to 120 inclusive",
+              "50"
+            ],
+            [
+              "accel_m_s2",
+              "Longitudinal acceleration",
+              "m/s^2",
+              "float",
+              "-5.0 to 5.0 inclusive",
+              "-1.2"
+            ],
+            [
+              "road_surface",
+              "Road-surface condition used for the test",
+              "",
+              "category",
+              "dry;wet",
+              "wet"
+            ],
+            [
+              "test_status",
+              "Review state of the test record",
+              "",
+              "category",
+              "complete;review",
+              "complete"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "An empty unit is intentional for identifiers and categorical labels because they are dimensionless metadata, not measured physical quantities. The type field describes the intended data representation rather than whatever a spreadsheet happens to infer automatically."
+        }
+      ]
+    },
+    {
+      "id": "generate-and-validate",
+      "heading": "4. Generate the dictionary and validate the dataset",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as data_dictionary_check.py. The column specification is written once in SPEC. The script exports that specification as data_dictionary.csv and checks each row against the same rules. The original test_runs.csv is read only."
+        },
+        {
+          "type": "code",
+          "text": "import csv\nimport re\nfrom pathlib import Path\n\nSOURCE = Path(\"test_runs.csv\")\nOUTPUT_DIR = Path(\"outputs\") / \"data_dictionary_result\"\nDICTIONARY = OUTPUT_DIR / \"data_dictionary.csv\"\nISSUES = OUTPUT_DIR / \"validation_issues.csv\"\n\nSPEC = [\n    {\n        \"column_name\": \"run_id\",\n        \"meaning\": \"Unique identifier for one test run\",\n        \"unit\": \"\",\n        \"type\": \"string\",\n        \"allowed_values\": \"R followed by exactly 3 digits; unique\",\n        \"example\": \"R001\",\n    },\n    {\n        \"column_name\": \"speed_kmh\",\n        \"meaning\": \"Vehicle speed at the start of the record\",\n        \"unit\": \"km/h\",\n        \"type\": \"integer\",\n        \"allowed_values\": \"0 to 120 inclusive\",\n        \"example\": \"50\",\n    },\n    {\n        \"column_name\": \"accel_m_s2\",\n        \"meaning\": \"Longitudinal acceleration\",\n        \"unit\": \"m/s^2\",\n        \"type\": \"float\",\n        \"allowed_values\": \"-5.0 to 5.0 inclusive\",\n        \"example\": \"-1.2\",\n    },\n    {\n        \"column_name\": \"road_surface\",\n        \"meaning\": \"Road-surface condition used for the test\",\n        \"unit\": \"\",\n        \"type\": \"category\",\n        \"allowed_values\": \"dry;wet\",\n        \"example\": \"wet\",\n    },\n    {\n        \"column_name\": \"test_status\",\n        \"meaning\": \"Review state of the test record\",\n        \"unit\": \"\",\n        \"type\": \"category\",\n        \"allowed_values\": \"complete;review\",\n        \"example\": \"complete\",\n    },\n]\n\n\ndef issue(row_number, column, value, problem):\n    return {\n        \"row_number\": row_number,\n        \"column_name\": column,\n        \"value\": value,\n        \"issue\": problem,\n    }\n\n\ndef main() -> None:\n    if not SOURCE.is_file():\n        raise FileNotFoundError(f\"Source CSV not found: {SOURCE}\")\n    if OUTPUT_DIR.exists():\n        raise FileExistsError(f\"Output folder already exists: {OUTPUT_DIR}\")\n\n    expected_columns = [item[\"column_name\"] for item in SPEC]\n    issues = []\n    seen_run_ids = set()\n    row_count = 0\n\n    with SOURCE.open(\"r\", encoding=\"utf-8-sig\", newline=\"\") as stream:\n        reader = csv.DictReader(stream)\n        if reader.fieldnames != expected_columns:\n            raise ValueError(\n                f\"Header mismatch. Expected {expected_columns}, got {reader.fieldnames}.\"\n            )\n\n        for row_number, row in enumerate(reader, start=2):\n            row_count += 1\n\n            run_id = row[\"run_id\"].strip()\n            if re.fullmatch(r\"R[0-9]{3}\", run_id) is None:\n                issues.append(issue(row_number, \"run_id\", run_id, \"PATTERN_ERROR\"))\n            elif run_id in seen_run_ids:\n                issues.append(issue(row_number, \"run_id\", run_id, \"DUPLICATE_VALUE\"))\n            seen_run_ids.add(run_id)\n\n            try:\n                speed = int(row[\"speed_kmh\"])\n            except ValueError:\n                issues.append(issue(row_number, \"speed_kmh\", row[\"speed_kmh\"], \"TYPE_ERROR\"))\n            else:\n                if not 0 <= speed <= 120:\n                    issues.append(issue(row_number, \"speed_kmh\", row[\"speed_kmh\"], \"OUT_OF_RANGE\"))\n\n            try:\n                accel = float(row[\"accel_m_s2\"])\n            except ValueError:\n                issues.append(issue(row_number, \"accel_m_s2\", row[\"accel_m_s2\"], \"TYPE_ERROR\"))\n            else:\n                if not -5.0 <= accel <= 5.0:\n                    issues.append(issue(row_number, \"accel_m_s2\", row[\"accel_m_s2\"], \"OUT_OF_RANGE\"))\n\n            if row[\"road_surface\"] not in {\"dry\", \"wet\"}:\n                issues.append(issue(row_number, \"road_surface\", row[\"road_surface\"], \"ALLOWED_VALUE_ERROR\"))\n\n            if row[\"test_status\"] not in {\"complete\", \"review\"}:\n                issues.append(issue(row_number, \"test_status\", row[\"test_status\"], \"ALLOWED_VALUE_ERROR\"))\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()\n\n    dictionary_fields = [\n        \"column_name\", \"meaning\", \"unit\", \"type\", \"allowed_values\", \"example\"\n    ]\n    with DICTIONARY.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=dictionary_fields)\n        writer.writeheader()\n        writer.writerows(SPEC)\n\n    issue_fields = [\"row_number\", \"column_name\", \"value\", \"issue\"]\n    with ISSUES.open(\"x\", encoding=\"utf-8\", newline=\"\") as stream:\n        writer = csv.DictWriter(stream, fieldnames=issue_fields)\n        writer.writeheader()\n        writer.writerows(issues)\n\n    print(f\"Rows checked: {row_count}.\")\n    print(f\"Dictionary columns: {len(SPEC)}.\")\n    print(f\"Validation issues: {len(issues)}.\")\n    print(f\"Output folder: {OUTPUT_DIR.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        }
+      ]
+    },
+    {
+      "id": "expected-validation",
+      "heading": "5. Compare the expected validation issues",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Only R005 should produce issues. Because the CSV header is row 1, R005 is physical CSV row 6. Four issue rows should be written."
+        },
+        {
+          "type": "code",
+          "text": "row_number,column_name,value,issue\n6,speed_kmh,135,OUT_OF_RANGE\n6,accel_m_s2,fast,TYPE_ERROR\n6,road_surface,snow,ALLOWED_VALUE_ERROR\n6,test_status,done,ALLOWED_VALUE_ERROR\n"
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived by hand from the synthetic dataset and script. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Rows checked: 5.\nDictionary columns: 5.\nValidation issues: 4.\nOutput folder: outputs/data_dictionary_result"
+        }
+      ]
+    },
+    {
+      "id": "checks-and-errors",
+      "heading": "6. Check that the dictionary and data stay aligned",
+      "blocks": [
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that every dataset column has exactly one dictionary row.",
+            "Check that physical units are explicit for measured quantities.",
+            "Confirm that categorical allowed values use the same spelling and capitalization as the dataset.",
+            "Review every validation issue instead of automatically deleting bad rows.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError instead of replacing the previous dictionary and report."
+          ]
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Problem",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "A new dataset column has no dictionary entry",
+              "Update the dictionary before analysis so the meaning and unit are documented."
+            ],
+            [
+              "The same concept appears with different units",
+              "Use separate columns or standardize units explicitly; do not rely on memory."
+            ],
+            [
+              "Category labels drift over time",
+              "Define allowed values and document intentional additions such as a new road condition."
+            ],
+            [
+              "Spreadsheet changes integer IDs into numbers",
+              "Store identifiers as strings when leading zeros or patterns are meaningful."
+            ],
+            [
+              "Validation passes but meaning is wrong",
+              "Structural checks cannot detect an incorrect scientific definition or mislabeled sensor channel."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "limits",
+      "heading": "7. Expand the dictionary as the project grows",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A practical research data dictionary often needs more than the six fields shown here. Depending on the project, add source system, sensor location, coordinate direction, sampling rate, nullable status, precision, calculation method, valid range, missing-value code, and responsible owner."
+        },
+        {
+          "type": "p",
+          "text": "Allowed values should reflect scientific meaning rather than simply the minimum and maximum currently observed. If speed values happen to range from 30 to 70 km/h in one file, that does not automatically mean 30 to 70 is the valid engineering range."
+        },
+        {
+          "type": "p",
+          "text": "Version the dictionary together with the dataset or analysis code. If a column definition, unit, sign convention, or category changes, record when the change happened. A data dictionary is most useful when it describes the exact version of the data being analyzed."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · standard library: csv, pathlib, re",
+    "items": [
+      "Execution completed successfully for 5 rows and 5 dictionary columns.",
+      "Generated validation_issues.csv contained exactly 4 rows, all for physical CSV row 6 (R005): speed_kmh 135 OUT_OF_RANGE, accel_m_s2 fast TYPE_ERROR, road_surface snow ALLOWED_VALUE_ERROR, and test_status done ALLOWED_VALUE_ERROR.",
+      "Generated validation_issues.csv matched the article's expected CSV exactly.",
+      "Generated data_dictionary.csv contained exactly the 5 SPEC rows and expected metadata values.",
+      "Console output matched exactly: Rows checked: 5; Dictionary columns: 5; Validation issues: 4; Output folder: outputs/data_dictionary_result.",
+      "Second execution raised FileExistsError for outputs/data_dictionary_result, confirming overwrite protection.",
+      "SHA-256 comparison confirmed test_runs.csv was unchanged."
+    ],
+    "limits": [
+      "The runtime was Python 3.13.5 rather than the article's target Python 3.12.",
+      "The execution environment emitted an unrelated spreadsheet-runtime warmup warning on stderr during Python startup; it did not affect the script's successful first run, generated files, or overwrite-protection test.",
+      "The script verifies the stated structural/type/range/category rules only; it does not validate the scientific correctness of the metadata definitions themselves."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official Python 3.12 documentation · csv",
+      "url": "https://docs.python.org/3.12/library/csv.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · re",
+      "url": "https://docs.python.org/3.12/library/re.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "data-dictionary",
+  "category": "research",
+  "date": "2026-09-20"
+}

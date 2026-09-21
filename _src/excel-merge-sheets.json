@@ -1,1 +1,340 @@
-{"title": "Combine Excel sheets into one table with a source-sheet column", "summary": "Merge worksheets that use the same columns into one Excel table while recording which sheet each row came from. A small synthetic workbook lets you verify the row order, counts, and totals by hand.", "tags": ["Python", "Excel", "openpyxl"], "audience": "This guide is for people who receive several similarly structured Excel sheets and need one consolidated dataset without changing the original workbook.", "prerequisites": ["Python 3.12 and a terminal command that starts that version.", "openpyxl installed with python -m pip install openpyxl.", "A working folder where the scripts can create folders beneath outputs.", "The sheets to merge must use the same column names in the same order."], "sections": [{"id": "define-the-merge-rule", "heading": "1. Define exactly what will be merged", "blocks": [{"type": "p", "text": "The workflow combines selected worksheets from one workbook into a new workbook. Each source sheet must have exactly the same header row, including column order and capitalization. The output adds source_sheet as its first column so every record keeps its origin."}, {"type": "p", "text": "Blank rows are ignored. Nonblank rows are copied in worksheet order and then in their original row order. The source workbook is opened read-only, and the result is written to a separate folder beneath outputs."}, {"type": "callout", "title": "This is data consolidation, not workbook formatting", "text": "The example copies cell values only. It does not attempt to reproduce colors, borders, merged cells, widths, filters, charts, comments, or other worksheet presentation features."}]}, {"id": "create-synthetic-workbook", "heading": "2. Create a synthetic workbook", "blocks": [{"type": "p", "text": "The workbook below is synthetic and was written specifically for this article. Save the setup script as create_excel_merge_demo.py. It creates three sheets named East, West, and Online. Each uses the columns order_id, customer, and amount."}, {"type": "code"}, {"type": "code"}, {"type": "table", "headers": ["Sheet", "Nonblank data rows", "Amount total"], "rows": [["East", "2", "200"], ["West", "2", "220"], ["Online", "2", "200"]]}, {"type": "p", "text": "There are 6 nonblank data records in total. Their amount values sum to 620: 120 + 80 + 150 + 70 + 90 + 110. Online deliberately contains one completely blank row between its two records so the merge logic can demonstrate that blank rows are skipped."}]}, {"id": "expected-row-order", "heading": "3. Work out the expected combined rows by hand", "blocks": [{"type": "p", "text": "The script explicitly lists the sheets as East, West, and Online. That order determines the order of the merged records. Within each sheet, records remain in their original top-to-bottom order."}, {"type": "table", "headers": ["source_sheet", "order_id", "customer", "amount"], "rows": [["East", "E001", "Ana", "120"], ["East", "E002", "Ben", "80"], ["West", "W001", "Cara", "150"], ["West", "W002", "Dan", "70"], ["Online", "O001", "Emi", "90"], ["Online", "O002", "Finn", "110"]]}, {"type": "p", "text": "The output therefore has 4 columns and 7 worksheet rows when the header is included: 1 header row plus 6 data rows. The source_sheet values also make a useful manual count: East appears twice, West appears twice, and Online appears twice."}]}, {"id": "merge-the-sheets", "heading": "4. Merge the sheets into a new workbook", "blocks": [{"type": "p", "text": "Save the following script as excel_merge_sheets.py. It opens the source workbook in read-only mode, validates the selected sheet names and headers, ignores completely blank rows, and rejects formula cells so that formulas are not silently detached from their original workbook context."}, {"type": "code"}, {"type": "code"}]}, {"id": "expected-output", "heading": "5. Compare the expected result", "blocks": [{"type": "p", "text": "For the synthetic workbook, the output should contain exactly one worksheet named Combined. Its first row should be source_sheet, order_id, customer, amount, followed by the 6 records calculated earlier."}, {"type": "p", "text": "The expected console output below was derived from the code and synthetic data by hand. It is not a captured execution log."}, {"type": "code"}, {"type": "table", "headers": ["Check", "Expected result"], "rows": [["Selected source sheets", "3"], ["Merged data rows", "6"], ["Output columns", "4"], ["East rows", "2"], ["West rows", "2"], ["Online rows", "2"], ["Amount total", "620"]]}]}, {"id": "checks-before-real-data", "heading": "6. Check the workbook before using real data", "blocks": [{"type": "ol", "items": ["Open merged_orders.xlsx and confirm that there is one worksheet named Combined.", "Confirm that source_sheet is the first column and that the original three columns follow in the same order.", "Count the records by source_sheet. Each of East, West, and Online should appear exactly twice.", "Add the amount column manually or with Excel. The expected total is 620.", "Confirm that the blank row from Online did not become a blank record in the merged output.", "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError rather than replace the previous result."]}, {"type": "p", "text": "For real workbooks, change SHEETS explicitly instead of automatically merging every worksheet. This reduces the chance of accidentally including lookup tables, notes, hidden sheets, or summary sheets that happen to be stored in the same file."}]}, {"id": "common-errors", "heading": "7. Recognize common errors", "blocks": [{"type": "table", "headers": ["Symptom", "What to check"], "rows": [["ModuleNotFoundError: No module named openpyxl", "Install openpyxl into the same Python environment with python -m pip install openpyxl."], ["FileNotFoundError", "Check SOURCE and the terminal's working directory. Run the synthetic workbook setup first for this example."], ["Missing sheets", "Check the names in SHEETS exactly, including spaces and capitalization."], ["Header mismatch", "Verify that every selected sheet uses identical column names in identical order."], ["Reserved column already exists", "Rename the source column named source_sheet or change SOURCE_COLUMN to a name that does not collide."], ["Formula found", "Decide how formulas should be handled before merging. This tutorial deliberately stops instead of copying formula expressions without context."], ["FileExistsError", "The output folder already exists. Review the previous result and use a fresh destination rather than overwriting it."]]}, {"type": "p", "text": "If saving or verification fails after OUTPUT_DIR has been created, the folder or workbook may remain as a partial result. Treat it as unverified and use a new destination after correcting the problem."}]}, {"id": "limits-and-scope", "heading": "8. Understand the limits", "blocks": [{"type": "p", "text": "The script is intended for rectangular data sheets with one header row. It does not handle multirow headers, merged header cells, pivot tables, charts, images, or worksheets where several unrelated tables share the same sheet."}, {"type": "p", "text": "Only cell values are consolidated. Number formats, fonts, fills, conditional formatting, validation rules, hyperlinks, comments, formulas, row heights, column widths, and worksheet-level settings are not reproduced. Literal date and numeric values can be carried as values, but their original display formatting is not copied."}, {"type": "p", "text": "The script also loads all merged row tuples into Python memory before creating the output workbook. That is convenient for this small verified workflow but may not suit very large workbooks. For large files, a streaming design with write-only output and separate incremental validation would reduce memory use."}]}], "verification": {"env": "2026-09-20 · hand-checked example · target: Python 3.12 · openpyxl required · no execution", "items": ["Manually counted 2 nonblank records in East, 2 in West, and 2 in Online for 6 merged records.", "Manually calculated sheet amount totals of 200, 220, and 200, giving 620 overall.", "Manually derived the expected output order: East rows first, then West, then Online, with the completely blank Online row skipped.", "Inspected the code to confirm that the source workbook is opened read-only and the result is written to a separate outputs folder.", "Inspected the header checks, reserved source_sheet check, blank-row handling, formula rejection, and post-save row comparison.", "Derived the expected 4 output columns, 6 data rows, and console messages by hand."], "limits": ["The code was not executed by the author of this response; no XLSX files were created or opened here.", "Formula workbooks, merged cells, formatting, dates, hyperlinks, hidden sheets, corrupted files, and very large workbooks were not tested.", "The behavior of openpyxl on the synthetic workbook was reasoned from the code but not confirmed in a Python runtime.", "The official documentation URLs were provided from known documentation locations but were not checked live."]}, "references": [{"title": "Official openpyxl documentation", "url": "https://openpyxl.readthedocs.io/en/stable/"}, {"title": "Official openpyxl documentation · Tutorial", "url": "https://openpyxl.readthedocs.io/en/stable/tutorial.html"}, {"title": "Official Python 3.12 documentation · pathlib", "url": "https://docs.python.org/3.12/library/pathlib.html"}], "slug": "excel-merge-sheets", "category": "office", "date": "2026-09-20"}
+{
+  "title": "Combine Excel sheets into one table with a source-sheet column",
+  "summary": "Merge worksheets that use the same columns into one Excel table while recording which sheet each row came from. A small synthetic workbook lets you verify the row order, counts, and totals by hand.",
+  "tags": [
+    "Python",
+    "Excel",
+    "openpyxl"
+  ],
+  "audience": "This guide is for people who receive several similarly structured Excel sheets and need one consolidated dataset without changing the original workbook.",
+  "prerequisites": [
+    "Python 3.12 and a terminal command that starts that version.",
+    "openpyxl installed with python -m pip install openpyxl.",
+    "A working folder where the scripts can create folders beneath outputs.",
+    "The sheets to merge must use the same column names in the same order."
+  ],
+  "sections": [
+    {
+      "id": "define-the-merge-rule",
+      "heading": "1. Define exactly what will be merged",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The workflow combines selected worksheets from one workbook into a new workbook. Each source sheet must have exactly the same header row, including column order and capitalization. The output adds source_sheet as its first column so every record keeps its origin."
+        },
+        {
+          "type": "p",
+          "text": "Blank rows are ignored. Nonblank rows are copied in worksheet order and then in their original row order. The source workbook is opened read-only, and the result is written to a separate folder beneath outputs."
+        },
+        {
+          "type": "callout",
+          "title": "This is data consolidation, not workbook formatting",
+          "text": "The example copies cell values only. It does not attempt to reproduce colors, borders, merged cells, widths, filters, charts, comments, or other worksheet presentation features."
+        }
+      ]
+    },
+    {
+      "id": "create-synthetic-workbook",
+      "heading": "2. Create a synthetic workbook",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The workbook below is synthetic and was written specifically for this article. Save the setup script as create_excel_merge_demo.py. It creates three sheets named East, West, and Online. Each uses the columns order_id, customer, and amount."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom openpyxl import Workbook\n\nSOURCE_DIR = Path(\"outputs\") / \"excel_merge_demo\"\nSOURCE = SOURCE_DIR / \"regional_orders.xlsx\"\nHEADERS = [\"order_id\", \"customer\", \"amount\"]\nDATA = {\n    \"East\": [\n        [\"E001\", \"Ana\", 120],\n        [\"E002\", \"Ben\", 80],\n    ],\n    \"West\": [\n        [\"W001\", \"Cara\", 150],\n        [\"W002\", \"Dan\", 70],\n    ],\n    \"Online\": [\n        [\"O001\", \"Emi\", 90],\n        [None, None, None],\n        [\"O002\", \"Finn\", 110],\n    ],\n}\n\nSOURCE_DIR.parent.mkdir(parents=True, exist_ok=True)\nSOURCE_DIR.mkdir()  # Stop if the synthetic source folder already exists.\n\nworkbook = Workbook()\nfor index, (sheet_name, rows) in enumerate(DATA.items()):\n    if index == 0:\n        sheet = workbook.active\n        sheet.title = sheet_name\n    else:\n        sheet = workbook.create_sheet(sheet_name)\n    sheet.append(HEADERS)\n    for row in rows:\n        sheet.append(row)\n\nworkbook.save(SOURCE)\n"
+        },
+        {
+          "type": "code",
+          "text": "python create_excel_merge_demo.py"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Sheet",
+            "Nonblank data rows",
+            "Amount total"
+          ],
+          "rows": [
+            [
+              "East",
+              "2",
+              "200"
+            ],
+            [
+              "West",
+              "2",
+              "220"
+            ],
+            [
+              "Online",
+              "2",
+              "200"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "There are 6 nonblank data records in total. Their amount values sum to 620: 120 + 80 + 150 + 70 + 90 + 110. Online deliberately contains one completely blank row between its two records so the merge logic can demonstrate that blank rows are skipped."
+        }
+      ]
+    },
+    {
+      "id": "expected-row-order",
+      "heading": "3. Work out the expected combined rows by hand",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The script explicitly lists the sheets as East, West, and Online. That order determines the order of the merged records. Within each sheet, records remain in their original top-to-bottom order."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source_sheet",
+            "order_id",
+            "customer",
+            "amount"
+          ],
+          "rows": [
+            [
+              "East",
+              "E001",
+              "Ana",
+              "120"
+            ],
+            [
+              "East",
+              "E002",
+              "Ben",
+              "80"
+            ],
+            [
+              "West",
+              "W001",
+              "Cara",
+              "150"
+            ],
+            [
+              "West",
+              "W002",
+              "Dan",
+              "70"
+            ],
+            [
+              "Online",
+              "O001",
+              "Emi",
+              "90"
+            ],
+            [
+              "Online",
+              "O002",
+              "Finn",
+              "110"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The output therefore has 4 columns and 7 worksheet rows when the header is included: 1 header row plus 6 data rows. The source_sheet values also make a useful manual count: East appears twice, West appears twice, and Online appears twice."
+        }
+      ]
+    },
+    {
+      "id": "merge-the-sheets",
+      "heading": "4. Merge the sheets into a new workbook",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Save the following script as excel_merge_sheets.py. It opens the source workbook in read-only mode, validates the selected sheet names and headers, ignores completely blank rows, and rejects formula cells so that formulas are not silently detached from their original workbook context."
+        },
+        {
+          "type": "code",
+          "text": "from pathlib import Path\nfrom openpyxl import Workbook, load_workbook\n\nSOURCE = Path(\"outputs\") / \"excel_merge_demo\" / \"regional_orders.xlsx\"\nOUTPUT_DIR = Path(\"outputs\") / \"excel_merge_result\"\nOUTPUT = OUTPUT_DIR / \"merged_orders.xlsx\"\nSHEETS = (\"East\", \"West\", \"Online\")\nOUTPUT_SHEET = \"Combined\"\nSOURCE_COLUMN = \"source_sheet\"\n\n\ndef read_sheet_rows(sheet, expected_header=None):\n    first_row = next(\n        sheet.iter_rows(min_row=1, max_row=1, values_only=True),\n        None,\n    )\n    if first_row is None:\n        raise ValueError(f\"Sheet is empty: {sheet.title}\")\n\n    header = tuple(first_row)\n    if any(not isinstance(name, str) or not name.strip() for name in header):\n        raise ValueError(f\"Invalid header in sheet: {sheet.title}\")\n    if len(set(header)) != len(header):\n        raise ValueError(f\"Duplicate header name in sheet: {sheet.title}\")\n    if SOURCE_COLUMN in header:\n        raise ValueError(f\"Reserved column already exists: {SOURCE_COLUMN}\")\n    if expected_header is not None and header != expected_header:\n        raise ValueError(f\"Header mismatch in sheet: {sheet.title}\")\n\n    rows = []\n    for excel_row, values in enumerate(\n        sheet.iter_rows(min_row=2, max_col=len(header), values_only=True),\n        start=2,\n    ):\n        if all(value is None for value in values):\n            continue\n        if any(isinstance(value, str) and value.startswith(\"=\") for value in values):\n            raise ValueError(\n                f\"Formula found in {sheet.title} row {excel_row}; \"\n                \"this example merges literal values only.\"\n            )\n        rows.append(tuple(values))\n\n    return header, rows\n\n\ndef main() -> None:\n    source_path = SOURCE.resolve(strict=True)\n    if not source_path.is_file():\n        raise ValueError(\"SOURCE must be an Excel file.\")\n    if len(set(SHEETS)) != len(SHEETS):\n        raise ValueError(\"SHEETS contains a duplicate sheet name.\")\n\n    source_workbook = load_workbook(\n        source_path,\n        read_only=True,\n        data_only=False,\n    )\n    try:\n        missing = [name for name in SHEETS if name not in source_workbook.sheetnames]\n        if missing:\n            raise ValueError(f\"Missing sheets: {missing}\")\n\n        expected_header = None\n        combined_rows = []\n        for sheet_name in SHEETS:\n            sheet = source_workbook[sheet_name]\n            header, rows = read_sheet_rows(sheet, expected_header)\n            if expected_header is None:\n                expected_header = header\n            for row in rows:\n                combined_rows.append((sheet_name, *row))\n    finally:\n        source_workbook.close()\n\n    OUTPUT_DIR.parent.mkdir(parents=True, exist_ok=True)\n    OUTPUT_DIR.mkdir()  # Refuse to reuse an existing output folder.\n\n    output_workbook = Workbook()\n    output_sheet = output_workbook.active\n    output_sheet.title = OUTPUT_SHEET\n    output_sheet.append([SOURCE_COLUMN, *expected_header])\n    for row in combined_rows:\n        output_sheet.append(row)\n    output_workbook.save(OUTPUT)\n\n    check_workbook = load_workbook(OUTPUT, read_only=True, data_only=False)\n    try:\n        if check_workbook.sheetnames != [OUTPUT_SHEET]:\n            raise RuntimeError(\"Unexpected output worksheet structure.\")\n        check_sheet = check_workbook[OUTPUT_SHEET]\n        written = list(check_sheet.iter_rows(values_only=True))\n    finally:\n        check_workbook.close()\n\n    expected = [(SOURCE_COLUMN, *expected_header), *combined_rows]\n    if written != expected:\n        raise RuntimeError(\"Saved workbook does not match the expected rows.\")\n\n    print(f\"Merged {len(SHEETS)} sheets into {len(combined_rows)} data rows.\")\n    print(f\"Verified {len(expected_header) + 1} columns and {len(combined_rows)} data rows.\")\n    print(f\"Output: {OUTPUT.as_posix()}\")\n\n\nif __name__ == \"__main__\":\n    main()\n"
+        },
+        {
+          "type": "code",
+          "text": "python excel_merge_sheets.py"
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "5. Compare the expected result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the synthetic workbook, the output should contain exactly one worksheet named Combined. Its first row should be source_sheet, order_id, customer, amount, followed by the 6 records calculated earlier."
+        },
+        {
+          "type": "p",
+          "text": "The expected console output below was derived from the code and synthetic data by hand. It is not a captured execution log."
+        },
+        {
+          "type": "code",
+          "text": "Merged 3 sheets into 6 data rows.\nVerified 4 columns and 6 data rows.\nOutput: outputs/excel_merge_result/merged_orders.xlsx"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check",
+            "Expected result"
+          ],
+          "rows": [
+            [
+              "Selected source sheets",
+              "3"
+            ],
+            [
+              "Merged data rows",
+              "6"
+            ],
+            [
+              "Output columns",
+              "4"
+            ],
+            [
+              "East rows",
+              "2"
+            ],
+            [
+              "West rows",
+              "2"
+            ],
+            [
+              "Online rows",
+              "2"
+            ],
+            [
+              "Amount total",
+              "620"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "checks-before-real-data",
+      "heading": "6. Check the workbook before using real data",
+      "blocks": [
+        {
+          "type": "ol",
+          "items": [
+            "Open merged_orders.xlsx and confirm that there is one worksheet named Combined.",
+            "Confirm that source_sheet is the first column and that the original three columns follow in the same order.",
+            "Count the records by source_sheet. Each of East, West, and Online should appear exactly twice.",
+            "Add the amount column manually or with Excel. The expected total is 620.",
+            "Confirm that the blank row from Online did not become a blank record in the merged output.",
+            "Run the script again without changing OUTPUT_DIR. It should stop with FileExistsError rather than replace the previous result."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "For real workbooks, change SHEETS explicitly instead of automatically merging every worksheet. This reduces the chance of accidentally including lookup tables, notes, hidden sheets, or summary sheets that happen to be stored in the same file."
+        }
+      ]
+    },
+    {
+      "id": "common-errors",
+      "heading": "7. Recognize common errors",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Symptom",
+            "What to check"
+          ],
+          "rows": [
+            [
+              "ModuleNotFoundError: No module named openpyxl",
+              "Install openpyxl into the same Python environment with python -m pip install openpyxl."
+            ],
+            [
+              "FileNotFoundError",
+              "Check SOURCE and the terminal's working directory. Run the synthetic workbook setup first for this example."
+            ],
+            [
+              "Missing sheets",
+              "Check the names in SHEETS exactly, including spaces and capitalization."
+            ],
+            [
+              "Header mismatch",
+              "Verify that every selected sheet uses identical column names in identical order."
+            ],
+            [
+              "Reserved column already exists",
+              "Rename the source column named source_sheet or change SOURCE_COLUMN to a name that does not collide."
+            ],
+            [
+              "Formula found",
+              "Decide how formulas should be handled before merging. This tutorial deliberately stops instead of copying formula expressions without context."
+            ],
+            [
+              "FileExistsError",
+              "The output folder already exists. Review the previous result and use a fresh destination rather than overwriting it."
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If saving or verification fails after OUTPUT_DIR has been created, the folder or workbook may remain as a partial result. Treat it as unverified and use a new destination after correcting the problem."
+        }
+      ]
+    },
+    {
+      "id": "limits-and-scope",
+      "heading": "8. Understand the limits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The script is intended for rectangular data sheets with one header row. It does not handle multirow headers, merged header cells, pivot tables, charts, images, or worksheets where several unrelated tables share the same sheet."
+        },
+        {
+          "type": "p",
+          "text": "Only cell values are consolidated. Number formats, fonts, fills, conditional formatting, validation rules, hyperlinks, comments, formulas, row heights, column widths, and worksheet-level settings are not reproduced. Literal date and numeric values can be carried as values, but their original display formatting is not copied."
+        },
+        {
+          "type": "p",
+          "text": "The script also loads all merged row tuples into Python memory before creating the output workbook. That is convenient for this small verified workflow but may not suit very large workbooks. For large files, a streaming design with write-only output and separate incremental validation would reduce memory use."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "ChatGPT Python tool · Python 3.13.5 · openpyxl 3.1.5",
+    "items": [
+      "The source workbook contained 2 nonblank East rows, 2 West rows, and 2 Online rows; the deliberately blank Online row was skipped.",
+      "The source amount totals were East=200, West=220, Online=200, for 620 overall.",
+      "The main script printed exactly: 'Merged 3 sheets into 6 data rows.', 'Verified 4 columns and 6 data rows.', and 'Output: outputs/excel_merge_result/merged_orders.xlsx'.",
+      "The output workbook contained exactly one worksheet named Combined.",
+      "The output header was exactly source_sheet, order_id, customer, amount.",
+      "The six output records were in the expected order: East E001/E002, West W001/W002, Online O001/O002.",
+      "Each of East, West, and Online appeared exactly twice in source_sheet.",
+      "The merged amount total was 620.",
+      "The output contained 4 columns and 6 data rows, or 7 worksheet rows including the header.",
+      "The SHA-256 hash of regional_orders.xlsx was unchanged after the merge, confirming the source workbook was not rewritten.",
+      "A second run with outputs/excel_merge_result already present raised FileExistsError before replacing the previous result."
+    ],
+    "limits": [
+      "Formula-cell rejection, header mismatch, duplicate headers, missing sheets, reserved source_sheet collisions, malformed workbooks, formatting preservation, dates, hyperlinks, hidden sheets, partial-save failures, and very large workbook behavior were not separately stress-tested."
+    ]
+  },
+  "references": [
+    {
+      "title": "Official openpyxl documentation",
+      "url": "https://openpyxl.readthedocs.io/en/stable/"
+    },
+    {
+      "title": "Official openpyxl documentation · Tutorial",
+      "url": "https://openpyxl.readthedocs.io/en/stable/tutorial.html"
+    },
+    {
+      "title": "Official Python 3.12 documentation · pathlib",
+      "url": "https://docs.python.org/3.12/library/pathlib.html"
+    }
+  ],
+  "slug": "excel-merge-sheets",
+  "category": "office",
+  "date": "2026-09-20"
+}
