@@ -1,0 +1,1803 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "vibe-coding-basics",
+      "title": "What Is Vibe Coding? What Humans Still Need to Do When AI Writes the Code",
+      "summary": "Instead of treating vibe coding as simply 'tell AI what you want and it builds everything for you,' this article frames it as a workflow in which a person defines the requirements and verification criteria, then checks the result produced by AI. Using a fictional household-expense CSV summation tool, it organizes the input, output, things not to do, and verification method into a one-page note.",
+      "audience": "General users with limited coding experience who want to start safely with small automations using a terminal-based AI coding tool such as Claude Code",
+      "prerequisites": [
+        "A basic understanding that generative AI can produce answers but can also produce incorrect content",
+        "A habit of checking what a command will change before running it yourself",
+        "Use fictional data rather than real personal information for practice"
+      ],
+      "tags": [
+        "vibecoding",
+        "requirements",
+        "verification"
+      ],
+      "sections": [
+        {
+          "id": "what-vibe-coding-means",
+          "heading": "1. Treat vibe coding as a collaboration workflow, not 'autocomplete'",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "In this series, vibe coding means describing the desired task in natural language, letting AI help read files or create and modify code, and then having a person verify the result. The key is not a promise that the person will never need to write a single line of code. Instead, the person should first decide what to build, what the input and output are, what is allowed, and how to verify whether the result is correct. As covered in the introductory generative AI article, “What Is Generative AI? Understand How Answers Are Generated and Why Hallucinations Happen,” AI answers can look plausible while still conflicting with facts or intent, so it is safer to separate 'generation' from 'verification' in coding as well."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Role",
+                "What AI can handle",
+                "What the person should decide or verify"
+              ],
+              "rows": [
+                [
+                  "Understand requirements",
+                  "Organize the scope based on the request",
+                  "Check whether purpose, input, output, or prohibitions are missing"
+                ],
+                [
+                  "Write code",
+                  "Draft the necessary files and code",
+                  "Check for unwanted file changes or scope expansion"
+                ],
+                [
+                  "Prepare to run",
+                  "Suggest commands or the required sequence",
+                  "Check how the command affects the current folder and files"
+                ],
+                [
+                  "Verify results",
+                  "Suggest how to compare against the expected result",
+                  "Directly check whether the actual output matches the reference values"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In other words, the quality of vibe coding is not determined only by how elegantly you write a prompt. It is more important to define the task narrowly, make AI's work easy to inspect, and leave a clear point of reference for where to look again if something is wrong."
+            }
+          ]
+        },
+        {
+          "id": "shared-example",
+          "heading": "2. Choose a fictional expense example to use across all 8 articles",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This series keeps expanding one small example. The input is a UTF-8 CSV file named expenses.csv with the columns date, category, and amount. The category values also remain in English, such as food, transport, and supplies. Do not use actual card transactions or personal spending records; use only fictional data like the sample below."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,1450\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+            },
+            {
+              "type": "p",
+              "text": "The first goal is to create summarize.py, which reads this file and prints monthly totals. The expected values are 26600 for 2026-09 and 9800 for 2026-10. Later articles expand this to category totals for 2026-09—food 20500, transport 2900, and supplies 3200—but at this stage we do not write code yet. First, practice fixing the requirements yourself."
+            }
+          ]
+        },
+        {
+          "id": "four-part-requirement",
+          "heading": "3. Write input, output, things not to do, and verification method in four sections",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If you immediately ask AI to 'make me an expense tracker,' AI may fill in the file format, output style, library choices, and error-handling scope on its own. Even for a small tool, writing down four items first makes the later conversation much clearer: first, what file is the input; second, what values the output should contain; third, what must not be done; and fourth, what the person will compare the result against."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Tool name: Monthly totals for expense CSV\n\nInput\n- UTF-8 CSV file expenses.csv\n- Columns: date, category, amount\n- date format: YYYY-MM-DD\n- amount is an integer\n\nOutput\n- Display each monthly total with its month\n- 2026-09 = 26600\n- 2026-10 = 9800\n\nDo not\n- Use real personal information or real payment data\n- Add external packages\n- Modify the input CSV\n\nHow to verify\n- Run python summarize.py expenses.csv\n- Check that the two monthly totals in the output exactly match the expected values above"
+            },
+            {
+              "type": "p",
+              "text": "This note is not code. However, it becomes the standard for judging whether a proposed implementation goes beyond the requirements. For example, if AI suggests installing pandas, that conflicts with the condition 'use only the Python standard library,' so you do not have to proceed as suggested."
+            }
+          ]
+        },
+        {
+          "id": "make-a-checkable-request",
+          "heading": "4. Include criteria in the request that let you check the correct answer",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When you hand the task to Claude Code in the next step, you can provide the requirements note as-is or summarize its essentials. A good request does not end with 'make this.' It also includes an input example, expected output, constraints, and what to check before editing. That leaves the person with evidence for deciding whether the generated code is correct."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Make a plan for creating a Python script that reads expenses.csv and prints monthly amount totals.\nDo not modify any files yet.\nThe input columns are date, category, amount; date uses YYYY-MM-DD and amount is an integer.\nUse only the Python standard library.\nThe expected values are 2026-09 = 26600 and 2026-10 = 9800.\nFirst explain which files you will read, what you will check, and the order in which you would implement the task."
+            },
+            {
+              "type": "p",
+              "text": "This request does not yet approve writing code. Adding 'understand and plan first' creates a point where you can verify the scope. Claude Code's official documentation also recommends breaking complex work into steps and having Claude understand the code before making changes."
+            }
+          ]
+        },
+        {
+          "id": "human-checkpoints",
+          "heading": "5. Decide where a human should stop and verify",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Because AI coding tools can read and modify files or suggest running commands, beginners should focus less on 'when to press Yes' and more on 'when to stop and inspect.' In particular, if you see an unfamiliar command, a proposal to change many files at once, an unrequested package installation, or code that modifies the original input, check the reason before moving on."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Confirm that only files inside the requested folder are targeted.",
+                "Confirm that the input CSV is read without being overwritten.",
+                "Confirm that the constraint to use only the standard library is followed.",
+                "Confirm that the output format lets you compare the expected values 26600 and 9800.",
+                "Require an explanation of what will change before a command runs or a file is modified."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Existing Worknote articles cover code-review checklists and unit testing separately, so those procedures are not repeated here. This series focuses on the workflow in which a person controls task scope and the timing of changes while collaborating with a terminal-based AI coding tool."
+            }
+          ]
+        },
+        {
+          "id": "one-page-result",
+          "heading": "6. First deliverable: complete a one-page requirements note",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After finishing this article, you still do not need to install Claude Code or generate code. Instead, you should have a one-page requirements note. In the next article, you will take this note, install Claude Code, and start by asking it to read and explain the practice folder before changing any code."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Check item",
+                "Criterion for this example",
+                "Completion criterion"
+              ],
+              "rows": [
+                [
+                  "Input",
+                  "expenses.csv / date, category, amount",
+                  "The file and column names are explicit"
+                ],
+                [
+                  "Output",
+                  "2026-09 = 26600, 2026-10 = 9800",
+                  "Expected values are fixed numerically"
+                ],
+                [
+                  "Constraints",
+                  "Use only the standard library; do not modify the original CSV",
+                  "It is harder for AI to expand the scope arbitrarily"
+                ],
+                [
+                  "Verification",
+                  "Run python summarize.py expenses.csv and compare with the expected values",
+                  "A person can directly judge whether the result is correct"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "With these criteria in place, the core questions stay simple even if AI later gives a long code explanation: 'Does it read the input I defined? Does it produce the output I defined? Does it avoid the things I prohibited? And can I verify the result?' Check them in that order."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Written using the Claude Code official documentation (checked 2026-09-22) and the fictional example in this series · Claude Code not actually run · No Python code to execute",
+        "items": [
+          "Confirmed that the six rows in the fictional expenses.csv and the column names date, category, amount remain the same across the series",
+          "Compared the expected monthly values 2026-09 = 26600 and 2026-10 = 9800 by hand calculation",
+          "Confirmed that the requirements note includes all four elements: input, output, things not to do, and verification method",
+          "Confirmed that no editorial example resembling an actual Claude Code response was used and that no actual run was claimed",
+          "Confirmed that only p, ul, code, and table block types are used",
+          "Confirmed that detailed procedures from existing code-verification and review articles are not repeated"
+        ],
+        "limits": "Claude Code or Python code was not actually run in this article. This step explains the vibe-coding workflow and fixes the requirements for the later hands-on exercises; concrete implementation and execution verification are covered in subsequent articles."
+      }
+    },
+    {
+      "slug": "claude-code-install-first-run",
+      "title": "Install and Run Claude Code for the First Time: Ask Questions Before Changing Code",
+      "summary": "Check the Claude Code installation command and account requirements for your operating system, then start a first session in a fictional practice folder. Instead of generating code immediately, this article focuses on asking only three questions in plan mode to inspect the folder and CSV, then exiting safely.",
+      "audience": "Windows, macOS, Linux, and WSL users installing Claude Code for the first time who want to practice reading and asking questions before allowing file changes",
+      "prerequisites": [
+        "Be able to open a terminal or PowerShell",
+        "Have a supported account or payment method available for Claude Code",
+        "Use the fictional expenses.csv instead of real personal information",
+        "Native Windows users should check the recommendation to install Git for Windows"
+      ],
+      "tags": [
+        "ClaudeCode",
+        "installation",
+        "firstrun"
+      ],
+      "sections": [
+        {
+          "id": "check-before-install",
+          "heading": "1. Check the account and practice scope before installing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code should not be explained on the assumption that it is free to use. The official documentation used for this article lists Claude Pro, Max, Team, and Enterprise subscriptions, prepaid API credits in Claude Console, or supported cloud providers as account paths. Before installation, check the official documentation and your actual account screen to determine which path applies to you. This article does not invent prices or specific version numbers."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Preparation item",
+                "What to check",
+                "Choice in this article"
+              ],
+              "rows": [
+                [
+                  "Account",
+                  "Applicable path among supported Claude subscriptions, Console, or cloud providers",
+                  "Do not assume it is free"
+                ],
+                [
+                  "Practice folder",
+                  "Keep it separate from real work folders",
+                  "Use vibe-expenses"
+                ],
+                [
+                  "Data",
+                  "Fictional file without personal information",
+                  "Use expenses.csv"
+                ],
+                [
+                  "Permissions",
+                  "Start with reading and planning rather than editing",
+                  "plan mode recommended"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "On native Windows, installing Git for Windows is recommended. If Git for Windows is not installed, Claude Code can use PowerShell as its shell tool. Git itself is covered in article 6, so this article focuses only on the installation environment and the first session."
+            }
+          ]
+        },
+        {
+          "id": "install-command",
+          "heading": "2. Use the official installation command for your operating system",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The recommended native installation command differs by operating system. Before copying the commands below, check which shell and operating system you are using. The official documentation states that native installations use automatic background updates, while Homebrew and WinGet installations do not update automatically."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "# macOS · Linux · WSL\ncurl -fsSL https://claude.ai/install.sh | bash"
+            },
+            {
+              "type": "code",
+              "language": "powershell",
+              "text": "# Windows PowerShell\nirm https://claude.ai/install.ps1 | iex"
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Windows CMD:\ncurl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd\n\nHomebrew:\nbrew install --cask claude-code\n\nWinGet:\nwinget install Anthropic.ClaudeCode"
+            },
+            {
+              "type": "p",
+              "text": "Use the installation commands exactly as verified in the official documentation rather than mixing in arbitrarily modified installation scripts from the internet. Before running them, check the official documentation again to see whether the latest requirements or supported environments for each installation method have changed."
+            }
+          ]
+        },
+        {
+          "id": "verify-install",
+          "heading": "3. Check the version without treating a specific number as the expected value",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After installation, open a new terminal and run `claude --version`. According to the official documentation, it prints a version number and '(Claude Code)'. Because the version number can change over time, this article does not specify a particular number as the expected value."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "claude --version"
+            },
+            {
+              "type": "p",
+              "text": "If you see a message saying the command cannot be found, check the installation steps and the troubleshooting guidance in the official documentation again rather than guessing a path. This article did not actually run Claude Code, so it does not claim to reproduce any specific error or success screen."
+            }
+          ]
+        },
+        {
+          "id": "make-practice-folder",
+          "heading": "4. Create a separate practice folder instead of using a real project",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "It is safer not to do the first run directly inside a research folder or work repository. Create an empty practice folder instead. Here, use only a folder named vibe-expenses and the fictional expenses.csv. After creating the folder, save the CSV content defined in the previous article."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "mkdir vibe-expenses\ncd vibe-expenses"
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,1450\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+            },
+            {
+              "type": "p",
+              "text": "Save the file as UTF-8. Do not create summarize.py at this stage. The goal of the first session is not to 'make AI code immediately,' but to have it read and explain the current folder so you can decide what should change."
+            }
+          ]
+        },
+        {
+          "id": "first-login-plan",
+          "heading": "5. Start in plan mode and sign in for the first time",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "You can start Claude Code in a project folder with `claude`, and the first launch proceeds through browser sign-in. However, beginners are better served by starting in plan mode rather than immediately allowing edits. plan is a permission mode for read-oriented analysis and plan review, and it can be started from the command line as follows."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "claude --permission-mode plan"
+            },
+            {
+              "type": "p",
+              "text": "A browser sign-in flow may appear on the first run. If you need to switch accounts, you can use `/login` within the session. Because the default permission mode can vary by account and environment, this article does not claim that 'Manual is always the default.' According to the official documentation checked on 2026-09-22, the default starting mode for the interactive terminal is auto on Pro, Max, and Team plans, and Manual on other plans."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · not an actual response]\nOn the first run, browser sign-in or permission-related guidance may appear. The exact wording and sequence can vary by installation date and account, so check the current screen against the official documentation."
+            }
+          ]
+        },
+        {
+          "id": "three-readonly-questions",
+          "heading": "6. Ask three read-only questions before changing files",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Once the session starts, do not immediately ask it to 'make the program.' First check how accurately it understands the current folder. Claude Code can read the files it needs and may ask for approval before modifying files or running commands. In this exercise, do not request any edits; ask questions only."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Tell me which files are in this folder. Do not modify any files.\n\nExplain the column names in expenses.csv and what each column appears to mean. Do not modify any files.\n\nIf you were going to build a tool that calculates monthly amount totals from this CSV, list three things that should be confirmed before implementation. Do not create code yet."
+            },
+            {
+              "type": "p",
+              "text": "At minimum, verify that the response did not misread the current filename or CSV columns. If AI mentions a nonexistent file or proposes an unwanted edit or installation, ask why first. The exact wording of a real Claude Code response varies by model and time, so this article does not invent a model answer and present it as actual output."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Question",
+                "What the person should verify",
+                "If there is a problem"
+              ],
+              "rows": [
+                [
+                  "What is in the folder?",
+                  "Does it recognize expenses.csv as an actual file?",
+                  "If it mentions a nonexistent file, ask again for evidence from the file list"
+                ],
+                [
+                  "What are the CSV columns?",
+                  "Does it read date, category, amount correctly?",
+                  "If it guesses column names, compare them with the original file"
+                ],
+                [
+                  "What should be checked before implementation?",
+                  "Does it confirm input, output, and constraints first?",
+                  "If it tries to edit immediately, ask for a plan only"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "exit-and-next",
+          "heading": "7. Exit and move on to the next article",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After you achieve the goal of the first session, exit without creating code. You can use `/exit` in the session, or press Ctrl+D twice. `/help` shows the command list, and commands such as `/clear`, `/resume`, `/compact`, and `/rewind` also exist, but this article only identifies their names and does not expand the exercise further."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "/exit"
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Completed the installation check with claude --version.",
+                "Used the vibe-expenses practice folder rather than a real work folder.",
+                "expenses.csv contains only fictional data.",
+                "Asked three questions in plan mode without modifying files.",
+                "Deferred actual code generation to the next article."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The next article uses the requirements and practice folder from the previous steps to create summarize.py for real. At that point, the request will include the input example, expected output, and the constraint to use only the standard library, and the generated Python code will be run separately to verify the result."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Written using the Claude Code official documentation (checked 2026-09-22) · Claude Code not actually run · No Python code to execute",
+        "items": [
+          "Confirmed that the native installation commands for macOS, Linux, WSL, Windows PowerShell, and Windows CMD match the official documentation",
+          "Compared the alternative Homebrew and WinGet installation commands and their automatic-update behavior with the official documentation",
+          "Confirmed that the notation for claude --version, claude --permission-mode plan, /login, and /exit matches the official documentation",
+          "Confirmed that the article does not assert free availability and presents only supported account paths",
+          "Confirmed that the editorial example corresponding to a Claude Code screen or response starts with '[Editorial example · not an actual response]'",
+          "Confirmed that no Python executable code is included, so the article does not incorrectly claim Python result verification"
+        ],
+        "limits": "Claude Code was not installed or run while writing this article. The installation commands and feature descriptions follow the Claude Code official documentation checked on 2026-09-22; at the time of an actual installation, recheck the official documentation for current supported environments, account requirements, and screen wording."
+      }
+    },
+    {
+      "slug": "claude-code-first-tool",
+      "title": "Build Your First Tool with Claude Code: Monthly Totals from an Expense CSV",
+      "summary": "Use the fictional expenses.csv and requirements note from the previous articles to practice building a first small Python tool. Put the input example, expected output, and constraints in the request, then run the completed summarize.py separately in the Python tool in GPT chat—not in Claude Code—to verify the result.",
+      "audience": "Beginners who have completed Claude Code installation and the first read-only exercise and are ready to try generating code for one small file",
+      "prerequisites": [
+        "Have the vibe-expenses practice folder and fictional expenses.csv ready",
+        "Understand the workflow of checking proposed changes before allowing Claude Code to modify files",
+        "Have Python installed and be able to run the python command in a terminal",
+        "Use only fictional data rather than real personal information or payment records"
+      ],
+      "tags": [
+        "ClaudeCode",
+        "CSVtotals",
+        "firsttool"
+      ],
+      "sections": [
+        {
+          "id": "fix-the-target",
+          "heading": "1. Start small with one input and one output",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The goal of the first hands-on exercise is not a feature-rich expense-tracking app, but a single file, summarize.py, that reads expenses.csv and prints only monthly amount totals. Keeping the scope small makes it easier to verify the AI-generated result yourself. The input is a UTF-8 CSV with the columns date, category, and amount. Assume date uses YYYY-MM-DD and amount is an integer."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Fixed requirement for this exercise",
+                "Verification criterion"
+              ],
+              "rows": [
+                [
+                  "Input file",
+                  "expenses.csv",
+                  "Do not modify the original file"
+                ],
+                [
+                  "Input columns",
+                  "date, category, amount",
+                  "Do not arbitrarily require other columns"
+                ],
+                [
+                  "Output",
+                  "Monthly amount totals",
+                  "2026-09 = 26600, 2026-10 = 9800"
+                ],
+                [
+                  "Implementation scope",
+                  "One summarize.py file",
+                  "Do not add unnecessary config files or packages"
+                ],
+                [
+                  "Library",
+                  "Python standard library",
+                  "No external package installation"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The important point at this stage is not to make a broad request such as 'build me an expense tracker.' Reduce the chance that AI arbitrarily expands the task with a UI, database, charts, login, or other features, and delegate only a task whose answer can be checked in a single run."
+            }
+          ]
+        },
+        {
+          "id": "give-input-and-answer",
+          "heading": "2. Put the input, expected output, and constraints in the request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When asking Claude Code to do the task, provide both the input-file structure and the correct answer. An expected output makes it clear what the generated code has to match, and lets you compare the result visually. Also state the boundaries explicitly—for example, 'use only the standard library,' 'do not modify the original CSV,' and 'write only summarize.py.'"
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Create summarize.py in the current folder so that it reads expenses.csv and prints monthly amount totals.\n\nInput:\n- UTF-8 CSV\n- Column names: date, category, amount\n- date format: YYYY-MM-DD\n- amount is an integer\n\nExpected output:\n2026-09 = 26600\n2026-10 = 9800\n\nConstraints:\n- Use only the Python standard library\n- Do not modify expenses.csv\n- Run with python summarize.py expenses.csv\n- First explain the required file and planned changes, then create only summarize.py."
+            },
+            {
+              "type": "p",
+              "text": "This code block is a request for the user to enter, not a Claude Code response. Because the request already contains values that serve as the correct answer, you can later compare the two numbers exactly instead of merely judging whether the result looks plausible."
+            }
+          ]
+        },
+        {
+          "id": "review-before-edit",
+          "heading": "3. Check what will be created before allowing file edits",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code can read the files it needs and may ask for approval before modifying files or running commands. When an approval screen appears, do not press Yes immediately. Check which files were read, whether summarize.py is the only new file, and whether expenses.csv will remain untouched. If it wants to run an unfamiliar command, you can ask it to explain the command's purpose first."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Before making changes, confirm the following.\n1) Tell me which file you will read and which file you will create.\n2) Confirm that expenses.csv will not be modified.\n3) Confirm that no external packages will be installed.\n4) In one line, tell me how to compare the result with the expected output after running it."
+            },
+            {
+              "type": "p",
+              "text": "A real Claude Code response can vary by environment and time, so this article does not invent a particular response and present it as a success example. What matters is the file scope and command scope, not the style of the response."
+            }
+          ]
+        },
+        {
+          "id": "reference-implementation",
+          "heading": "4. Review the completed reference code and run command",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The summarize.py below is a completed reference implementation that satisfies the requirements in this article. It reads each row with csv.DictReader, takes the first seven characters of date to obtain YYYY-MM, converts amount to an integer, and adds the values by month. It sorts the month keys to make the output order deterministic. This code is not copied from an actual Claude Code-generated response; it was written to reproduce the exercise result and was executed separately for verification."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef summarize_monthly(path):\n    totals = defaultdict(int)\n\n    with open(path, \"r\", encoding=\"utf-8\", newline=\"\") as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            month = row[\"date\"][:7]\n            amount = int(row[\"amount\"])\n            totals[month] += amount\n\n    return totals\n\ndef main():\n    if len(sys.argv) != 2:\n        raise SystemExit(\"Usage: python summarize.py expenses.csv\")\n\n    totals = summarize_monthly(sys.argv[1])\n    for month in sorted(totals):\n        print(f\"{month} = {totals[month]}\")\n\nif __name__ == \"__main__\":\n    main()"
+            },
+            {
+              "type": "p",
+              "text": "Only the standard library is used, so no separate package installation is required. The run command is shown below. On Windows, if py is configured instead of python, you can use `py summarize.py expenses.csv`."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "python summarize.py expenses.csv"
+            }
+          ]
+        },
+        {
+          "id": "compare-output",
+          "heading": "5. Compare the output with the expected values line by line",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "In the Python tool in GPT chat, the code above and the fictional expenses.csv were saved as files and `python summarize.py expenses.csv` was actually run. Standard output exactly matched the two lines below. This verification was not performed in Claude Code."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "2026-09 = 26600\n2026-10 = 9800"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Month",
+                "Expected",
+                "Actual",
+                "Result"
+              ],
+              "rows": [
+                [
+                  "2026-09",
+                  "26600",
+                  "26600",
+                  "Match"
+                ],
+                [
+                  "2026-10",
+                  "9800",
+                  "9800",
+                  "Match"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "At this stage, confirm only that these two lines matched. Do not overgeneralize this result to assume that the tool also handles other CSV formats, blank values, or invalid numbers. The result matched only for the current test data and current requirements."
+            },
+            {
+              "type": "p",
+              "text": "You can also check the totals by hand once. September is 12000 + 1450 + 8500 + 3200 + 1450 = 26600, and October contains one entry of 9800, so the total is 9800. With a small example like this, cross-checking program output against a human-calculated reference value makes it easier to trace where results diverge when the functionality is expanded later."
+            }
+          ]
+        },
+        {
+          "id": "stop-at-done",
+          "heading": "6. Stop when the answer is correct instead of adding more features",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A common form of scope expansion in a first tool is, 'Since we've built this much, let's also add category totals, charts, and automatic saving.' But the completion condition for this article is simply that the two monthly-total lines are correct. Once that condition is met, keep the current state as a baseline and separate additional features into later requests."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Confirm that no unexpected files other than summarize.py were created.",
+                "Confirm that the contents of expenses.csv did not change.",
+                "Confirm that no external package installation was added.",
+                "Confirm that the two output lines exactly match the expected values.",
+                "Keep additional features out of this request and separate them into the next task."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The next article puts the project rules in CLAUDE.md so you do not have to rewrite long constraints every time. That file is also project context read by Claude Code at session start rather than an enforcement mechanism, so the key is to keep it short and specific."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "In the Python tool in GPT chat, saved summarize.py and the fictional expenses.csv using Python 3, then ran `python summarize.py expenses.csv` · Claude Code not actually run",
+        "items": [
+          "Confirmed that the Python code uses only the standard-library modules csv, sys, and collections.defaultdict",
+          "Confirmed that expenses.csv is opened read-only as UTF-8 and the original is not modified",
+          "Confirmed that the first 7 characters of date are used as the month and amount is converted with int before summation",
+          "Confirmed that actual stdout exactly matches the two lines `2026-09 = 26600` and `2026-10 = 9800`",
+          "Confirmed that the request includes the input, expected output, standard-library constraint, and prohibition on modifying the original file",
+          "Confirmed that the article does not incorrectly state that execution or verification was performed in Claude Code"
+        ],
+        "limits": "Verification was performed only with the six-row fictional CSV in this article. It does not verify exception cases such as blank values, invalid dates, or nonnumeric amount values, and Claude Code's own generated result or interface was not actually tested."
+      }
+    },
+    {
+      "slug": "claude-md-project-rules",
+      "title": "Use CLAUDE.md to Tell Claude Code the Project Rules",
+      "summary": "Put the run command, data rules, prohibitions, and verification method that were being repeated in every request into the project's CLAUDE.md in a concise form. Distinguish the `/init` function that creates a draft from the purposes of different file locations, and complete a 35-line rules file for the expense CSV example.",
+      "audience": "Beginners who repeatedly modify one project with Claude Code and want to reduce the need to explain the same rules in every request",
+      "prerequisites": [
+        "Have expenses.csv and summarize.py in the vibe-expenses folder",
+        "Know the run command and expected output for the monthly-total tool",
+        "Understand that CLAUDE.md is project context rather than an enforced configuration"
+      ],
+      "tags": [
+        "CLAUDEmd",
+        "projectrules",
+        "context"
+      ],
+      "sections": [
+        {
+          "id": "why-project-rules",
+          "heading": "1. Move only repeatedly stated rules into the project file",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "In the previous article, every request to Claude Code explicitly included the input file, the use of the standard library, the prohibition on modifying the original CSV, the run command, and the expected output. If you keep working on the same project, you can put these repeated rules in CLAUDE.md instead of rewriting them every time. Claude Code reads this file at session start and uses it as project context."
+            },
+            {
+              "type": "p",
+              "text": "However, do not treat CLAUDE.md as an access-control mechanism or an absolute enforcement rule. According to the official documentation, the file provides context, and instructions are easier to follow when they are specific and concise. Therefore, do not assume that it will 'always be followed perfectly'; continue checking the actual changes."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Repeated rule",
+                "Example to put in CLAUDE.md",
+                "Reason"
+              ],
+              "rows": [
+                [
+                  "Input",
+                  "expenses.csv / UTF-8 / fixed columns",
+                  "Reduce arbitrary assumptions about other files or columns"
+                ],
+                [
+                  "Implementation",
+                  "Use only the Python standard library",
+                  "Make the package scope explicit"
+                ],
+                [
+                  "Run",
+                  "python summarize.py expenses.csv",
+                  "Fix the verification command"
+                ],
+                [
+                  "Do not",
+                  "Do not modify expenses.csv",
+                  "State the requirement to preserve the original data"
+                ],
+                [
+                  "Completion criterion",
+                  "Two expected monthly output lines",
+                  "Provide values a person can compare after the task"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "where-files-live",
+          "heading": "2. Distinguish team-shared, personal-global, and personal-project file locations",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The locations described in the official documentation serve different purposes. `./CLAUDE.md` at the project root is suitable for project rules shared with a team. `~/.claude/CLAUDE.md` is a personal note that applies across all of your projects, while `./CLAUDE.local.md` is for personal use in one specific project and can be added to .gitignore."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "./CLAUDE.md\n~/.claude/CLAUDE.md\n./CLAUDE.local.md"
+            },
+            {
+              "type": "p",
+              "text": "This example uses `./CLAUDE.md` because it contains information that belongs to the project itself, such as run commands and data rules. Keeping personal preferences or local paths out of a team-shared file makes the project easier to manage."
+            }
+          ]
+        },
+        {
+          "id": "use-init-carefully",
+          "heading": "3. Use /init to create a draft, then review it instead of accepting it as-is",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When you use `/init` in a session, Claude Code can analyze the codebase and create a draft CLAUDE.md containing build and test commands and project conventions. The official documentation explains that if CLAUDE.md already exists, it does not overwrite it but instead proposes improvements. So `/init` is best treated not as a command that decides project rules automatically, but as a starting point for a draft that a person refines."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "/init"
+            },
+            {
+              "type": "p",
+              "text": "After a draft is created, check whether it contains commands that do not match the actual project, tests that do not exist, or overly generic instructions. This article did not actually run Claude Code, so it does not fabricate an example response claiming that `/init` generated particular wording."
+            }
+          ]
+        },
+        {
+          "id": "example-claude-md",
+          "heading": "4. Organize a 35-line CLAUDE.md for the expense example",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The example below is a CLAUDE.md containing only the rules needed for the fictional project in this series. The official documentation recommends keeping each file under 200 lines; this example stays at 35 lines. The goal, data, Python rules, run command, expected result, and working rules are separated so that a person can understand them immediately as well."
+            },
+            {
+              "type": "code",
+              "language": "markdown",
+              "text": "# Project: vibe-expenses\n\n## Goal\n- Read expenses.csv and summarize expense amounts.\n- Keep the example small and understandable for beginners.\n\n## Data\n- Input file: expenses.csv\n- Encoding: UTF-8\n- Columns: date, category, amount\n- date format: YYYY-MM-DD\n- category values stay in English.\n- amount is treated as an integer.\n\n## Python rules\n- Use only the Python standard library.\n- Prefer csv for reading CSV files.\n- Do not add third-party packages.\n- Keep functions short and names descriptive.\n- Do not modify expenses.csv.\n\n## Commands\n- Run: python summarize.py expenses.csv\n- On Windows, py summarize.py expenses.csv is also acceptable.\n\n## Expected result\n- 2026-09 = 26600\n- 2026-10 = 9800\n\n## Working rules\n- Explain the planned change before editing files.\n- Change only files needed for the requested task.\n- Do not invent extra input columns or business rules.\n- If a requirement is unclear, ask before expanding scope.\n- After editing, show what changed and how to verify it."
+            },
+            {
+              "type": "p",
+              "text": "Do not put secrets such as passwords, API keys, or real customer paths here. A project instruction file is meant to provide working context, so it is safer to keep it focused on rules that would not cause problems if the file were exposed or shared."
+            }
+          ]
+        },
+        {
+          "id": "keep-it-specific",
+          "heading": "5. Prefer verifiable rules over long explanations",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A longer CLAUDE.md is not automatically better. Rules that can be checked against actual changes—such as 'do not add external packages,' 'do not modify expenses.csv,' and 'this is the run command'—are more useful than hard-to-judge statements such as 'write good code.' You can use the `@path` syntax to import content from another file when needed, but this small example does not need any additional file imports."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "List only filenames and commands that actually exist in the project.",
+                "Do not keep accumulating one-off task instructions in CLAUDE.md.",
+                "State prohibitions concretely so it is clear what must not be done.",
+                "Leave expected values or verification commands that can be used to judge completion.",
+                "Do not put personal secrets or API keys in the project rules file."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Even after adding rules, you still need to check which files Claude Code actually changes. CLAUDE.md does not replace review; it reduces the amount of project context you have to repeat."
+            }
+          ]
+        },
+        {
+          "id": "review-after-change",
+          "heading": "6. Reread the rules file before the next task",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After saving CLAUDE.md, read it once yourself before requesting the next feature. If the current code or run command has changed but old instructions remain, the file can provide the wrong context instead. In particular, update the rules file when expected output or filenames change."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Review question",
+                "Expected answer in this example",
+                "Signal that an update is needed"
+              ],
+              "rows": [
+                [
+                  "Is the input file correct?",
+                  "expenses.csv",
+                  "A different filename remains"
+                ],
+                [
+                  "Is the run command correct?",
+                  "python summarize.py expenses.csv",
+                  "An old script name remains"
+                ],
+                [
+                  "Is the package rule correct?",
+                  "Use only the standard library",
+                  "It requires an unnecessary external package"
+                ],
+                [
+                  "Are the expected values correct?",
+                  "26600 / 9800",
+                  "Numbers do not match the current example"
+                ],
+                [
+                  "Is the prohibited scope clear?",
+                  "Do not modify expenses.csv",
+                  "Only vague wording is present"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In the next article, keep these rules in place but do not implement the new feature immediately. Design it first in plan mode. The goal is to review at the planning stage what changes would be required for a `--by-category` option that outputs food 20500, transport 2900, and supplies 3200 for 2026-09."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Written using the Claude Code official documentation (checked 2026-09-22) and the fictional example in this series · Claude Code not actually run · No Python code in this article to execute",
+        "items": [
+          "Confirmed against the official documentation the locations and purposes of project `./CLAUDE.md`, personal-global `~/.claude/CLAUDE.md`, and personal-project `./CLAUDE.local.md`",
+          "Compared with the official documentation the explanation that `/init` analyzes the codebase to create a draft and proposes improvements instead of overwriting an existing CLAUDE.md",
+          "Confirmed that CLAUDE.md is described as project context rather than an enforced configuration",
+          "Confirmed that the example CLAUDE.md is 35 lines, within the official recommendation of fewer than 200 lines per file",
+          "Confirmed that the example rules include the run command, data rules, prohibitions, expected result, and verification workflow",
+          "Confirmed that the article does not claim to have produced an actual `/init` result or Claude Code response"
+        ],
+        "limits": "This article did not actually run Claude Code's `/init` or memory-file features. The CLAUDE.md example is editorial content based on the fictional project requirements in this series; in a real project, a person must review it against the current file structure and commands."
+      }
+    },
+    {
+      "slug": "claude-code-plan-mode",
+      "title": "Plan Before You Edit in Claude Code: Expand Features with plan Mode",
+      "summary": "Using the example of adding a `--by-category` option to an already working monthly expense summary tool, learn how to review a change plan first in Claude Code's plan mode. Fix the scope of edits and output format before implementation, then run the completed code after approval to verify both the existing monthly totals and the category totals.",
+      "audience": "Beginners who want to build the habit of reviewing the scope of changes and expected results before modifying an existing Python file with Claude Code",
+      "prerequisites": [
+        "Have the vibe-expenses practice folder and expenses.csv from the previous articles ready",
+        "Understand the role of summarize.py, which prints monthly totals",
+        "Know that Claude Code's plan mode is suitable for read-focused analysis and plan review"
+      ],
+      "tags": [
+        "ClaudeCode",
+        "planmode",
+        "featureextension"
+      ],
+      "sections": [
+        {
+          "id": "why-plan-first",
+          "heading": "1. Define the change scope first, even for a small-looking edit",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The current summarize.py reads expenses.csv and prints monthly amount totals. This time, we will extend it without removing the existing behavior so that category totals for each month are shown only when the `--by-category` option is provided. Even when adding just one feature, letting AI edit the file immediately can leave details such as output format, whether existing behavior is preserved, and sort order to the AI. So first, fix what must stay the same and what alone should change."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Current behavior",
+                "After this change"
+              ],
+              "rows": [
+                [
+                  "Default run",
+                  "Print monthly totals",
+                  "Keep unchanged"
+                ],
+                [
+                  "Run with option",
+                  "None",
+                  "Add category totals when `--by-category` is used"
+                ],
+                [
+                  "Library",
+                  "Python standard library",
+                  "No change"
+                ],
+                [
+                  "Input file",
+                  "Read expenses.csv",
+                  "Do not modify the original file"
+                ],
+                [
+                  "Verification values",
+                  "2026-09 = 26600, 2026-10 = 9800",
+                  "Keep existing values + month 9 food 20500, transport 2900, supplies 3200"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The key point here is the criterion for preventing regression, not the new feature itself. Even after adding the option, the existing output of `python summarize.py expenses.csv` must not change. You need to verify the old execution result as well as the result of the new option."
+            }
+          ]
+        },
+        {
+          "id": "start-plan-mode",
+          "heading": "2. Start in plan mode so files are not edited yet",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code can be started in plan mode with `claude --permission-mode plan`. This mode is used for read-focused analysis of the code and task scope and for reviewing a plan. For beginners, it is easier to understand the change by getting a plan first rather than immediately widening edit permissions while existing code is present."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "cd vibe-expenses\nclaude --permission-mode plan"
+            },
+            {
+              "type": "p",
+              "text": "After the session starts, first ask it to read the current summarize.py and expenses.csv and explain what should change. In this request, explicitly say not to edit yet. If the plan is not satisfactory, you can revise the requirements before any file is touched."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Read summarize.py and explain its current behavior first.\nThen write only a change plan for adding the `--by-category` option. Do not edit any files yet.\nThe default run `python summarize.py expenses.csv` must keep exactly the same output.\nThe option run `python summarize.py expenses.csv --by-category` should add category totals for each month.\nUse only the Python standard library and do not modify expenses.csv.\nFor 2026-09, the expected category totals are food 20500, transport 2900, supplies 3200."
+            }
+          ]
+        },
+        {
+          "id": "review-the-plan",
+          "heading": "3. Look for missing requirements before judging the implementation approach",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When you receive a plan, first check whether every requirement is reflected rather than whether the proposed code sounds elegant. In particular, verify that the existing output is preserved, what happens when the option is absent, the category sort order, handling of an invalid option, and whether any external package is added. If the plan is vague, ask one more question before implementation."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · not an actual response]\n1. Keep the current CSV reading and monthly total calculation structure.\n2. Add a data structure that also accumulates category totals by month.\n3. Check whether the second argument is `--by-category` to decide whether the option is enabled.\n4. In the default run, print only the existing monthly totals.\n5. In the option run, print sorted category names and totals on the lines after each monthly total.\n6. After implementation, run both the default and option cases and compare them with the expected values."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Does the output of the existing default run remain unchanged?",
+                "Are category results added only when the option is present?",
+                "Does the plan avoid requiring any new external package installation?",
+                "Does it avoid modifying expenses.csv or changing it to a new format?",
+                "Does the plan include the commands needed to compare results with the expected values?"
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The plan above is an editorial example for explanation, not an actual Claude Code response. In a real session, the model may suggest a different implementation order, so do not memorize the wording of the plan as the answer. Check whether it matches your requirements."
+            }
+          ]
+        },
+        {
+          "id": "implement-after-review",
+          "heading": "4. Implement after reviewing the plan, then inspect the completed code",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After confirming that the plan matches the requirements, proceed with implementation. In Claude Code, actual file edits and command execution may require approval depending on the environment and permission settings. The code below is the completed example used to verify the results in this article. It was not copied from an actual Claude Code response; it was written to match the requirements in this article and run separately in the Python execution environment in GPT chat."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef read_totals(path):\n    monthly = defaultdict(int)\n    by_category = defaultdict(lambda: defaultdict(int))\n\n    with open(path, newline=\"\", encoding=\"utf-8\") as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            month = row[\"date\"][:7]\n            amount = int(row[\"amount\"])\n            monthly[month] += amount\n            by_category[month][row[\"category\"]] += amount\n\n    return monthly, by_category\n\ndef main():\n    if len(sys.argv) not in (2, 3):\n        print(\"Usage: python summarize.py expenses.csv [--by-category]\")\n        raise SystemExit(2)\n\n    if len(sys.argv) == 3 and sys.argv[2] != \"--by-category\":\n        print(\"Usage: python summarize.py expenses.csv [--by-category]\")\n        raise SystemExit(2)\n\n    monthly, by_category = read_totals(sys.argv[1])\n    show_category = len(sys.argv) == 3\n\n    for month in sorted(monthly):\n        print(f\"{month} = {monthly[month]}\")\n        if show_category:\n            for category in sorted(by_category[month]):\n                print(f\"  {category} = {by_category[month][category]}\")\n\nif __name__ == \"__main__\":\n    main()"
+            },
+            {
+              "type": "p",
+              "text": "This code uses only the csv module and collections.defaultdict. In the default run it prints only monthly totals, and only when `--by-category` is exactly the second argument does it print sorted category totals under each monthly total. If another option is provided or the number of arguments is invalid, it prints the usage message and exits."
+            }
+          ]
+        },
+        {
+          "id": "run-both-cases",
+          "heading": "5. Recheck the existing run as well as the new feature",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After adding the feature, verify both executions. First run without the option to confirm that the existing result is preserved, then add `--by-category` to check the new feature. The Python code in this article was actually run with the Python tool in GPT chat and matched the expected output below exactly."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "python summarize.py expenses.csv\npython summarize.py expenses.csv --by-category"
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Expected output for default run:\n2026-09 = 26600\n2026-10 = 9800\n\nExpected output for --by-category:\n2026-09 = 26600\n  food = 20500\n  supplies = 3200\n  transport = 2900\n2026-10 = 9800\n  food = 9800"
+            },
+            {
+              "type": "p",
+              "text": "For month 9, categories are printed in alphabetical order: food, supplies, transport. The totals themselves all match the reference values defined in the first article of the series: food 20500, transport 2900, supplies 3200. Month 10 has only one category, food, so 9800 is printed."
+            }
+          ]
+        },
+        {
+          "id": "approval-checklist",
+          "heading": "6. A short checklist before approving implementation",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The purpose of plan mode is not to receive a long plan from AI, but to create decision points for a person before edits are made. If the following questions are answered clearly, approve implementation; if even one is vague, revise the plan first."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Question",
+                "Answer in this example",
+                "Assessment"
+              ],
+              "rows": [
+                [
+                  "Which file changes?",
+                  "summarize.py",
+                  "Narrow scope"
+                ],
+                [
+                  "Is existing behavior preserved?",
+                  "Keep monthly output without the option",
+                  "Must recheck"
+                ],
+                [
+                  "When is the new behavior enabled?",
+                  "When `--by-category` is specified",
+                  "Clear condition"
+                ],
+                [
+                  "Does the original data change?",
+                  "expenses.csv is read only",
+                  "No modification"
+                ],
+                [
+                  "How is it verified?",
+                  "Compare two run commands with expected values",
+                  "Can be checked directly by a person"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In the next article, we will record the state before and after a change like this with git. Even though Claude Code has checkpoints, git is a separate version-control mechanism. Learning to read the changed files and diff yourself makes it clearer what the AI actually changed."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Actually ran the virtual expenses.csv and the summarize.py in this article as files in the Python execution environment of the GPT chat · Claude Code was not actually run",
+        "items": [
+          "Check that the default run prints exactly 2026-09 = 26600 and 2026-10 = 9800",
+          "Check that the `--by-category` run prints exactly 2026-09 food = 20500, supplies = 3200, transport = 2900",
+          "Check that the `--by-category` run prints 2026-10 food = 9800",
+          "Check that both runs complete with exit code 0",
+          "Check that the code uses only the Python standard library and does not modify expenses.csv",
+          "Check that the Claude Code plan response example is labeled '[Editorial example · not an actual response]'"
+        ],
+        "limits": "The Python code was run with the Python tool in GPT chat to verify its output, but there is no record of it being generated or executed in Claude Code. The actual plan content, approval screens, and permission behavior in Claude Code may vary by environment and account settings."
+      }
+    },
+    {
+      "slug": "claude-code-git-review",
+      "title": "Review AI Changes with git: Baseline Commit, diff, and Final Commit",
+      "summary": "Create a git baseline before Claude Code edits files, then read the actual changes with `git status` and `git diff`. You can ask AI to explain the diff, but do not rely on the explanation alone: review the diff and execution results yourself, then stage and commit the changes directly.",
+      "audience": "Beginners who want to learn a minimal git workflow for leaving a recoverable baseline and review record for changes made with Claude Code",
+      "prerequisites": [
+        "Have expenses.csv, summarize.py, and CLAUDE.md ready in the vibe-expenses folder",
+        "Have Git installed and be able to run git commands in a terminal",
+        "Understand the expected output and verification method for the `--by-category` feature from the previous article"
+      ],
+      "tags": [
+        "gitbasics",
+        "changereview",
+        "ClaudeCode"
+      ],
+      "sections": [
+        {
+          "id": "why-git-with-ai",
+          "heading": "1. Do not treat AI checkpoints and git as the same thing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code creates automatic checkpoints for each prompt and provides options to rewind code or conversation with `/rewind`, but the official documentation also explains that this does not replace version control such as git. In particular, files changed by Bash commands such as rm, mv, and cp, and files edited directly outside Claude Code, may not be tracked or restored by checkpoints. For important work, keep a git baseline separately from AI features."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Tool",
+                "Role in this article",
+                "Caution"
+              ],
+              "rows": [
+                [
+                  "Claude Code checkpoint",
+                  "Assist with rewinding during a session",
+                  "Not version control that tracks every external change"
+                ],
+                [
+                  "git commit",
+                  "Record explicit states before and after work",
+                  "A person must check which files are committed"
+                ],
+                [
+                  "git diff",
+                  "Inspect actual line-by-line changes",
+                  "The raw diff is the reference, not the AI explanation"
+                ],
+                [
+                  "Execution result",
+                  "Verify that the feature works as required",
+                  "Functional verification is still needed even if the diff is small"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The goal of this article is not to learn every git feature. We will use only a minimal flow: commit the pre-work state, read the diff after the AI changes something, verify execution results, and then commit."
+            }
+          ]
+        },
+        {
+          "id": "baseline-commit",
+          "heading": "2. Commit a baseline before handing the work to AI",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If the folder is already a git repository, check the current state first. If it is not, you can initialize one in the practice folder. The following example records the files from the previous articles as the pre-work baseline. In a real project, do not blindly add every file; use `git status` to confirm what should be included."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "cd vibe-expenses\ngit init\ngit status --short\ngit add expenses.csv summarize.py CLAUDE.md\ngit diff --cached\ngit commit -m \"Baseline before category summary\""
+            },
+            {
+              "type": "p",
+              "text": "If this is the first commit on this computer, git commit may stop because author information has not been configured. In that case, set it once with git config --global user.name \"Name\" and git config --global user.email \"Email\", then run the commit again. If you plan to publish the repository, use an email address you are comfortable making public."
+            },
+            {
+              "type": "p",
+              "text": "`git diff --cached` shows the staged changes that will go into the commit. The first commit can produce a long diff, but at minimum check that no unintended files are included. In a real work repository, do not accidentally add sensitive files such as `.env`, key files, or personal data. This series uses only synthetic data from the outset."
+            }
+          ]
+        },
+        {
+          "id": "make-one-change",
+          "heading": "3. Assign one feature at a time and limit the number of changed files",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This task is one feature: add the `--by-category` option to summarize.py. Narrow the request to Claude Code as well, telling it not to combine unrelated refactoring or file cleanup. The smaller the change, the easier the diff is to read and the easier it is to identify the cause if something goes wrong."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Add the `--by-category` option only to summarize.py.\nDo not change the default execution result, and do not modify expenses.csv or CLAUDE.md.\nDo not add external packages.\nAfter the edit, tell me which files you changed."
+            },
+            {
+              "type": "p",
+              "text": "The Claude Code documentation notes that you can ask in natural language which files changed, for example, 'what files have I changed?'. However, do not use the AI's answer alone to determine the change scope. In the next step, verify the actual state reported by git."
+            }
+          ]
+        },
+        {
+          "id": "read-status-and-diff",
+          "heading": "4. Read git status and git diff yourself first",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After the work is complete, first run `git status --short` to see which files changed. If the request was followed, only summarize.py should be modified. Then run `git diff -- summarize.py` to read the actual uncommitted changes. If you check only the filename and commit immediately, you can miss an incorrect line changed by the AI."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "git status --short\ngit diff -- summarize.py"
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Check that expenses.csv or CLAUDE.md was not modified unexpectedly.",
+                "Check that the original monthly-output logic was not removed or semantically changed.",
+                "Check that the additional output runs only when the `--by-category` condition is met.",
+                "Check that no unrequested package import or file-writing code was added.",
+                "If the diff contains a change you do not understand, ask for the reason before committing."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Here, git diff is the evidence of what actually changed, while the AI explanation is only an aid for understanding that evidence. If they disagree, use the raw diff and the actual file as the basis for your judgment."
+            }
+          ]
+        },
+        {
+          "id": "ask-for-diff-explanation",
+          "heading": "5. Ask Claude to explain the diff, but keep explanation separate from further edits",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If the diff is unfamiliar, you can ask Claude Code to explain the current changes. Do not ask for new edits at the same time; requesting explanation only keeps review separate from additional modification."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Read the current git diff and explain what changed in summarize.py.\nOrganize it into only these four points:\n1) Parts that preserve existing behavior\n2) Parts added for `--by-category`\n3) Whether there is any code that modifies the original CSV\n4) Whether any new external package is used\nDo not modify any files further right now."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "[Editorial example · not an actual response]\n- The existing monthly total calculation is preserved, and the default run prints in the same format.\n- A category-total accumulation structure and the `--by-category` condition were added.\n- No code that writes to the input CSV was added.\n- Only the Python standard library is used, with no new external packages."
+            },
+            {
+              "type": "p",
+              "text": "The text above is an editorial example that shows the explanation format, not the result of Claude Code reading an actual diff. In real work, compare each statement directly with the lines in `git diff`."
+            }
+          ]
+        },
+        {
+          "id": "verify-before-commit",
+          "heading": "6. Verify execution results before staging",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even when the diff looks correct, functional verification is separate. Run the two commands verified in the previous article again to check both the default output and the option output. Because this article focuses on the git workflow, it does not repeat the Python code and assumes the already verified summarize.py is being used."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "python summarize.py expenses.csv\npython summarize.py expenses.csv --by-category"
+            },
+            {
+              "type": "p",
+              "text": "The default run should be 2026-09 = 26600 and 2026-10 = 9800. In the option run, confirm food 20500, transport 2900, and supplies 3200 for 2026-09. If the values differ, do not commit; recheck the code or input file."
+            }
+          ]
+        },
+        {
+          "id": "stage-and-commit",
+          "heading": "7. Finally, inspect the staged diff and commit with a descriptive message",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After review and execution checks are complete, stage only the changed file. Then inspect `git diff --cached` once more to see exactly what will go into the commit, and commit it. Claude Code can also be asked in natural language to commit, but beginners should first learn the flow of checking which files are included before committing."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "git add summarize.py\ngit diff --cached -- summarize.py\ngit commit -m \"Add category summary option\"\ngit status --short"
+            },
+            {
+              "type": "p",
+              "text": "The official documentation notes that you can request a commit in natural language with wording such as 'commit my changes with a descriptive message'. Even if you use that feature, the principle is the same: review the diff and target files immediately before the commit. If `git status --short` is empty after the commit, there are no remaining tracked changes."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Stage",
+                "Command or action",
+                "Purpose"
+              ],
+              "rows": [
+                [
+                  "Before work",
+                  "git commit",
+                  "Create a baseline to return to"
+                ],
+                [
+                  "After work",
+                  "git status --short",
+                  "Check the scope of changed files"
+                ],
+                [
+                  "Review",
+                  "git diff",
+                  "Read the actual line-by-line changes"
+                ],
+                [
+                  "Functional check",
+                  "Two Python run commands",
+                  "Confirm that expected output is preserved"
+                ],
+                [
+                  "Before commit",
+                  "git diff --cached",
+                  "Final check of what will be committed"
+                ],
+                [
+                  "Complete",
+                  "git commit",
+                  "Record the reviewed change as a new baseline"
+                ]
+              ]
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Written based on the git and checkpoint descriptions in the Claude Code official documentation checked on 2026-09-22 · Does not claim that Claude Code or git commands were actually run",
+        "items": [
+          "Check that the sequence is consistent: pre-work baseline commit → post-work status/diff → execution check → staged diff → commit",
+          "Check the syntax of `git status --short`, `git diff -- summarize.py`, `git diff --cached -- summarize.py`, and `git commit -m`",
+          "Check that the limitation from the official documentation that Claude Code checkpoints do not replace git is reflected",
+          "Check that it states that Bash-command changes and changes outside Claude Code may be subject to checkpoint restoration limits",
+          "Check that the example asking Claude to explain the diff is marked as not an actual response",
+          "Check that this article contains no Python code block requiring separate Python execution verification"
+        ],
+        "limits": "This article does not present an execution record of creating an actual git repository or asking Claude Code to commit. The commands form a continuous learning example; in a real project, separately check the existing branch policy, .gitignore, and whether sensitive information is included."
+      }
+    },
+    {
+      "slug": "claude-code-debug-errors",
+      "title": "Fix Errors with Claude Code: Reproduce → Cause → Minimal Fix → Rerun",
+      "summary": "Instead of telling AI only that 'there is an error,' reproduce the problem with the same input, narrow down the cause from the actual exception message, and request only the minimum necessary fix. Using a CSV where an amount contains a comma, reproduce a ValueError in Python and rerun the corrected code to verify the fix.",
+      "audience": "Beginners who want to control the debugging process using error-message evidence when a small Python tool made with Claude Code fails",
+      "prerequisites": [
+        "Understand the summarize.py and expenses.csv workflow from the previous articles",
+        "Be able to run a command in the form python summarize.py filename in a terminal",
+        "Preserve the original file and the error message first when an error occurs",
+        "Use only synthetic CSV data rather than real personal information"
+      ],
+      "tags": [
+        "debugging",
+        "ValueError",
+        "rerun"
+      ],
+      "sections": [
+        {
+          "id": "reproduce-first",
+          "heading": "1. Reproduce the error with the same input before fixing anything",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When an error occurs, the first step is reproduction, not guessing. In this example, we use a synthetic CSV in which one amount value is the string \"1,450\". Because a comma appears inside the value, the CSV field is quoted; after the csv module reads it, row['amount'] contains the string '1,450'. If the existing code calls int(row['amount']) directly, Python cannot convert that string to an integer."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,\"1,450\"\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "text": "import csv\nimport sys\nfrom collections import defaultdict\n\npath = sys.argv[1]\nmonthly = defaultdict(int)\n\nwith open(path, encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.DictReader(f)\n    for row in reader:\n        month = row[\"date\"][:7]\n        monthly[month] += int(row[\"amount\"])\n\nfor month in sorted(monthly):\n    print(f\"{month} = {monthly[month]}\")"
+            },
+            {
+              "type": "p",
+              "text": "Running this code with `python summarize_buggy.py expenses_bad.csv` stops at the conversion step before printing the correct totals. The same code was actually run with the Python tool in GPT chat, and the exception string was confirmed to match the text below exactly."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "ValueError: invalid literal for int() with base 10: '1,450'"
+            }
+          ]
+        },
+        {
+          "id": "read-error-message",
+          "heading": "2. Separate the failing value and operation from the error message",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The message already contains important clues. The failed function is int(), and the failed value is '1,450'. There is no need to first assume that 'the entire CSV is wrong' or that 'the monthly aggregation logic is incorrect.' The problem scope can be narrowed to the point where the amount string is converted to an integer."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Observation",
+                "Confirmed fact",
+                "What not to assume yet"
+              ],
+              "rows": [
+                [
+                  "Exception type",
+                  "ValueError",
+                  "Do not conclude that the entire file is corrupted"
+                ],
+                [
+                  "Failed value",
+                  "'1,450'",
+                  "Do not assume every other row is also wrong"
+                ],
+                [
+                  "Failed operation",
+                  "int() conversion",
+                  "Do not conclude that the aggregation formula itself is wrong"
+                ],
+                [
+                  "Change scope",
+                  "Prioritize the amount parsing point",
+                  "Do not rewrite the entire program"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "When asking Claude Code for help, provide the error message, the reproduction command, and the input condition that triggered the problem. This makes it possible to check whether the AI's explanation is connected to the actual evidence and makes it easier to narrow the scope again if an unrelated large change is proposed."
+            }
+          ]
+        },
+        {
+          "id": "ask-for-minimal-fix",
+          "heading": "3. Ask for the cause first, then request only the minimal fix",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The required fix is simple. Remove commas from a numeric string before converting it to an integer, and if the value is still not numeric after comma removal, raise a clear error that identifies the row and the original value. Do not change the monthly aggregation method or output format."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Running python summarize_buggy.py expenses_bad.csv produces the error below.\nValueError: invalid literal for int() with base 10: '1,450'\n\nExplain the cause first.\nThen make the smallest possible change only to the amount conversion logic.\nRequirements:\n- For numeric strings containing commas, remove the commas before converting to int\n- If the value is still not numeric, raise a clear ValueError that includes the row number and original value\n- Keep the monthly aggregation and output format unchanged\n- Use only the Python standard library\n- Also tell me which command to run afterward to verify the fix."
+            },
+            {
+              "type": "p",
+              "text": "Do not ask to 'rewrite the entire code.' The failure location has already been narrowed to amount conversion, so limit the change to that part. If the AI tries to modify other files or aggregation rules, ask why that is necessary first, and return to the original scope if there is no evidence supporting the expansion."
+            }
+          ]
+        },
+        {
+          "id": "minimal-code-change",
+          "heading": "4. Put comma removal and row-number errors into one function",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The revision below separates amount parsing into parse_amount(). It first removes commas and tries int(); if conversion fails, it raises a new ValueError that includes the input row number and the original string. Because the header of csv.DictReader is row 1, data row numbers are aligned with enumerate(reader, start=2)."
+            },
+            {
+              "type": "code",
+              "language": "python",
+              "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef parse_amount(text, line_number):\n    cleaned = text.replace(\",\", \"\")\n    try:\n        return int(cleaned)\n    except ValueError as exc:\n        raise ValueError(\n            f\"line {line_number}: amount must be an integer, got {text!r}\"\n        ) from exc\n\npath = sys.argv[1]\nmonthly = defaultdict(int)\n\nwith open(path, encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.DictReader(f)\n    for line_number, row in enumerate(reader, start=2):\n        month = row[\"date\"][:7]\n        monthly[month] += parse_amount(row[\"amount\"], line_number)\n\nfor month in sorted(monthly):\n    print(f\"{month} = {monthly[month]}\")"
+            },
+            {
+              "type": "p",
+              "text": "This change is not intended to be a general-purpose parser for every money format such as currency symbols, decimals, or parenthesized negatives. It solves only the thousands-separator comma issue that was actually reproduced here. To support broader input rules, first define the allowed formats and add them as a separate requirement."
+            }
+          ]
+        },
+        {
+          "id": "rerun-and-compare",
+          "heading": "5. Rerun with the same file and compare against the original expected values",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After the fix, rerun the code with the exact file that caused the problem. The revised code above was actually run against `expenses_bad.csv` with the Python tool in GPT chat, and the monthly totals were 2026-09 = 26600 and 2026-10 = 9800. These exactly match the expected values defined from the beginning of the series."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "python summarize_fixed.py expenses_bad.csv\n\n2026-09 = 26600\n2026-10 = 9800"
+            },
+            {
+              "type": "p",
+              "text": "Do not stop merely because the error disappeared. The key point of the rerun is to verify numerically that both 1450 without a comma and \"1,450\" with a comma are interpreted as the same amount and that the original correct result is preserved."
+            }
+          ]
+        },
+        {
+          "id": "invalid-value-check",
+          "heading": "6. Do not silently skip non-numeric values; fail with their location",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Adding comma removal does not mean invalid values should be replaced with 0 or ignored. For example, if the amount in row 3 is abc, the program should fail so the data error is not hidden. The same revised code was actually run on a separate synthetic input, and a ValueError containing `line 3` and the original value `'abc'` was confirmed."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,abc"
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "ValueError: line 3: amount must be an integer, got 'abc'"
+            },
+            {
+              "type": "ul",
+              "items": [
+                "First confirm that the error can be reproduced with the same input.",
+                "Read the exception type and failed value to narrow the change scope.",
+                "Ask AI to explain the cause, then request only the minimum fix.",
+                "Rerun with the input that caused the problem and compare against the original expected values.",
+                "Do not silently ignore invalid input; leave an error that makes the problem locatable."
+              ]
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Python code actually run with the Python tool in GPT chat · Only synthetic CSV data used · Claude Code was not actually run",
+        "items": [
+          "Check that the existing int(row['amount']) code actually reproduces a ValueError for input '1,450'",
+          "Check that the exception string exactly matches \"invalid literal for int() with base 10: '1,450'\"",
+          "Check that the revised code runs on expenses_bad.csv without an exception",
+          "Check that stdout after the fix is exactly 2026-09 = 26600 and 2026-10 = 9800",
+          "Check that amount=abc actually raises the ValueError \"line 3: amount must be an integer, got 'abc'\"",
+          "Check that only the Python standard library is used"
+        ],
+        "limits": "Python execution verification was performed with the Python tool in GPT chat and is not claimed to have been tested in Claude Code. The example parser handles only thousands-separator commas and does not generalize to currency symbols, decimals, or locale-specific numeric formats."
+      }
+    },
+    {
+      "slug": "claude-code-safe-workflow",
+      "title": "Use Claude Code Safely: Permission Modes, Checkpoints, and Secrets",
+      "summary": "Assuming Claude Code can read and modify files and run commands, organize the safety checks beginners should make before, during, and after work. Connect the differences between permission modes, changes checkpoints cannot restore, the separate role of git, and the rule of not exposing secrets into one practical checklist.",
+      "audience": "Beginners who want to understand permissions and recovery limits and build safer working habits before using Claude Code on real projects",
+      "prerequisites": [
+        "Have reviewed basic Claude Code execution and plan mode at least once",
+        "Understand that file edits and command execution can affect a real project",
+        "Do not put passwords, API keys, or personal information into practice data",
+        "Understand that git is a version-control tool separate from checkpoints"
+      ],
+      "tags": [
+        "permissionmode",
+        "checkpoints",
+        "safety"
+      ],
+      "sections": [
+        {
+          "id": "before-work",
+          "heading": "1. Before work: check the folder, secrets, and recovery method first",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Safe use starts before you send a prompt. First confirm that the terminal is in the intended location, and for practice use a folder separated from real work repositories. If a project contains sensitive files such as .env files, certificates, or personal materials, review what the AI tool can access before proceeding. Even if an example seems to require an API key, use an obviously fake value such as `sk-EXAMPLE-NOT-REAL` instead of a real key."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Before starting work\n- Am I in the project folder I intended?\n- Are there no real personal details, passwords, or API keys in the example files?\n- Have I checked the pre-change state with git or committed it if necessary?\n- If this is an unfamiliar task, am I starting in a review-focused flow such as plan or Manual?"
+            },
+            {
+              "type": "p",
+              "text": "The existence of Claude Code checkpoints does not remove the need for separate version control. The official documentation explicitly states that checkpoints do not replace version control such as git. For important projects, keep existing version-control habits such as pre-work commits or separate branches."
+            }
+          ]
+        },
+        {
+          "id": "permission-modes",
+          "heading": "2. Permission modes: separate automation level from points that require human review",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The permission modes described in the official documentation are Manual, acceptEdits, plan, auto, dontAsk, and bypassPermissions. Worknote recommends that beginners start with Manual or plan. This does not mean risk disappears; it is a choice intended to build the habit of reading and judging the change scope before proceeding."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Mode",
+                "Confirmed behavior",
+                "Beginner note"
+              ],
+              "rows": [
+                [
+                  "Manual",
+                  "Setting value default; reads automatically and asks before edits/commands",
+                  "Proceed while reviewing changes and commands"
+                ],
+                [
+                  "acceptEdits",
+                  "Automatically allows file edits and common file commands such as mkdir, touch, mv, and cp",
+                  "Use after understanding the scope of automatic changes"
+                ],
+                [
+                  "plan",
+                  "Read-focused analysis and planning",
+                  "Use to review scope before implementation"
+                ],
+                [
+                  "auto",
+                  "A classifier model reviews actions instead of the user and executes most without asking",
+                  "Review results and change scope separately"
+                ],
+                [
+                  "dontAsk",
+                  "Uses only pre-approved tools",
+                  "Understand the scope of the tools you allowed"
+                ],
+                [
+                  "bypassPermissions",
+                  "Skips all checks",
+                  "Use only in an isolated container or VM"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The default starting mode differs by plan. In the official documentation checked on 2026-09-22, the interactive terminal starts in auto by default for Pro, Max, and Team plans, while other plans use Manual. Therefore, do not assume the same approval flow will always appear; check the current mode."
+            },
+            {
+              "type": "code",
+              "language": "bash",
+              "text": "claude --permission-mode plan"
+            }
+          ]
+        },
+        {
+          "id": "during-work",
+          "heading": "3. During work: read the meaning of files and commands before approving",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code can read the files it needs and may ask for approval before editing files or running commands. However, the fact that an approval prompt appears does not itself guarantee that the command is safe. First read which files will change, whether deletion, move, or copy commands are included, and whether there is any unrequested installation or scope expansion."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Before making any changes, tell me only the following first.\n1. Names of files you will modify\n2. What you will change in each file\n3. Shell commands you intend to run\n4. Whether any original file will be deleted, moved, or overwritten\nDo not modify files or run commands yet."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "If more files than requested are selected, ask why.",
+                "For commands such as rm, mv, and cp that directly change file state, recheck the target path.",
+                "If an installation command appears, confirm whether it is actually required by the task.",
+                "If an unexpected change appears, stop approving and return to plan to recheck the scope.",
+                "Remove real sensitive values so they do not enter prompts, files, or logs."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "checkpoint-limits",
+          "heading": "4. Checkpoints: understand exactly what the rewind feature can and cannot restore",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Claude Code creates an automatic checkpoint for each prompt you send. You can open the rewind menu with `/rewind`, or by pressing Esc twice when the input box is empty, and choose options such as restoring code and conversation, restoring conversation only, restoring code only, or summarizing. However, this feature does not record every file change."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "/rewind"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Type of change",
+                "Checkpoint limitation",
+                "Separate protection"
+              ],
+              "rows": [
+                [
+                  "Changes tracked by Claude Code",
+                  "May be eligible for rewind",
+                  "Use git as well for important work"
+                ],
+                [
+                  "Files changed by Bash commands such as rm, mv, and cp",
+                  "Not tracked or restored",
+                  "Check targets before the command and prepare a separate recovery method"
+                ],
+                [
+                  "Files edited directly outside Claude Code",
+                  "Not tracked",
+                  "Check separately with git diff and similar tools"
+                ],
+                [
+                  "Project version history",
+                  "Does not replace git",
+                  "Keep version control with commits, branches, and related practices"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In particular, do not expect `/rewind` to restore every file deleted or moved through shell commands. Treat checkpoints as an auxiliary way to rewind work inside Claude Code, and manage project history and recovery separately with git or other tools."
+            }
+          ]
+        },
+        {
+          "id": "secrets-and-data",
+          "heading": "5. Keep secrets and real data out of practice examples",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Do not paste passwords, API keys, real customer information, or real research data directly into prompts or example files just because code needs them. For tutorials and error reproduction, use synthetic data and clearly fake tokens. For real projects, separately confirm which data may be provided to the tool under your organization's policy and your usage environment."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Fake value for practice:\nAPI_KEY=sk-EXAMPLE-NOT-REAL\n\nSynthetic data:\ndate,category,amount\n2026-09-01,food,12000"
+            },
+            {
+              "type": "p",
+              "text": "If a project already contains sensitive information, do not assume that simply asking 'do not look at that file' is sufficient. Check the files the tool can access and the applicable security policy; when needed, reproduce the task in a working copy with sensitive information removed."
+            }
+          ]
+        },
+        {
+          "id": "after-work",
+          "heading": "6. After work: use the actual diff and execution result as the reference, not the explanation",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After the work is finished, judge the result from the actual files and execution output rather than from the AI saying 'done.' As in the previous article, read git diff, rerun the command, and compare with the expected values. For an error fix, do not check only that the error disappeared; verify that the original valid input still produces the same result."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "After-work check\n- Did only the expected files change in git diff?\n- Does the execution result match the expected values in the requirements?\n- Are temporary files or fake secrets absent from the commit target?\n- Are the reason for the change and the run method left clearly enough for the next person to understand?"
+            },
+            {
+              "type": "p",
+              "text": "Claude Code's natural-language explanation is material that helps review. Make the final judgment by comparing the actual diff, execution results, and project rules. This principle remains useful even when the model or permission mode changes."
+            }
+          ]
+        },
+        {
+          "id": "safe-workflow-checklist",
+          "heading": "7. Final result: a safety checklist for before, during, and after work",
+          "blocks": [
+            {
+              "type": "table",
+              "headers": [
+                "Stage",
+                "Question to check",
+                "If there is a problem"
+              ],
+              "rows": [
+                [
+                  "Before work",
+                  "Is this the correct folder, is there no sensitive information, and is there a recovery method?",
+                  "Prepare a practice folder, synthetic data, and the git state first"
+                ],
+                [
+                  "During work",
+                  "Do you understand which files and commands you are approving?",
+                  "Stop approval and recheck the scope in plan"
+                ],
+                [
+                  "Before rewind",
+                  "Is this a Bash or external change that checkpoints do not track?",
+                  "Check a separate recovery method such as git or backup"
+                ],
+                [
+                  "After work",
+                  "Do the diff and execution result match the requirements?",
+                  "Find the cause and revise only the necessary part"
+                ]
+              ]
+            },
+            {
+              "type": "ul",
+              "items": [
+                "At first, use a review-focused flow such as Manual or plan.",
+                "Because bypassPermissions skips all checks, use it only in an isolated container or VM.",
+                "Do not treat checkpoints as a replacement for git.",
+                "Do not expect checkpoint restoration for files changed by Bash commands or files edited directly outside Claude Code.",
+                "Use synthetic data and clearly fake values instead of real passwords, API keys, or personal information.",
+                "Determine completion from the diff and actual execution results, not from the AI's explanation."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The common principle throughout this series is to define requirements narrowly first, begin with reading and planning, verify the change scope, and have a person validate the execution result. As the scope of automation grows, the human role does not disappear; it shifts toward checking what was allowed and whether the result meets the defined criteria."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Written based on the Claude Code official documentation checked on 2026-09-22 · Claude Code was not actually run · No Python execution code",
+        "items": [
+          "Check that the descriptions of Manual, acceptEdits, plan, auto, dontAsk, and bypassPermissions match the official documentation",
+          "Compare the difference in default starting modes between Pro, Max, Team and other plans with the official documentation",
+          "Compare the automatic checkpoint for each prompt and the `/rewind` or double-Esc access method from an empty input box with the official documentation",
+          "Check that it explicitly states that files changed by Bash commands and files changed outside Claude Code are not tracked or restored by checkpoints",
+          "Check that the limitation that checkpoints do not replace git is stated clearly",
+          "Check that only clearly fake values such as sk-EXAMPLE-NOT-REAL are used instead of real secrets"
+        ],
+        "limits": "This article is based on the Claude Code official documentation checked on 2026-09-22 and is not a record of actually testing Claude Code permission modes or checkpoints. Before applying it to a real project, separately check your organization's security policy and the latest official documentation."
+      }
+    }
+  ]
+}

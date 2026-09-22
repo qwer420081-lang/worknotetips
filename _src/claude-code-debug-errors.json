@@ -1,0 +1,191 @@
+{
+  "slug": "claude-code-debug-errors",
+  "title": "Fix Errors with Claude Code: Reproduce → Cause → Minimal Fix → Rerun",
+  "summary": "Instead of telling AI only that 'there is an error,' reproduce the problem with the same input, narrow down the cause from the actual exception message, and request only the minimum necessary fix. Using a CSV where an amount contains a comma, reproduce a ValueError in Python and rerun the corrected code to verify the fix.",
+  "audience": "Beginners who want to control the debugging process using error-message evidence when a small Python tool made with Claude Code fails",
+  "prerequisites": [
+    "Understand the summarize.py and expenses.csv workflow from the previous articles",
+    "Be able to run a command in the form python summarize.py filename in a terminal",
+    "Preserve the original file and the error message first when an error occurs",
+    "Use only synthetic CSV data rather than real personal information"
+  ],
+  "tags": [
+    "debugging",
+    "ValueError",
+    "rerun"
+  ],
+  "sections": [
+    {
+      "id": "reproduce-first",
+      "heading": "1. Reproduce the error with the same input before fixing anything",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When an error occurs, the first step is reproduction, not guessing. In this example, we use a synthetic CSV in which one amount value is the string \"1,450\". Because a comma appears inside the value, the CSV field is quoted; after the csv module reads it, row['amount'] contains the string '1,450'. If the existing code calls int(row['amount']) directly, Python cannot convert that string to an integer."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,\"1,450\"\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "text": "import csv\nimport sys\nfrom collections import defaultdict\n\npath = sys.argv[1]\nmonthly = defaultdict(int)\n\nwith open(path, encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.DictReader(f)\n    for row in reader:\n        month = row[\"date\"][:7]\n        monthly[month] += int(row[\"amount\"])\n\nfor month in sorted(monthly):\n    print(f\"{month} = {monthly[month]}\")"
+        },
+        {
+          "type": "p",
+          "text": "Running this code with `python summarize_buggy.py expenses_bad.csv` stops at the conversion step before printing the correct totals. The same code was actually run with the Python tool in GPT chat, and the exception string was confirmed to match the text below exactly."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "ValueError: invalid literal for int() with base 10: '1,450'"
+        }
+      ]
+    },
+    {
+      "id": "read-error-message",
+      "heading": "2. Separate the failing value and operation from the error message",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The message already contains important clues. The failed function is int(), and the failed value is '1,450'. There is no need to first assume that 'the entire CSV is wrong' or that 'the monthly aggregation logic is incorrect.' The problem scope can be narrowed to the point where the amount string is converted to an integer."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Observation",
+            "Confirmed fact",
+            "What not to assume yet"
+          ],
+          "rows": [
+            [
+              "Exception type",
+              "ValueError",
+              "Do not conclude that the entire file is corrupted"
+            ],
+            [
+              "Failed value",
+              "'1,450'",
+              "Do not assume every other row is also wrong"
+            ],
+            [
+              "Failed operation",
+              "int() conversion",
+              "Do not conclude that the aggregation formula itself is wrong"
+            ],
+            [
+              "Change scope",
+              "Prioritize the amount parsing point",
+              "Do not rewrite the entire program"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "When asking Claude Code for help, provide the error message, the reproduction command, and the input condition that triggered the problem. This makes it possible to check whether the AI's explanation is connected to the actual evidence and makes it easier to narrow the scope again if an unrelated large change is proposed."
+        }
+      ]
+    },
+    {
+      "id": "ask-for-minimal-fix",
+      "heading": "3. Ask for the cause first, then request only the minimal fix",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The required fix is simple. Remove commas from a numeric string before converting it to an integer, and if the value is still not numeric after comma removal, raise a clear error that identifies the row and the original value. Do not change the monthly aggregation method or output format."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Running python summarize_buggy.py expenses_bad.csv produces the error below.\nValueError: invalid literal for int() with base 10: '1,450'\n\nExplain the cause first.\nThen make the smallest possible change only to the amount conversion logic.\nRequirements:\n- For numeric strings containing commas, remove the commas before converting to int\n- If the value is still not numeric, raise a clear ValueError that includes the row number and original value\n- Keep the monthly aggregation and output format unchanged\n- Use only the Python standard library\n- Also tell me which command to run afterward to verify the fix."
+        },
+        {
+          "type": "p",
+          "text": "Do not ask to 'rewrite the entire code.' The failure location has already been narrowed to amount conversion, so limit the change to that part. If the AI tries to modify other files or aggregation rules, ask why that is necessary first, and return to the original scope if there is no evidence supporting the expansion."
+        }
+      ]
+    },
+    {
+      "id": "minimal-code-change",
+      "heading": "4. Put comma removal and row-number errors into one function",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The revision below separates amount parsing into parse_amount(). It first removes commas and tries int(); if conversion fails, it raises a new ValueError that includes the input row number and the original string. Because the header of csv.DictReader is row 1, data row numbers are aligned with enumerate(reader, start=2)."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef parse_amount(text, line_number):\n    cleaned = text.replace(\",\", \"\")\n    try:\n        return int(cleaned)\n    except ValueError as exc:\n        raise ValueError(\n            f\"line {line_number}: amount must be an integer, got {text!r}\"\n        ) from exc\n\npath = sys.argv[1]\nmonthly = defaultdict(int)\n\nwith open(path, encoding=\"utf-8\", newline=\"\") as f:\n    reader = csv.DictReader(f)\n    for line_number, row in enumerate(reader, start=2):\n        month = row[\"date\"][:7]\n        monthly[month] += parse_amount(row[\"amount\"], line_number)\n\nfor month in sorted(monthly):\n    print(f\"{month} = {monthly[month]}\")"
+        },
+        {
+          "type": "p",
+          "text": "This change is not intended to be a general-purpose parser for every money format such as currency symbols, decimals, or parenthesized negatives. It solves only the thousands-separator comma issue that was actually reproduced here. To support broader input rules, first define the allowed formats and add them as a separate requirement."
+        }
+      ]
+    },
+    {
+      "id": "rerun-and-compare",
+      "heading": "5. Rerun with the same file and compare against the original expected values",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the fix, rerun the code with the exact file that caused the problem. The revised code above was actually run against `expenses_bad.csv` with the Python tool in GPT chat, and the monthly totals were 2026-09 = 26600 and 2026-10 = 9800. These exactly match the expected values defined from the beginning of the series."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "python summarize_fixed.py expenses_bad.csv\n\n2026-09 = 26600\n2026-10 = 9800"
+        },
+        {
+          "type": "p",
+          "text": "Do not stop merely because the error disappeared. The key point of the rerun is to verify numerically that both 1450 without a comma and \"1,450\" with a comma are interpreted as the same amount and that the original correct result is preserved."
+        }
+      ]
+    },
+    {
+      "id": "invalid-value-check",
+      "heading": "6. Do not silently skip non-numeric values; fail with their location",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Adding comma removal does not mean invalid values should be replaced with 0 or ignored. For example, if the amount in row 3 is abc, the program should fail so the data error is not hidden. The same revised code was actually run on a separate synthetic input, and a ValueError containing `line 3` and the original value `'abc'` was confirmed."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,abc"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "ValueError: line 3: amount must be an integer, got 'abc'"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "First confirm that the error can be reproduced with the same input.",
+            "Read the exception type and failed value to narrow the change scope.",
+            "Ask AI to explain the cause, then request only the minimum fix.",
+            "Rerun with the input that caused the problem and compare against the original expected values.",
+            "Do not silently ignore invalid input; leave an error that makes the problem locatable."
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Python code actually run with the Python tool in GPT chat · Only synthetic CSV data used · Claude Code was not actually run",
+    "items": [
+      "Check that the existing int(row['amount']) code actually reproduces a ValueError for input '1,450'",
+      "Check that the exception string exactly matches \"invalid literal for int() with base 10: '1,450'\"",
+      "Check that the revised code runs on expenses_bad.csv without an exception",
+      "Check that stdout after the fix is exactly 2026-09 = 26600 and 2026-10 = 9800",
+      "Check that amount=abc actually raises the ValueError \"line 3: amount must be an integer, got 'abc'\"",
+      "Check that only the Python standard library is used"
+    ],
+    "limits": "Python execution verification was performed with the Python tool in GPT chat and is not claimed to have been tested in Claude Code. The example parser handles only thousands-separator commas and does not generalize to currency symbols, decimals, or locale-specific numeric formats."
+  }
+}

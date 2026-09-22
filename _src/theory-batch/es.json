@@ -205,6 +205,11 @@
         "slug": "ai-summary-source-check",
         "question": "Si resumo un texto largo, ¿podría perderse información importante?",
         "benefit": "Aprende a comparar un resumen con el texto original."
+      },
+      {
+        "slug": "vibe-coding-basics",
+        "question": "¿Puedo crear una pequeña herramienta con IA sin saber programar?",
+        "benefit": "Empieza a hacer vibe coding con Claude Code definiendo primero los requisitos."
       }
     ]
   }

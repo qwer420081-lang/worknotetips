@@ -1,0 +1,224 @@
+{
+  "slug": "claude-code-plan-mode",
+  "title": "Plan Before You Edit in Claude Code: Expand Features with plan Mode",
+  "summary": "Using the example of adding a `--by-category` option to an already working monthly expense summary tool, learn how to review a change plan first in Claude Code's plan mode. Fix the scope of edits and output format before implementation, then run the completed code after approval to verify both the existing monthly totals and the category totals.",
+  "audience": "Beginners who want to build the habit of reviewing the scope of changes and expected results before modifying an existing Python file with Claude Code",
+  "prerequisites": [
+    "Have the vibe-expenses practice folder and expenses.csv from the previous articles ready",
+    "Understand the role of summarize.py, which prints monthly totals",
+    "Know that Claude Code's plan mode is suitable for read-focused analysis and plan review"
+  ],
+  "tags": [
+    "ClaudeCode",
+    "planmode",
+    "featureextension"
+  ],
+  "sections": [
+    {
+      "id": "why-plan-first",
+      "heading": "1. Define the change scope first, even for a small-looking edit",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The current summarize.py reads expenses.csv and prints monthly amount totals. This time, we will extend it without removing the existing behavior so that category totals for each month are shown only when the `--by-category` option is provided. Even when adding just one feature, letting AI edit the file immediately can leave details such as output format, whether existing behavior is preserved, and sort order to the AI. So first, fix what must stay the same and what alone should change."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Current behavior",
+            "After this change"
+          ],
+          "rows": [
+            [
+              "Default run",
+              "Print monthly totals",
+              "Keep unchanged"
+            ],
+            [
+              "Run with option",
+              "None",
+              "Add category totals when `--by-category` is used"
+            ],
+            [
+              "Library",
+              "Python standard library",
+              "No change"
+            ],
+            [
+              "Input file",
+              "Read expenses.csv",
+              "Do not modify the original file"
+            ],
+            [
+              "Verification values",
+              "2026-09 = 26600, 2026-10 = 9800",
+              "Keep existing values + month 9 food 20500, transport 2900, supplies 3200"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The key point here is the criterion for preventing regression, not the new feature itself. Even after adding the option, the existing output of `python summarize.py expenses.csv` must not change. You need to verify the old execution result as well as the result of the new option."
+        }
+      ]
+    },
+    {
+      "id": "start-plan-mode",
+      "heading": "2. Start in plan mode so files are not edited yet",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code can be started in plan mode with `claude --permission-mode plan`. This mode is used for read-focused analysis of the code and task scope and for reviewing a plan. For beginners, it is easier to understand the change by getting a plan first rather than immediately widening edit permissions while existing code is present."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "cd vibe-expenses\nclaude --permission-mode plan"
+        },
+        {
+          "type": "p",
+          "text": "After the session starts, first ask it to read the current summarize.py and expenses.csv and explain what should change. In this request, explicitly say not to edit yet. If the plan is not satisfactory, you can revise the requirements before any file is touched."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Read summarize.py and explain its current behavior first.\nThen write only a change plan for adding the `--by-category` option. Do not edit any files yet.\nThe default run `python summarize.py expenses.csv` must keep exactly the same output.\nThe option run `python summarize.py expenses.csv --by-category` should add category totals for each month.\nUse only the Python standard library and do not modify expenses.csv.\nFor 2026-09, the expected category totals are food 20500, transport 2900, supplies 3200."
+        }
+      ]
+    },
+    {
+      "id": "review-the-plan",
+      "heading": "3. Look for missing requirements before judging the implementation approach",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When you receive a plan, first check whether every requirement is reflected rather than whether the proposed code sounds elegant. In particular, verify that the existing output is preserved, what happens when the option is absent, the category sort order, handling of an invalid option, and whether any external package is added. If the plan is vague, ask one more question before implementation."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · not an actual response]\n1. Keep the current CSV reading and monthly total calculation structure.\n2. Add a data structure that also accumulates category totals by month.\n3. Check whether the second argument is `--by-category` to decide whether the option is enabled.\n4. In the default run, print only the existing monthly totals.\n5. In the option run, print sorted category names and totals on the lines after each monthly total.\n6. After implementation, run both the default and option cases and compare them with the expected values."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Does the output of the existing default run remain unchanged?",
+            "Are category results added only when the option is present?",
+            "Does the plan avoid requiring any new external package installation?",
+            "Does it avoid modifying expenses.csv or changing it to a new format?",
+            "Does the plan include the commands needed to compare results with the expected values?"
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The plan above is an editorial example for explanation, not an actual Claude Code response. In a real session, the model may suggest a different implementation order, so do not memorize the wording of the plan as the answer. Check whether it matches your requirements."
+        }
+      ]
+    },
+    {
+      "id": "implement-after-review",
+      "heading": "4. Implement after reviewing the plan, then inspect the completed code",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After confirming that the plan matches the requirements, proceed with implementation. In Claude Code, actual file edits and command execution may require approval depending on the environment and permission settings. The code below is the completed example used to verify the results in this article. It was not copied from an actual Claude Code response; it was written to match the requirements in this article and run separately in the Python execution environment in GPT chat."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef read_totals(path):\n    monthly = defaultdict(int)\n    by_category = defaultdict(lambda: defaultdict(int))\n\n    with open(path, newline=\"\", encoding=\"utf-8\") as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            month = row[\"date\"][:7]\n            amount = int(row[\"amount\"])\n            monthly[month] += amount\n            by_category[month][row[\"category\"]] += amount\n\n    return monthly, by_category\n\ndef main():\n    if len(sys.argv) not in (2, 3):\n        print(\"Usage: python summarize.py expenses.csv [--by-category]\")\n        raise SystemExit(2)\n\n    if len(sys.argv) == 3 and sys.argv[2] != \"--by-category\":\n        print(\"Usage: python summarize.py expenses.csv [--by-category]\")\n        raise SystemExit(2)\n\n    monthly, by_category = read_totals(sys.argv[1])\n    show_category = len(sys.argv) == 3\n\n    for month in sorted(monthly):\n        print(f\"{month} = {monthly[month]}\")\n        if show_category:\n            for category in sorted(by_category[month]):\n                print(f\"  {category} = {by_category[month][category]}\")\n\nif __name__ == \"__main__\":\n    main()"
+        },
+        {
+          "type": "p",
+          "text": "This code uses only the csv module and collections.defaultdict. In the default run it prints only monthly totals, and only when `--by-category` is exactly the second argument does it print sorted category totals under each monthly total. If another option is provided or the number of arguments is invalid, it prints the usage message and exits."
+        }
+      ]
+    },
+    {
+      "id": "run-both-cases",
+      "heading": "5. Recheck the existing run as well as the new feature",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After adding the feature, verify both executions. First run without the option to confirm that the existing result is preserved, then add `--by-category` to check the new feature. The Python code in this article was actually run with the Python tool in GPT chat and matched the expected output below exactly."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "python summarize.py expenses.csv\npython summarize.py expenses.csv --by-category"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Expected output for default run:\n2026-09 = 26600\n2026-10 = 9800\n\nExpected output for --by-category:\n2026-09 = 26600\n  food = 20500\n  supplies = 3200\n  transport = 2900\n2026-10 = 9800\n  food = 9800"
+        },
+        {
+          "type": "p",
+          "text": "For month 9, categories are printed in alphabetical order: food, supplies, transport. The totals themselves all match the reference values defined in the first article of the series: food 20500, transport 2900, supplies 3200. Month 10 has only one category, food, so 9800 is printed."
+        }
+      ]
+    },
+    {
+      "id": "approval-checklist",
+      "heading": "6. A short checklist before approving implementation",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The purpose of plan mode is not to receive a long plan from AI, but to create decision points for a person before edits are made. If the following questions are answered clearly, approve implementation; if even one is vague, revise the plan first."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Question",
+            "Answer in this example",
+            "Assessment"
+          ],
+          "rows": [
+            [
+              "Which file changes?",
+              "summarize.py",
+              "Narrow scope"
+            ],
+            [
+              "Is existing behavior preserved?",
+              "Keep monthly output without the option",
+              "Must recheck"
+            ],
+            [
+              "When is the new behavior enabled?",
+              "When `--by-category` is specified",
+              "Clear condition"
+            ],
+            [
+              "Does the original data change?",
+              "expenses.csv is read only",
+              "No modification"
+            ],
+            [
+              "How is it verified?",
+              "Compare two run commands with expected values",
+              "Can be checked directly by a person"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In the next article, we will record the state before and after a change like this with git. Even though Claude Code has checkpoints, git is a separate version-control mechanism. Learning to read the changed files and diff yourself makes it clearer what the AI actually changed."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Actually ran the virtual expenses.csv and the summarize.py in this article as files in the Python execution environment of the GPT chat · Claude Code was not actually run",
+    "items": [
+      "Check that the default run prints exactly 2026-09 = 26600 and 2026-10 = 9800",
+      "Check that the `--by-category` run prints exactly 2026-09 food = 20500, supplies = 3200, transport = 2900",
+      "Check that the `--by-category` run prints 2026-10 food = 9800",
+      "Check that both runs complete with exit code 0",
+      "Check that the code uses only the Python standard library and does not modify expenses.csv",
+      "Check that the Claude Code plan response example is labeled '[Editorial example · not an actual response]'"
+    ],
+    "limits": "The Python code was run with the Python tool in GPT chat to verify its output, but there is no record of it being generated or executed in Claude Code. The actual plan content, approval screens, and permission behavior in Claude Code may vary by environment and account settings."
+  }
+}

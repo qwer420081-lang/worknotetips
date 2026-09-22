@@ -1,0 +1,272 @@
+{
+  "slug": "claude-code-safe-workflow",
+  "title": "Use Claude Code Safely: Permission Modes, Checkpoints, and Secrets",
+  "summary": "Assuming Claude Code can read and modify files and run commands, organize the safety checks beginners should make before, during, and after work. Connect the differences between permission modes, changes checkpoints cannot restore, the separate role of git, and the rule of not exposing secrets into one practical checklist.",
+  "audience": "Beginners who want to understand permissions and recovery limits and build safer working habits before using Claude Code on real projects",
+  "prerequisites": [
+    "Have reviewed basic Claude Code execution and plan mode at least once",
+    "Understand that file edits and command execution can affect a real project",
+    "Do not put passwords, API keys, or personal information into practice data",
+    "Understand that git is a version-control tool separate from checkpoints"
+  ],
+  "tags": [
+    "permissionmode",
+    "checkpoints",
+    "safety"
+  ],
+  "sections": [
+    {
+      "id": "before-work",
+      "heading": "1. Before work: check the folder, secrets, and recovery method first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Safe use starts before you send a prompt. First confirm that the terminal is in the intended location, and for practice use a folder separated from real work repositories. If a project contains sensitive files such as .env files, certificates, or personal materials, review what the AI tool can access before proceeding. Even if an example seems to require an API key, use an obviously fake value such as `sk-EXAMPLE-NOT-REAL` instead of a real key."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Before starting work\n- Am I in the project folder I intended?\n- Are there no real personal details, passwords, or API keys in the example files?\n- Have I checked the pre-change state with git or committed it if necessary?\n- If this is an unfamiliar task, am I starting in a review-focused flow such as plan or Manual?"
+        },
+        {
+          "type": "p",
+          "text": "The existence of Claude Code checkpoints does not remove the need for separate version control. The official documentation explicitly states that checkpoints do not replace version control such as git. For important projects, keep existing version-control habits such as pre-work commits or separate branches."
+        }
+      ]
+    },
+    {
+      "id": "permission-modes",
+      "heading": "2. Permission modes: separate automation level from points that require human review",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The permission modes described in the official documentation are Manual, acceptEdits, plan, auto, dontAsk, and bypassPermissions. Worknote recommends that beginners start with Manual or plan. This does not mean risk disappears; it is a choice intended to build the habit of reading and judging the change scope before proceeding."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Mode",
+            "Confirmed behavior",
+            "Beginner note"
+          ],
+          "rows": [
+            [
+              "Manual",
+              "Setting value default; reads automatically and asks before edits/commands",
+              "Proceed while reviewing changes and commands"
+            ],
+            [
+              "acceptEdits",
+              "Automatically allows file edits and common file commands such as mkdir, touch, mv, and cp",
+              "Use after understanding the scope of automatic changes"
+            ],
+            [
+              "plan",
+              "Read-focused analysis and planning",
+              "Use to review scope before implementation"
+            ],
+            [
+              "auto",
+              "A classifier model reviews actions instead of the user and executes most without asking",
+              "Review results and change scope separately"
+            ],
+            [
+              "dontAsk",
+              "Uses only pre-approved tools",
+              "Understand the scope of the tools you allowed"
+            ],
+            [
+              "bypassPermissions",
+              "Skips all checks",
+              "Use only in an isolated container or VM"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The default starting mode differs by plan. In the official documentation checked on 2026-09-22, the interactive terminal starts in auto by default for Pro, Max, and Team plans, while other plans use Manual. Therefore, do not assume the same approval flow will always appear; check the current mode."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "claude --permission-mode plan"
+        }
+      ]
+    },
+    {
+      "id": "during-work",
+      "heading": "3. During work: read the meaning of files and commands before approving",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code can read the files it needs and may ask for approval before editing files or running commands. However, the fact that an approval prompt appears does not itself guarantee that the command is safe. First read which files will change, whether deletion, move, or copy commands are included, and whether there is any unrequested installation or scope expansion."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Before making any changes, tell me only the following first.\n1. Names of files you will modify\n2. What you will change in each file\n3. Shell commands you intend to run\n4. Whether any original file will be deleted, moved, or overwritten\nDo not modify files or run commands yet."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "If more files than requested are selected, ask why.",
+            "For commands such as rm, mv, and cp that directly change file state, recheck the target path.",
+            "If an installation command appears, confirm whether it is actually required by the task.",
+            "If an unexpected change appears, stop approving and return to plan to recheck the scope.",
+            "Remove real sensitive values so they do not enter prompts, files, or logs."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "checkpoint-limits",
+      "heading": "4. Checkpoints: understand exactly what the rewind feature can and cannot restore",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code creates an automatic checkpoint for each prompt you send. You can open the rewind menu with `/rewind`, or by pressing Esc twice when the input box is empty, and choose options such as restoring code and conversation, restoring conversation only, restoring code only, or summarizing. However, this feature does not record every file change."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "/rewind"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Type of change",
+            "Checkpoint limitation",
+            "Separate protection"
+          ],
+          "rows": [
+            [
+              "Changes tracked by Claude Code",
+              "May be eligible for rewind",
+              "Use git as well for important work"
+            ],
+            [
+              "Files changed by Bash commands such as rm, mv, and cp",
+              "Not tracked or restored",
+              "Check targets before the command and prepare a separate recovery method"
+            ],
+            [
+              "Files edited directly outside Claude Code",
+              "Not tracked",
+              "Check separately with git diff and similar tools"
+            ],
+            [
+              "Project version history",
+              "Does not replace git",
+              "Keep version control with commits, branches, and related practices"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In particular, do not expect `/rewind` to restore every file deleted or moved through shell commands. Treat checkpoints as an auxiliary way to rewind work inside Claude Code, and manage project history and recovery separately with git or other tools."
+        }
+      ]
+    },
+    {
+      "id": "secrets-and-data",
+      "heading": "5. Keep secrets and real data out of practice examples",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Do not paste passwords, API keys, real customer information, or real research data directly into prompts or example files just because code needs them. For tutorials and error reproduction, use synthetic data and clearly fake tokens. For real projects, separately confirm which data may be provided to the tool under your organization's policy and your usage environment."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Fake value for practice:\nAPI_KEY=sk-EXAMPLE-NOT-REAL\n\nSynthetic data:\ndate,category,amount\n2026-09-01,food,12000"
+        },
+        {
+          "type": "p",
+          "text": "If a project already contains sensitive information, do not assume that simply asking 'do not look at that file' is sufficient. Check the files the tool can access and the applicable security policy; when needed, reproduce the task in a working copy with sensitive information removed."
+        }
+      ]
+    },
+    {
+      "id": "after-work",
+      "heading": "6. After work: use the actual diff and execution result as the reference, not the explanation",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the work is finished, judge the result from the actual files and execution output rather than from the AI saying 'done.' As in the previous article, read git diff, rerun the command, and compare with the expected values. For an error fix, do not check only that the error disappeared; verify that the original valid input still produces the same result."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "After-work check\n- Did only the expected files change in git diff?\n- Does the execution result match the expected values in the requirements?\n- Are temporary files or fake secrets absent from the commit target?\n- Are the reason for the change and the run method left clearly enough for the next person to understand?"
+        },
+        {
+          "type": "p",
+          "text": "Claude Code's natural-language explanation is material that helps review. Make the final judgment by comparing the actual diff, execution results, and project rules. This principle remains useful even when the model or permission mode changes."
+        }
+      ]
+    },
+    {
+      "id": "safe-workflow-checklist",
+      "heading": "7. Final result: a safety checklist for before, during, and after work",
+      "blocks": [
+        {
+          "type": "table",
+          "headers": [
+            "Stage",
+            "Question to check",
+            "If there is a problem"
+          ],
+          "rows": [
+            [
+              "Before work",
+              "Is this the correct folder, is there no sensitive information, and is there a recovery method?",
+              "Prepare a practice folder, synthetic data, and the git state first"
+            ],
+            [
+              "During work",
+              "Do you understand which files and commands you are approving?",
+              "Stop approval and recheck the scope in plan"
+            ],
+            [
+              "Before rewind",
+              "Is this a Bash or external change that checkpoints do not track?",
+              "Check a separate recovery method such as git or backup"
+            ],
+            [
+              "After work",
+              "Do the diff and execution result match the requirements?",
+              "Find the cause and revise only the necessary part"
+            ]
+          ]
+        },
+        {
+          "type": "ul",
+          "items": [
+            "At first, use a review-focused flow such as Manual or plan.",
+            "Because bypassPermissions skips all checks, use it only in an isolated container or VM.",
+            "Do not treat checkpoints as a replacement for git.",
+            "Do not expect checkpoint restoration for files changed by Bash commands or files edited directly outside Claude Code.",
+            "Use synthetic data and clearly fake values instead of real passwords, API keys, or personal information.",
+            "Determine completion from the diff and actual execution results, not from the AI's explanation."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The common principle throughout this series is to define requirements narrowly first, begin with reading and planning, verify the change scope, and have a person validate the execution result. As the scope of automation grows, the human role does not disappear; it shifts toward checking what was allowed and whether the result meets the defined criteria."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Written based on the Claude Code official documentation checked on 2026-09-22 · Claude Code was not actually run · No Python execution code",
+    "items": [
+      "Check that the descriptions of Manual, acceptEdits, plan, auto, dontAsk, and bypassPermissions match the official documentation",
+      "Compare the difference in default starting modes between Pro, Max, Team and other plans with the official documentation",
+      "Compare the automatic checkpoint for each prompt and the `/rewind` or double-Esc access method from an empty input box with the official documentation",
+      "Check that it explicitly states that files changed by Bash commands and files changed outside Claude Code are not tracked or restored by checkpoints",
+      "Check that the limitation that checkpoints do not replace git is stated clearly",
+      "Check that only clearly fake values such as sk-EXAMPLE-NOT-REAL are used instead of real secrets"
+    ],
+    "limits": "This article is based on the Claude Code official documentation checked on 2026-09-22 and is not a record of actually testing Claude Code permission modes or checkpoints. Before applying it to a real project, separately check your organization's security policy and the latest official documentation."
+  }
+}

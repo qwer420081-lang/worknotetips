@@ -1,0 +1,247 @@
+{
+  "slug": "claude-code-git-review",
+  "title": "Review AI Changes with git: Baseline Commit, diff, and Final Commit",
+  "summary": "Create a git baseline before Claude Code edits files, then read the actual changes with `git status` and `git diff`. You can ask AI to explain the diff, but do not rely on the explanation alone: review the diff and execution results yourself, then stage and commit the changes directly.",
+  "audience": "Beginners who want to learn a minimal git workflow for leaving a recoverable baseline and review record for changes made with Claude Code",
+  "prerequisites": [
+    "Have expenses.csv, summarize.py, and CLAUDE.md ready in the vibe-expenses folder",
+    "Have Git installed and be able to run git commands in a terminal",
+    "Understand the expected output and verification method for the `--by-category` feature from the previous article"
+  ],
+  "tags": [
+    "gitbasics",
+    "changereview",
+    "ClaudeCode"
+  ],
+  "sections": [
+    {
+      "id": "why-git-with-ai",
+      "heading": "1. Do not treat AI checkpoints and git as the same thing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code creates automatic checkpoints for each prompt and provides options to rewind code or conversation with `/rewind`, but the official documentation also explains that this does not replace version control such as git. In particular, files changed by Bash commands such as rm, mv, and cp, and files edited directly outside Claude Code, may not be tracked or restored by checkpoints. For important work, keep a git baseline separately from AI features."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Tool",
+            "Role in this article",
+            "Caution"
+          ],
+          "rows": [
+            [
+              "Claude Code checkpoint",
+              "Assist with rewinding during a session",
+              "Not version control that tracks every external change"
+            ],
+            [
+              "git commit",
+              "Record explicit states before and after work",
+              "A person must check which files are committed"
+            ],
+            [
+              "git diff",
+              "Inspect actual line-by-line changes",
+              "The raw diff is the reference, not the AI explanation"
+            ],
+            [
+              "Execution result",
+              "Verify that the feature works as required",
+              "Functional verification is still needed even if the diff is small"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The goal of this article is not to learn every git feature. We will use only a minimal flow: commit the pre-work state, read the diff after the AI changes something, verify execution results, and then commit."
+        }
+      ]
+    },
+    {
+      "id": "baseline-commit",
+      "heading": "2. Commit a baseline before handing the work to AI",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If the folder is already a git repository, check the current state first. If it is not, you can initialize one in the practice folder. The following example records the files from the previous articles as the pre-work baseline. In a real project, do not blindly add every file; use `git status` to confirm what should be included."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "cd vibe-expenses\ngit init\ngit status --short\ngit add expenses.csv summarize.py CLAUDE.md\ngit diff --cached\ngit commit -m \"Baseline before category summary\""
+        },
+        {
+          "type": "p",
+          "text": "If this is the first commit on this computer, git commit may stop because author information has not been configured. In that case, set it once with git config --global user.name \"Name\" and git config --global user.email \"Email\", then run the commit again. If you plan to publish the repository, use an email address you are comfortable making public."
+        },
+        {
+          "type": "p",
+          "text": "`git diff --cached` shows the staged changes that will go into the commit. The first commit can produce a long diff, but at minimum check that no unintended files are included. In a real work repository, do not accidentally add sensitive files such as `.env`, key files, or personal data. This series uses only synthetic data from the outset."
+        }
+      ]
+    },
+    {
+      "id": "make-one-change",
+      "heading": "3. Assign one feature at a time and limit the number of changed files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This task is one feature: add the `--by-category` option to summarize.py. Narrow the request to Claude Code as well, telling it not to combine unrelated refactoring or file cleanup. The smaller the change, the easier the diff is to read and the easier it is to identify the cause if something goes wrong."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Add the `--by-category` option only to summarize.py.\nDo not change the default execution result, and do not modify expenses.csv or CLAUDE.md.\nDo not add external packages.\nAfter the edit, tell me which files you changed."
+        },
+        {
+          "type": "p",
+          "text": "The Claude Code documentation notes that you can ask in natural language which files changed, for example, 'what files have I changed?'. However, do not use the AI's answer alone to determine the change scope. In the next step, verify the actual state reported by git."
+        }
+      ]
+    },
+    {
+      "id": "read-status-and-diff",
+      "heading": "4. Read git status and git diff yourself first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the work is complete, first run `git status --short` to see which files changed. If the request was followed, only summarize.py should be modified. Then run `git diff -- summarize.py` to read the actual uncommitted changes. If you check only the filename and commit immediately, you can miss an incorrect line changed by the AI."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "git status --short\ngit diff -- summarize.py"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Check that expenses.csv or CLAUDE.md was not modified unexpectedly.",
+            "Check that the original monthly-output logic was not removed or semantically changed.",
+            "Check that the additional output runs only when the `--by-category` condition is met.",
+            "Check that no unrequested package import or file-writing code was added.",
+            "If the diff contains a change you do not understand, ask for the reason before committing."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Here, git diff is the evidence of what actually changed, while the AI explanation is only an aid for understanding that evidence. If they disagree, use the raw diff and the actual file as the basis for your judgment."
+        }
+      ]
+    },
+    {
+      "id": "ask-for-diff-explanation",
+      "heading": "5. Ask Claude to explain the diff, but keep explanation separate from further edits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If the diff is unfamiliar, you can ask Claude Code to explain the current changes. Do not ask for new edits at the same time; requesting explanation only keeps review separate from additional modification."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Read the current git diff and explain what changed in summarize.py.\nOrganize it into only these four points:\n1) Parts that preserve existing behavior\n2) Parts added for `--by-category`\n3) Whether there is any code that modifies the original CSV\n4) Whether any new external package is used\nDo not modify any files further right now."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · not an actual response]\n- The existing monthly total calculation is preserved, and the default run prints in the same format.\n- A category-total accumulation structure and the `--by-category` condition were added.\n- No code that writes to the input CSV was added.\n- Only the Python standard library is used, with no new external packages."
+        },
+        {
+          "type": "p",
+          "text": "The text above is an editorial example that shows the explanation format, not the result of Claude Code reading an actual diff. In real work, compare each statement directly with the lines in `git diff`."
+        }
+      ]
+    },
+    {
+      "id": "verify-before-commit",
+      "heading": "6. Verify execution results before staging",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even when the diff looks correct, functional verification is separate. Run the two commands verified in the previous article again to check both the default output and the option output. Because this article focuses on the git workflow, it does not repeat the Python code and assumes the already verified summarize.py is being used."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "python summarize.py expenses.csv\npython summarize.py expenses.csv --by-category"
+        },
+        {
+          "type": "p",
+          "text": "The default run should be 2026-09 = 26600 and 2026-10 = 9800. In the option run, confirm food 20500, transport 2900, and supplies 3200 for 2026-09. If the values differ, do not commit; recheck the code or input file."
+        }
+      ]
+    },
+    {
+      "id": "stage-and-commit",
+      "heading": "7. Finally, inspect the staged diff and commit with a descriptive message",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After review and execution checks are complete, stage only the changed file. Then inspect `git diff --cached` once more to see exactly what will go into the commit, and commit it. Claude Code can also be asked in natural language to commit, but beginners should first learn the flow of checking which files are included before committing."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "git add summarize.py\ngit diff --cached -- summarize.py\ngit commit -m \"Add category summary option\"\ngit status --short"
+        },
+        {
+          "type": "p",
+          "text": "The official documentation notes that you can request a commit in natural language with wording such as 'commit my changes with a descriptive message'. Even if you use that feature, the principle is the same: review the diff and target files immediately before the commit. If `git status --short` is empty after the commit, there are no remaining tracked changes."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Stage",
+            "Command or action",
+            "Purpose"
+          ],
+          "rows": [
+            [
+              "Before work",
+              "git commit",
+              "Create a baseline to return to"
+            ],
+            [
+              "After work",
+              "git status --short",
+              "Check the scope of changed files"
+            ],
+            [
+              "Review",
+              "git diff",
+              "Read the actual line-by-line changes"
+            ],
+            [
+              "Functional check",
+              "Two Python run commands",
+              "Confirm that expected output is preserved"
+            ],
+            [
+              "Before commit",
+              "git diff --cached",
+              "Final check of what will be committed"
+            ],
+            [
+              "Complete",
+              "git commit",
+              "Record the reviewed change as a new baseline"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Written based on the git and checkpoint descriptions in the Claude Code official documentation checked on 2026-09-22 · Does not claim that Claude Code or git commands were actually run",
+    "items": [
+      "Check that the sequence is consistent: pre-work baseline commit → post-work status/diff → execution check → staged diff → commit",
+      "Check the syntax of `git status --short`, `git diff -- summarize.py`, `git diff --cached -- summarize.py`, and `git commit -m`",
+      "Check that the limitation from the official documentation that Claude Code checkpoints do not replace git is reflected",
+      "Check that it states that Bash-command changes and changes outside Claude Code may be subject to checkpoint restoration limits",
+      "Check that the example asking Claude to explain the diff is marked as not an actual response",
+      "Check that this article contains no Python code block requiring separate Python execution verification"
+    ],
+    "limits": "This article does not present an execution record of creating an actual git repository or asking Claude Code to commit. The commands form a continuous learning example; in a real project, separately check the existing branch policy, .gitignore, and whether sensitive information is included."
+  }
+}

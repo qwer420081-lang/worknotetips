@@ -1,0 +1,212 @@
+{
+  "slug": "claude-code-first-tool",
+  "title": "Build Your First Tool with Claude Code: Monthly Totals from an Expense CSV",
+  "summary": "Use the fictional expenses.csv and requirements note from the previous articles to practice building a first small Python tool. Put the input example, expected output, and constraints in the request, then run the completed summarize.py separately in the Python tool in GPT chat—not in Claude Code—to verify the result.",
+  "audience": "Beginners who have completed Claude Code installation and the first read-only exercise and are ready to try generating code for one small file",
+  "prerequisites": [
+    "Have the vibe-expenses practice folder and fictional expenses.csv ready",
+    "Understand the workflow of checking proposed changes before allowing Claude Code to modify files",
+    "Have Python installed and be able to run the python command in a terminal",
+    "Use only fictional data rather than real personal information or payment records"
+  ],
+  "tags": [
+    "ClaudeCode",
+    "CSVtotals",
+    "firsttool"
+  ],
+  "sections": [
+    {
+      "id": "fix-the-target",
+      "heading": "1. Start small with one input and one output",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The goal of the first hands-on exercise is not a feature-rich expense-tracking app, but a single file, summarize.py, that reads expenses.csv and prints only monthly amount totals. Keeping the scope small makes it easier to verify the AI-generated result yourself. The input is a UTF-8 CSV with the columns date, category, and amount. Assume date uses YYYY-MM-DD and amount is an integer."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Fixed requirement for this exercise",
+            "Verification criterion"
+          ],
+          "rows": [
+            [
+              "Input file",
+              "expenses.csv",
+              "Do not modify the original file"
+            ],
+            [
+              "Input columns",
+              "date, category, amount",
+              "Do not arbitrarily require other columns"
+            ],
+            [
+              "Output",
+              "Monthly amount totals",
+              "2026-09 = 26600, 2026-10 = 9800"
+            ],
+            [
+              "Implementation scope",
+              "One summarize.py file",
+              "Do not add unnecessary config files or packages"
+            ],
+            [
+              "Library",
+              "Python standard library",
+              "No external package installation"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The important point at this stage is not to make a broad request such as 'build me an expense tracker.' Reduce the chance that AI arbitrarily expands the task with a UI, database, charts, login, or other features, and delegate only a task whose answer can be checked in a single run."
+        }
+      ]
+    },
+    {
+      "id": "give-input-and-answer",
+      "heading": "2. Put the input, expected output, and constraints in the request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When asking Claude Code to do the task, provide both the input-file structure and the correct answer. An expected output makes it clear what the generated code has to match, and lets you compare the result visually. Also state the boundaries explicitly—for example, 'use only the standard library,' 'do not modify the original CSV,' and 'write only summarize.py.'"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Create summarize.py in the current folder so that it reads expenses.csv and prints monthly amount totals.\n\nInput:\n- UTF-8 CSV\n- Column names: date, category, amount\n- date format: YYYY-MM-DD\n- amount is an integer\n\nExpected output:\n2026-09 = 26600\n2026-10 = 9800\n\nConstraints:\n- Use only the Python standard library\n- Do not modify expenses.csv\n- Run with python summarize.py expenses.csv\n- First explain the required file and planned changes, then create only summarize.py."
+        },
+        {
+          "type": "p",
+          "text": "This code block is a request for the user to enter, not a Claude Code response. Because the request already contains values that serve as the correct answer, you can later compare the two numbers exactly instead of merely judging whether the result looks plausible."
+        }
+      ]
+    },
+    {
+      "id": "review-before-edit",
+      "heading": "3. Check what will be created before allowing file edits",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code can read the files it needs and may ask for approval before modifying files or running commands. When an approval screen appears, do not press Yes immediately. Check which files were read, whether summarize.py is the only new file, and whether expenses.csv will remain untouched. If it wants to run an unfamiliar command, you can ask it to explain the command's purpose first."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Before making changes, confirm the following.\n1) Tell me which file you will read and which file you will create.\n2) Confirm that expenses.csv will not be modified.\n3) Confirm that no external packages will be installed.\n4) In one line, tell me how to compare the result with the expected output after running it."
+        },
+        {
+          "type": "p",
+          "text": "A real Claude Code response can vary by environment and time, so this article does not invent a particular response and present it as a success example. What matters is the file scope and command scope, not the style of the response."
+        }
+      ]
+    },
+    {
+      "id": "reference-implementation",
+      "heading": "4. Review the completed reference code and run command",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The summarize.py below is a completed reference implementation that satisfies the requirements in this article. It reads each row with csv.DictReader, takes the first seven characters of date to obtain YYYY-MM, converts amount to an integer, and adds the values by month. It sorts the month keys to make the output order deterministic. This code is not copied from an actual Claude Code-generated response; it was written to reproduce the exercise result and was executed separately for verification."
+        },
+        {
+          "type": "code",
+          "language": "python",
+          "text": "import csv\nimport sys\nfrom collections import defaultdict\n\ndef summarize_monthly(path):\n    totals = defaultdict(int)\n\n    with open(path, \"r\", encoding=\"utf-8\", newline=\"\") as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            month = row[\"date\"][:7]\n            amount = int(row[\"amount\"])\n            totals[month] += amount\n\n    return totals\n\ndef main():\n    if len(sys.argv) != 2:\n        raise SystemExit(\"Usage: python summarize.py expenses.csv\")\n\n    totals = summarize_monthly(sys.argv[1])\n    for month in sorted(totals):\n        print(f\"{month} = {totals[month]}\")\n\nif __name__ == \"__main__\":\n    main()"
+        },
+        {
+          "type": "p",
+          "text": "Only the standard library is used, so no separate package installation is required. The run command is shown below. On Windows, if py is configured instead of python, you can use `py summarize.py expenses.csv`."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "python summarize.py expenses.csv"
+        }
+      ]
+    },
+    {
+      "id": "compare-output",
+      "heading": "5. Compare the output with the expected values line by line",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In the Python tool in GPT chat, the code above and the fictional expenses.csv were saved as files and `python summarize.py expenses.csv` was actually run. Standard output exactly matched the two lines below. This verification was not performed in Claude Code."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "2026-09 = 26600\n2026-10 = 9800"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Month",
+            "Expected",
+            "Actual",
+            "Result"
+          ],
+          "rows": [
+            [
+              "2026-09",
+              "26600",
+              "26600",
+              "Match"
+            ],
+            [
+              "2026-10",
+              "9800",
+              "9800",
+              "Match"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "At this stage, confirm only that these two lines matched. Do not overgeneralize this result to assume that the tool also handles other CSV formats, blank values, or invalid numbers. The result matched only for the current test data and current requirements."
+        },
+        {
+          "type": "p",
+          "text": "You can also check the totals by hand once. September is 12000 + 1450 + 8500 + 3200 + 1450 = 26600, and October contains one entry of 9800, so the total is 9800. With a small example like this, cross-checking program output against a human-calculated reference value makes it easier to trace where results diverge when the functionality is expanded later."
+        }
+      ]
+    },
+    {
+      "id": "stop-at-done",
+      "heading": "6. Stop when the answer is correct instead of adding more features",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A common form of scope expansion in a first tool is, 'Since we've built this much, let's also add category totals, charts, and automatic saving.' But the completion condition for this article is simply that the two monthly-total lines are correct. Once that condition is met, keep the current state as a baseline and separate additional features into later requests."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that no unexpected files other than summarize.py were created.",
+            "Confirm that the contents of expenses.csv did not change.",
+            "Confirm that no external package installation was added.",
+            "Confirm that the two output lines exactly match the expected values.",
+            "Keep additional features out of this request and separate them into the next task."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The next article puts the project rules in CLAUDE.md so you do not have to rewrite long constraints every time. That file is also project context read by Claude Code at session start rather than an enforcement mechanism, so the key is to keep it short and specific."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "In the Python tool in GPT chat, saved summarize.py and the fictional expenses.csv using Python 3, then ran `python summarize.py expenses.csv` · Claude Code not actually run",
+    "items": [
+      "Confirmed that the Python code uses only the standard-library modules csv, sys, and collections.defaultdict",
+      "Confirmed that expenses.csv is opened read-only as UTF-8 and the original is not modified",
+      "Confirmed that the first 7 characters of date are used as the month and amount is converted with int before summation",
+      "Confirmed that actual stdout exactly matches the two lines `2026-09 = 26600` and `2026-10 = 9800`",
+      "Confirmed that the request includes the input, expected output, standard-library constraint, and prohibition on modifying the original file",
+      "Confirmed that the article does not incorrectly state that execution or verification was performed in Claude Code"
+    ],
+    "limits": "Verification was performed only with the six-row fictional CSV in this article. It does not verify exception cases such as blank values, invalid dates, or nonnumeric amount values, and Claude Code's own generated result or interface was not actually tested."
+  }
+}

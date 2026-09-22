@@ -205,6 +205,11 @@
         "slug": "ai-summary-source-check",
         "question": "長い文章を要約すると重要な内容が抜けない？",
         "benefit": "要約を原文と照合する基準を学びます。"
+      },
+      {
+        "slug": "vibe-coding-basics",
+        "question": "コードを知らなくてもAIで小さなツールを作れる？",
+        "benefit": "Claude Codeで、要件を決めるところからバイブコーディングを始めます。"
       }
     ]
   }

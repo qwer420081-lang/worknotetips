@@ -205,6 +205,11 @@
         "slug": "ai-summary-source-check",
         "question": "긴 글을 요약하면 중요한 내용이 빠지지 않을까?",
         "benefit": "요약을 원문과 대조하는 기준을 배웁니다."
+      },
+      {
+        "slug": "vibe-coding-basics",
+        "question": "코드를 몰라도 AI로 작은 도구를 만들 수 있을까?",
+        "benefit": "Claude Code로 요구사항부터 정하는 바이브코딩을 시작합니다."
       }
     ]
   }

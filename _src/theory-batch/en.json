@@ -205,6 +205,11 @@
         "slug": "ai-summary-source-check",
         "question": "If I summarize a long document, could important content disappear?",
         "benefit": "Learn how to compare a summary against the original source."
+      },
+      {
+        "slug": "vibe-coding-basics",
+        "question": "Can I build a small tool with AI without knowing how to code?",
+        "benefit": "Start vibe coding with Claude Code by writing the requirements first."
       }
     ]
   }

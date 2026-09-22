@@ -1,0 +1,209 @@
+{
+  "slug": "claude-md-project-rules",
+  "title": "Use CLAUDE.md to Tell Claude Code the Project Rules",
+  "summary": "Put the run command, data rules, prohibitions, and verification method that were being repeated in every request into the project's CLAUDE.md in a concise form. Distinguish the `/init` function that creates a draft from the purposes of different file locations, and complete a 35-line rules file for the expense CSV example.",
+  "audience": "Beginners who repeatedly modify one project with Claude Code and want to reduce the need to explain the same rules in every request",
+  "prerequisites": [
+    "Have expenses.csv and summarize.py in the vibe-expenses folder",
+    "Know the run command and expected output for the monthly-total tool",
+    "Understand that CLAUDE.md is project context rather than an enforced configuration"
+  ],
+  "tags": [
+    "CLAUDEmd",
+    "projectrules",
+    "context"
+  ],
+  "sections": [
+    {
+      "id": "why-project-rules",
+      "heading": "1. Move only repeatedly stated rules into the project file",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In the previous article, every request to Claude Code explicitly included the input file, the use of the standard library, the prohibition on modifying the original CSV, the run command, and the expected output. If you keep working on the same project, you can put these repeated rules in CLAUDE.md instead of rewriting them every time. Claude Code reads this file at session start and uses it as project context."
+        },
+        {
+          "type": "p",
+          "text": "However, do not treat CLAUDE.md as an access-control mechanism or an absolute enforcement rule. According to the official documentation, the file provides context, and instructions are easier to follow when they are specific and concise. Therefore, do not assume that it will 'always be followed perfectly'; continue checking the actual changes."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Repeated rule",
+            "Example to put in CLAUDE.md",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "Input",
+              "expenses.csv / UTF-8 / fixed columns",
+              "Reduce arbitrary assumptions about other files or columns"
+            ],
+            [
+              "Implementation",
+              "Use only the Python standard library",
+              "Make the package scope explicit"
+            ],
+            [
+              "Run",
+              "python summarize.py expenses.csv",
+              "Fix the verification command"
+            ],
+            [
+              "Do not",
+              "Do not modify expenses.csv",
+              "State the requirement to preserve the original data"
+            ],
+            [
+              "Completion criterion",
+              "Two expected monthly output lines",
+              "Provide values a person can compare after the task"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "where-files-live",
+      "heading": "2. Distinguish team-shared, personal-global, and personal-project file locations",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The locations described in the official documentation serve different purposes. `./CLAUDE.md` at the project root is suitable for project rules shared with a team. `~/.claude/CLAUDE.md` is a personal note that applies across all of your projects, while `./CLAUDE.local.md` is for personal use in one specific project and can be added to .gitignore."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "./CLAUDE.md\n~/.claude/CLAUDE.md\n./CLAUDE.local.md"
+        },
+        {
+          "type": "p",
+          "text": "This example uses `./CLAUDE.md` because it contains information that belongs to the project itself, such as run commands and data rules. Keeping personal preferences or local paths out of a team-shared file makes the project easier to manage."
+        }
+      ]
+    },
+    {
+      "id": "use-init-carefully",
+      "heading": "3. Use /init to create a draft, then review it instead of accepting it as-is",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When you use `/init` in a session, Claude Code can analyze the codebase and create a draft CLAUDE.md containing build and test commands and project conventions. The official documentation explains that if CLAUDE.md already exists, it does not overwrite it but instead proposes improvements. So `/init` is best treated not as a command that decides project rules automatically, but as a starting point for a draft that a person refines."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "/init"
+        },
+        {
+          "type": "p",
+          "text": "After a draft is created, check whether it contains commands that do not match the actual project, tests that do not exist, or overly generic instructions. This article did not actually run Claude Code, so it does not fabricate an example response claiming that `/init` generated particular wording."
+        }
+      ]
+    },
+    {
+      "id": "example-claude-md",
+      "heading": "4. Organize a 35-line CLAUDE.md for the expense example",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The example below is a CLAUDE.md containing only the rules needed for the fictional project in this series. The official documentation recommends keeping each file under 200 lines; this example stays at 35 lines. The goal, data, Python rules, run command, expected result, and working rules are separated so that a person can understand them immediately as well."
+        },
+        {
+          "type": "code",
+          "language": "markdown",
+          "text": "# Project: vibe-expenses\n\n## Goal\n- Read expenses.csv and summarize expense amounts.\n- Keep the example small and understandable for beginners.\n\n## Data\n- Input file: expenses.csv\n- Encoding: UTF-8\n- Columns: date, category, amount\n- date format: YYYY-MM-DD\n- category values stay in English.\n- amount is treated as an integer.\n\n## Python rules\n- Use only the Python standard library.\n- Prefer csv for reading CSV files.\n- Do not add third-party packages.\n- Keep functions short and names descriptive.\n- Do not modify expenses.csv.\n\n## Commands\n- Run: python summarize.py expenses.csv\n- On Windows, py summarize.py expenses.csv is also acceptable.\n\n## Expected result\n- 2026-09 = 26600\n- 2026-10 = 9800\n\n## Working rules\n- Explain the planned change before editing files.\n- Change only files needed for the requested task.\n- Do not invent extra input columns or business rules.\n- If a requirement is unclear, ask before expanding scope.\n- After editing, show what changed and how to verify it."
+        },
+        {
+          "type": "p",
+          "text": "Do not put secrets such as passwords, API keys, or real customer paths here. A project instruction file is meant to provide working context, so it is safer to keep it focused on rules that would not cause problems if the file were exposed or shared."
+        }
+      ]
+    },
+    {
+      "id": "keep-it-specific",
+      "heading": "5. Prefer verifiable rules over long explanations",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A longer CLAUDE.md is not automatically better. Rules that can be checked against actual changes—such as 'do not add external packages,' 'do not modify expenses.csv,' and 'this is the run command'—are more useful than hard-to-judge statements such as 'write good code.' You can use the `@path` syntax to import content from another file when needed, but this small example does not need any additional file imports."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "List only filenames and commands that actually exist in the project.",
+            "Do not keep accumulating one-off task instructions in CLAUDE.md.",
+            "State prohibitions concretely so it is clear what must not be done.",
+            "Leave expected values or verification commands that can be used to judge completion.",
+            "Do not put personal secrets or API keys in the project rules file."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Even after adding rules, you still need to check which files Claude Code actually changes. CLAUDE.md does not replace review; it reduces the amount of project context you have to repeat."
+        }
+      ]
+    },
+    {
+      "id": "review-after-change",
+      "heading": "6. Reread the rules file before the next task",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After saving CLAUDE.md, read it once yourself before requesting the next feature. If the current code or run command has changed but old instructions remain, the file can provide the wrong context instead. In particular, update the rules file when expected output or filenames change."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Review question",
+            "Expected answer in this example",
+            "Signal that an update is needed"
+          ],
+          "rows": [
+            [
+              "Is the input file correct?",
+              "expenses.csv",
+              "A different filename remains"
+            ],
+            [
+              "Is the run command correct?",
+              "python summarize.py expenses.csv",
+              "An old script name remains"
+            ],
+            [
+              "Is the package rule correct?",
+              "Use only the standard library",
+              "It requires an unnecessary external package"
+            ],
+            [
+              "Are the expected values correct?",
+              "26600 / 9800",
+              "Numbers do not match the current example"
+            ],
+            [
+              "Is the prohibited scope clear?",
+              "Do not modify expenses.csv",
+              "Only vague wording is present"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In the next article, keep these rules in place but do not implement the new feature immediately. Design it first in plan mode. The goal is to review at the planning stage what changes would be required for a `--by-category` option that outputs food 20500, transport 2900, and supplies 3200 for 2026-09."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Written using the Claude Code official documentation (checked 2026-09-22) and the fictional example in this series · Claude Code not actually run · No Python code in this article to execute",
+    "items": [
+      "Confirmed against the official documentation the locations and purposes of project `./CLAUDE.md`, personal-global `~/.claude/CLAUDE.md`, and personal-project `./CLAUDE.local.md`",
+      "Compared with the official documentation the explanation that `/init` analyzes the codebase to create a draft and proposes improvements instead of overwriting an existing CLAUDE.md",
+      "Confirmed that CLAUDE.md is described as project context rather than an enforced configuration",
+      "Confirmed that the example CLAUDE.md is 35 lines, within the official recommendation of fewer than 200 lines per file",
+      "Confirmed that the example rules include the run command, data rules, prohibitions, expected result, and verification workflow",
+      "Confirmed that the article does not claim to have produced an actual `/init` result or Claude Code response"
+    ],
+    "limits": "This article did not actually run Claude Code's `/init` or memory-file features. The CLAUDE.md example is editorial content based on the fictional project requirements in this series; in a real project, a person must review it against the current file structure and commands."
+  }
+}

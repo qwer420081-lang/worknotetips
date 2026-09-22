@@ -1,0 +1,244 @@
+{
+  "slug": "claude-code-install-first-run",
+  "title": "Install and Run Claude Code for the First Time: Ask Questions Before Changing Code",
+  "summary": "Check the Claude Code installation command and account requirements for your operating system, then start a first session in a fictional practice folder. Instead of generating code immediately, this article focuses on asking only three questions in plan mode to inspect the folder and CSV, then exiting safely.",
+  "audience": "Windows, macOS, Linux, and WSL users installing Claude Code for the first time who want to practice reading and asking questions before allowing file changes",
+  "prerequisites": [
+    "Be able to open a terminal or PowerShell",
+    "Have a supported account or payment method available for Claude Code",
+    "Use the fictional expenses.csv instead of real personal information",
+    "Native Windows users should check the recommendation to install Git for Windows"
+  ],
+  "tags": [
+    "ClaudeCode",
+    "installation",
+    "firstrun"
+  ],
+  "sections": [
+    {
+      "id": "check-before-install",
+      "heading": "1. Check the account and practice scope before installing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Claude Code should not be explained on the assumption that it is free to use. The official documentation used for this article lists Claude Pro, Max, Team, and Enterprise subscriptions, prepaid API credits in Claude Console, or supported cloud providers as account paths. Before installation, check the official documentation and your actual account screen to determine which path applies to you. This article does not invent prices or specific version numbers."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Preparation item",
+            "What to check",
+            "Choice in this article"
+          ],
+          "rows": [
+            [
+              "Account",
+              "Applicable path among supported Claude subscriptions, Console, or cloud providers",
+              "Do not assume it is free"
+            ],
+            [
+              "Practice folder",
+              "Keep it separate from real work folders",
+              "Use vibe-expenses"
+            ],
+            [
+              "Data",
+              "Fictional file without personal information",
+              "Use expenses.csv"
+            ],
+            [
+              "Permissions",
+              "Start with reading and planning rather than editing",
+              "plan mode recommended"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "On native Windows, installing Git for Windows is recommended. If Git for Windows is not installed, Claude Code can use PowerShell as its shell tool. Git itself is covered in article 6, so this article focuses only on the installation environment and the first session."
+        }
+      ]
+    },
+    {
+      "id": "install-command",
+      "heading": "2. Use the official installation command for your operating system",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The recommended native installation command differs by operating system. Before copying the commands below, check which shell and operating system you are using. The official documentation states that native installations use automatic background updates, while Homebrew and WinGet installations do not update automatically."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "# macOS · Linux · WSL\ncurl -fsSL https://claude.ai/install.sh | bash"
+        },
+        {
+          "type": "code",
+          "language": "powershell",
+          "text": "# Windows PowerShell\nirm https://claude.ai/install.ps1 | iex"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Windows CMD:\ncurl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del install.cmd\n\nHomebrew:\nbrew install --cask claude-code\n\nWinGet:\nwinget install Anthropic.ClaudeCode"
+        },
+        {
+          "type": "p",
+          "text": "Use the installation commands exactly as verified in the official documentation rather than mixing in arbitrarily modified installation scripts from the internet. Before running them, check the official documentation again to see whether the latest requirements or supported environments for each installation method have changed."
+        }
+      ]
+    },
+    {
+      "id": "verify-install",
+      "heading": "3. Check the version without treating a specific number as the expected value",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After installation, open a new terminal and run `claude --version`. According to the official documentation, it prints a version number and '(Claude Code)'. Because the version number can change over time, this article does not specify a particular number as the expected value."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "claude --version"
+        },
+        {
+          "type": "p",
+          "text": "If you see a message saying the command cannot be found, check the installation steps and the troubleshooting guidance in the official documentation again rather than guessing a path. This article did not actually run Claude Code, so it does not claim to reproduce any specific error or success screen."
+        }
+      ]
+    },
+    {
+      "id": "make-practice-folder",
+      "heading": "4. Create a separate practice folder instead of using a real project",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "It is safer not to do the first run directly inside a research folder or work repository. Create an empty practice folder instead. Here, use only a folder named vibe-expenses and the fictional expenses.csv. After creating the folder, save the CSV content defined in the previous article."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "mkdir vibe-expenses\ncd vibe-expenses"
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,1450\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+        },
+        {
+          "type": "p",
+          "text": "Save the file as UTF-8. Do not create summarize.py at this stage. The goal of the first session is not to 'make AI code immediately,' but to have it read and explain the current folder so you can decide what should change."
+        }
+      ]
+    },
+    {
+      "id": "first-login-plan",
+      "heading": "5. Start in plan mode and sign in for the first time",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "You can start Claude Code in a project folder with `claude`, and the first launch proceeds through browser sign-in. However, beginners are better served by starting in plan mode rather than immediately allowing edits. plan is a permission mode for read-oriented analysis and plan review, and it can be started from the command line as follows."
+        },
+        {
+          "type": "code",
+          "language": "bash",
+          "text": "claude --permission-mode plan"
+        },
+        {
+          "type": "p",
+          "text": "A browser sign-in flow may appear on the first run. If you need to switch accounts, you can use `/login` within the session. Because the default permission mode can vary by account and environment, this article does not claim that 'Manual is always the default.' According to the official documentation checked on 2026-09-22, the default starting mode for the interactive terminal is auto on Pro, Max, and Team plans, and Manual on other plans."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "[Editorial example · not an actual response]\nOn the first run, browser sign-in or permission-related guidance may appear. The exact wording and sequence can vary by installation date and account, so check the current screen against the official documentation."
+        }
+      ]
+    },
+    {
+      "id": "three-readonly-questions",
+      "heading": "6. Ask three read-only questions before changing files",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Once the session starts, do not immediately ask it to 'make the program.' First check how accurately it understands the current folder. Claude Code can read the files it needs and may ask for approval before modifying files or running commands. In this exercise, do not request any edits; ask questions only."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Tell me which files are in this folder. Do not modify any files.\n\nExplain the column names in expenses.csv and what each column appears to mean. Do not modify any files.\n\nIf you were going to build a tool that calculates monthly amount totals from this CSV, list three things that should be confirmed before implementation. Do not create code yet."
+        },
+        {
+          "type": "p",
+          "text": "At minimum, verify that the response did not misread the current filename or CSV columns. If AI mentions a nonexistent file or proposes an unwanted edit or installation, ask why first. The exact wording of a real Claude Code response varies by model and time, so this article does not invent a model answer and present it as actual output."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Question",
+            "What the person should verify",
+            "If there is a problem"
+          ],
+          "rows": [
+            [
+              "What is in the folder?",
+              "Does it recognize expenses.csv as an actual file?",
+              "If it mentions a nonexistent file, ask again for evidence from the file list"
+            ],
+            [
+              "What are the CSV columns?",
+              "Does it read date, category, amount correctly?",
+              "If it guesses column names, compare them with the original file"
+            ],
+            [
+              "What should be checked before implementation?",
+              "Does it confirm input, output, and constraints first?",
+              "If it tries to edit immediately, ask for a plan only"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exit-and-next",
+      "heading": "7. Exit and move on to the next article",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After you achieve the goal of the first session, exit without creating code. You can use `/exit` in the session, or press Ctrl+D twice. `/help` shows the command list, and commands such as `/clear`, `/resume`, `/compact`, and `/rewind` also exist, but this article only identifies their names and does not expand the exercise further."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "/exit"
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Completed the installation check with claude --version.",
+            "Used the vibe-expenses practice folder rather than a real work folder.",
+            "expenses.csv contains only fictional data.",
+            "Asked three questions in plan mode without modifying files.",
+            "Deferred actual code generation to the next article."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The next article uses the requirements and practice folder from the previous steps to create summarize.py for real. At that point, the request will include the input example, expected output, and the constraint to use only the standard library, and the generated Python code will be run separately to verify the result."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Written using the Claude Code official documentation (checked 2026-09-22) · Claude Code not actually run · No Python code to execute",
+    "items": [
+      "Confirmed that the native installation commands for macOS, Linux, WSL, Windows PowerShell, and Windows CMD match the official documentation",
+      "Compared the alternative Homebrew and WinGet installation commands and their automatic-update behavior with the official documentation",
+      "Confirmed that the notation for claude --version, claude --permission-mode plan, /login, and /exit matches the official documentation",
+      "Confirmed that the article does not assert free availability and presents only supported account paths",
+      "Confirmed that the editorial example corresponding to a Claude Code screen or response starts with '[Editorial example · not an actual response]'",
+      "Confirmed that no Python executable code is included, so the article does not incorrectly claim Python result verification"
+    ],
+    "limits": "Claude Code was not installed or run while writing this article. The installation commands and feature descriptions follow the Claude Code official documentation checked on 2026-09-22; at the time of an actual installation, recheck the official documentation for current supported environments, account requirements, and screen wording."
+  }
+}

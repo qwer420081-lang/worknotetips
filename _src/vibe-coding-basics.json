@@ -1,0 +1,199 @@
+{
+  "slug": "vibe-coding-basics",
+  "title": "What Is Vibe Coding? What Humans Still Need to Do When AI Writes the Code",
+  "summary": "Instead of treating vibe coding as simply 'tell AI what you want and it builds everything for you,' this article frames it as a workflow in which a person defines the requirements and verification criteria, then checks the result produced by AI. Using a fictional household-expense CSV summation tool, it organizes the input, output, things not to do, and verification method into a one-page note.",
+  "audience": "General users with limited coding experience who want to start safely with small automations using a terminal-based AI coding tool such as Claude Code",
+  "prerequisites": [
+    "A basic understanding that generative AI can produce answers but can also produce incorrect content",
+    "A habit of checking what a command will change before running it yourself",
+    "Use fictional data rather than real personal information for practice"
+  ],
+  "tags": [
+    "vibecoding",
+    "requirements",
+    "verification"
+  ],
+  "sections": [
+    {
+      "id": "what-vibe-coding-means",
+      "heading": "1. Treat vibe coding as a collaboration workflow, not 'autocomplete'",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In this series, vibe coding means describing the desired task in natural language, letting AI help read files or create and modify code, and then having a person verify the result. The key is not a promise that the person will never need to write a single line of code. Instead, the person should first decide what to build, what the input and output are, what is allowed, and how to verify whether the result is correct. As covered in the introductory generative AI article, “What Is Generative AI? Understand How Answers Are Generated and Why Hallucinations Happen,” AI answers can look plausible while still conflicting with facts or intent, so it is safer to separate 'generation' from 'verification' in coding as well."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Role",
+            "What AI can handle",
+            "What the person should decide or verify"
+          ],
+          "rows": [
+            [
+              "Understand requirements",
+              "Organize the scope based on the request",
+              "Check whether purpose, input, output, or prohibitions are missing"
+            ],
+            [
+              "Write code",
+              "Draft the necessary files and code",
+              "Check for unwanted file changes or scope expansion"
+            ],
+            [
+              "Prepare to run",
+              "Suggest commands or the required sequence",
+              "Check how the command affects the current folder and files"
+            ],
+            [
+              "Verify results",
+              "Suggest how to compare against the expected result",
+              "Directly check whether the actual output matches the reference values"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In other words, the quality of vibe coding is not determined only by how elegantly you write a prompt. It is more important to define the task narrowly, make AI's work easy to inspect, and leave a clear point of reference for where to look again if something is wrong."
+        }
+      ]
+    },
+    {
+      "id": "shared-example",
+      "heading": "2. Choose a fictional expense example to use across all 8 articles",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This series keeps expanding one small example. The input is a UTF-8 CSV file named expenses.csv with the columns date, category, and amount. The category values also remain in English, such as food, transport, and supplies. Do not use actual card transactions or personal spending records; use only fictional data like the sample below."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "date,category,amount\n2026-09-01,food,12000\n2026-09-03,transport,1450\n2026-09-03,food,8500\n2026-09-10,supplies,3200\n2026-09-15,transport,1450\n2026-10-02,food,9800"
+        },
+        {
+          "type": "p",
+          "text": "The first goal is to create summarize.py, which reads this file and prints monthly totals. The expected values are 26600 for 2026-09 and 9800 for 2026-10. Later articles expand this to category totals for 2026-09—food 20500, transport 2900, and supplies 3200—but at this stage we do not write code yet. First, practice fixing the requirements yourself."
+        }
+      ]
+    },
+    {
+      "id": "four-part-requirement",
+      "heading": "3. Write input, output, things not to do, and verification method in four sections",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If you immediately ask AI to 'make me an expense tracker,' AI may fill in the file format, output style, library choices, and error-handling scope on its own. Even for a small tool, writing down four items first makes the later conversation much clearer: first, what file is the input; second, what values the output should contain; third, what must not be done; and fourth, what the person will compare the result against."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Tool name: Monthly totals for expense CSV\n\nInput\n- UTF-8 CSV file expenses.csv\n- Columns: date, category, amount\n- date format: YYYY-MM-DD\n- amount is an integer\n\nOutput\n- Display each monthly total with its month\n- 2026-09 = 26600\n- 2026-10 = 9800\n\nDo not\n- Use real personal information or real payment data\n- Add external packages\n- Modify the input CSV\n\nHow to verify\n- Run python summarize.py expenses.csv\n- Check that the two monthly totals in the output exactly match the expected values above"
+        },
+        {
+          "type": "p",
+          "text": "This note is not code. However, it becomes the standard for judging whether a proposed implementation goes beyond the requirements. For example, if AI suggests installing pandas, that conflicts with the condition 'use only the Python standard library,' so you do not have to proceed as suggested."
+        }
+      ]
+    },
+    {
+      "id": "make-a-checkable-request",
+      "heading": "4. Include criteria in the request that let you check the correct answer",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When you hand the task to Claude Code in the next step, you can provide the requirements note as-is or summarize its essentials. A good request does not end with 'make this.' It also includes an input example, expected output, constraints, and what to check before editing. That leaves the person with evidence for deciding whether the generated code is correct."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Make a plan for creating a Python script that reads expenses.csv and prints monthly amount totals.\nDo not modify any files yet.\nThe input columns are date, category, amount; date uses YYYY-MM-DD and amount is an integer.\nUse only the Python standard library.\nThe expected values are 2026-09 = 26600 and 2026-10 = 9800.\nFirst explain which files you will read, what you will check, and the order in which you would implement the task."
+        },
+        {
+          "type": "p",
+          "text": "This request does not yet approve writing code. Adding 'understand and plan first' creates a point where you can verify the scope. Claude Code's official documentation also recommends breaking complex work into steps and having Claude understand the code before making changes."
+        }
+      ]
+    },
+    {
+      "id": "human-checkpoints",
+      "heading": "5. Decide where a human should stop and verify",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Because AI coding tools can read and modify files or suggest running commands, beginners should focus less on 'when to press Yes' and more on 'when to stop and inspect.' In particular, if you see an unfamiliar command, a proposal to change many files at once, an unrequested package installation, or code that modifies the original input, check the reason before moving on."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Confirm that only files inside the requested folder are targeted.",
+            "Confirm that the input CSV is read without being overwritten.",
+            "Confirm that the constraint to use only the standard library is followed.",
+            "Confirm that the output format lets you compare the expected values 26600 and 9800.",
+            "Require an explanation of what will change before a command runs or a file is modified."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Existing Worknote articles cover code-review checklists and unit testing separately, so those procedures are not repeated here. This series focuses on the workflow in which a person controls task scope and the timing of changes while collaborating with a terminal-based AI coding tool."
+        }
+      ]
+    },
+    {
+      "id": "one-page-result",
+      "heading": "6. First deliverable: complete a one-page requirements note",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After finishing this article, you still do not need to install Claude Code or generate code. Instead, you should have a one-page requirements note. In the next article, you will take this note, install Claude Code, and start by asking it to read and explain the practice folder before changing any code."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check item",
+            "Criterion for this example",
+            "Completion criterion"
+          ],
+          "rows": [
+            [
+              "Input",
+              "expenses.csv / date, category, amount",
+              "The file and column names are explicit"
+            ],
+            [
+              "Output",
+              "2026-09 = 26600, 2026-10 = 9800",
+              "Expected values are fixed numerically"
+            ],
+            [
+              "Constraints",
+              "Use only the standard library; do not modify the original CSV",
+              "It is harder for AI to expand the scope arbitrarily"
+            ],
+            [
+              "Verification",
+              "Run python summarize.py expenses.csv and compare with the expected values",
+              "A person can directly judge whether the result is correct"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "With these criteria in place, the core questions stay simple even if AI later gives a long code explanation: 'Does it read the input I defined? Does it produce the output I defined? Does it avoid the things I prohibited? And can I verify the result?' Check them in that order."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Written using the Claude Code official documentation (checked 2026-09-22) and the fictional example in this series · Claude Code not actually run · No Python code to execute",
+    "items": [
+      "Confirmed that the six rows in the fictional expenses.csv and the column names date, category, amount remain the same across the series",
+      "Compared the expected monthly values 2026-09 = 26600 and 2026-10 = 9800 by hand calculation",
+      "Confirmed that the requirements note includes all four elements: input, output, things not to do, and verification method",
+      "Confirmed that no editorial example resembling an actual Claude Code response was used and that no actual run was claimed",
+      "Confirmed that only p, ul, code, and table block types are used",
+      "Confirmed that detailed procedures from existing code-verification and review articles are not repeated"
+    ],
+    "limits": "Claude Code or Python code was not actually run in this article. This step explains the vibe-coding workflow and fixes the requirements for the later hands-on exercises; concrete implementation and execution verification are covered in subsequent articles."
+  }
+}
