@@ -1,0 +1,210 @@
+{
+  "slug": "team-ai-review-approval",
+  "title": "How to Review and Approve AI Output as a Team: Checks Before Sharing a Weekly Report",
+  "summary": "Learn how to check facts, omissions, sensitive information, owners, and approval status by role before sharing an AI weekly-report draft with the team. Separate the author, reviewer, and approver and record what evidence was checked so AI output is not mistaken for the team’s official conclusion.",
+  "audience": "Non-developer teams that want a multi-person review and approval process instead of immediately sharing an AI-organized team report",
+  "prerequisites": [
+    "A general AI chat tool that accepts text input",
+    "Be able to view the source being reviewed together with the AI draft",
+    "Use fictional or masked data instead of real personal or customer information",
+    "Assign final approval responsibility to a team member, not AI"
+  ],
+  "tags": [
+    "AIOutputReview",
+    "AIWeeklyReport",
+    "TeamApproval"
+  ],
+  "sections": [
+    {
+      "id": "review-before-share",
+      "heading": "1. Distinguish an AI draft from an approved team document",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even if AI organizes information into a polished weekly-report format, the document does not automatically become the team’s official report. In a document that combines information from multiple people, you must separately check not only factual errors but also omissions, misidentified owners, unverified information presented as confirmed, and exposure of sensitive information. This article practices separating the roles of author, reviewer, and approver and leaving a review trail before approval."
+        },
+        {
+          "type": "p",
+          "text": "The fictional Team Haneul plans to run the “Neighborhood Digital Basics Workshop” on 2026-11-14 from 14:00–16:00. Capacity is 30 people, the audience is local residents, and there is no fee. The venue must be decided by 2026-10-24, the final promotional material is due by 2026-10-28, and the instructor must be confirmed by 2026-10-30. Registrations as of 2026-10-23 are 22 people. The review below uses these shared facts and the team members’ source updates as its basis."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Role",
+            "Person",
+            "Main check"
+          ],
+          "rows": [
+            [
+              "Author",
+              "Seoyeon",
+              "Prepare the draft and sources based on the source text"
+            ],
+            [
+              "Reviewer",
+              "Junho",
+              "Compare facts, omissions, sensitive information, and owner labels with the source"
+            ],
+            [
+              "Approver",
+              "Minseo",
+              "Check whether any items still need confirmation and decide whether to share"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "source-and-draft-input",
+      "heading": "2. Bundle the source and AI draft together as review material",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A reviewer cannot easily tell what is missing by reading the AI draft alone. Therefore, provide the source updates, draft, sensitive-information masking status, and approval roles as one input bundle. The contact number below is masked rather than real, and when using real data you should check the organization’s information security policy."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Team Haneul shared facts\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Fee: none\n- Venue decision deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status as of 2026-10-23: 22 people\n\nReview roles\n- Author: Seoyeon\n- Reviewer: Junho\n- Approver: Minseo\n- Program owner: Doyun\n\nSource updates\n[Update-Minseo-1] As of 2026-10-23, the venue is not yet finally confirmed and must be decided by 2026-10-24.\n[Update-Junho-1] Option A: Civic Center 3rd-floor seminar room has a capacity of 32 people, a projector, an elevator, and confirmed booking availability.\n[Update-Junho-2] Option B: district library auditorium has a capacity of 60 people, and booking availability is not confirmed.\n[Update-Seoyeon-1] As of 2026-10-23, there are 22 registrants.\n[Update-Seoyeon-2] The registration inquiry material contains the masked contact number 010-XXXX-XXXX. Do not include the contact number itself in the external shared version.\n[Update-Doyun-1] The instructor confirmation deadline is 2026-10-30, and the instructor is currently not finally confirmed.\n\nDraft to review\n- The event will be held on 2026-11-14 from 14:00–16:00.\n- The venue has been confirmed as Option A: Civic Center 3rd-floor seminar room.\n- There are 22 registrants.\n- The instructor has been confirmed.\n- Registration inquiry contact: 010-XXXX-XXXX\n\nApproval record standard\n- Status: Not checked / Revision needed / Approved\n- Review record time: 2026-10-23 16:00\n- Approval date · time: record when the approver approves"
+        },
+        {
+          "type": "p",
+          "text": "The draft under review intentionally contains errors and an item that should not be disclosed. Booking availability for Option A is confirmed, but the source does not say the venue itself has been finally confirmed, and the instructor is also not yet finally confirmed. Even though the contact number is masked, the source says not to include it in the external shared version, so it should be removed."
+        }
+      ]
+    },
+    {
+      "id": "review-prompt",
+      "heading": "3. Separate facts, omissions, sensitive information, and responsibility in the review request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If you only ask AI to 'find what is wrong,' wording issues and factual errors can be mixed together. Separating the review criteria makes it easier for a person to identify which source text to revisit. AI is not the approver, so explicitly instruct it not to change the final status to 'Approved' on its own."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Compare the source updates with the draft to review and create a pre-sharing review table for the team.\n\nCheck each of the following categories.\n- Facts: Is the draft content supported by the source?\n- Omissions: Is any important source item missing from the draft?\n- Sensitive information: Does any information that should be removed from the external shared version remain?\n- Owners: Have the author, reviewer, or approver roles been changed arbitrarily?\n- Approval status: Keep it as 'Not checked' or 'Revision needed' until a person approves it.\n\nAttach the source tag to each judgment. Do not invent people, dates, times, numbers, or decisions that are not in the input. At the end, list what the approver should check after revision."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Review category",
+            "Question",
+            "Evidence needed before approval"
+          ],
+          "rows": [
+            [
+              "Facts",
+              "Was something written as confirmed actually confirmed?",
+              "Source reference"
+            ],
+            [
+              "Omissions",
+              "Are progress status or unverified items missing?",
+              "Item-by-item comparison of source and draft"
+            ],
+            [
+              "Sensitive information",
+              "Does information that should not be shared remain?",
+              "Source instruction on disclosure scope"
+            ],
+            [
+              "Owners",
+              "Do the roles match the input data?",
+              "Review-role table"
+            ],
+            [
+              "Approval",
+              "Did the approver check it directly?",
+              "Status · date · time record"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-output",
+      "heading": "4. Keep the revision basis and approval status together in the review result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The result below is an edited example for understanding the review criteria, not an actual AI output. A good review result does more than point out incorrect sentences; it also shows which source requires the revision and what the status is before approval."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nReview status: Revision needed\nAuthor: Seoyeon\nReviewer: Junho\nApprover: Minseo\n\nFact check\n- The event date 2026-11-14 and time 14:00–16:00 match the shared facts.\n- The 22 registrants match [Update-Seoyeon-1].\n- The statement 'The venue has been confirmed as Option A: Civic Center 3rd-floor seminar room' needs revision. [Update-Minseo-1] says that as of 2026-10-23 it is not yet finally confirmed.\n- The statement 'The instructor has been confirmed' needs revision. [Update-Doyun-1] says the instructor must be confirmed by 2026-10-30 and is currently not finally confirmed.\n\nOmission check\n- The draft omits that the venue must be decided by 2026-10-24. [Update-Minseo-1]\n- The draft omits that booking availability for Option B: district library auditorium is unconfirmed. [Update-Junho-2]\n\nSensitive-information check\n- 010-XXXX-XXXX is masked, but it should be deleted because the source explicitly says not to include it in the external shared version. [Update-Seoyeon-2]\n\nApproval record\n- Current status is Revision needed.\n- Minseo decides whether to approve after checking the revised version.\n- The review record time is 2026-10-23 16:00. The approval date · time is recorded when Minseo approves and is currently TBD."
+        },
+        {
+          "type": "p",
+          "text": "In this example, Junho is the reviewer and Minseo is the final approver. Finding errors does not allow the reviewer to immediately change the status to approved. For the venue and instructor in particular, states such as 'available' or 'a deadline is set' are different from 'finally confirmed,' so the source wording must be preserved."
+        }
+      ]
+    },
+    {
+      "id": "bad-approval",
+      "heading": "5. Avoid mistaking a polished report for an approved report",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A natural-sounding AI draft with a clean table can look as if review is already complete. But adding confirmed statements without sources, leaving sensitive information in place, or changing status without the approver’s check blurs responsibility boundaries in the team document."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\nFinal approval complete\n- Venue: Option A: Civic Center 3rd-floor seminar room confirmed\n- Instructor: Doyun completed outreach\n- Registration inquiry: 010-XXXX-XXXX\n- Final approver: Junho"
+        },
+        {
+          "type": "p",
+          "text": "This result differs from the input. The venue and instructor are not yet finally confirmed, the masked contact number must also be removed from the external shared version, and the approver is Minseo, not Junho. To correct it, connect each statement to its source and separate the facts checked by the reviewer from the status that the approver decides."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Human review checklist before team sharing\n- Facts: Do dates, times, numbers, and statuses match the source?\n- Omissions: Are delays, unverified items, conflicts, and dependencies all retained?\n- Sensitive information: Have contact details or identifying information that should not be shared been removed?\n- Owners: Do the author, reviewer, and approver match the input?\n- Sources: Can the source item be traced again for every important judgment?\n- Approval: Has the status remained unapproved until the approver directly checks the revised version?"
+        }
+      ]
+    },
+    {
+      "id": "approval-record",
+      "heading": "6. An approval record captures the responsibility flow, not just the result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The purpose of an approval record is not to show who has more authority, but to distinguish documents that are unreviewed, under revision, or ready for final sharing. The author prepares the source and draft, the reviewer compares facts, omissions, and sensitive information, and the approver decides whether to share after checking any remaining items that need confirmation. AI does not take over any of these roles."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "The author prepares a draft with visible source references.",
+            "The reviewer marks errors and omissions together with the basis for revision.",
+            "The approver directly checks the revised version and any remaining items that need confirmation.",
+            "Record the approval status and record time in the shared version so it is distinguishable from a draft."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "This brings the 8-article sequence back to the first step. Next, you can return to the criteria in Article 1, “Team Collaboration AI: Where Should You Start? Compare Repetitive Tasks and Choose the First Use Case”, and choose again which recurring team task should first use AI assistance and a human review process."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, and numbers",
+    "items": [
+      "Check that every code block role is one of input, prompt, output, bad_output, or checklist",
+      "Check that names, YYYY-MM-DD dates, HH:MM times, and numbers in the output exist in the input of the same article",
+      "Check that the source status showing the venue and instructor are not finally confirmed is not arbitrarily changed to confirmed in the output",
+      "Check that the masked contact number is marked for removal from the external shared version",
+      "Check that the roles of author Seoyeon, reviewer Junho, and approver Minseo match the input",
+      "Check that the event schedule, capacity, deadlines, and registration status do not contradict the series’ shared facts and that no effect metrics are added"
+    ],
+    "limits": "This is an edited example using fictional team data, not a record of running an actual AI tool or testing an actual organization’s approval process. When reviewing a real report, people must directly check the source, the organization’s information security policy, and the internal approval process."
+  }
+}

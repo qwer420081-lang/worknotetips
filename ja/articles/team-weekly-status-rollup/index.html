@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ja"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>AI週報：複数メンバーの進捗状況を一つにまとめる | Worknote</title><meta content="メンバーごとに形式が異なる週次更新をAIで集約し、完了・進行・遅延・依存関係・支援必要・確認必要に再構成する方法を練習します。ハヌルチームの同じ期間の報告を使い、数値が異なる場合に一方を消さず、基準時刻と出典を一緒に残すAI週報の例を作ります。" name="description"/><link href="https://worknotetips.com/ja/articles/team-weekly-status-rollup/" rel="canonical"/><meta content="https://worknotetips.com/ja/articles/team-weekly-status-rollup/" property="og:url"/><meta content="AI週報：複数メンバーの進捗状況を一つにまとめる" property="og:title"/><meta content="メンバーごとに形式が異なる週次更新をAIで集約し、完了・進行・遅延・依存関係・支援必要・確認必要に再構成する方法を練習します。ハヌルチームの同じ期間の報告を使い、数値が異なる場合に一方を消さず、基準時刻と出典を一緒に残すAI週報の例を作ります。" property="og:description"/><meta content="ja_JP" property="og:locale"/><meta content="article" property="og:type"/><meta content="#163b35" name="theme-color"/><link href="/favicon.svg" rel="icon" type="image/svg+xml"/><link href="/assets/styles.css?v=20260921-beginner" rel="stylesheet"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "AI週報：複数メンバーの進捗状況を一つにまとめる", "description": "メンバーごとに形式が異なる週次更新をAIで集約し、完了・進行・遅延・依存関係・支援必要・確認必要に再構成する方法を練習します。ハヌルチームの同じ期間の報告を使い、数値が異なる場合に一方を消さず、基準時刻と出典を一緒に残すAI週報の例を作ります。", "inLanguage": "ja", "dateModified": "2026-09-22", "url": "https://worknotetips.com/ja/articles/team-weekly-status-rollup/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "チュートリアル", "item": "https://worknotetips.com/ja/"}, {"@type": "ListItem", "position": 2, "name": "AIの業務活用", "item": "https://worknotetips.com/ja/category/ai/"}, {"@type": "ListItem", "position": 3, "name": "AI週報：複数メンバーの進捗状況を一つにまとめる", "item": "https://worknotetips.com/ja/articles/team-weekly-status-rollup/"}]}</script><script src="/assets/app.js" type="module"></script><link href="https://worknotetips.com/articles/team-weekly-status-rollup/" hreflang="en" rel="alternate"/><link href="https://worknotetips.com/ko/articles/team-weekly-status-rollup/" hreflang="ko" rel="alternate"/><link href="https://worknotetips.com/ja/articles/team-weekly-status-rollup/" hreflang="ja" rel="alternate"/><link href="https://worknotetips.com/es/articles/team-weekly-status-rollup/" hreflang="es" rel="alternate"/><link href="https://worknotetips.com/pt-BR/articles/team-weekly-status-rollup/" hreflang="pt-BR" rel="alternate"/><link href="https://worknotetips.com/articles/team-weekly-status-rollup/" hreflang="x-default" rel="alternate"/><script id="ui-messages" type="application/json">{"copy": "コピー", "copied": "コピー完了", "copySuccess": "例文をコピーしました。", "copyRetry": "もう一度コピー", "copyFailure": "自動コピーを利用できません。コードを選択して手動でコピーしてください。", "searchCount": "検索結果 {count}件"}</script></head><body class="beginner-article"><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a aria-label="Worknote ホーム" class="brand" href="/ja/"><span class="brand-mark"><svg aria-hidden="true" viewbox="0 0 32 32"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3"></path></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a aria-current="page" href="/ja/">チュートリアル</a><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/team-weekly-status-rollup/" hreflang="en" lang="en">English</a><a href="/ko/articles/team-weekly-status-rollup/" hreflang="ko" lang="ko">한국어</a><a aria-current="true" href="/ja/articles/team-weekly-status-rollup/" hreflang="ja" lang="ja">日本語</a><a href="/es/articles/team-weekly-status-rollup/" hreflang="es" lang="es">Español</a><a href="/pt-BR/articles/team-weekly-status-rollup/" hreflang="pt-BR" lang="pt-BR">Português</a></nav></details><a aria-label="検索" class="header-search" href="/ja/#search"><svg aria-hidden="true" height="21" viewbox="0 0 24 24" width="21"><circle cx="10.5" cy="10.5" fill="none" r="6.5" stroke="currentColor" stroke-width="1.8"></circle><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"></path></svg><span>検索</span><kbd>/</kbd></a></div></header><main class="article-layout" id="main"><div class="article-main"><nav aria-label="現在の位置" class="breadcrumbs"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/ai/">AIの業務活用</a></nav><header class="article-header"><span class="category-badge ai">AIの業務活用</span><h1>AI週報：複数メンバーの進捗状況を一つにまとめる</h1><p class="article-summary">メンバーごとに形式が異なる週次更新をAIで集約し、完了・進行・遅延・依存関係・支援必要・確認必要に再構成する方法を練習します。ハヌルチームの同じ期間の報告を使い、数値が異なる場合に一方を消さず、基準時刻と出典を一緒に残すAI週報の例を作ります。</p><div class="article-meta"><span>内容確認 2026.09.22</span><span>コピーして使えるプロンプト</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav aria-label="この記事で扱う内容" class="toc"><p>この記事で扱う内容</p><ol><li><a href="#problem-and-context"><span>01</span>個人報告を並べることとチーム状態を作ることは違う</a></li><li><a href="#source-updates"><span>02</span>四人の更新と共通事実を入力資料にまとめる</a></li><li><a href="#prompt-for-rollup"><span>03</span>状態・依存・衝突を分けて整理するよう依頼する</a></li><li><a href="#good-rollup"><span>04</span>良い例は衝突と依存関係を隠さない</a></li><li><a href="#bad-rollup-and-fix"><span>05</span>もっともらしくても危険な週報を見分ける</a></li><li><a href="#team-review"><span>06</span>AI草案はメンバーが確認してから共有版になる</a></li><li><a href="#verification"><span>07</span>自分で確認する項目</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>対象読者</strong>複数メンバーの進捗状況を一つのチーム共有用報告書にまとめながら、抜け・衝突・依存関係も一緒に確認したい非開発者</p><div><strong>準備するもの</strong><ul><li>テキストを入力できるAIチャットツール</li><li>メンバー別の更新内容を原文のまま確認できること</li><li>実際の個人情報・顧客情報・機密情報ではなく、架空資料で練習すること</li><li>AIの草案を共有する前に各担当者が事実を確認すること</li></ul></div></div><section id="problem-and-context"><h2><span class="section-number">01</span>個人報告を並べることとチーム状態を作ることは違う</h2><p>複数人が週次更新を別々に書くと、完了、予定、支援要請が異なる形式に散らばります。チーム協業AIの役割は文章を単に短くすることではなく、チームで一緒に見るべき状態とつながりを明らかにすることです。</p><p>今回の例では、ハヌルチームの2026-10-19~2026-10-23の更新を一つのAI週報にまとめます。異なる申込人数の記録は削除せず、基準時刻と出典を一緒に残します。</p><div class="table-wrap"><table><thead><tr><th scope="col">報告項目</th><th scope="col">統合時に見る点</th><th scope="col">そのまま統合すると起きる問題</th></tr></thead><tbody><tr><td>完了・進行</td><td>終わった作業と続いている作業</td><td>現在状態が混ざる可能性</td></tr><tr><td>遅延</td><td>当初予定と現在の対応</td><td>遅延が埋もれる可能性</td></tr><tr><td>依存関係</td><td>先行作業が必要な作業</td><td>ボトルネックを見落とす可能性</td></tr><tr><td>支援必要</td><td>誰が何を確認するか</td><td>依頼が個人メモに残る</td></tr><tr><td>衝突報告</td><td>基準時刻と出典</td><td>AIが一方を任意に選ぶ可能性</td></tr></tbody></table></div></section><section id="source-updates"><h2><span class="section-number">02</span>四人の更新と共通事実を入力資料にまとめる</h2><p>共通事実の後に、メンバー別の原文項目と出典タグを付けます。申込人数のように同じ期間中に変わり得る値は、日付と時刻まで書くことで、更新なのか衝突なのかを確認できます。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-2-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-2-2">共通事実
+- ハヌルチーム4名: ミンソ(チームリーダー・全体日程)、ジュノ(会場・物品)、ソヨン(広報・申込受付)、ドユン(プログラム・講師手配)
+- イベント: まちのデジタル基礎ワークショップ
+- イベント日: 2026-11-14
+- イベント時間: 14:00–16:00
+- 定員: 30名
+- 対象: 地域住民
+- 参加費: なし
+- A案 市民センター3階セミナー室: 収容32名、プロジェクターあり、エレベーターあり、利用可能確認済み
+- B案 区立図書館講堂: 収容60名、利用可能か未確認
+- 会場確定期限: 2026-10-24
+- 広報物最終版期限: 2026-10-28
+- 講師確定期限: 2026-10-30
+- 申込状況: 2026-10-23時点 22名
+- 今週の報告期間: 2026-10-19~2026-10-23
+
+ミンソの更新
+[更新-ミンソ-1] 2026-10-23 09:00にソヨンから受けた申込状況は20名とメモした。
+[更新-ミンソ-2] 会場は2026-10-24までに確定する必要がある。A案とB案を比較後に決定が必要。
+[更新-ミンソ-3] 広報物最終版には会場名が必要なため、会場確定後に仕上げられる。
+
+ジュノの更新
+[更新-ジュノ-1] A案の利用可能状況、プロジェクター、エレベーターを確認し、会場比較資料を整理した。
+[更新-ジュノ-2] B案の収容人数は60名だが、利用可能かどうかはまだ確認されていない。
+[更新-ジュノ-3] 物品数量の確認を2026-10-23に終える予定だったが完了できなかった。2026-10-26に再確認予定。
+
+ソヨンの更新
+[更新-ソヨン-1] 2026-10-23 16:00時点の申込者は22名。
+[更新-ソヨン-2] 広報物の文案は進行中で、最終版は2026-10-28までに必要。
+[更新-ソヨン-3] 広報物に最終会場名を入れる必要があるため、会場確定結果が必要。
+
+ドユンの更新
+[更新-ドユン-1] プログラム構成の第1案を作成した。
+[更新-ドユン-2] 講師手配は進行中で、確定期限は2026-10-30。
+[更新-ドユン-3] ジュノにプロジェクター接続方式の確認を手伝ってほしいと依頼した。</code></pre></div><p>20名と22名を誤記と断定することはできません。同じ日付の09:00と16:00の記録なので、両方の値を残し、基準時刻の違いを示す必要があります。</p></section><section id="prompt-for-rollup"><h2><span class="section-number">03</span>状態・依存・衝突を分けて整理するよう依頼する</h2><p>依頼文には、完了・進行・遅延・依存関係を分け、異なる数値や状態を任意に統合しないというルールを入れます。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-3-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-3-2">上の入力資料を基に、チーム共有用の週報を作成してください。
+
+ルール:
+- 完了、進行、遅延、依存関係、支援必要、確認必要に分ける。
+- 各項目の末尾に原文の出典タグをそのまま付ける。
+- 異なる報告を一方へ統合したり削除したりしない。
+- 申込人数のように基準時刻が異なる値は、日付と時刻を一緒に示し、なぜ確認が必要か説明する。
+- 入力にない担当者、日付、時刻、数値、完了状況を作らない。
+- 確認されていない内容は「確認必要」と書く。
+- 実際の個人情報や連絡先を追加しない。
+- 最後にチームがすぐ確認する項目だけを短く整理する。</code></pre></div></section><section id="good-rollup"><h2><span class="section-number">04</span>良い例は衝突と依存関係を隠さない</h2><p>次は実際のAI実行記録ではなく、編集例です。各項目に原文の出典を残し、メンバーが根拠をたどれるようにします。</p><div class="code-block"><div class="code-toolbar"><span>編集例</span><button aria-label="コピー 編集例" data-copy="prompt-4-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-4-2">[結果例 · 実際のAI出力ではありません]
+ハヌルチーム週次状態まとめ
+報告期間: 2026-10-19~2026-10-23
+
+完了
+- ジュノ: A案の利用可能状況、プロジェクター、エレベーターの確認と会場比較資料の整理を完了した。 [更新-ジュノ-1]
+- ドユン: プログラム構成の第1案を作成した。 [更新-ドユン-1]
+
+進行
+- ソヨン: 広報物の文案を進めており、最終版の期限は2026-10-28。 [更新-ソヨン-2]
+- ドユン: 講師手配を進めており、確定期限は2026-10-30。 [更新-ドユン-2]
+- ミンソ: A案とB案を比較し、2026-10-24までに会場確定が必要。 [更新-ミンソ-2]
+
+遅延
+- ジュノ: 2026-10-23に完了予定だった物品数量確認を終えられず、2026-10-26に再確認予定。 [更新-ジュノ-3]
+
+依存関係
+- ソヨンの広報物最終版には最終会場名が必要なため、会場確定結果に依存する。 [更新-ミンソ-3] [更新-ソヨン-3]
+
+支援必要
+- ドユンがジュノにプロジェクター接続方式の確認支援を依頼した。 [更新-ドユン-3]
+
+確認必要
+- 申込人数の記録が2026-10-23 09:00時点20名と2026-10-23 16:00時点22名で異なる。基準時刻が違うため更新過程の可能性があり、共有時は両方の出典を残す必要がある。 [更新-ミンソ-1] [更新-ソヨン-1]
+- B案は収容60名だが、利用可能か未確認の状態。 [更新-ジュノ-2]
+
+チーム確認項目
+- ミンソ: 会場確定結果の共有が必要。 [更新-ミンソ-2]
+- ジュノ: 物品数量とプロジェクター接続方式の確認が必要。 [更新-ジュノ-3] [更新-ドユン-3]
+- ソヨン: 申込人数の基準時刻を維持して最新状況を共有する必要。 [更新-ソヨン-1]</code></pre></div><p>遅延、広報物の会場依存関係、申込人数の基準時刻の違いがそれぞれ見える形になっています。出典タグがあるため、各担当者が自分の原文と直接照合できます。</p></section><section id="bad-rollup-and-fix"><h2><span class="section-number">05</span>もっともらしくても危険な週報を見分ける</h2><div class="code-block"><div class="code-toolbar"><span>編集例</span><button aria-label="コピー 編集例" data-copy="prompt-5-1" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-1">[誤りやすい結果例 · 実際のAI出力ではありません]
+ハヌルチームは全体として計画どおり進んでいる。申込者は25名で確定し、会場はA案に決定した。ジュノは2026-10-25までにすべての物品を準備し、ドユンは講師契約を完了した。広報物は会場問題が解決したため、すぐ配布できる。</code></pre></div><p>この例は文章が簡潔ですが、原文確認用としては不適切です。申込者25名は入力になく、会場がA案に決定したという記録もありません。ジュノの新しい期限とドユンの講師契約完了も作られた内容で、広報物の依存関係まで任意に解消しています。修正時は入力にない事実を削除し、未定は確認必要へ戻し、遅延と衝突を別項目として復元する必要があります。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-5-3" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-3">共有前の人による確認
+- 各メンバーが自分の完了・進行状態を原文と照合する。
+- 遅延した業務が通常進行の項目に混ざっていないか見る。
+- 他の業務結果が必要な項目が依存関係として表示されているか見る。
+- 支援要請が抜けたり担当者が変わったりしていないか見る。
+- 衝突する数値に日付・時刻・出典が一緒に残っているか見る。
+- 実際の資料を使う場合は組織の情報保護方針を確認し、機密情報をAIチャットツールに入力しない。</code></pre></div></section><section id="team-review"><h2><span class="section-number">06</span>AI草案はメンバーが確認してから共有版になる</h2><p>AI週報は複数の更新を一画面に集める草案としては有用ですが、どの報告が最新か、遅延をどう扱うかはチームが確認する必要があります。特に数値の変化が正常な更新なのか、異なる集計基準によるものなのかは、AIが原文だけを見て確定できない場合があります。共有前には作成者ごとの確認を受け、確認されていない項目はそのまま残す方が安全です。</p><ul><li>完了状況はその業務の担当者が確認する。</li><li>期限と依存関係は全体日程を見る人も一緒に確認する。</li><li>数値が異なる場合、どの記録を消すか先に決めず、基準時刻と出典を確認する。</li><li>AIが作った新しい解釈が原文の事実として混ざっていないか見る。</li><li>チーム共有版には、確認済み内容と確認必要な内容を区別して残す。</li></ul><p>次の記事では、複数人の状態を統合する問題から一歩進み、一人が不在になるときに別の人が業務を引き継げるようにする「AI業務引き継ぎ文書を作る：散在するメモを整理して仕事を引き継げる形にする」を扱います。</p></section><section id="verification"><h2>自分で確認する項目</h2><p>架空入力資料と編集例 · AIの実行なし · 名前・日付・数値の一致確認</p><ul><li>四人の更新が、完了・進行・遅延・依存関係・支援必要・確認必要の適切な位置に反映されているか確認</li><li>申込人数20名と22名が、それぞれの基準時刻および出典とともに維持されているか確認</li><li>出力の担当者・日付・時刻・数値が入力資料に存在するか確認</li><li>遅延した物品数量確認と広報物の会場依存関係が抜けていないか確認</li><li>A案とB案の状態をAIが任意に決定または確定していないか確認</li><li>効果を表すパーセントや倍数の数値を作っていないか確認</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><p>実際のAIツールを実行して得た結果ではなく、チーム協業の手順を説明するための架空資料と編集例です。実際のチーム資料を使う場合は担当者が原文と直接照合し、機密情報は組織の情報保護方針に従って扱う必要があります。</p></div></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/ai/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card"><h3><a href="/ja/articles/team-ai-where-to-start/">チーム協業AI、どこから使う？反復業務の候補を比較して最初の適用業務を選ぶ</a></h3><p>チーム協業にAIを初めて導入するときは、目立つ機能よりも、複数人が繰り返し情報を集めて確認する業務から比較する方が管理しやすくなります。ハヌルチームの架空業務6件を並べ、期待効果を定性的に記し、確認負担と機密情報リスクも一緒に確認してから、最初の適用候補を絞り込みます。AIは候補を整理しますが、最終選択はチームが行います。</p></article><article class="article-card"><h3><a href="/ja/articles/team-meeting-notes-merge/">AI議事録：複数参加者のメモを統合し、決定・タスク・未確定事項を整理する</a></h3><p>AI議事録を作るとき、一人のメモだけを整えるのではなく、複数参加者の記録を一緒に入力し、決定・タスク・未確定事項・記録の違いを出典タグ付きで整理する方法を練習します。ハヌルチームの2026-10-20の架空会議メモを使い、異なる表現を無理に一つへ統合せず、チーム共有用の草案を作る過程を示します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-handover-document/">AI業務引き継ぎ文書を作る：散在するメモを整理して仕事を引き継げる形にする</a></h3><p>担当者が不在になるとき、残る人がすぐ業務を引き継げるよう、散在するメモを背景・現在状態・資料の場所・次の行動・注意事項・未定事項に再構成する方法を扱います。ソヨンの広報・申込業務をジュノへ引き継ぐ架空事例で、AI業務引き継ぎ文書と引受者が確認する質問を一緒に作ります。</p></article><article class="article-card"><h3><a href="/ja/articles/team-decision-options/">チーム協業AIで散在する意見を比較する：会場A案・B案の意思決定支援</a></h3><p>複数のメンバーの意見が食い違うとき、AIに結論を代わりに出させず、確認済みの事実・根拠・反対意見・未確認の仮定を同じ枠組みに並べて比較する方法を練習します。ハヌルチームのワークショップ会場A案とB案を例に、意思決定者と決定期限を明確にし、チームが最終判断する前に確認すべき項目を残します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-request-clarify/">チーム協業AIで曖昧な業務依頼を明確にする：要件・完了基準・確認質問</a></h3><p>チームリーダーが送った短い業務依頼をAIに勝手に補完させず、確認済みの要件と不足している条件を分け、チームが再合意できる依頼書の下書きに変える方法を練習します。ハヌルチームの「ワークショップ資料を準備して」という依頼を例に、完了基準、含める・除外する範囲、提出条件を確認質問として残します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-shared-prompt/">チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する</a></h3><p>チーム協業AIを個人ごとの依頼文ではなく、共同でレビュー・修正するチーム資産にする方法を扱います。ハヌルチームのAI議事録整理用依頼文をv1.0からv1.1へ改善し、同じテスト入力で再確認する流れを追います。</p></article><article class="article-card"><h3><a href="/ja/articles/team-ai-review-approval/">AIの結果をチームでレビュー・承認する方法：週次レポート共有前のチェック</a></h3><p>AI週次レポートの下書きをチームに共有する前に、事実、漏れ、機密情報、担当者、承認状態を役割ごとに確認する方法を扱います。作成者・レビュアー・承認者を分け、どの根拠を確認したか記録することで、AIの結果がそのままチームの公式結論だと誤解されないようにします。</p></article></div></section></div><aside class="article-aside"><nav aria-label="この記事で扱う内容" class="toc"><p>この記事で扱う内容</p><ol><li><a href="#problem-and-context"><span>01</span>個人報告を並べることとチーム状態を作ることは違う</a></li><li><a href="#source-updates"><span>02</span>四人の更新と共通事実を入力資料にまとめる</a></li><li><a href="#prompt-for-rollup"><span>03</span>状態・依存・衝突を分けて整理するよう依頼する</a></li><li><a href="#good-rollup"><span>04</span>良い例は衝突と依存関係を隠さない</a></li><li><a href="#bad-rollup-and-fix"><span>05</span>もっともらしくても危険な週報を見分ける</a></li><li><a href="#team-review"><span>06</span>AI草案はメンバーが確認してから共有版になる</a></li><li><a href="#verification"><span>07</span>自分で確認する項目</a></li></ol></nav><div class="aside-note">AIの回答を使う前に、事実と条件を確認してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>AIの回答を使う前に、事実と条件を確認してください。</p></footer><div aria-live="polite" class="toast" hidden="" id="toast" role="status"></div></body></html>

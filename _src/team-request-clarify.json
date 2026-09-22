@@ -1,0 +1,191 @@
+{
+  "slug": "team-request-clarify",
+  "title": "Clarify Vague Work Requests with Team Collaboration AI: Requirements, Completion Criteria, and Clarifying Questions",
+  "summary": "Practice turning a short work request from a team lead into a draft request the team can agree on again, separating confirmed requirements from missing conditions instead of letting AI fill in the gaps arbitrarily. Using Team Haneul’s request, 'Please prepare some workshop materials,' we leave completion criteria, included and excluded scope, and submission conditions as clarifying questions.",
+  "audience": "Non-developer team members and team leads who want to reduce inconsistent interpretations caused by short messenger instructions or verbal requests",
+  "prerequisites": [
+    "An AI chat tool that accepts text input",
+    "Prepare the original work request separately from background information that has already been confirmed",
+    "Be able to ask the requester again instead of arbitrarily deciding unknown conditions",
+    "Use fictional data instead of real confidential or personal information"
+  ],
+  "tags": [
+    "WorkRequest",
+    "Requirements",
+    "TeamCollaborationAI"
+  ],
+  "sections": [
+    {
+      "id": "why-vague-requests-fail",
+      "heading": "1. Surface interpretation gaps before acting on a short request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If Minseo sends Doyun the message 'Please prepare some workshop materials,' it is unclear whether the materials are for presentation or distribution, how much detail to cover, what format to deliver, or what should count as complete and by when. If the assignee starts by guessing, their completion criteria may diverge from the requester’s."
+        },
+        {
+          "type": "p",
+          "text": "Here, the role of team collaboration AI is not to imagine what belongs in the blanks, but to separate confirmed information from missing requirements and create a list of questions. This article focuses on having the requester and assignee agree on the same completion criteria rather than on writing an individual prompt."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Can it be known now?",
+            "How to handle it"
+          ],
+          "rows": [
+            [
+              "Work purpose",
+              "Partly",
+              "Keep only the background that it is event material and confirm the detailed purpose"
+            ],
+            [
+              "Deliverable type",
+              "Unknown",
+              "Ask whether it is presentation material, handout material, or something else"
+            ],
+            [
+              "Completion criteria",
+              "Unknown",
+              "Ask about review criteria and who approves"
+            ],
+            [
+              "Included scope",
+              "Unknown",
+              "Ask about required content and exclusions"
+            ],
+            [
+              "Submission format and location",
+              "Unknown",
+              "Ask about file format and delivery location"
+            ],
+            [
+              "Submission deadline",
+              "Unknown",
+              "Ask for the actual submission deadline separately from the event and instructor schedule"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "copyable-request-input",
+      "heading": "2. Copy in only the original request and already confirmed background",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Give AI only the original message, facts that have already been confirmed, and assigned roles. Avoid adding interpretation so the result can clearly distinguish confirmed information from items that should remain questions."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Fictional team: Team Haneul\n[Team-Role-1] Minseo: team lead · overall schedule\n[Team-Role-2] Junho: venue · supplies\n[Team-Role-3] Seoyeon: promotion · registration\n[Team-Role-4] Doyun: program · instructor outreach\n\n[Event-1] Event: Neighborhood Digital Basics Workshop\n[Event-2] Event date: 2026-11-14\n[Event-3] Event time: 14:00–16:00\n[Event-4] Capacity: 30 people\n[Event-5] Audience: local residents\n[Event-6] Fee: none\n[Venue-1] Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\n[Venue-2] Option B: district library auditorium, capacity 60 people, booking availability not confirmed\n[Schedule-1] Venue decision deadline: 2026-10-24\n[Schedule-2] Final promotional material deadline: 2026-10-28\n[Schedule-3] Instructor confirmation deadline: 2026-10-30\n[Registration-1] Registrations as of 2026-10-23: 22 people\n\n[Request-Minseo-1] Original message Minseo sent to Doyun: \"Please prepare some workshop materials.\"\n[Status-Doyun-1] Doyun is responsible for the program and instructor outreach, but the original message does not state what type of material to prepare.\n[Status-Doyun-2] The original message does not state the amount of material, file format, content to include, content to exclude, submission location, submission deadline, or review criteria.\n[Status-Doyun-3] The instructor confirmation deadline of 2026-10-30 is confirmed, but there is no record that this is the material submission deadline."
+        },
+        {
+          "type": "p",
+          "text": "The final sentence is especially important. A related date should not automatically be turned into the material submission deadline. Instructor confirmation and material submission are different events, so if the original request contains no basis linking them, the submission deadline should remain 'Needs confirmation'."
+        }
+      ]
+    },
+    {
+      "id": "clarification-prompt",
+      "heading": "3. Ask AI to structure gaps and questions instead of filling requirements in",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Instead of asking AI for a completed work instruction, ask it to separate what can currently be confirmed from what still needs verification. Make the clarifying questions short and specific enough to copy into an actual conversation."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Using only the input above, turn Minseo’s request \"Please prepare some workshop materials\" into a clear draft work request.\nDo not arbitrarily decide anything AI does not know, and leave every blank item as 'Needs confirmation'.\n\nOutput order:\n- Currently confirmed background and assignee\n- Request purpose\n- Requirements\n- Completion criteria\n- Included scope\n- Excluded scope\n- Submission format · location\n- Submission deadline\n- Questions to ask Minseo\n- What Doyun may start before receiving answers and what he should not start\n\nRules:\n1) Use only names, dates, times, and numbers that appear in the input.\n2) Do not turn the instructor confirmation deadline into the material submission deadline.\n3) Presentation material, handouts, file format, amount, and required content are not in the input, so do not confirm them.\n4) Do not invent an assignee or approver that is not in the data.\n5) Whenever possible, attach [Request-Minseo-1], [Status-Doyun-Number], [Event-Number], or [Schedule-Number] at the end of each item.\n6) At the end, propose a short checklist for the requester and assignee to review together."
+        }
+      ]
+    },
+    {
+      "id": "clarified-output",
+      "heading": "4. Draft a work request that separates confirmed requirements from clarifying questions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The key point in the following edited example is that it deliberately leaves blanks unresolved. Even though it is formatted as a 'work request,' it does not fill in deliverables or deadlines that are not in the input. Doyun is confirmed as the assignee, but Minseo must be asked what must be produced for the work to count as complete."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nDraft work request\n\nRequester: Minseo [Team-Role-1] [Request-Minseo-1]\nAssignee: Doyun [Team-Role-4] [Request-Minseo-1]\n\nConfirmed background\n- Event: Neighborhood Digital Basics Workshop [Event-1]\n- Event date: 2026-11-14 [Event-2]\n- Event time: 14:00–16:00 [Event-3]\n- Capacity: 30 people [Event-4]\n- Audience: local residents [Event-5]\n- Instructor confirmation deadline: 2026-10-30 [Schedule-3]\n\nOriginal request\n- Minseo: \"Please prepare some workshop materials.\" [Request-Minseo-1]\n\nRequest purpose\n- It appears to be preparation of materials for use at the workshop, but the specific purpose of the materials Needs confirmation. [Request-Minseo-1] [Status-Doyun-1]\n\nRequirements\n- Material type: Needs confirmation. [Status-Doyun-1]\n- Amount: Needs confirmation. [Status-Doyun-2]\n- File format: Needs confirmation. [Status-Doyun-2]\n\nCompletion criteria\n- Needs confirmation. The original request does not state review criteria. [Status-Doyun-2]\n\nIncluded scope\n- Needs confirmation. The original request does not state what content to include. [Status-Doyun-2]\n\nExcluded scope\n- Needs confirmation. The original request does not state what content to exclude. [Status-Doyun-2]\n\nSubmission format · location\n- Needs confirmation. [Status-Doyun-2]\n\nSubmission deadline\n- Needs confirmation. The instructor confirmation deadline of 2026-10-30 is confirmed, but there is no record that it is the material submission deadline. [Status-Doyun-3]\n\nQuestions to ask Minseo\n- What will the materials be used for?\n- What type of deliverable and file format are required?\n- What content must be included, and what should be excluded?\n- What state counts as complete?\n- Who reviews and gives final confirmation?\n- Where should the materials be delivered?\n- What is the actual material submission deadline?\n\nBefore Doyun receives answers\n- May start: organize already confirmed background information such as event date 2026-11-14, time 14:00–16:00, capacity 30 people, and audience local residents. [Event-2] [Event-3] [Event-4] [Event-5]\n- Should not start: confirm the material type, amount, file format, included or excluded scope, or submission deadline without clarification. [Status-Doyun-2] [Status-Doyun-3]"
+        },
+        {
+          "type": "p",
+          "text": "This draft prepares the team to start a conversation rather than pretending the work request is complete. Once Minseo answers about the deliverable and completion criteria, those answers can be incorporated back into the request. Arbitrarily defining the deliverable before receiving an answer can lock in guessed requirements."
+        }
+      ]
+    },
+    {
+      "id": "bad-assumptions",
+      "heading": "5. Do not expand related schedules or roles into detailed instructions without evidence",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A common risk when giving AI an ambiguous request is that naturally filled-in blanks can look like confirmed work instructions. The following example invents a deliverable format, amount, submission deadline, and reviewer that were not in the input."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\nDoyun will create 20 presentation slides and prepare 2 types of participant handouts. He will send the draft to Junho for review by 2026-10-27 18:00 and submit the final version on 2026-10-30."
+        },
+        {
+          "type": "p",
+          "text": "The input does not specify presentation slides or handouts as deliverable types, nor does it give an amount or draft submission time. There is also no record that Junho is the reviewer, and there is no basis for using the instructor confirmation deadline as the material final-submission deadline. The more specific such a result sounds, the more misleading it can be. To correct it, return every invented condition to 'Needs confirmation' and move it into the questions for Minseo."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Human review checklist\n- Has the wording of the original request been preserved?\n- Are confirmed event facts separated from unresolved material requirements?\n- Has the instructor confirmation deadline not been mistaken for the material submission deadline?\n- Has AI avoided inventing the deliverable type, amount, file format, included scope, or excluded scope?\n- Has no reviewer or approver absent from the data been added?\n- Is it clear which items must not be confirmed before the clarifying questions are answered?\n- When applying this to real work, has any data that violates the organization’s information security policy been kept out of the input?"
+        }
+      ]
+    },
+    {
+      "id": "agree-and-share",
+      "heading": "6. Confirm a shared standard after the requester and assignee fill in the answers",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After sending the AI-generated question list, update the request with Minseo’s answers and confirm that Doyun understands them the same way. In particular, agree on what 'complete' means in one sentence and have AI organize only what has been agreed."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Minseo answers the deliverable type, purpose, included and excluded scope, and actual submission deadline.",
+            "Doyun reads back the completion criteria as he understands them and confirms them.",
+            "Keep unclear items as 'Needs confirmation' instead of forcing an answer.",
+            "Share the confirmed request in a designated location accessible to the team, while excluding real confidential and personal information from AI input.",
+            "If anything changes later, record what changed so it is not confused with the previous request."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Even a clarified request can become inconsistent again if team members use different wording. The next article, “Create a Shared Team AI Prompt: Version-Control the Rules for Organizing Meeting Notes”, explains how to create a shared prompt managed by the team rather than a personal prompt and how to keep a change history."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, times, numbers, and unresolved items",
+    "items": [
+      "Check that every code block role uses an allowed value",
+      "Check that every article contains input, prompt, output, and bad_output",
+      "Use regular expressions to verify that names, dates, times, and numbers in the output exist in the input of the same article",
+      "Check that the instructor confirmation deadline is not asserted to be the material submission deadline",
+      "Check that the deliverable type, amount, file format, included scope, excluded scope, and submission location are not confirmed without evidence",
+      "Check that no sentence expresses effects as percentages or multiples"
+    ],
+    "limits": "These are edited learning examples, not actual AI execution or actual team work results. For a real request, check the organization’s information security policy, and have the requester and assignee directly agree on requirements, completion criteria, and deadlines."
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "slug": "team-decision-options",
+  "title": "Compare Scattered Opinions with Team Collaboration AI: Support a Decision Between Venue Option A and Option B",
+  "summary": "Practice comparing confirmed facts, evidence, opposing views, and unverified assumptions in one framework without letting AI make the conclusion when team members disagree. Using Team Haneul’s Venue Option A and Option B for the workshop, we identify the decision owner and deadline clearly and leave items for the team to verify before making the final judgment.",
+  "audience": "Non-developers who want to compare multiple people’s opinions with team collaboration AI while keeping final decision responsibility and evidence traceability with the team",
+  "prerequisites": [
+    "An AI chat tool that accepts text input",
+    "Be able to separate each team member’s opinion from confirmed facts",
+    "Use fictional examples instead of real confidential or customer information",
+    "Compare the AI-generated comparison directly with the source text"
+  ],
+  "tags": [
+    "TeamDecision",
+    "OpinionComparison",
+    "AIReview"
+  ],
+  "sections": [
+    {
+      "id": "problem-and-case",
+      "heading": "1. Separate facts from preferences first when there are many opinions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When a team chooses among options, it should separate confirmed facts, personal preferences, and assumptions that have not yet been verified. The opinion that 'Option B is safer' can be based on the fact that it has a larger capacity, but whether registrations will actually exceed capacity and whether Option B can be booked must be checked separately. Team collaboration AI can help split such statements into categories and attach sources, but the final choice must be made by the responsible person."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Category",
+            "What AI organizes",
+            "What a person checks"
+          ],
+          "rows": [
+            [
+              "Confirmed facts",
+              "Information explicitly stated in the source, such as capacity, facilities, and booking confirmation status",
+              "Whether it exactly matches the source"
+            ],
+            [
+              "Team member opinions",
+              "Who prefers which option and what reasons they gave",
+              "Whether an opinion was turned into a fact"
+            ],
+            [
+              "Unverified assumptions",
+              "Premises not yet verified, such as the possibility of registrations exceeding capacity",
+              "Whether further verification is needed"
+            ],
+            [
+              "Opposing views",
+              "Evidence or concerns that differ from the majority view",
+              "Whether minority views were omitted"
+            ],
+            [
+              "Decision conditions",
+              "Decision owner, decision deadline, and items to verify before deciding",
+              "Whether the final decision was actually approved"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In this fictional case, Team Haneul is choosing a venue for the “Neighborhood Digital Basics Workshop.” Because Option A and Option B differ in verification status and team preferences, we do not reduce the result to a one-line recommendation; we keep the evidence and unverified items together."
+        }
+      ]
+    },
+    {
+      "id": "copyable-input",
+      "heading": "2. Enter team opinions and shared facts with source tags",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The input below is fictional data for practice. Placing a source tag before each statement makes it easier to trace evidence in the result. Different opinions are provided as written instead of being merged."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Fictional team: Team Haneul\n[Shared-Event-1] Event: Neighborhood Digital Basics Workshop\n[Shared-Event-2] Event date: 2026-11-14\n[Shared-Event-3] Event time: 14:00–16:00\n[Shared-Event-4] Capacity: 30 people\n[Shared-Event-5] Audience: local residents\n[Shared-Event-6] Fee: none\n[Shared-Venue-1] Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\n[Shared-Venue-2] Option B: district library auditorium, capacity 60 people, booking availability not confirmed\n[Shared-Schedule-1] Venue decision deadline: 2026-10-24\n[Shared-Schedule-2] Final promotional material deadline: 2026-10-28\n[Shared-Schedule-3] Instructor confirmation deadline: 2026-10-30\n[Shared-Registration-1] Registrations as of 2026-10-23: 22 people\n\n[Note-Minseo-1] Minseo is the team lead, manages the overall schedule, and is the final decision owner for the venue.\n[Note-Minseo-2] Minseo wants to prioritize reviewing Option A because booking availability is confirmed and it can accommodate the capacity of 30 people.\n[Note-Junho-1] Junho is responsible for the venue and supplies. He noted that Option A has a capacity of 32 people, has a projector and elevator, and has confirmed booking availability.\n[Note-Junho-2] Junho confirmed that Option B has a capacity of 60 people but has not yet confirmed booking availability.\n[Note-Seoyeon-1] Seoyeon is responsible for promotion and registration. Registrations as of 2026-10-23 are 22 people, and the final promotional material deadline is 2026-10-28.\n[Note-Seoyeon-2] Seoyeon prefers Option A because the venue needs to be confirmed by 2026-10-24 so the venue wording in the promotional material can be finalized reliably.\n[Note-Doyun-1] Doyun is responsible for the program and instructor outreach. He prefers Option B, with a capacity of 60 people, in case registrations exceed capacity.\n[Note-Doyun-2] Doyun also knows that booking availability for Option B is unconfirmed and wrote that it needs to be checked before the decision.\n[Assumption-1] The current data cannot confirm whether registrations will actually exceed the capacity of 30 people."
+        },
+        {
+          "type": "p",
+          "text": "'Option B has a capacity of 60 people' is a confirmed fact, but 'registrations will exceed capacity' is an assumption. Even if several people prefer Option A, Doyun’s preference for Option B should not be removed. The prompt should also explicitly separate facts, preferences, and assumptions."
+        }
+      ]
+    },
+    {
+      "id": "comparison-prompt",
+      "heading": "3. Ask for a comparison structure and verification questions instead of a conclusion",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The key is not to ask AI to choose the venue. For each option, have it separate confirmed evidence, opposing views, and unverified assumptions and attach source tags. Also prohibit it from inventing owners, deadlines, or decisions that are not in the data."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Using only the fictional input above, compare Team Haneul’s Venue Option A and Option B.\nThe goal is not for AI to decide the venue, but to organize the evidence so the team can decide.\n\nUse the following format.\n- Confirmed facts and evidence for each option\n- Team member opinions supporting each option and source tags\n- Opposing opinions or concerns for each option and source tags\n- Assumptions not confirmed as facts\n- Items to verify before deciding\n- Decision owner and decision deadline\n\nRules:\n1) Use only names, dates, times, and numbers that appear in the input.\n2) Do not omit minority opinions that differ from the majority.\n3) Separate confirmed facts from team member preferences.\n4) Do not invent owners, deadlines, or decisions that are not in the data; mark them as 'Needs confirmation'.\n5) Do not state that Option A or Option B has been finally selected.\n6) Whenever possible, attach a [Note-Name-Number], [Shared-Item-Number], or [Assumption-1] source tag to each piece of evidence."
+        }
+      ]
+    },
+    {
+      "id": "good-output",
+      "heading": "4. Keep options, evidence, opposing views, and unverified assumptions together",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following is an edited example created only from the input. It is not an actual AI output and does not decide the venue on the team’s behalf."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nVenue option comparison\n\nOption A: Civic Center 3rd-floor seminar room\n- Confirmed facts: capacity 32 people, projector available, elevator available, booking availability confirmed. [Shared-Venue-1] [Note-Junho-1]\n- Supporting opinion: Minseo wants to prioritize Option A because it can accommodate the capacity of 30 people and booking availability is confirmed. [Note-Minseo-2]\n- Supporting opinion: Seoyeon prefers Option A considering the venue decision deadline of 2026-10-24 and the final promotional material deadline of 2026-10-28. [Note-Seoyeon-2] [Shared-Schedule-1] [Shared-Schedule-2]\n- Opposing opinion or concern: Doyun believes Option B, with a capacity of 60 people, is better in case registrations exceed capacity. [Note-Doyun-1]\n- Unverified assumption: it has not been confirmed whether registrations will actually exceed the capacity of 30 people. [Assumption-1]\n\nOption B: district library auditorium\n- Confirmed facts: capacity 60 people, booking availability not confirmed. [Shared-Venue-2] [Note-Junho-2]\n- Supporting opinion: Doyun prefers Option B in case registrations exceed capacity. [Note-Doyun-1]\n- Opposing opinion or concern: booking availability for Option B has not yet been confirmed. Doyun also wrote that it needs to be checked before the decision. [Note-Doyun-2]\n- Current registration status as of 2026-10-23: 22 people. [Shared-Registration-1] [Note-Seoyeon-1]\n- Unverified assumption: it has not been confirmed whether registrations will exceed the capacity of 30 people. [Assumption-1]\n\nItems to verify before deciding\n- Confirm booking availability for Option B. [Shared-Venue-2]\n- The team should determine whether the possibility of registrations exceeding capacity should be used as an actual decision criterion. [Assumption-1]\n- Review venue suitability without changing the shared conditions: event date 2026-11-14, time 14:00–16:00, and capacity 30 people. [Shared-Event-2] [Shared-Event-3] [Shared-Event-4]\n\nDecision owner: Minseo [Note-Minseo-1]\nDecision deadline: 2026-10-24 [Shared-Schedule-1]\nFinal choice: not present in the input yet. Minseo must review and decide."
+        },
+        {
+          "type": "p",
+          "text": "A good comparison should let the team return to the source. The operational certainty of Option A, the extra capacity of Option B, and the unverified status of Option B’s booking availability and the possibility of exceeding capacity should remain separate so other team members can review omissions or overstatements."
+        }
+      ]
+    },
+    {
+      "id": "bad-output-and-fix",
+      "heading": "5. Check that AI does not turn majority opinion into a conclusion or assumptions into facts",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "AI should not make the choice itself. Turning unconfirmed booking availability for Option B into a confirmed fact, or presenting a decision the team did not approve as Minseo’s decision, distorts the source."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\nMinseo made the final decision to use Option B, the district library auditorium. Option B is more suitable than Option A because its booking is confirmed and registrations are expected to increase to 35 people. Junho should complete the library reservation by 2026-10-25."
+        },
+        {
+          "type": "p",
+          "text": "The input does not say that Minseo finally chose Option B, and booking availability for Option B is still unconfirmed. The registration forecast and Junho’s new reservation deadline also have no basis. To correct this, remove those claims and return Option B’s booking availability and the possibility of exceeding capacity to 'Needs confirmation'."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Final review checklist\n- Do the capacities and booking confirmation statuses of Option A and Option B match the input?\n- Are the opinions of Minseo, Junho, Seoyeon, and Doyun separated from facts?\n- Has a minority view such as Doyun’s preference for Option B been preserved?\n- Has the possibility of registrations exceeding capacity been avoided as if it were a confirmed fact?\n- Has AI avoided making the final choice on the team’s behalf?\n- Do the decision owner and decision deadline match the input evidence?\n- Is any real confidential or customer information included?"
+        }
+      ]
+    },
+    {
+      "id": "team-review-and-next",
+      "heading": "6. After sharing the comparison, have the team record the decision",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI comparison draft is not a completed decision record. Team members should verify their own opinions and sources and investigate unverified items, after which Minseo should directly approve the final choice and its rationale."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Junho compares the venue facilities and booking confirmation status with the source.",
+            "Seoyeon checks the registration status and the description of the promotion schedule.",
+            "Doyun checks that the reason for preferring Option B is clearly separated from unverified assumptions.",
+            "Minseo directly approves the final venue and decision rationale after the team members review them.",
+            "Do not share the AI draft as a confirmed team decision before approval."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Even after the options are organized, an ambiguous execution request can cause confusion again. The next article, “Clarify Vague Work Requests with Team Collaboration AI: Requirements, Completion Criteria, and Clarifying Questions”, explains how to turn Minseo’s short request into a work request the team can review."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, times, numbers, and source tags",
+    "items": [
+      "Check that every code block role is one of input, prompt, output, bad_output, or checklist",
+      "Use regular expressions to verify that names, dates, times, and numbers in the output exist in the input of the same article",
+      "Check that the capacities, facilities, and booking confirmation statuses of Option A and Option B match the shared fictional case",
+      "Check that Doyun’s preference for Option B and the unverified assumption that registrations may exceed capacity are not omitted",
+      "Check that the text does not say AI decided the final venue and that decision owner Minseo is distinguished from the decision deadline",
+      "Check that no sentence expresses effects as percentages or multiples"
+    ],
+    "limits": "This is not a record of actual AI tool execution, actual venue verification, or an actual registration survey. All cases are fictional data for learning. In real work, people must check the organization’s information security policy and perform the final decision-making and fact verification themselves."
+  }
+}

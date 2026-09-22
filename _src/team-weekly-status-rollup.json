@@ -1,0 +1,182 @@
+{
+  "slug": "team-weekly-status-rollup",
+  "title": "AI Weekly Report: Roll Up Multiple Team Members' Progress into One Report",
+  "summary": "Practice using AI to collect weekly updates in different formats from each team member and reorganize them into completed work, work in progress, delays, dependencies, help needed, and items needing confirmation. Using Team Haneul reports from the same period, this guide creates an AI weekly report example that preserves both reference times and sources when numbers differ instead of deleting one value.",
+  "audience": "Non-developers who want to organize multiple team members' progress into one team-shareable report while also checking omissions, conflicts, and dependencies",
+  "prerequisites": [
+    "An AI chat tool that accepts text input",
+    "Be able to view each team member's update in its original form",
+    "Practice with fictional data instead of real personal information, customer information, or confidential information",
+    "Have each owner verify the facts before sharing the AI draft"
+  ],
+  "tags": [
+    "AIweeklyReport",
+    "teamStatusRollup",
+    "sourceTracking"
+  ],
+  "sections": [
+    {
+      "id": "problem-and-context",
+      "heading": "1. Combining individual reports is not the same as building a team status view",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When multiple people write weekly updates separately, completed work, planned work, and help requests are scattered across different formats. The role of team collaboration AI is not simply to shorten sentences, but to reveal the statuses and connections the team needs to see together."
+        },
+        {
+          "type": "p",
+          "text": "This example combines Team Haneul's 2026-10-19~2026-10-23 updates into one AI weekly report. Different registration-count records are not deleted; their reference times and sources are retained together."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Report item",
+            "What to check when combining",
+            "Problem if merged as-is"
+          ],
+          "rows": [
+            [
+              "Completed / In progress",
+              "Finished work and ongoing work",
+              "Current statuses may be mixed together"
+            ],
+            [
+              "Delayed",
+              "Original plan and current action",
+              "Delays may be buried"
+            ],
+            [
+              "Dependencies",
+              "Work that requires prerequisite tasks",
+              "Bottlenecks may be missed"
+            ],
+            [
+              "Help needed",
+              "Who needs to check what",
+              "Requests may remain only in personal notes"
+            ],
+            [
+              "Conflicting reports",
+              "Reference time and source",
+              "AI may arbitrarily choose one side"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "source-updates",
+      "heading": "2. Combine updates from four people and shared facts into the input",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After the shared facts, attach each team member's original items and source tags. For values that can change during the same period, such as registration counts, include the date and time so the team can determine whether the difference is an update or a conflict."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Shared facts\n- Team Haneul 4 members: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Participation fee: none\n- Option A: Civic Center 3rd-floor seminar room: capacity 32 people, projector available, elevator available, booking availability confirmed\n- Option B: district library auditorium: capacity 60 people, booking availability not confirmed\n- Venue confirmation deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status: as of 2026-10-23, 22 people\n- This week's reporting period: 2026-10-19~2026-10-23\n\nMinseo update\n[Update-Minseo-1] Noted that the registration status received from Seoyeon at 2026-10-23 09:00 was 20 people.\n[Update-Minseo-2] The venue must be confirmed by 2026-10-24. A decision is needed after comparing Option A and Option B.\n[Update-Minseo-3] The final promotional material must include the venue name, so it can be completed after the venue is confirmed.\n\nJunho update\n[Update-Junho-1] Confirmed booking availability, projector, and elevator for Option A and organized venue-comparison material.\n[Update-Junho-2] Option B has capacity 60 people, but booking availability has not yet been confirmed.\n[Update-Junho-3] Planned to finish checking supply quantities on 2026-10-23 but did not complete it. Will check again on 2026-10-26.\n\nSeoyeon update\n[Update-Seoyeon-1] As of 2026-10-23 16:00, the registration count is 22 people.\n[Update-Seoyeon-2] Promotional copy is in progress, and the final version is needed by 2026-10-28.\n[Update-Seoyeon-3] The final venue name must be included in the promotional material, so the venue-confirmation result is needed.\n\nDoyun update\n[Update-Doyun-1] Drafted version 1 of the program structure.\n[Update-Doyun-2] Instructor outreach is in progress, and the confirmation deadline is 2026-10-30.\n[Update-Doyun-3] Asked Junho for help checking the projector connection method."
+        },
+        {
+          "type": "p",
+          "text": "The values 20 people and 22 people cannot be assumed to be a typo. Because the records are from 09:00 and 16:00 on the same date, keep both values and show the difference in reference times."
+        }
+      ]
+    },
+    {
+      "id": "prompt-for-rollup",
+      "heading": "3. Ask AI to separate status, dependencies, and conflicts",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The prompt should separate completed work, work in progress, delays, and dependencies, and include a rule not to arbitrarily merge different numbers or statuses."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Using the input above, write a weekly report for team sharing.\n\nRules:\n- Separate items into completed, in progress, delayed, dependencies, help needed, and Needs confirmation.\n- Keep the original source tag at the end of each item.\n- Do not merge or delete differing reports in favor of one side.\n- For values with different reference times, such as registration counts, show the date and time together and explain why confirmation is needed.\n- Do not invent owners, dates, times, numbers, or completion status that are not in the input.\n- Write 'Needs confirmation' for unconfirmed content.\n- Do not add real personal information or contact details.\n- At the end, briefly list only the items the team should check immediately."
+        }
+      ]
+    },
+    {
+      "id": "good-rollup",
+      "heading": "4. A good example does not hide conflicts or dependencies",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following is an edited example, not a record from an actual AI run. Each item keeps its original source so team members can trace the evidence."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nTeam Haneul weekly status rollup\nReporting period: 2026-10-19~2026-10-23\n\nCompleted\n- Junho: completed confirmation of booking availability, projector, and elevator for Option A and organized the venue-comparison material. [Update-Junho-1]\n- Doyun: drafted version 1 of the program structure. [Update-Doyun-1]\n\nIn progress\n- Seoyeon: promotional copy is in progress, and the final-version deadline is 2026-10-28. [Update-Seoyeon-2]\n- Doyun: instructor outreach is in progress, and the confirmation deadline is 2026-10-30. [Update-Doyun-2]\n- Minseo: needs to compare Option A and Option B and confirm the venue by 2026-10-24. [Update-Minseo-2]\n\nDelayed\n- Junho: did not finish the supply-quantity check scheduled for completion on 2026-10-23 and plans to check again on 2026-10-26. [Update-Junho-3]\n\nDependencies\n- Seoyeon's final promotional material depends on the venue-confirmation result because the final venue name is required. [Update-Minseo-3] [Update-Seoyeon-3]\n\nHelp needed\n- Doyun asked Junho for help checking the projector connection method. [Update-Doyun-3]\n\nNeeds confirmation\n- Registration-count records differ: as of 2026-10-23 09:00, 20 people, and as of 2026-10-23 16:00, 22 people. Because the reference times differ, this may reflect an update process; when sharing, keep both sources. [Update-Minseo-1] [Update-Seoyeon-1]\n- Option B has capacity 60 people, but booking availability remains unconfirmed. [Update-Junho-2]\n\nTeam check items\n- Minseo: needs to share the venue-confirmation result. [Update-Minseo-2]\n- Junho: needs to check supply quantities and the projector connection method. [Update-Junho-3] [Update-Doyun-3]\n- Seoyeon: needs to preserve the registration reference time when sharing the latest status. [Update-Seoyeon-1]"
+        },
+        {
+          "type": "p",
+          "text": "Delays, the promotional-material dependency on the venue, and the difference in registration-count reference times are shown separately. Because source tags remain, each owner can compare the report directly with their original update."
+        }
+      ]
+    },
+    {
+      "id": "bad-rollup-and-fix",
+      "heading": "5. Distinguish plausible but risky weekly reports",
+      "blocks": [
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\nTeam Haneul is generally proceeding according to plan. Registration is confirmed at 25 people, and the venue has been decided as Option A. Junho will prepare all supplies by 2026-10-25, and Doyun has completed the instructor contract. The promotional material can be distributed immediately because the venue issue has been resolved."
+        },
+        {
+          "type": "p",
+          "text": "This example is concise, but it is inappropriate for source review. The input does not contain 25 registered people or a record that Option A was selected. Junho's new deadline and Doyun's completed instructor contract are also invented, and the promotional-material dependency has been arbitrarily resolved. To correct it, delete facts that are absent from the input, return unresolved items to Needs confirmation, and restore delays and conflicts as separate sections."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Human review before sharing\n- Each team member compares their completed / in-progress status with the original update.\n- Check that delayed work has not been mixed into normal in-progress items.\n- Check that items requiring results from other work are marked as dependencies.\n- Check that help requests were not omitted and owners were not changed.\n- Check that conflicting numbers retain their date / time / source together.\n- When using real data, check the organization's information-security policy and do not put sensitive information into an AI chat tool."
+        }
+      ]
+    },
+    {
+      "id": "team-review",
+      "heading": "6. An AI draft becomes a shared version only after team members verify it",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An AI weekly report is useful as a draft that brings multiple updates into one view, but the team must determine which report is latest and how delays should be handled. In particular, AI may not be able to determine from the original text alone whether a numeric change is a normal update or comes from different aggregation criteria. Before sharing, get confirmation from each author and leave unconfirmed items as unconfirmed."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "The owner of each task confirms whether it is complete.",
+            "The person overseeing the overall schedule also checks deadlines and dependencies.",
+            "When numbers differ, do not first decide which record to delete; check the reference time and source.",
+            "Check that new interpretations created by AI have not been mixed in as source facts.",
+            "In the team-shared version, keep confirmed content separate from content that needs confirmation."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The next article goes one step beyond combining multiple people's statuses and addresses how another person can continue the work when one person is absent: “Create an AI Work Handover Document: Organize Scattered Notes So Someone Else Can Continue the Work”"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+    "items": [
+      "Check that updates from all four people are reflected appropriately under completed / in progress / delayed / dependencies / help needed / Needs confirmation",
+      "Check that the registration counts of 20 people and 22 people are both preserved with their respective reference times and sources",
+      "Check that owners, dates, times, and numbers in the output exist in the input material",
+      "Check that the delayed supply-quantity check and the promotional-material venue dependency are not omitted",
+      "Check that AI does not arbitrarily decide or confirm the status of Option A or Option B",
+      "Check that no percentages or multiple-based effect figures are invented"
+    ],
+    "limits": "This is not a result obtained by running an actual AI tool, but fictional material and an edited example for explaining a team-collaboration process. When using real team data, owners must compare it directly with the source, and sensitive information must be handled according to the organization's information-security policy."
+  }
+}

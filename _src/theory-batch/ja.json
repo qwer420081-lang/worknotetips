@@ -210,6 +210,11 @@
         "slug": "vibe-coding-basics",
         "question": "コードを知らなくてもAIで小さなツールを作れる？",
         "benefit": "Claude Codeで、要件を決めるところからバイブコーディングを始めます。"
+      },
+      {
+        "slug": "team-ai-where-to-start",
+        "question": "チームでAIを一緒に使うなら、どこから始める？",
+        "benefit": "繰り返し業務の候補を比べて、チームで最初に試す業務を選びます。"
       }
     ]
   }

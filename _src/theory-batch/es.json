@@ -210,6 +210,11 @@
         "slug": "vibe-coding-basics",
         "question": "¿Puedo crear una pequeña herramienta con IA sin saber programar?",
         "benefit": "Empieza a hacer vibe coding con Claude Code definiendo primero los requisitos."
+      },
+      {
+        "slug": "team-ai-where-to-start",
+        "question": "¿Por dónde empieza un equipo a usar la IA en conjunto?",
+        "benefit": "Compara tareas repetitivas y elige el primer caso de uso del equipo."
       }
     ]
   }

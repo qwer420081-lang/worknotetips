@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="ja"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する | Worknote</title><meta content="チーム協業AIを個人ごとの依頼文ではなく、共同でレビュー・修正するチーム資産にする方法を扱います。ハヌルチームのAI議事録整理用依頼文をv1.0からv1.1へ改善し、同じテスト入力で再確認する流れを追います。" name="description"/><link href="https://worknotetips.com/ja/articles/team-shared-prompt/" rel="canonical"/><meta content="https://worknotetips.com/ja/articles/team-shared-prompt/" property="og:url"/><meta content="チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する" property="og:title"/><meta content="チーム協業AIを個人ごとの依頼文ではなく、共同でレビュー・修正するチーム資産にする方法を扱います。ハヌルチームのAI議事録整理用依頼文をv1.0からv1.1へ改善し、同じテスト入力で再確認する流れを追います。" property="og:description"/><meta content="ja_JP" property="og:locale"/><meta content="article" property="og:type"/><meta content="#163b35" name="theme-color"/><link href="/favicon.svg" rel="icon" type="image/svg+xml"/><link href="/assets/styles.css?v=20260921-beginner" rel="stylesheet"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する", "description": "チーム協業AIを個人ごとの依頼文ではなく、共同でレビュー・修正するチーム資産にする方法を扱います。ハヌルチームのAI議事録整理用依頼文をv1.0からv1.1へ改善し、同じテスト入力で再確認する流れを追います。", "inLanguage": "ja", "dateModified": "2026-09-22", "url": "https://worknotetips.com/ja/articles/team-shared-prompt/"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "チュートリアル", "item": "https://worknotetips.com/ja/"}, {"@type": "ListItem", "position": 2, "name": "AIの業務活用", "item": "https://worknotetips.com/ja/category/ai/"}, {"@type": "ListItem", "position": 3, "name": "チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する", "item": "https://worknotetips.com/ja/articles/team-shared-prompt/"}]}</script><script src="/assets/app.js" type="module"></script><link href="https://worknotetips.com/articles/team-shared-prompt/" hreflang="en" rel="alternate"/><link href="https://worknotetips.com/ko/articles/team-shared-prompt/" hreflang="ko" rel="alternate"/><link href="https://worknotetips.com/ja/articles/team-shared-prompt/" hreflang="ja" rel="alternate"/><link href="https://worknotetips.com/es/articles/team-shared-prompt/" hreflang="es" rel="alternate"/><link href="https://worknotetips.com/pt-BR/articles/team-shared-prompt/" hreflang="pt-BR" rel="alternate"/><link href="https://worknotetips.com/articles/team-shared-prompt/" hreflang="x-default" rel="alternate"/><script id="ui-messages" type="application/json">{"copy": "コピー", "copied": "コピー完了", "copySuccess": "例文をコピーしました。", "copyRetry": "もう一度コピー", "copyFailure": "自動コピーを利用できません。コードを選択して手動でコピーしてください。", "searchCount": "検索結果 {count}件"}</script></head><body class="beginner-article"><a class="skip-link" href="#main">本文へスキップ</a><header class="site-header"><div class="header-inner"><a aria-label="Worknote ホーム" class="brand" href="/ja/"><span class="brand-mark"><svg aria-hidden="true" viewbox="0 0 32 32"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3"></path></svg></span><span>Worknote<small>スクリプトとAIの実務活用</small></span></a><nav aria-label="メインメニュー"><a aria-current="page" href="/ja/">チュートリアル</a><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a></nav><details class="language-menu"><summary aria-label="言語">◎ 日本語</summary><nav aria-label="言語"><a href="/articles/team-shared-prompt/" hreflang="en" lang="en">English</a><a href="/ko/articles/team-shared-prompt/" hreflang="ko" lang="ko">한국어</a><a aria-current="true" href="/ja/articles/team-shared-prompt/" hreflang="ja" lang="ja">日本語</a><a href="/es/articles/team-shared-prompt/" hreflang="es" lang="es">Español</a><a href="/pt-BR/articles/team-shared-prompt/" hreflang="pt-BR" lang="pt-BR">Português</a></nav></details><a aria-label="検索" class="header-search" href="/ja/#search"><svg aria-hidden="true" height="21" viewbox="0 0 24 24" width="21"><circle cx="10.5" cy="10.5" fill="none" r="6.5" stroke="currentColor" stroke-width="1.8"></circle><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"></path></svg><span>検索</span><kbd>/</kbd></a></div></header><main class="article-layout" id="main"><div class="article-main"><nav aria-label="現在の位置" class="breadcrumbs"><a href="/ja/">チュートリアル</a><span>/</span><a href="/ja/category/ai/">AIの業務活用</a></nav><header class="article-header"><span class="category-badge ai">AIの業務活用</span><h1>チーム共用AI依頼文を作る：会議メモ整理基準をバージョン管理する</h1><p class="article-summary">チーム協業AIを個人ごとの依頼文ではなく、共同でレビュー・修正するチーム資産にする方法を扱います。ハヌルチームのAI議事録整理用依頼文をv1.0からv1.1へ改善し、同じテスト入力で再確認する流れを追います。</p><div class="article-meta"><span>内容確認 2026.09.22</span><span>コピーして使えるプロンプト</span></div></header><details class="mobile-toc"><summary>目次を表示</summary><nav aria-label="この記事で扱う内容" class="toc"><p>この記事で扱う内容</p><ol><li><a href="#why-shared-prompt"><span>01</span>個人の依頼文ではなくチーム共用基準にする</a></li><li><a href="#test-input"><span>02</span>同じテスト入力を固定して比較する</a></li><li><a href="#shared-prompt-v11"><span>03</span>入力・出力・禁止事項を一つの依頼文に固定する</a></li><li><a href="#expected-output"><span>04</span>よい結果は正解らしく見せるより根拠を残す</a></li><li><a href="#bad-output-and-fix"><span>05</span>共用依頼文が失敗するパターンもチームで一緒に記録する</a></li><li><a href="#team-review-cycle"><span>06</span>バージョン変更は同じ入力で再レビューする</a></li><li><a href="#verification"><span>07</span>自分で確認する項目</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>対象読者</strong>複数人が同じ種類の会議メモをAIで整理しながら、出力形式とレビュー基準をそろえたい非開発者チーム</p><div><strong>準備するもの</strong><ul><li>テキストを入力できる一般的なAIチャットツール</li><li>実際の機密情報・顧客情報ではなく仮想データを使うこと</li><li>メンバーが一緒に確認できる依頼文のバージョン記録を残すこと</li><li>AIの結果を原文メモと人が直接照合すること</li></ul></div></div><section id="why-shared-prompt"><h2><span class="section-number">01</span>個人の依頼文ではなくチーム共用基準にする</h2><p>同じ会議メモを整理しても、メンバーごとにAIへ与える指示が違えば、結果の項目名、出典表示方法、未確定事項の扱い方が変わることがあります。この記事の目的は「よい文章」を作ることではありません。チームが繰り返し使う入力形式、期待する出力、禁止事項、レビュー方法を一つの文書にまとめ、変更理由を記録することにあります。個人用プロンプトの保管とは異なり、誰が何を変えたのかを他のメンバーが再確認できる必要があります。</p><p>仮想のハヌルチームは2026-11-14 14:00–16:00に地域住民向け「まちのデジタル基礎ワークショップ」を準備します。定員は30名で、参加費はありません。会場確定期限は2026-10-24、広報物最終版は2026-10-28、講師確定は2026-10-30です。2026-10-23時点の申込者は22名です。これらの事実はチーム共用依頼文が変わっても勝手に修正してはいけません。</p><div class="table-wrap"><table><thead><tr><th scope="col">共用依頼文に入れる要素</th><th scope="col">チームで決める基準</th><th scope="col">理由</th></tr></thead><tbody><tr><td>入力形式</td><td>メモ作成者と項目番号を一緒に提示</td><td>出典をたどり直しやすくする</td></tr><tr><td>出力形式</td><td>決定・タスク・未確定・衝突を分ける</td><td>合意済みの内容と確認すべき内容を混ぜない</td></tr><tr><td>出典表示</td><td>各項目末尾にメモタグを残す</td><td>複数人の記録を追跡できるようにする</td></tr><tr><td>禁止事項</td><td>担当者・期限・決定を推測しない</td><td>原文にない確定を防ぐ</td></tr><tr><td>変更記録</td><td>バージョン・日付・変更者・理由を記録</td><td>共同所有文書の変更根拠を残す</td></tr></tbody></table></div></section><section id="test-input"><h2><span class="section-number">02</span>同じテスト入力を固定して比較する</h2><p>バージョンを直すたびにテスト入力まで変えると、何が原因で結果が変わったのか区別しにくくなります。以下のデータは2026-10-20の会議についての3人の仮想メモです。表現が互いに異なり、広報物の日程には1人の相対的な表現が混じっています。また、チーム共用依頼文自体のバージョン記録と変更者も一緒に入力し、その後のoutputで新しい情報を作らないようにします。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-2-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-2-2">ハヌルチーム共通事実
+- イベント: まちのデジタル基礎ワークショップ
+- イベント日: 2026-11-14
+- イベント時間: 14:00–16:00
+- 定員: 30名
+- 対象: 地域住民
+- 参加費: なし
+- 会場確定期限: 2026-10-24
+- 広報物最終版期限: 2026-10-28
+- 講師確定期限: 2026-10-30
+- 申込状況: 2026-10-23時点22名
+
+メンバーの役割
+- ミンソ: チームリーダー・全体日程
+- ジュノ: 会場・物品
+- ソヨン: 広報・申込受付
+- ドユン: プログラム・講師手配
+
+テスト会議: 2026-10-20
+
+[メモ-ミンソ-1] 会場はA案の市民センター3階セミナー室を優先して検討する。最終決定は2026-10-24までに行う。
+[メモ-ミンソ-2] 広報物最終版は2026-10-28までに準備する。
+[メモ-ジュノ-1] A案の市民センター3階セミナー室は収容32名、プロジェクターあり、エレベーターあり、利用可能確認済み。
+[メモ-ジュノ-2] B案の区立図書館講堂は収容60名で、利用可否はまだ確認されていない。
+[メモ-ソヨン-1] 広報物は会場確定後に最終修正が必要。
+[メモ-ジュノ-3] 広報物は「来週中」に仕上げると聞いた。正確な日付は再確認したい。
+[メモ-ドユン-1] 講師確定期限は2026-10-30である。
+
+共用依頼文のバージョン記録
+- v1.0: 2026-10-22、変更者ミンソ、最初の共用案を作成
+- v1.1: 2026-10-23、変更者ソヨン、衝突項目と出典表示ルールを明記するよう修正</code></pre></div><p>この入力には実際の組織情報や顧客データはありません。実際の業務で共用依頼文を作る場合も、機密、パスワード、認証情報、個人識別情報をそのまま貼り付けず、まず組織の情報保護方針を確認します。</p></section><section id="shared-prompt-v11"><h2><span class="section-number">03</span>入力・出力・禁止事項を一つの依頼文に固定する</h2><p>v1.1の要点は、より長く書くことではなく判断ルールを明記することです。特に複数人の記録が衝突したときに片方を自動選択せず、両方の記録を残したうえで「確認必要」として分けるよう求めます。また、メモにない担当者や日付をもっともらしく埋めないよう禁止します。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-3-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-3-2">以下の複数人の会議メモをチーム共有用に整理してください。
+
+入力ルール
+- 各メモの作成者と項目番号を出典として使います。
+- 共通事実と個別メモを区別します。
+
+出力形式
+1) 決定済みの内容
+2) タスク
+3) 未確定事項
+4) 互いに衝突する、または表現が異なる記録
+各項目末尾に原文の出典タグを付けます。
+
+禁止事項
+- 入力にない担当者、日付、時刻、数字、決定を作らないでください。
+- 相対的な日付表現を任意のYYYY-MM-DDに変えないでください。
+- 衝突する記録の一方を勝手に採用しないでください。
+- 確定か不明な場合は「確認必要」と書いてください。
+
+最後に、人が原文と照合すべき項目を短く書いてください。</code></pre></div><div class="table-wrap"><table><thead><tr><th scope="col">バージョン</th><th scope="col">変更内容</th><th scope="col">レビューポイント</th></tr></thead><tbody><tr><td>v1.0</td><td>最初の共用案</td><td>項目分類がチームで使うのに十分か確認</td></tr><tr><td>v1.1</td><td>衝突保持・出典表示ルールを追加</td><td>少数の記録や異なる表現が消えていないか確認</td></tr></tbody></table></div></section><section id="expected-output"><h2><span class="section-number">04</span>よい結果は正解らしく見せるより根拠を残す</h2><p>以下は実際のAI実行値ではなく、依頼文をレビューするために作った編集例です。重要なのは新しい決定を作らず、異なる記録を原文タグとともに保存することです。</p><div class="code-block"><div class="code-toolbar"><span>編集例</span><button aria-label="コピー 編集例" data-copy="prompt-4-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-4-2">[結果例 · 実際のAI出力ではありません]
+共用依頼文: v1.1
+変更記録: 2026-10-23、変更者ソヨン
+
+決定済みの内容
+- イベント日は2026-11-14、時間は14:00–16:00である。定員は30名である。
+- 講師確定期限は2026-10-30である。[メモ-ドユン-1]
+
+タスク
+- 会場はA案の市民センター3階セミナー室を優先して検討し、2026-10-24までに最終決定する。[メモ-ミンソ-1]
+- 広報物は会場確定後に最終修正が必要である。[メモ-ソヨン-1]
+
+未確定事項
+- B案の区立図書館講堂の利用可否は確認必要。[メモ-ジュノ-2]
+
+互いに衝突する、または表現が異なる記録
+- ミンソは広報物最終版期限を2026-10-28と記録した。[メモ-ミンソ-2]
+- ジュノは広報物を「来週中」に仕上げると聞いたと記録し、正確な日付を再確認したいと書いた。[メモ-ジュノ-3]
+- したがって広報物期限の表現は原文確認が必要であり、一方の記録を勝手に削除しない。
+
+人が照合する項目
+- ミンソとジュノの広報物期限の記録を一緒に確認する。
+- ジュノのB案利用可否について、新しい確認結果が出たか確認する。</code></pre></div><p>この形式はAIが会議の結論を代わりに決める仕組みではなく、メンバーがどこを確認すべきか明らかにする仕組みです。特に[メモ-ミンソ-2]と[メモ-ジュノ-3]のように表現が異なる場合、一方を削除すると確認すべき論点自体が消えてしまいます。</p></section><section id="bad-output-and-fix"><h2><span class="section-number">05</span>共用依頼文が失敗するパターンもチームで一緒に記録する</h2><p>共用依頼文を一度作って終わりにすると、繰り返し起こる誤りが残ります。チームは、どのような誤った出力が出たか、その誤りを防ぐためにどのルールを追加したかを、バージョン変更理由として残すほうがよいです。</p><div class="code-block"><div class="code-toolbar"><span>編集例</span><button aria-label="コピー 編集例" data-copy="prompt-5-2" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-2">[誤りやすい結果例 · 実際のAI出力ではありません]
+- 会場はB案に確定した。
+- ジュノが広報物を完成させる。
+- 広報物期限は2026-10-27である。
+- B案は利用可能である。</code></pre></div><p>この例は入力にない決定を作り、広報担当ではないジュノに新しい業務を割り当て、提示されていない日付とB案の利用可否を確定しました。修正方法は文章を滑らかにすることではなく、依頼文に「推測禁止」「衝突保持」「出典タグ維持」のルールを加え、同じテスト入力で再確認することです。</p><div class="code-block"><div class="code-toolbar"><span>プロンプト</span><button aria-label="コピー プロンプト" data-copy="prompt-5-4" type="button">コピー</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-4">共用依頼文レビュー一覧
+- 入力形式に作成者と原文項目番号が残っているか
+- 決定・タスク・未確定・衝突が区別されているか
+- 入力にない担当者・日付・時刻・数字を作らないよう禁止しているか
+- 異なる記録を一方へ統合してしまっていないか
+- 変更バージョン・日付・変更者・理由をメンバーが確認できるか
+- 実際の業務データを入れる前に組織の情報保護方針を確認したか</code></pre></div></section><section id="team-review-cycle"><h2><span class="section-number">06</span>バージョン変更は同じ入力で再レビューする</h2><p>チーム共用プロンプトは完成品というより、小さな運用ルールに近いものです。新しいバージョンを作るときは、変更者が理由を記録し、別のメンバーが同じテスト入力で結果形式と漏れの有無を確認してから共有します。特定のAI製品の設定に依存するより、入力と出力のルールをテキストで残しておけば、ツールが変わってもチームのレビュー基準を維持しやすくなります。</p><ul><li>依頼文を直した人とレビューした人が、何が変わったかを一緒に読む。</li><li>テスト入力はそのままにし、決定・タスク・未確定・衝突の分類が維持されているかを見る。</li><li>新しいバージョンで出典タグが抜けたり、未確認情報が確定へ変わったりしていないか確認する。</li><li>チームが実際に使うと決めたバージョンだけを共用場所に明確に表示する。</li></ul><p>次の記事「AIの結果をチームでレビュー・承認する方法：週次レポート共有前のチェック」では、共用依頼文で作った結果でも、共有前に事実、漏れ、機密情報、担当者、最終承認状態をどのように分けて確認するかを扱います。</p></section><section id="verification"><h2>自分で確認する項目</h2><p>仮想入力データと編集例 · 実際のAI実行なし · 名前・日付・数値の一致検査</p><ul><li>すべてのcodeブロックにinput・prompt・output・bad_output・checklistのいずれかのroleがあることを確認</li><li>outputの人名・YYYY-MM-DD日付・HH:MM時刻・数字が同じ記事のinputに存在するか確認</li><li>v1.0とv1.1の変更記録が、入力データにあるバージョン・日付・変更者と一致するか確認</li><li>衝突する広報物期限の記録がoutputで一方に勝手に統合されていないか確認</li><li>会場・イベント日程・定員・主要期限・申込状況がシリーズ共通事実と矛盾していないか確認</li><li>時間削減率や生産性向上率などの効果数値を使っていないか確認</li></ul><div class="verification-limits"><strong>検証範囲の限界</strong><p>実際のAIツールで実行した結果ではなく、チーム協業AIの使い方を説明するために作った仮想入力と編集例です。実際のチームデータには機密情報・個人情報が含まれる可能性があるため、入力前に組織の情報保護方針と原文の公開範囲を確認する必要があります。</p></div></section></div><section class="related"><div class="list-heading"><h2>続けて読む</h2><a href="/ja/category/ai/">このテーマのすべての記事 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card"><h3><a href="/ja/articles/team-ai-where-to-start/">チーム協業AI、どこから使う？反復業務の候補を比較して最初の適用業務を選ぶ</a></h3><p>チーム協業にAIを初めて導入するときは、目立つ機能よりも、複数人が繰り返し情報を集めて確認する業務から比較する方が管理しやすくなります。ハヌルチームの架空業務6件を並べ、期待効果を定性的に記し、確認負担と機密情報リスクも一緒に確認してから、最初の適用候補を絞り込みます。AIは候補を整理しますが、最終選択はチームが行います。</p></article><article class="article-card"><h3><a href="/ja/articles/team-meeting-notes-merge/">AI議事録：複数参加者のメモを統合し、決定・タスク・未確定事項を整理する</a></h3><p>AI議事録を作るとき、一人のメモだけを整えるのではなく、複数参加者の記録を一緒に入力し、決定・タスク・未確定事項・記録の違いを出典タグ付きで整理する方法を練習します。ハヌルチームの2026-10-20の架空会議メモを使い、異なる表現を無理に一つへ統合せず、チーム共有用の草案を作る過程を示します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-weekly-status-rollup/">AI週報：複数メンバーの進捗状況を一つにまとめる</a></h3><p>メンバーごとに形式が異なる週次更新をAIで集約し、完了・進行・遅延・依存関係・支援必要・確認必要に再構成する方法を練習します。ハヌルチームの同じ期間の報告を使い、数値が異なる場合に一方を消さず、基準時刻と出典を一緒に残すAI週報の例を作ります。</p></article><article class="article-card"><h3><a href="/ja/articles/team-handover-document/">AI業務引き継ぎ文書を作る：散在するメモを整理して仕事を引き継げる形にする</a></h3><p>担当者が不在になるとき、残る人がすぐ業務を引き継げるよう、散在するメモを背景・現在状態・資料の場所・次の行動・注意事項・未定事項に再構成する方法を扱います。ソヨンの広報・申込業務をジュノへ引き継ぐ架空事例で、AI業務引き継ぎ文書と引受者が確認する質問を一緒に作ります。</p></article><article class="article-card"><h3><a href="/ja/articles/team-decision-options/">チーム協業AIで散在する意見を比較する：会場A案・B案の意思決定支援</a></h3><p>複数のメンバーの意見が食い違うとき、AIに結論を代わりに出させず、確認済みの事実・根拠・反対意見・未確認の仮定を同じ枠組みに並べて比較する方法を練習します。ハヌルチームのワークショップ会場A案とB案を例に、意思決定者と決定期限を明確にし、チームが最終判断する前に確認すべき項目を残します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-request-clarify/">チーム協業AIで曖昧な業務依頼を明確にする：要件・完了基準・確認質問</a></h3><p>チームリーダーが送った短い業務依頼をAIに勝手に補完させず、確認済みの要件と不足している条件を分け、チームが再合意できる依頼書の下書きに変える方法を練習します。ハヌルチームの「ワークショップ資料を準備して」という依頼を例に、完了基準、含める・除外する範囲、提出条件を確認質問として残します。</p></article><article class="article-card"><h3><a href="/ja/articles/team-ai-review-approval/">AIの結果をチームでレビュー・承認する方法：週次レポート共有前のチェック</a></h3><p>AI週次レポートの下書きをチームに共有する前に、事実、漏れ、機密情報、担当者、承認状態を役割ごとに確認する方法を扱います。作成者・レビュアー・承認者を分け、どの根拠を確認したか記録することで、AIの結果がそのままチームの公式結論だと誤解されないようにします。</p></article></div></section></div><aside class="article-aside"><nav aria-label="この記事で扱う内容" class="toc"><p>この記事で扱う内容</p><ol><li><a href="#why-shared-prompt"><span>01</span>個人の依頼文ではなくチーム共用基準にする</a></li><li><a href="#test-input"><span>02</span>同じテスト入力を固定して比較する</a></li><li><a href="#shared-prompt-v11"><span>03</span>入力・出力・禁止事項を一つの依頼文に固定する</a></li><li><a href="#expected-output"><span>04</span>よい結果は正解らしく見せるより根拠を残す</a></li><li><a href="#bad-output-and-fix"><span>05</span>共用依頼文が失敗するパターンもチームで一緒に記録する</a></li><li><a href="#team-review-cycle"><span>06</span>バージョン変更は同じ入力で再レビューする</a></li><li><a href="#verification"><span>07</span>自分で確認する項目</a></li></ol></nav><div class="aside-note">AIの回答を使う前に、事実と条件を確認してください。</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ja/">Worknote<span>自分で試し、確認し、記録します。</span></a><nav aria-label="サイト案内"><a href="/ja/about/">サイトについて</a><a href="/ja/principles/">執筆・検証の方針</a><a href="/ja/privacy/">プライバシーについて</a><a href="/ja/rights/">資料の利用について</a></nav></div><p>AIの回答を使う前に、事実と条件を確認してください。</p></footer><div aria-live="polite" class="toast" hidden="" id="toast" role="status"></div></body></html>

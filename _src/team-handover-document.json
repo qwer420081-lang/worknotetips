@@ -1,0 +1,183 @@
+{
+  "slug": "team-handover-document",
+  "title": "Create an AI Work Handover Document: Organize Scattered Notes So Someone Else Can Continue the Work",
+  "summary": "This guide explains how to reorganize scattered notes into background, current status, material locations, next actions, cautions, and TBD items so someone else can continue the work immediately when the owner is absent. Using a fictional case in which Seoyeon's promotion and registration work is handed over to Junho, it creates both an AI work handover document and questions the recipient should verify.",
+  "audience": "Non-developers who want to transfer work context and next actions to a teammate without omissions before leave, absence, or a role change",
+  "prerequisites": [
+    "An AI chat tool that accepts text input",
+    "Original notes that let you verify the current status and material locations",
+    "Practice with fictional data instead of real personal information, customer information, or confidential information",
+    "Have the recipient read the document and ask about TBD items"
+  ],
+  "tags": [
+    "AIhandover",
+    "teamWorkSharing",
+    "workContinuity"
+  ],
+  "sections": [
+    {
+      "id": "handover-goal",
+      "heading": "1. In a handover, context comes before a task list",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If a handover lists only file locations and tasks, the recipient has to ask for the context again. This exercise focuses on creating a narrative document that helps the recipient understand the current status and continue with the next actions."
+        },
+        {
+          "type": "p",
+          "text": "In Team Haneul, Seoyeon will be absent from 2026-10-26~2026-11-01, and Junho will take over promotion and registration work. The event is on 2026-11-14 14:00–16:00 with capacity 30 people, and as of 2026-10-23 there are 22 registrants. The final promotional material deadline is 2026-10-28, and Seoyeon's notes do not yet contain the venue-confirmation result."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Document section",
+            "What the recipient needs to know",
+            "Caution"
+          ],
+          "rows": [
+            [
+              "Background",
+              "Event / role / absence period",
+              "Do not omit it even if it seems obvious to the team"
+            ],
+            [
+              "Current status",
+              "Completed / in progress / waiting",
+              "Do not mark items complete by guessing"
+            ],
+            [
+              "Material location",
+              "Shared folder and materials",
+              "Do not write passwords / authentication information"
+            ],
+            [
+              "Next actions",
+              "Work to continue and prerequisites",
+              "Do not invent new deadlines"
+            ],
+            [
+              "Cautions",
+              "Personal information / checks before distribution",
+              "Do not put original personal information into AI"
+            ],
+            [
+              "TBD items",
+              "Unconfirmed decisions",
+              "Do not fill gaps by guessing"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scattered-notes",
+      "heading": "2. Gather scattered notes together with their original sources",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Collect only the necessary parts of Seoyeon's notes as fictional input. In a real environment, do not copy personally identifiable information such as applicant names or phone numbers; transfer only work status and material locations."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Shared facts\n- Team Haneul 4 members: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Participation fee: none\n- Option A: Civic Center 3rd-floor seminar room: capacity 32 people, projector available, elevator available, booking availability confirmed\n- Option B: district library auditorium: capacity 60 people, booking availability not confirmed\n- Venue confirmation deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status: as of 2026-10-23, 22 people\n- Seoyeon absence: 2026-10-26~2026-11-01\n- Recipient: Junho\n\nSeoyeon's scattered notes\n[Handover-Seoyeon-1] Promotional copy is in progress. The final version is needed by 2026-10-28. The final venue name must be included.\n[Handover-Seoyeon-2] The venue-confirmation result is not yet in my notes. Minseo manages the overall schedule, so the latest decision needs to be confirmed with Minseo.\n[Handover-Seoyeon-3] Promotion-related file location: Shared folder/Workshop/Promotion\n[Handover-Seoyeon-4] Registration-status file location: Shared folder/Workshop/Registration\n[Handover-Seoyeon-5] As of 2026-10-23, there are 22 registrants. Capacity is 30 people. Do not paste applicants' personal contact details into an AI chat tool.\n[Handover-Seoyeon-6] Do not distribute the promotional material as the final version before confirming the final venue name.\n[Handover-Seoyeon-7] When a new registration arrives, update the internal status in Shared folder/Workshop/Registration, and share only the total registration status with the team.\n[Handover-Seoyeon-8] During the absence period, Junho takes over promotion and registration work.\n[Handover-Seoyeon-9] My notes do not say who approves the final check of the promotional material. Needs confirmation."
+        },
+        {
+          "type": "p",
+          "text": "Because file locations, statuses, prohibited actions, owners, and TBD items are mixed together, the input needs item-by-item restructuring rather than a simple summary. Ask AI to leave unsupported content as Needs confirmation."
+        }
+      ]
+    },
+    {
+      "id": "handover-prompt",
+      "heading": "3. Specify a structure that lets the recipient continue the work",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Design the prompt around the recipient's action flow rather than around summarization. Put the background and current status first, then material locations, then next actions, and finally questions about TBD items. Preserving source tags also lets the recipient know which of Seoyeon's notes to revisit when something is unclear."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Using the notes above, draft a work handover document that lets Junho continue the work immediately.\n\nStructure:\n- Background\n- Current status\n- Material locations\n- Next actions\n- Cautions\n- TBD items\n- Questions the recipient should ask Seoyeon or Minseo\n\nRules:\n- Add the relevant source tag at the end of each key sentence.\n- Do not invent owners, dates, times, numbers, decisions, or approvers that are not in the input.\n- Mark unknown content as 'Needs confirmation.'\n- Do not copy applicants' personal information into the document.\n- Keep the shared-folder paths exactly as written in the input.\n- Do not provide only a checklist; include short explanatory sentences so the recipient can understand the context."
+        }
+      ]
+    },
+    {
+      "id": "handover-example",
+      "heading": "4. A good handover connects current status to next actions",
+      "blocks": [
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nWork handover document — Seoyeon → Junho\n\nBackground\nSeoyeon will be absent from 2026-10-26~2026-11-01, and Junho will take over promotion and registration work during this period. [Handover-Seoyeon-8]\nThe event is on 2026-11-14 14:00–16:00 with capacity 30 people. [Handover-Seoyeon-5]\n\nCurrent status\nPromotional copy is in progress, and the final-version deadline is 2026-10-28. The final venue name must be included, but Seoyeon's notes do not contain the venue-confirmation result. [Handover-Seoyeon-1] [Handover-Seoyeon-2]\nRegistration status as of 2026-10-23 is 22 people. [Handover-Seoyeon-5]\n\nMaterial locations\nPromotion-related files: Shared folder/Workshop/Promotion [Handover-Seoyeon-3]\nRegistration-status file: Shared folder/Workshop/Registration [Handover-Seoyeon-4]\n\nNext actions\nJunho should confirm the latest venue-confirmation result with Minseo and then reflect the final venue name in the promotional material. [Handover-Seoyeon-1] [Handover-Seoyeon-2]\nWhen a new registration arrives, update the internal status in Shared folder/Workshop/Registration and share only the total registration status with the team. [Handover-Seoyeon-7]\n\nCautions\nDo not distribute the promotional material as the final version before confirming the final venue name. [Handover-Seoyeon-6]\nDo not paste applicants' personal contact details into an AI chat tool. [Handover-Seoyeon-5]\n\nTBD items\nWho approves the final check of the promotional material needs confirmation. [Handover-Seoyeon-9]\nBecause Seoyeon's notes do not contain the venue-confirmation result, the latest decision must be confirmed with Minseo. [Handover-Seoyeon-2]\n\nQuestions for the recipient to ask\n- To Minseo: Can you confirm the venue-confirmation result? [Handover-Seoyeon-2]\n- To Seoyeon: How can the document currently being worked on be identified in Shared folder/Workshop/Promotion? [Handover-Seoyeon-3]\n- To Minseo or Seoyeon: Who approves the final check of the promotional material? [Handover-Seoyeon-9]"
+        },
+        {
+          "type": "p",
+          "text": "This document does not invent new tasks for Junho. It connects prerequisites already present in Seoyeon's notes to the next actions. In particular, it leaves the venue-confirmation result and final approver as Needs confirmation instead of filling them in as facts. It also preserves the material paths exactly so the recipient can move from reading the document to the actual work files."
+        }
+      ]
+    },
+    {
+      "id": "bad-handover",
+      "heading": "5. Filling gaps with guesses makes handovers more dangerous",
+      "blocks": [
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\nBecause Seoyeon will be absent starting 2026-10-26, Doyun will handle registration. The venue has been confirmed as Option A, and the promotional material can be distributed on 2026-10-27. If registrations exceed capacity, applicants will automatically be moved to a waitlist, and Minseo will be treated as the final approver."
+        },
+        {
+          "type": "p",
+          "text": "This example fills the gaps smoothly but does not match the source. The recipient is Junho, not Doyun, and there is no information that the venue has been confirmed as Option A. The 2026-10-27 distribution schedule, waitlist rule, and decision that Minseo is the final approver are also absent from the input. In a handover document, such guesses can be passed on as real work rules, so unconfirmed content should be turned into questions."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Human review before handover\n- Check that the absence period and recipient match the source.\n- Check that current status and next actions are separated.\n- Check that shared-folder paths match the team's actual material locations.\n- Check that no approver / deadline / decision absent from the input has been added.\n- Check that TBD items remain as questions rather than being filled by guesses.\n- Check that personal information / passwords / authentication information are not included in the document or AI input."
+        }
+      ]
+    },
+    {
+      "id": "questions-and-use",
+      "heading": "6. The document is complete only when the recipient's questions remain visible",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A good AI work handover document is not one that fills every blank. It shows how far the recipient can proceed immediately and where questions are required. In particular, the more AI fills in content absent from the source, such as an approver or a final decision, the riskier the document becomes. Junho needs to leave questions after receiving the document, then Minseo or Seoyeon should answer them, and those answers should be reflected in the source record."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Check whether the background alone explains why the handover is needed.",
+            "After reading the current status, check whether it connects to the material locations that should be opened next.",
+            "Check whether the prerequisite decisions needed for the next actions are visible.",
+            "Check whether the cautions are connected to actual work risks.",
+            "Check whether TBD items have been turned into questions so the recipient knows whom to ask."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The next article moves beyond handing one person's work to another and compares different team-member opinions alongside confirmed facts: “Compare Scattered Opinions with Team Collaboration AI: Support a Decision Between Venue Option A and Option B”"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+    "items": [
+      "Check that Seoyeon's absence period and the recipient Junho match between input and output",
+      "Check that the shared-folder paths for promotional and registration materials are preserved exactly from the input",
+      "Check that the venue-confirmation result and promotional-material approver are not invented and remain Needs confirmation",
+      "Check that owners, dates, times, and numbers in the output exist in the input material",
+      "Check that the document does not encourage entering applicants' personal contact details, passwords, or authentication information into AI",
+      "Check that no percentages or multiple-based effect figures are invented"
+    ],
+    "limits": "This is not a record of running an actual AI tool, but an edited example explaining a fictional team's handover situation. In a real handover, people must verify the latest source material and the team's approval process, while personally identifiable and confidential information must be handled separately according to the organization's information-security policy."
+  }
+}

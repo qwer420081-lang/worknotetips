@@ -1,0 +1,205 @@
+{
+  "slug": "team-shared-prompt",
+  "title": "Create a Shared Team AI Prompt: Version-Control the Rules for Organizing Meeting Notes",
+  "summary": "Learn how to turn team collaboration AI into a team asset that is reviewed and revised together rather than a set of individual prompts. We follow Team Haneul as it improves an AI meeting-notes prompt from v1.0 to v1.1 and checks it again with the same test input.",
+  "audience": "Non-developer teams that want multiple people to organize the same type of meeting notes with AI while aligning output format and review criteria",
+  "prerequisites": [
+    "A general AI chat tool that accepts text input",
+    "Use fictional data rather than real confidential or customer information",
+    "Keep a prompt version history that team members can review together",
+    "Have a person compare the AI output directly with the source notes"
+  ],
+  "tags": [
+    "SharedTeamPrompt",
+    "AIMeetingNotes",
+    "VersionControl"
+  ],
+  "sections": [
+    {
+      "id": "why-shared-prompt",
+      "heading": "1. Make it a shared team standard, not an individual prompt",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even when organizing the same meeting notes, different instructions from each team member can produce different section names, source-labeling methods, and ways of handling TBD items. The goal here is not to create 'good wording.' It is to combine the input format, expected output, prohibited behavior, and review method the team will reuse into one document and record why it changes. Unlike keeping a personal prompt, other team members should be able to see who changed what."
+        },
+        {
+          "type": "p",
+          "text": "The fictional Team Haneul is preparing the “Neighborhood Digital Basics Workshop” for local residents on 2026-11-14 from 14:00–16:00. Capacity is 30 people and there is no fee. The venue decision deadline is 2026-10-24, the final promotional material deadline is 2026-10-28, and the instructor confirmation deadline is 2026-10-30. Registrations as of 2026-10-23 are 22 people. These facts must not be changed arbitrarily even if the shared team prompt changes."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Element to include in the shared prompt",
+            "Team standard",
+            "Reason"
+          ],
+          "rows": [
+            [
+              "Input format",
+              "Provide the note author together with the item number",
+              "Makes it easier to trace the source again"
+            ],
+            [
+              "Output format",
+              "Separate decisions, action items, TBD items, and conflicts",
+              "Keeps agreed content separate from items to verify"
+            ],
+            [
+              "Source labeling",
+              "Keep note tags at the end of each item",
+              "Makes multiple people’s records traceable"
+            ],
+            [
+              "Prohibited behavior",
+              "Do not guess owners, deadlines, or decisions",
+              "Prevents confirmation not supported by the source"
+            ],
+            [
+              "Change history",
+              "Record version, date, changer, and reason",
+              "Preserves the rationale for changes to a jointly owned document"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "test-input",
+      "heading": "2. Keep the same test input fixed for comparison",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If you change the test input every time you revise a version, it becomes difficult to tell what caused the output to change. The data below contains fictional notes from three people about the 2026-10-20 meeting. Their wording differs, and one person uses a relative expression for the promotional-material schedule. We also include the version history and changer for the shared team prompt itself so the later output does not invent new information."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "input",
+          "text": "Team Haneul shared facts\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Fee: none\n- Venue decision deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status as of 2026-10-23: 22 people\n\nTeam member roles\n- Minseo: team lead · overall schedule\n- Junho: venue · supplies\n- Seoyeon: promotion · registration\n- Doyun: program · instructor outreach\n\nTest meeting: 2026-10-20\n\n[Note-Minseo-1] Prioritize reviewing Option A: Civic Center 3rd-floor seminar room. Make the final decision by 2026-10-24.\n[Note-Minseo-2] Prepare the final promotional material by 2026-10-28.\n[Note-Junho-1] Option A: Civic Center 3rd-floor seminar room has a capacity of 32 people, a projector, an elevator, and confirmed booking availability.\n[Note-Junho-2] Option B: district library auditorium has a capacity of 60 people, and booking availability has not yet been confirmed.\n[Note-Seoyeon-1] The promotional material needs final revision after the venue is confirmed.\n[Note-Junho-3] I heard the promotional material would be finished 'sometime next week.' I want to confirm the exact date again.\n[Note-Doyun-1] The instructor confirmation deadline is 2026-10-30.\n\nShared prompt version history\n- v1.0: 2026-10-22, changed by Minseo, initial shared draft created\n- v1.1: 2026-10-23, changed by Seoyeon, revised to specify rules for preserving conflicts and labeling sources"
+        },
+        {
+          "type": "p",
+          "text": "This input contains no real organizational information or customer data. When creating a shared prompt in real work, do not paste confidential information, passwords, authentication information, or personally identifiable information as-is; check the organization’s information security policy first."
+        }
+      ]
+    },
+    {
+      "id": "shared-prompt-v11",
+      "heading": "3. Fix input, output, and prohibited behavior in one prompt",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The point of v1.1 is not to make the prompt longer, but to state the decision rules. In particular, when records from different people conflict, it requires keeping both records and separating them as Needs confirmation instead of automatically choosing one. It also prohibits filling in plausible owners or dates that are not in the notes."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "prompt",
+          "text": "Organize the meeting notes from multiple people below for team sharing.\n\nInput rules\n- Use each note’s author and item number as the source.\n- Distinguish shared facts from individual notes.\n\nOutput format\n1) Decisions\n2) Action items\n3) TBD items\n4) Records that conflict or use different wording\nAttach the original source tag at the end of each item.\n\nProhibited behavior\n- Do not invent owners, dates, times, numbers, or decisions that are not in the input.\n- Do not convert relative date expressions into an arbitrary YYYY-MM-DD.\n- Do not arbitrarily adopt one of the conflicting records.\n- If confirmation status is unclear, write 'Needs confirmation'.\n\nAt the end, briefly list the items a person should compare with the source."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Version",
+            "Change",
+            "Review point"
+          ],
+          "rows": [
+            [
+              "v1.0",
+              "Initial shared draft",
+              "Check whether the item categories are sufficient for team use"
+            ],
+            [
+              "v1.1",
+              "Added rules for preserving conflicts and labeling sources",
+              "Check that minority records or different wording do not disappear"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "expected-output",
+      "heading": "4. A good result preserves evidence rather than looking like the single right answer",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following is an edited example created to review the prompt, not an actual AI output. The important point is that it does not invent new decisions and preserves differing records together with their source tags."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "output",
+          "text": "[Example result · not an actual AI output]\nShared prompt: v1.1\nChange record: 2026-10-23, changed by Seoyeon\n\nDecisions\n- The event date is 2026-11-14, the time is 14:00–16:00, and the capacity is 30 people.\n- The instructor confirmation deadline is 2026-10-30. [Note-Doyun-1]\n\nAction items\n- Prioritize reviewing Option A: Civic Center 3rd-floor seminar room and make the final decision by 2026-10-24. [Note-Minseo-1]\n- The promotional material needs final revision after the venue is confirmed. [Note-Seoyeon-1]\n\nTBD items\n- Booking availability for Option B: district library auditorium Needs confirmation. [Note-Junho-2]\n\nRecords that conflict or use different wording\n- Minseo recorded the final promotional material deadline as 2026-10-28. [Note-Minseo-2]\n- Junho recorded that he heard the promotional material would be finished 'sometime next week' and wrote that he wanted to confirm the exact date again. [Note-Junho-3]\n- Therefore, the wording of the promotional material deadline needs source verification, and neither record should be deleted arbitrarily.\n\nItems for a person to compare\n- Check Minseo’s and Junho’s records of the promotional material deadline together.\n- Check whether any new confirmation result for Option B booking availability has appeared in Junho’s notes."
+        },
+        {
+          "type": "p",
+          "text": "This format is not a mechanism for AI to decide the meeting conclusion; it is a mechanism for showing team members what they need to verify. In particular, when wording differs as in [Note-Minseo-2] and [Note-Junho-3], removing one side makes the issue that needs review disappear."
+        }
+      ]
+    },
+    {
+      "id": "bad-output-and-fix",
+      "heading": "5. Have the team record how the shared prompt fails as well",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If the team treats a shared prompt as finished after writing it once, repeated errors can persist. It is better to record what flawed output appeared and what rule was added to prevent it as part of the reason for a version change."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "bad_output",
+          "text": "[Common flawed result · not an actual AI output]\n- The venue was confirmed as Option B.\n- Junho will complete the promotional material.\n- The promotional material deadline is 2026-10-27.\n- Option B is available for booking."
+        },
+        {
+          "type": "p",
+          "text": "This example invents a decision not present in the input, assigns new work to Junho even though he is not responsible for promotion, and confirms a date and Option B booking availability that were never provided. The fix is not to polish the wording, but to add rules such as 'no guessing,' 'preserve conflicts,' and 'keep source tags' to the prompt and test it again with the same input."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "role": "checklist",
+          "text": "Shared prompt review checklist\n- Does the input format retain the author and original item number?\n- Are decisions, action items, TBD items, and conflicts separated?\n- Does the prompt prohibit inventing owners, dates, times, or numbers not in the input?\n- Does it avoid merging different records into one side?\n- Can team members verify the changed version, date, changer, and reason?\n- Was the organization’s information security policy checked before entering real work data?"
+        }
+      ]
+    },
+    {
+      "id": "team-review-cycle",
+      "heading": "6. Re-review version changes with the same input",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A shared team prompt is closer to a small operating rule than a finished product. When creating a new version, the person making the change should record the reason, and another team member should use the same test input to check the output format and omissions before sharing it. Keeping input and output rules in text rather than relying on settings in a specific AI product makes it easier to preserve the team’s review criteria even if tools change."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "The person who revised the prompt and the person reviewing it read together what changed.",
+            "Keep the test input unchanged and check that the decision, action-item, TBD, and conflict categories are preserved.",
+            "Check that source tags are not lost and unverified information is not turned into confirmed information in the new version.",
+            "Clearly mark only the version the team has decided to use in the shared location."
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The next article, “How to Review and Approve AI Output as a Team: Checks Before Sharing a Weekly Report”, explains how to separately verify facts, omissions, sensitive information, owners, and final approval status before sharing even when the output was created with a shared prompt."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, and numbers",
+    "items": [
+      "Check that every code block has a role of input, prompt, output, bad_output, or checklist",
+      "Check that person names, YYYY-MM-DD dates, HH:MM times, and numbers in the output exist in the input of the same article",
+      "Check that the v1.0 and v1.1 change records match the versions, dates, and changers in the input data",
+      "Check that conflicting promotional material deadline records are not arbitrarily merged into one side in the output",
+      "Check that the venue, event schedule, capacity, major deadlines, and registration status do not contradict the shared facts of the series",
+      "Check that no effect metrics such as time-saving rates or productivity-improvement figures are used"
+    ],
+    "limits": "These are fictional inputs and edited examples created to explain how to use team collaboration AI, not results from an actual AI tool. Real team data may contain confidential or personal information, so check the organization’s information security policy and the permitted disclosure scope of the source before entering it."
+  }
+}

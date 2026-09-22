@@ -1,0 +1,1554 @@
+{
+  "lang": "es",
+  "articles": [
+    {
+      "slug": "team-ai-where-to-start",
+      "title": "IA para colaboración en equipo: ¿por dónde empezar? Comparar tareas repetitivas y elegir la primera aplicación",
+      "summary": "Al introducir por primera vez IA en la colaboración de un equipo, suele ser más manejable empezar comparando tareas en las que varias personas reúnen y revisan información de forma repetida, en lugar de fijarse primero en funciones llamativas. Con 6 tareas ficticias del equipo Haneul, anotamos de forma cualitativa el efecto esperado, revisamos a la vez la carga de verificación y el riesgo de información sensible, y reducimos las opciones para una primera aplicación. La IA organiza las candidatas, pero la decisión final corresponde al equipo.",
+      "audience": "Personas no desarrolladoras, tanto en el trabajo como en los estudios, que quieren aplicar IA por primera vez al trabajo compartido de un equipo y no solo a tareas individuales",
+      "prerequisites": [
+        "Una herramienta general de chat con IA en la que se pueda introducir texto",
+        "Poder anotar varias tareas que se repiten en el equipo",
+        "Usar datos ficticios o desidentificados en lugar de información real de clientes, datos de contacto o información confidencial",
+        "Que un miembro del equipo compruebe directamente el resultado generado por la IA frente al original"
+      ],
+      "tags": [
+        "IAcolaboraciónequipo",
+        "seleccióndetareas",
+        "revisióncompartida"
+      ],
+      "sections": [
+        {
+          "id": "choose-small-start",
+          "heading": "1. Empezar por tareas repetitivas que el equipo revisa en conjunto, no por las funciones",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Al elegir la primera tarea para aplicar IA en la colaboración del equipo, conviene anotar primero no «qué hace bien la IA», sino «qué información se reúne repetidamente en nuestro equipo y quién vuelve a comprobarla». Frente a tareas que una persona termina por sí sola, las que reúnen notas, estados u opiniones de varias personas en un formato común son más fáciles de delimitar en cuanto a entrada y resultado, y también suele quedar más claro quién debe revisarlas."
+            },
+            {
+              "type": "p",
+              "text": "El ejemplo es el «Taller Vecinal de Habilidades Digitales Básicas» que prepara el ficticio equipo Haneul. Para elegir una primera aplicación, el efecto esperado se anota de forma cualitativa, por ejemplo, «facilita reunir la información en un solo lugar» o «facilita encontrar omisiones». En la misma tabla se comprueba también si la carga de revisión es alta y si existe posibilidad de que los materiales reales contengan datos personales o información confidencial. Esta comparación no es una decisión automática, sino un borrador para la discusión del equipo."
+            }
+          ]
+        },
+        {
+          "id": "candidate-input",
+          "heading": "2. Preparar como material de entrada las tareas repetitivas candidatas y los hechos compartidos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La siguiente entrada es material ficticio creado para la práctica. No se incluyen listas reales de personas inscritas ni datos de contacto; para el estado de las inscripciones solo se usan cifras agregadas. Cuando se utilicen materiales reales en una organización, primero debe revisarse la política interna de protección de la información y acordarse en el equipo qué información no debe introducirse en la IA."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Equipo ficticio: equipo Haneul\nIntegrantes: Minseo (líder del equipo / calendario general), Junho (lugar / materiales), Seoyeon (difusión / recepción de inscripciones), Doyun (programa / contacto con instructor)\nEvento: Taller Vecinal de Habilidades Digitales Básicas\nFecha del evento: 2026-11-14\nHorario del evento: 14:00–16:00\nCupo: 30 personas\nPúblico: residentes de la zona\nCuota de participación: ninguna\nLugar candidato Opción A: sala de seminarios del 3.er piso del centro cívico, capacidad 32 personas, proyector disponible, ascensor disponible, disponibilidad de alquiler confirmada\nLugar candidato Opción B: auditorio de la biblioteca del distrito, capacidad 60 personas, disponibilidad de alquiler sin confirmar\nPlazos principales: confirmar lugar 2026-10-24 / versión final del material de difusión 2026-10-28 / confirmar instructor 2026-10-30\nEstado de inscripciones: a fecha de 2026-10-23, 22 personas\n\nTareas repetitivas candidatas\n[Candidato-A] Combinar en uno solo las notas de reunión de varios asistentes / frecuencia: cada reunión / implicados: Minseo / Junho / Seoyeon / Doyun\n[Candidato-B] Recibir el estado de avance de cada miembro y crear un borrador de tabla de estado compartida / frecuencia: cada semana / implicados: Minseo / Junho / Seoyeon / Doyun\n[Candidato-C] Organizar los hechos confirmados y los puntos sin confirmar de los lugares candidatos / frecuencia: cuando sea necesario antes de confirmar el lugar / implicados: Minseo / Junho\n[Candidato-D] Organizar un borrador del texto de difusión para que lo revise el equipo / frecuencia: cuando sea necesario antes de cerrar el material de difusión / implicados: Minseo / Seoyeon\n[Candidato-E] Agregar el estado de las inscripciones y compartirlo con el equipo / frecuencia: cada semana / implicados: Minseo / Seoyeon / precaución: no introducir nombres ni datos de contacto reales de las personas inscritas\n[Candidato-F] Organizar las notas sobre el contacto con el instructor por estado de avance / frecuencia: cuando sea necesario durante el periodo de contacto / implicados: Minseo / Doyun"
+            },
+            {
+              "type": "p",
+              "text": "Si al anotar las candidatas se incluyen no solo el nombre de la tarea, sino también la frecuencia y las personas implicadas, resulta más fácil pensar quién utilizará el resultado y quién lo revisará. En tareas donde es fácil que se mezclen datos personales, es importante definir de antemano el límite de la entrada, por ejemplo, «usar solo valores agregados»."
+            }
+          ]
+        },
+        {
+          "id": "comparison-prompt",
+          "heading": "3. Pedir primero criterios de comparación, no una recomendación",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En vez de preguntar a la IA solo «¿por cuál conviene empezar?», se le proporcionan también los criterios de evaluación y las decisiones que no debe tomar. Aquí se comparan la repetitividad, el grado en que se combina información de varias personas, el efecto cualitativo esperado, la carga de revisión humana y el riesgo de información sensible. También se especifica que la IA no debe sustituir la decisión final."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Compara, a partir de la entrada ficticia anterior, las tareas candidatas para una primera aplicación de IA en la colaboración del equipo.\n\nRequisitos:\n- Compara cualitativamente, para cada candidata, la repetitividad, el alcance de colaboración, el efecto esperado, la carga de revisión y el riesgo de información sensible.\n- No inventes cifras de efecto ni resultados que no estén en la entrada.\n- No sugieras introducir en la IA datos personales ni datos de contacto reales.\n- Propón una candidata, pero incluye tanto la razón como las precauciones.\n- Indica que la propuesta es un borrador para la discusión del equipo, no una decisión.\n- No inventes responsables, plazos ni políticas que no estén en la entrada.\n- Marca como 'Requiere confirmación' cualquier contenido incierto."
+            }
+          ]
+        },
+        {
+          "id": "comparison-output",
+          "heading": "4. Leer en la tabla comparativa tanto el efecto como la carga de revisión",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La siguiente tabla es un ejemplo editorial reorganizado a partir de la entrada anterior para facilitar la revisión humana. «Adecuación» no es una puntuación de rendimiento, sino una valoración cualitativa de lo fácil que resulta comparar entrada y resultado en la primera práctica."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Tarea candidata",
+                "Repetitividad",
+                "Alcance de colaboración",
+                "Efecto esperado",
+                "Carga de revisión",
+                "Riesgo de información sensible",
+                "Perspectiva para la primera aplicación"
+              ],
+              "rows": [
+                [
+                  "Integrar notas de reunión",
+                  "Cada reunión",
+                  "Todo el equipo",
+                  "Comparar distintos registros en una sola vista",
+                  "Requiere comprobar fuentes y omisiones",
+                  "Depende del contenido de las notas",
+                  "Es fácil rastrear entradas y fuentes"
+                ],
+                [
+                  "Integrar estados de avance",
+                  "Cada semana",
+                  "Todo el equipo",
+                  "Facilita ver retrasos y dependencias en conjunto",
+                  "Requiere confirmar el estado más reciente",
+                  "Depende del contenido del trabajo",
+                  "Resulta más fácil de usar si antes se define un formato común"
+                ],
+                [
+                  "Organizar hechos sobre el lugar",
+                  "Cuando sea necesario",
+                  "Minseo / Junho",
+                  "Separar hechos confirmados de puntos sin confirmar",
+                  "Requiere volver a comprobar el estado del alquiler",
+                  "Relativamente bajo",
+                  "Adecuado para revisar hechos antes de decidir"
+                ],
+                [
+                  "Organizar texto de difusión",
+                  "Cuando sea necesario",
+                  "Minseo / Seoyeon",
+                  "Organizar en un formato común el texto que se revisará",
+                  "Requiere comprobar tanto la redacción como los hechos",
+                  "Relativamente bajo",
+                  "Puede mezclar la evaluación de la calidad de redacción con los hechos"
+                ],
+                [
+                  "Compartir estado de inscripciones",
+                  "Cada semana",
+                  "Minseo / Seoyeon",
+                  "Compartir el estado agregado",
+                  "Requiere comprobar el criterio de agregación",
+                  "Los datos originales pueden ser de alto riesgo",
+                  "Debe existir antes una regla para introducir solo valores agregados"
+                ],
+                [
+                  "Organizar notas de contacto con instructor",
+                  "Cuando sea necesario",
+                  "Minseo / Doyun",
+                  "Distinguir entre avances y puntos por definir",
+                  "Requiere comprobar el contenido de comunicaciones externas",
+                  "Depende del contenido",
+                  "Primero debe definirse el alcance de la entrada"
+                ]
+              ]
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nPropuesta para la primera aplicación: integrar las notas de reunión de varios asistentes\n\nRazones:\n- Es un trabajo compartido por el equipo que compara en un solo documento los registros de Minseo / Junho / Seoyeon / Doyun.\n- Se pueden colocar en paralelo las notas originales y el resultado organizado para comprobar fuentes, omisiones y puntos por definir.\n- El procedimiento puede practicarse con notas ficticias sin introducir nombres ni datos de contacto reales de personas inscritas.\n\nPrecauciones:\n- Las frases combinadas por la IA no se convierten por ello en decisiones confirmadas del equipo.\n- Los registros diferentes no deben sobrescribirse en uno solo; deben conservarse junto con su fuente.\n- La decisión final corresponde al equipo Haneul después de su revisión."
+            },
+            {
+              "type": "p",
+              "text": "Compruebe que la razón de la propuesta no sea simplemente «parece que la IA lo hará bien», sino que se explique por la trazabilidad entre entrada y salida, la posibilidad de revisión conjunta y el riesgo de la información. Para una primera aplicación, puede ser más apropiada una tarea en la que sea fácil localizar la causa de un fallo que la tarea más importante."
+            }
+          ]
+        },
+        {
+          "id": "bad-choice",
+          "heading": "5. No aceptar la recomendación como si fuera una decisión definitiva",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nComo integrar notas de reunión es la tarea más eficiente, se adopta de inmediato. La carga de revisión no es grande, así que el resumen de la IA puede usarse como registro compartido sin que lo comprueben los miembros del equipo. El estado de las inscripciones también puede organizarse con mayor precisión si se introducen directamente los datos originales."
+            },
+            {
+              "type": "p",
+              "text": "Este ejemplo debe corregirse en tres puntos. Primero, la entrada no contiene evidencia medida de que alguna tarea sea «la más eficiente». Segundo, la integración de notas de reunión requiere que una persona compruebe las fuentes y las omisiones, por lo que no hay fundamento para omitir la revisión. Tercero, la candidata sobre el estado de las inscripciones especifica que no se introduzcan nombres ni datos de contacto reales, pero el resultado recomienda usar los datos originales. La recomendación debe usarse solo para reducir las opciones; el equipo debe decidir si se aplica y qué alcance tendrán los datos."
+            }
+          ]
+        },
+        {
+          "id": "team-check-and-next",
+          "heading": "6. Confirmar lo que debe acordar el equipo y pasar a la siguiente práctica",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Antes de elegir la primera tarea, el equipo debe acordar a quién se compartirá el resultado, quién comparará el original con el resultado y qué información no se introducirá. Si se prevé repetir la misma tarea, también conviene dejar por escrito el «formato de los datos de entrada» y los «criterios de revisión», para que la siguiente persona pueda usar los mismos criterios."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Lista de comprobación del equipo\n- ¿Las tareas repetitivas candidatas reflejan el flujo real del equipo?\n- ¿Está claro dónde se reúne la información de varias personas?\n- ¿El efecto esperado está descrito como un cambio verificable y no como una cifra?\n- ¿Está definida la persona que comparará el resultado con el original?\n- ¿Está definido el alcance para no introducir datos personales, información de clientes ni información confidencial real?\n- ¿Se distingue entre la recomendación de la IA y la decisión final del equipo?"
+            },
+            {
+              "type": "p",
+              "text": "Si se eligió la integración de notas de reunión como primera práctica, el siguiente artículo, “Actas de reunión con IA: combinar notas de varios asistentes y organizar decisiones, tareas y asuntos pendientes”, continúa con el método para combinar registros diferentes conservando sus fuentes."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Datos ficticios de entrada y ejemplo editorial · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que todos los bloques code tienen role y solo usan valores de rol permitidos",
+          "Comparar que los nombres de personas, fechas, horas y cifras del output existan en el input del mismo artículo",
+          "Comprobar que 2026-11-14, 14:00–16:00, el cupo de 30 personas y los plazos principales coincidan con el caso ficticio compartido",
+          "Comprobar que el estado de 22 inscripciones a fecha de 2026-10-23 no haya cambiado a otro valor",
+          "Comprobar que todas las filas de las tablas tengan el mismo número de columnas que el encabezado",
+          "Comprobar que el efecto no se exprese en porcentajes ni múltiplos"
+        ],
+        "limits": "No son resultados de haber ejecutado una herramienta de IA y medido su efecto, sino datos ficticios y ejemplos editoriales con fines de aprendizaje. Cada organización debe definir directamente sus políticas reales, la sensibilidad de sus datos y la responsabilidad de revisión; no se deben introducir datos confidenciales, información de clientes ni credenciales reales."
+      }
+    },
+    {
+      "slug": "team-meeting-notes-merge",
+      "title": "Actas de reunión con IA: combinar notas de varios asistentes y organizar decisiones, tareas y asuntos pendientes",
+      "summary": "Al crear actas de reunión con IA, en lugar de pulir las notas de una sola persona, se practica cómo introducir juntas las anotaciones de varios asistentes y organizar decisiones, tareas, puntos por definir y diferencias entre registros conservando etiquetas de origen. Con notas ficticias de la reunión del equipo Haneul del 2026-10-20, se muestra cómo crear un borrador para compartir con el equipo sin forzar expresiones distintas a una sola versión.",
+      "audience": "Equipos no desarrolladores que quieren combinar en un solo documento las notas de varios asistentes sin perder la fuente original ni los asuntos aún no confirmados",
+      "prerequisites": [
+        "Una herramienta general de chat con IA en la que se pueda introducir texto",
+        "Preparar por separado las notas de cada asistente sobre la misma reunión",
+        "Usar datos ficticios o desidentificados en lugar de información confidencial, información de clientes o datos de contacto reales",
+        "Que una persona vuelva a comparar el resumen de la IA con las notas originales"
+      ],
+      "tags": [
+        "actasdeIA",
+        "integracióndenotas",
+        "trazabilidaddefuentes"
+      ],
+      "sections": [
+        {
+          "id": "merge-with-sources",
+          "heading": "1. No borrar la fuente al combinar varias notas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Al terminar una reunión, cada asistente suele haber anotado cosas con un foco distinto. Una persona puede registrar solo decisiones, mientras otra deja sus propias tareas o expresiones que todavía no se han confirmado. En unas actas de reunión con IA, lo importante no es alisar las frases, sino conservar la posibilidad de rastrear de qué nota procede cada contenido."
+            },
+            {
+              "type": "p",
+              "text": "Este artículo usa como ejemplo una reunión ficticia del equipo Haneul celebrada el 2026-10-20. El objetivo del acta no es crear decisiones que no estén en la entrada, sino separar hechos confirmados en común, tareas asignadas, puntos por definir y diferencias entre registros para que el equipo pueda volver a comprobarlos."
+            }
+          ]
+        },
+        {
+          "id": "meeting-input",
+          "heading": "2. Introducir las notas de cada asistente con números de elemento",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En los datos de entrada se añade el nombre del asistente y un número a cada elemento. Aunque dos notas parezcan referirse a lo mismo, si la expresión difiere se conserva tal cual. Aquí se incluye un caso en el que una nota registra el plazo del material de difusión con una fecha exacta y otra lo expresa de forma relativa."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Reunión: reunión de preparación del taller del equipo Haneul\nFecha de la reunión: 2026-10-20\nComposición del equipo: Minseo (líder del equipo / calendario general), Junho (lugar / materiales), Seoyeon (difusión / recepción de inscripciones), Doyun (programa / contacto con instructor)\nEvento: Taller Vecinal de Habilidades Digitales Básicas\nFecha del evento: 2026-11-14\nHorario del evento: 14:00–16:00\nCupo: 30 personas\nPúblico: residentes de la zona\nCuota de participación: ninguna\nLugar candidato Opción A: sala de seminarios del 3.er piso del centro cívico, capacidad 32 personas, proyector disponible, ascensor disponible, disponibilidad de alquiler confirmada\nLugar candidato Opción B: auditorio de la biblioteca del distrito, capacidad 60 personas, disponibilidad de alquiler sin confirmar\nCalendario compartido: confirmar lugar 2026-10-24 / versión final del material de difusión 2026-10-28 / confirmar instructor 2026-10-30\nEstado compartido de inscripciones: a fecha de 2026-10-23, 22 personas\n\nNotas de Minseo\n[Nota-Minseo-1] Se volvió a confirmar el plan de fecha del evento 2026-11-14, horario 14:00–16:00 y cupo de 30 personas.\n[Nota-Minseo-2] El lugar se confirmará a más tardar el 2026-10-24. Junho organizará y compartirá el estado de verificación de la Opción A y la Opción B.\n[Nota-Minseo-3] El plazo de la versión final del material de difusión es 2026-10-28. Seoyeon preparará la versión final reflejando el lugar confirmado.\n[Nota-Minseo-4] El plazo para confirmar al instructor es 2026-10-30. Doyun organizará el estado del contacto.\n\nNotas de Junho\n[Nota-Junho-1] Opción A: sala de seminarios del 3.er piso del centro cívico, capacidad 32 personas, proyector / ascensor disponibles, disponibilidad de alquiler confirmada.\n[Nota-Junho-2] Entendió que el material de difusión se terminaría 'durante la próxima semana'.\n[Nota-Junho-3] Opción B: auditorio de la biblioteca del distrito, capacidad 60 personas. La disponibilidad de alquiler todavía no se ha confirmado.\n\nNotas de Seoyeon\n[Nota-Seoyeon-1] Registró que la versión final del material de difusión se prepararía a más tardar el 2026-10-28.\n[Nota-Seoyeon-2] Cuando se confirme el lugar, debe reflejarse en el texto del material de difusión.\n[Nota-Seoyeon-3] La recepción de inscripciones sigue abierta y en las notas de la reunión no se anotó por separado el número de inscritos."
+            },
+            {
+              "type": "p",
+              "text": "El estado compartido de las inscripciones se incluyó por separado para mantener coherente el contexto de la serie, pero el número de inscritos correspondiente a un momento posterior no se arrastra a las notas de la reunión del 2026-10-20 como si hubiera sido una decisión de ese día. Distinguir el intervalo temporal de los datos de entrada también es una parte importante de la revisión de actas."
+            }
+          ]
+        },
+        {
+          "id": "merge-prompt",
+          "heading": "3. Pedir que se separen decisiones, tareas, puntos por definir y diferencias entre registros",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En la solicitud se especifican criterios de clasificación concretos en lugar de pedir solo un resumen. Cuando existen registros diferentes, se indica en especial que no se elija y confirme la frase que parezca más plausible, sino que se conserven ambas fuentes. Si el responsable o el plazo no tienen base en la entrada, se pide dejarlos como «Por definir» o «Requiere confirmación»."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Organiza las notas de reunión de cada asistente anteriores en un único borrador de acta de reunión con IA para compartir con el equipo.\n\nClasificación:\n- Decisiones o hechos reconfirmados\n- Tareas: muestra responsable y plazo solo cuando aparezcan en la entrada\n- Por definir o requiere confirmación\n- Registros diferentes o diferencias de expresión\n- Borrador de mensaje para compartir con el equipo\n\nReglas:\n- Añade al final de cada elemento las etiquetas de la fuente original en las que se basa.\n- No elimines ni confirmes arbitrariamente uno de los registros diferentes.\n- Usa por separado el calendario compartido y las notas de los asistentes.\n- No inventes responsables, plazos ni estados de finalización que no estén en la entrada.\n- No presentes información con fecha de referencia posterior a la reunión como si se hubiera decidido durante la reunión.\n- No añadas datos de contacto ni datos personales reales."
+            }
+          ]
+        },
+        {
+          "id": "merged-output",
+          "heading": "4. Revisar un borrador de acta para compartir con el equipo conservando las etiquetas de origen",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nDecisiones / reconfirmaciones\n- Se reconfirmó el plan de fecha del evento 2026-11-14, horario 14:00–16:00 y cupo de 30 personas. [Nota-Minseo-1]\n\nTareas\n- Junho: organizar y compartir el estado de verificación de la Opción A y la Opción B. Plazo para confirmar el lugar: 2026-10-24. [Nota-Minseo-2] [Nota-Junho-1] [Nota-Junho-3]\n- Seoyeon: preparar la versión final del material de difusión reflejando el lugar confirmado. La fecha del calendario compartido y de las notas de Minseo / Seoyeon es 2026-10-28. [Nota-Minseo-3] [Nota-Seoyeon-1] [Nota-Seoyeon-2]\n- Doyun: organizar el estado del contacto con el instructor. Plazo para confirmar al instructor: 2026-10-30. [Nota-Minseo-4]\n\nPor definir / requiere confirmación\n- El lugar final sigue por definir. Requiere confirmación la disponibilidad de alquiler de la Opción B. [Nota-Junho-3]\n\nDiferencia entre registros\n- Junho registró el momento de terminar el material de difusión como 'durante la próxima semana', mientras que Seoyeon lo registró como 2026-10-28. El calendario compartido también indica 2026-10-28, pero al compartir el acta se conserva la diferencia de expresión entre las notas y se comprueba. [Nota-Junho-2] [Nota-Seoyeon-1]\n\nBorrador de mensaje para el equipo\n- Hemos combinado las notas de la reunión del equipo Haneul. El lugar está previsto para confirmarse a más tardar el 2026-10-24 y Junho organizará el estado de las opciones. El plazo de la versión final del material de difusión de Seoyeon figura como 2026-10-28, y el plazo de confirmación del instructor de Doyun como 2026-10-30. El lugar final y la disponibilidad de alquiler de la Opción B requieren confirmación. Hay una diferencia de expresión entre las notas sobre el plazo del material de difusión; comprueben también las etiquetas originales."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Categoría",
+                "Contenido",
+                "Responsable",
+                "Plazo",
+                "Fuente"
+              ],
+              "rows": [
+                [
+                  "Reconfirmación",
+                  "Mantener el plan de fecha / cupo del evento",
+                  "Minseo",
+                  "No requiere confirmación",
+                  "[Nota-Minseo-1]"
+                ],
+                [
+                  "Tarea",
+                  "Compartir el estado de verificación de los lugares candidatos",
+                  "Junho",
+                  "2026-10-24",
+                  "[Nota-Minseo-2] [Nota-Junho-1] [Nota-Junho-3]"
+                ],
+                [
+                  "Tarea",
+                  "Preparar la versión final del material de difusión reflejando el lugar confirmado",
+                  "Seoyeon",
+                  "2026-10-28",
+                  "[Nota-Minseo-3] [Nota-Seoyeon-1] [Nota-Seoyeon-2]"
+                ],
+                [
+                  "Tarea",
+                  "Organizar el estado del contacto con el instructor",
+                  "Doyun",
+                  "2026-10-30",
+                  "[Nota-Minseo-4]"
+                ],
+                [
+                  "Por definir",
+                  "Lugar final y disponibilidad de alquiler de la Opción B",
+                  "Junho",
+                  "2026-10-24",
+                  "[Nota-Minseo-2] [Nota-Junho-3]"
+                ],
+                [
+                  "Diferencia de registro",
+                  "Expresión sobre cuándo terminar el material de difusión",
+                  "Seoyeon",
+                  "2026-10-28 / durante la próxima semana",
+                  "[Nota-Junho-2] [Nota-Seoyeon-1]"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Una buena integración no es un documento que elige la nota más plausible, sino uno que coloca en orden los puntos que el equipo debe volver a comprobar. En especial, una expresión relativa como «durante la próxima semana» no debe convertirse arbitrariamente en una fecha; debe conservarse la expresión original. Aunque el calendario compartido contenga una fecha exacta, la propia diferencia de expresión entre las notas puede conservarse como registro."
+            }
+          ]
+        },
+        {
+          "id": "bad-merge",
+          "heading": "5. Corregir actas que hayan borrado lo pendiente y las diferencias entre registros",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nTodas las cuestiones relacionadas con el lugar quedaron resueltas y también se acordó sin discrepancias el calendario del material de difusión. Cada responsable puede continuar según el plan existente y no hay nada más que confirmar."
+            },
+            {
+              "type": "p",
+              "text": "Este ejemplo borró el estado por definir y las diferencias entre registros que permanecían en la entrada. El lugar final todavía no se ha decidido y la disponibilidad de alquiler de la Opción B tampoco está confirmada. Además, la nota de Junho «durante la próxima semana» y la fecha exacta registrada por Seoyeon no usan la misma expresión. Si se eliminan estas diferencias, después será difícil rastrear quién entendió el calendario basándose en qué evidencia. Al corregirlo, deben recuperarse los elementos «Por definir / requiere confirmación» y las etiquetas de ambas fuentes."
+            }
+          ]
+        },
+        {
+          "id": "human-review",
+          "heading": "6. Antes de compartir, una persona debe comprobar originales, momento y responsables",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Antes de compartirlo con el equipo, puede no ser suficiente con que una sola persona entre los asistentes lea el resumen. Hay que comprobar que no falten elementos del original, que los responsables y plazos estén realmente en las notas, y que información surgida después de la reunión no se haya mezclado como si fuera una decisión de ese momento. Las decisiones importantes se confirman mediante el procedimiento de aprobación del equipo, no por la redacción del acta en sí."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Lista de comprobación antes de compartir\n- ¿Están separadas las decisiones, tareas, puntos por definir y diferencias entre registros?\n- ¿Se conservan las etiquetas de las notas originales en cada elemento clave?\n- ¿Los responsables y plazos son información que realmente aparece en la entrada?\n- ¿Se evitó combinar arbitrariamente registros diferentes en uno solo?\n- ¿Se evitó presentar un estado posterior a la reunión como si se hubiera decidido durante ella?\n- ¿Se excluyeron información confidencial, información de clientes y datos de contacto reales?"
+            },
+            {
+              "type": "p",
+              "text": "El paso siguiente a combinar notas de varias personas es reunir el estado de avance de varias personas con los mismos criterios. En el siguiente artículo, “Informe semanal con IA: reunir en uno solo el avance de varios miembros del equipo”, se explica cómo integrar en un informe lo completado, lo en curso, los retrasos, las dependencias, las solicitudes de ayuda y los puntos que requieren confirmación."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Datos ficticios de entrada y ejemplo editorial · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que todos los bloques code tienen role y que es uno de input / prompt / output / bad_output / checklist",
+          "Comparar que los nombres de personas, las fechas YYYY-MM-DD, las horas HH:MM y las cifras del output existan en el input del mismo artículo",
+          "Comprobar que no se confundan el momento de las notas de la reunión del 2026-10-20 y el estado de inscripciones con referencia al 2026-10-23",
+          "Comprobar que 2026-11-14, 14:00–16:00, el cupo de 30 personas y los plazos principales coincidan con el caso ficticio compartido",
+          "Comprobar que en las diferencias de registro y los asuntos por definir se conserven las etiquetas de origen",
+          "Comprobar que todas las filas de la tabla tengan el mismo número de columnas que el encabezado y que no haya expresiones numéricas de efecto"
+        ],
+        "limits": "No son actas generadas por una herramienta de IA real, sino un ejemplo editorial creado a partir de notas ficticias. En una reunión real, las personas deben comparar el resumen con los originales de cada asistente y el estado más reciente, además de seguir por separado el procedimiento de decisión y aprobación del equipo."
+      }
+    },
+    {
+      "slug": "team-weekly-status-rollup",
+      "title": "Informe semanal con IA: reunir en uno solo el avance de varios miembros del equipo",
+      "summary": "Se practica cómo reunir con IA actualizaciones semanales escritas por cada miembro en formatos distintos y reorganizarlas en completado, en curso, retrasos, dependencias, ayuda necesaria y puntos que requieren confirmación. Con informes del mismo periodo del equipo Haneul, se crea un ejemplo de informe semanal con IA que, cuando las cifras difieren, no elimina una de ellas y conserva tanto la hora de referencia como la fuente.",
+      "audience": "Personas no desarrolladoras que quieren reunir el avance de varios miembros en un informe compartido por el equipo y comprobar a la vez omisiones, conflictos y dependencias",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Poder consultar las actualizaciones originales de cada miembro del equipo",
+        "Practicar con datos ficticios en lugar de datos personales, información de clientes o información confidencial real",
+        "Que cada responsable compruebe los hechos antes de compartir el borrador de la IA"
+      ],
+      "tags": [
+        "informesemanalIA",
+        "estadodelequipo",
+        "trazabilidaddefuentes"
+      ],
+      "sections": [
+        {
+          "id": "problem-and-context",
+          "heading": "1. Pegar informes individuales no es lo mismo que construir el estado del equipo",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Cuando varias personas redactan sus actualizaciones semanales por separado, lo completado, lo previsto y las solicitudes de ayuda quedan dispersos en formatos distintos. La función de la IA para colaboración en equipo no es simplemente acortar frases, sino hacer visibles los estados y las relaciones que el equipo necesita observar en conjunto."
+            },
+            {
+              "type": "p",
+              "text": "En este ejemplo se combinan las actualizaciones del equipo Haneul del 2026-10-19~2026-10-23 en un solo informe semanal con IA. Los registros con distintos números de inscritos no se eliminan; se conservan junto con su hora de referencia y su fuente."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Elemento del informe",
+                "Qué revisar al integrarlo",
+                "Problema si se combina sin más"
+              ],
+              "rows": [
+                [
+                  "Completado / en curso",
+                  "Trabajo terminado y trabajo que continúa",
+                  "El estado actual puede mezclarse"
+                ],
+                [
+                  "Retraso",
+                  "Plan original y medida actual",
+                  "El retraso puede quedar oculto"
+                ],
+                [
+                  "Dependencia",
+                  "Trabajo que necesita una tarea previa",
+                  "Puede pasarse por alto un cuello de botella"
+                ],
+                [
+                  "Ayuda necesaria",
+                  "Quién debe comprobar qué",
+                  "La solicitud puede quedar enterrada en una nota individual"
+                ],
+                [
+                  "Informes en conflicto",
+                  "Hora de referencia y fuente",
+                  "La IA puede elegir arbitrariamente uno de ellos"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "source-updates",
+          "heading": "2. Reunir las actualizaciones de cuatro personas y los hechos compartidos como material de entrada",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Después de los hechos compartidos se añaden los elementos originales de cada miembro y sus etiquetas de origen. En valores que pueden cambiar dentro del mismo periodo, como el número de inscritos, hay que indicar también fecha y hora para revisar si se trata de una actualización o de un conflicto."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Hechos compartidos\n- 4 integrantes del equipo Haneul: Minseo (líder del equipo / calendario general), Junho (lugar / materiales), Seoyeon (difusión / recepción de inscripciones), Doyun (programa / contacto con instructor)\n- Evento: Taller Vecinal de Habilidades Digitales Básicas\n- Fecha del evento: 2026-11-14\n- Horario del evento: 14:00–16:00\n- Cupo: 30 personas\n- Público: residentes de la zona\n- Cuota de participación: ninguna\n- Opción A: sala de seminarios del 3.er piso del centro cívico: capacidad 32 personas, proyector disponible, ascensor disponible, disponibilidad de alquiler confirmada\n- Opción B: auditorio de la biblioteca del distrito: capacidad 60 personas, disponibilidad de alquiler sin confirmar\n- Plazo para confirmar el lugar: 2026-10-24\n- Plazo de la versión final del material de difusión: 2026-10-28\n- Plazo para confirmar al instructor: 2026-10-30\n- Estado de inscripciones: a fecha de 2026-10-23, 22 personas\n- Periodo del informe de esta semana: 2026-10-19~2026-10-23\n\nActualización de Minseo\n[Actualización-Minseo-1] Anotó que el estado de inscripciones recibido de Seoyeon el 2026-10-23 09:00 era de 20 personas.\n[Actualización-Minseo-2] El lugar debe confirmarse a más tardar el 2026-10-24. Es necesario decidir después de comparar la Opción A y la Opción B.\n[Actualización-Minseo-3] La versión final del material de difusión debe incluir el nombre del lugar, por lo que solo puede terminarse después de confirmar el lugar.\n\nActualización de Junho\n[Actualización-Junho-1] Confirmó la disponibilidad de alquiler, el proyector y el ascensor de la Opción A y organizó el material comparativo de los lugares.\n[Actualización-Junho-2] La Opción B tiene capacidad para 60 personas, pero su disponibilidad de alquiler todavía no está confirmada.\n[Actualización-Junho-3] La comprobación de la cantidad de materiales estaba prevista para terminarse el 2026-10-23, pero no se completó. Está previsto volver a comprobarla el 2026-10-26.\n\nActualización de Seoyeon\n[Actualización-Seoyeon-1] A fecha de 2026-10-23 16:00, hay 22 personas inscritas.\n[Actualización-Seoyeon-2] El texto del material de difusión está en curso y la versión final se necesita a más tardar el 2026-10-28.\n[Actualización-Seoyeon-3] Se necesita el resultado de la confirmación del lugar porque el material de difusión debe incluir el nombre del lugar final.\n\nActualización de Doyun\n[Actualización-Doyun-1] Redactó el borrador 1 de la estructura del programa.\n[Actualización-Doyun-2] El contacto con el instructor está en curso y el plazo de confirmación es 2026-10-30.\n[Actualización-Doyun-3] Pidió a Junho ayuda para comprobar el método de conexión del proyector."
+            },
+            {
+              "type": "p",
+              "text": "No puede darse por hecho que 20 personas y 22 personas sean un error tipográfico. Son registros del mismo día a las 09:00 y a las 16:00, por lo que deben conservarse ambos valores y señalarse la diferencia en la hora de referencia."
+            }
+          ]
+        },
+        {
+          "id": "prompt-for-rollup",
+          "heading": "3. Pedir que se organicen por separado estado, dependencias y conflictos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En la solicitud se incluyen reglas para separar completado, en curso, retrasos y dependencias, y para no fusionar ni borrar arbitrariamente cifras o estados diferentes."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Redacta un informe semanal para compartir con el equipo a partir de los datos de entrada anteriores.\n\nReglas:\n- Divide el contenido en completado, en curso, retrasos, dependencias, ayuda necesaria y requiere confirmación.\n- Añade al final de cada elemento la etiqueta de la fuente original.\n- No combines ni elimines uno de los informes cuando sean diferentes.\n- Si valores como el número de inscritos tienen horas de referencia distintas, muestra juntos la fecha y la hora y explica por qué requieren confirmación.\n- No inventes responsables, fechas, horas, cifras ni estados de finalización que no estén en la entrada.\n- Escribe 'Requiere confirmación' para cualquier contenido no confirmado.\n- No añadas datos personales ni datos de contacto reales.\n- Al final, resume brevemente solo lo que el equipo debe comprobar de inmediato."
+            }
+          ]
+        },
+        {
+          "id": "good-rollup",
+          "heading": "4. Un buen ejemplo no oculta los conflictos ni las dependencias",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Lo siguiente no es un registro de una ejecución real de IA, sino un ejemplo editorial. Se conserva la fuente original en cada elemento para que los miembros puedan volver a rastrear la evidencia."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nResumen semanal del estado del equipo Haneul\nPeriodo del informe: 2026-10-19~2026-10-23\n\nCompletado\n- Junho: completó la confirmación de la disponibilidad de alquiler, el proyector y el ascensor de la Opción A, además de organizar el material comparativo de los lugares. [Actualización-Junho-1]\n- Doyun: redactó el borrador 1 de la estructura del programa. [Actualización-Doyun-1]\n\nEn curso\n- Seoyeon: sigue trabajando en el texto del material de difusión y el plazo de la versión final es 2026-10-28. [Actualización-Seoyeon-2]\n- Doyun: sigue contactando con el instructor y el plazo de confirmación es 2026-10-30. [Actualización-Doyun-2]\n- Minseo: es necesario comparar la Opción A y la Opción B y confirmar el lugar a más tardar el 2026-10-24. [Actualización-Minseo-2]\n\nRetraso\n- Junho: no terminó la comprobación de la cantidad de materiales prevista para el 2026-10-23 y está previsto volver a comprobarla el 2026-10-26. [Actualización-Junho-3]\n\nDependencias\n- La versión final del material de difusión de Seoyeon depende del resultado de la confirmación del lugar porque necesita el nombre del lugar final. [Actualización-Minseo-3] [Actualización-Seoyeon-3]\n\nAyuda necesaria\n- Doyun pidió a Junho ayuda para comprobar el método de conexión del proyector. [Actualización-Doyun-3]\n\nRequiere confirmación\n- Los registros del número de inscritos difieren: a fecha de 2026-10-23 09:00 son 20 personas y a fecha de 2026-10-23 16:00 son 22 personas. Como las horas de referencia son distintas, puede tratarse de un proceso de actualización; al compartirlos deben mantenerse ambas fuentes. [Actualización-Minseo-1] [Actualización-Seoyeon-1]\n- La Opción B tiene capacidad para 60 personas, pero la disponibilidad de alquiler no está confirmada. [Actualización-Junho-2]\n\nElementos que debe comprobar el equipo\n- Minseo: debe compartir el resultado de la confirmación del lugar. [Actualización-Minseo-2]\n- Junho: requiere confirmar la cantidad de materiales y el método de conexión del proyector. [Actualización-Junho-3] [Actualización-Doyun-3]\n- Seoyeon: debe conservar la hora de referencia del número de inscritos y compartir el estado más reciente. [Actualización-Seoyeon-1]"
+            },
+            {
+              "type": "p",
+              "text": "El retraso, la dependencia del material de difusión respecto al lugar y la diferencia entre las horas de referencia del número de inscritos aparecen por separado. Las etiquetas de origen permiten que cada responsable compare directamente el resultado con su texto original."
+            }
+          ]
+        },
+        {
+          "id": "bad-rollup-and-fix",
+          "heading": "5. Distinguir un informe semanal plausible pero peligroso",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nEl equipo Haneul avanza en general según lo previsto. Se han confirmado 25 personas inscritas y el lugar se ha decidido como Opción A. Junho preparará todos los materiales a más tardar el 2026-10-25 y Doyun ha completado el contrato con el instructor. Como el problema del lugar está resuelto, el material de difusión puede distribuirse de inmediato."
+            },
+            {
+              "type": "p",
+              "text": "Este ejemplo es conciso, pero no es adecuado para revisar el original. La cifra de 25 personas inscritas no aparece en la entrada y tampoco existe un registro que indique que se haya elegido la Opción A. El nuevo plazo de Junho y la finalización del contrato con el instructor por parte de Doyun también son contenidos inventados, y se eliminó arbitrariamente incluso la dependencia del material de difusión. Al corregirlo, deben borrarse los hechos que no estén en la entrada, devolver los puntos por definir a «Requiere confirmación» y restaurar por separado los retrasos y los conflictos."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Revisión humana antes de compartir\n- Cada miembro del equipo compara sus propios estados de completado y en curso con el original.\n- Se comprueba que las tareas retrasadas no estén mezcladas con los elementos que avanzan con normalidad.\n- Se comprueba que los elementos que necesitan el resultado de otra tarea estén marcados como dependencias.\n- Se comprueba que no falten solicitudes de ayuda ni se haya cambiado al responsable.\n- Se comprueba que las cifras en conflicto conserven juntas fecha, hora y fuente.\n- Al usar datos reales, se revisa la política de protección de la información de la organización y no se introduce información sensible en la herramienta de chat con IA."
+            }
+          ]
+        },
+        {
+          "id": "team-review",
+          "heading": "6. El borrador de IA se convierte en documento compartido después de la revisión del equipo",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Un informe semanal con IA puede ser útil como borrador para reunir varias actualizaciones en una sola vista, pero el equipo debe confirmar qué informe es el más reciente y cómo tratar un retraso. En especial, hay casos en los que la IA no puede determinar solo a partir del original si un cambio numérico es una actualización normal o se debe a criterios de recuento distintos. Antes de compartir, conviene obtener la comprobación de cada autor y mantener como tales los elementos que todavía no estén confirmados."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "El responsable de cada tarea confirma si está completada.",
+                "La persona que supervisa el calendario general comprueba también los plazos y las dependencias.",
+                "Si las cifras difieren, no se decide primero qué registro borrar; se comprueban la hora de referencia y la fuente.",
+                "Se revisa que ninguna interpretación nueva creada por la IA se haya mezclado como si fuera un hecho del original.",
+                "En la versión compartida por el equipo se distingue entre contenido confirmado y contenido que requiere confirmación."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "En el siguiente artículo se da un paso más desde el problema de integrar los estados de varias personas y se explica “Crear un documento de traspaso de trabajo con IA: organizar notas dispersas para poder continuar el trabajo”, para que otra persona pueda seguir una tarea cuando alguien está ausente."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Datos ficticios de entrada y ejemplo editorial · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que las actualizaciones de las cuatro personas se reflejen en la categoría apropiada entre completado, en curso, retraso, dependencia, ayuda necesaria y requiere confirmación",
+          "Comprobar que 20 personas y 22 personas se conserven junto con sus respectivas horas de referencia y fuentes",
+          "Comprobar que los responsables, fechas, horas y cifras del output existan en los datos de entrada",
+          "Comprobar que no se omitan la comprobación retrasada de la cantidad de materiales ni la dependencia del material de difusión respecto al lugar",
+          "Comprobar que la IA no decida ni confirme arbitrariamente el estado de la Opción A y la Opción B",
+          "Comprobar que no se inventen porcentajes ni múltiplos para representar efectos"
+        ],
+        "limits": "No son resultados obtenidos al ejecutar una herramienta de IA real, sino datos ficticios y ejemplos editoriales para explicar un procedimiento de colaboración de equipo. Al usar datos reales del equipo, cada responsable debe compararlos directamente con el original y la información sensible debe tratarse conforme a la política de protección de la información de la organización."
+      }
+    },
+    {
+      "slug": "team-handover-document",
+      "title": "Crear un documento de traspaso de trabajo con IA: organizar notas dispersas para poder continuar el trabajo",
+      "summary": "Se explica cómo reorganizar notas dispersas en contexto, estado actual, ubicación de materiales, próximas acciones, precauciones y puntos por definir para que otra persona pueda continuar el trabajo de inmediato cuando el responsable esté ausente. Con un caso ficticio en el que el trabajo de difusión e inscripciones de Seoyeon pasa a Junho, se crean juntos un documento de traspaso de trabajo con IA y preguntas que debe comprobar quien recibe la tarea.",
+      "audience": "Personas no desarrolladoras que quieren transmitir sin omisiones el contexto de una tarea y las próximas acciones a otro miembro del equipo antes de vacaciones, ausencias o cambios de rol",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Notas originales que permitan comprobar el estado actual y la ubicación de los materiales",
+        "Practicar con datos ficticios en lugar de datos personales, información de clientes o información confidencial real",
+        "Que quien recibe la tarea pueda leer el documento y preguntar por los puntos aún por definir"
+      ],
+      "tags": [
+        "traspasoconIA",
+        "trabajocompartido",
+        "continuidaddeltrabajo"
+      ],
+      "sections": [
+        {
+          "id": "handover-goal",
+          "heading": "1. En un traspaso, el contexto va antes que la lista de tareas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si un traspaso se limita a enumerar ubicaciones de archivos y tareas, quien lo recibe tendrá que volver a preguntar por el contexto. Esta práctica se centra en crear un documento narrativo que permita comprender el estado actual y continuar con la siguiente acción."
+            },
+            {
+              "type": "p",
+              "text": "En el equipo Haneul, Seoyeon estará ausente del 2026-10-26~2026-11-01 y Junho asumirá las tareas de difusión e inscripciones. El evento es el 2026-11-14 de 14:00–16:00, con un cupo de 30 personas, y a fecha de 2026-10-23 hay 22 personas inscritas. El plazo de la versión final del material de difusión es 2026-10-28 y las notas de Seoyeon todavía no contienen el resultado de la confirmación del lugar."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Parte del documento",
+                "Qué debe saber quien recibe la tarea",
+                "Precaución"
+              ],
+              "rows": [
+                [
+                  "Contexto",
+                  "Evento / rol / periodo de ausencia",
+                  "No omitirlo aunque sea una circunstancia interna del equipo"
+                ],
+                [
+                  "Estado actual",
+                  "Completado / en curso / en espera",
+                  "No marcar como completado basándose en suposiciones"
+                ],
+                [
+                  "Ubicación de materiales",
+                  "Carpeta compartida y materiales",
+                  "No escribir contraseñas ni credenciales"
+                ],
+                [
+                  "Próximas acciones",
+                  "Trabajo a continuar y condiciones previas",
+                  "No crear plazos nuevos"
+                ],
+                [
+                  "Precauciones",
+                  "Datos personales / comprobación antes de distribuir",
+                  "No introducir en la IA datos personales originales"
+                ],
+                [
+                  "Puntos por definir",
+                  "Decisiones aún no confirmadas",
+                  "No rellenarlos con suposiciones"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "scattered-notes",
+          "heading": "2. Reunir notas dispersas conservando la fuente original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Se reúnen solo las partes necesarias de las notas de Seoyeon para crear una entrada ficticia. En un entorno real, no se copian datos identificativos como nombres o números de teléfono de personas inscritas; solo se transmite el estado del trabajo y la ubicación de los materiales."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Hechos compartidos\n- 4 integrantes del equipo Haneul: Minseo (líder del equipo / calendario general), Junho (lugar / materiales), Seoyeon (difusión / recepción de inscripciones), Doyun (programa / contacto con instructor)\n- Evento: Taller Vecinal de Habilidades Digitales Básicas\n- Fecha del evento: 2026-11-14\n- Horario del evento: 14:00–16:00\n- Cupo: 30 personas\n- Público: residentes de la zona\n- Cuota de participación: ninguna\n- Opción A: sala de seminarios del 3.er piso del centro cívico: capacidad 32 personas, proyector disponible, ascensor disponible, disponibilidad de alquiler confirmada\n- Opción B: auditorio de la biblioteca del distrito: capacidad 60 personas, disponibilidad de alquiler sin confirmar\n- Plazo para confirmar el lugar: 2026-10-24\n- Plazo de la versión final del material de difusión: 2026-10-28\n- Plazo para confirmar al instructor: 2026-10-30\n- Estado de inscripciones: a fecha de 2026-10-23, 22 personas\n- Ausencia de Seoyeon: 2026-10-26~2026-11-01\n- Persona que recibe el traspaso: Junho\n\nNotas dispersas de Seoyeon\n[Traspaso-Seoyeon-1] El texto del material de difusión está en curso. La versión final se necesita a más tardar el 2026-10-28. Debe incluir el nombre del lugar final.\n[Traspaso-Seoyeon-2] El resultado de la confirmación del lugar todavía no está en mis notas. Como Minseo se encarga del calendario general, requiere confirmación con Minseo la decisión más reciente.\n[Traspaso-Seoyeon-3] Ubicación de los archivos de difusión: Carpeta compartida/Taller/Difusión\n[Traspaso-Seoyeon-4] Ubicación del archivo del estado de inscripciones: Carpeta compartida/Taller/Inscripciones\n[Traspaso-Seoyeon-5] A fecha de 2026-10-23 hay 22 personas inscritas. El cupo es de 30 personas. No pegar datos de contacto personales de las personas inscritas en una herramienta de chat con IA.\n[Traspaso-Seoyeon-6] No distribuir el material de difusión como versión final antes de confirmar el nombre del lugar final.\n[Traspaso-Seoyeon-7] Cuando llegue una nueva inscripción, actualizar el estado interno de Carpeta compartida/Taller/Inscripciones y compartir con el equipo solo el estado total de inscripciones.\n[Traspaso-Seoyeon-8] Durante el periodo de ausencia, Junho asume las tareas de difusión e inscripciones.\n[Traspaso-Seoyeon-9] Mis notas no indican quién aprueba la comprobación final del material de difusión. Requiere confirmación."
+            },
+            {
+              "type": "p",
+              "text": "Como la ubicación de los archivos, el estado, las prohibiciones, el responsable y los puntos por definir están mezclados, se necesita una reorganización por elementos y no un simple resumen. Se pide que cualquier contenido sin evidencia se mantenga como «Requiere confirmación»."
+            }
+          ]
+        },
+        {
+          "id": "handover-prompt",
+          "heading": "3. Definir una estructura que permita a quien recibe la tarea continuar el trabajo",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La solicitud se organiza según el flujo de acción de quien recibe la tarea, no como un simple resumen. Primero debe leer el contexto y el estado actual, después encontrar los materiales, realizar las próximas acciones y finalmente poder preguntar por los puntos aún por definir. Mantener las etiquetas de origen también permite saber qué nota de Seoyeon debe volver a consultarse cuando surja una duda."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "A partir de las notas anteriores, redacta un borrador de documento de traspaso de trabajo que permita a Junho continuar el trabajo de inmediato.\n\nEstructura:\n- Contexto\n- Estado actual\n- Ubicación de materiales\n- Próximas acciones\n- Precauciones\n- Puntos por definir\n- Preguntas que quien recibe la tarea debe hacer a Seoyeon o Minseo\n\nReglas:\n- Añade al final de cada frase clave la etiqueta de origen relacionada.\n- No inventes responsables, fechas, horas, cifras, decisiones ni aprobadores que no estén en la entrada.\n- Marca como 'Requiere confirmación' lo que no se sepa.\n- No traslades al documento datos personales de las personas inscritas.\n- Mantén exactamente las rutas de las carpetas compartidas de la entrada.\n- No te limites a enumerar una lista de comprobación; incluye frases breves que permitan a quien recibe la tarea entender el contexto."
+            }
+          ]
+        },
+        {
+          "id": "handover-example",
+          "heading": "4. Un buen traspaso conecta el estado actual con las próximas acciones",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nDocumento de traspaso de trabajo — Seoyeon → Junho\n\nContexto\nSeoyeon estará ausente del 2026-10-26~2026-11-01 y, durante ese periodo, Junho asumirá las tareas de difusión e inscripciones. [Traspaso-Seoyeon-8]\nEl evento es el 2026-11-14 de 14:00–16:00 y el cupo es de 30 personas. [Traspaso-Seoyeon-5]\n\nEstado actual\nEl texto del material de difusión está en curso y el plazo de la versión final es 2026-10-28. Debe incluir el nombre del lugar final, pero las notas de Seoyeon no contienen el resultado de la confirmación del lugar. [Traspaso-Seoyeon-1] [Traspaso-Seoyeon-2]\nEl estado de inscripciones a fecha de 2026-10-23 es de 22 personas. [Traspaso-Seoyeon-5]\n\nUbicación de materiales\nArchivos de difusión: Carpeta compartida/Taller/Difusión [Traspaso-Seoyeon-3]\nArchivo del estado de inscripciones: Carpeta compartida/Taller/Inscripciones [Traspaso-Seoyeon-4]\n\nPróximas acciones\nJunho debe confirmar con Minseo el resultado más reciente de la decisión del lugar y después reflejar el nombre del lugar final en el material de difusión. [Traspaso-Seoyeon-1] [Traspaso-Seoyeon-2]\nCuando llegue una nueva inscripción, se actualiza el estado interno de Carpeta compartida/Taller/Inscripciones y se comparte con el equipo solo el estado total de inscripciones. [Traspaso-Seoyeon-7]\n\nPrecauciones\nNo distribuir el material de difusión como versión final antes de confirmar el nombre del lugar final. [Traspaso-Seoyeon-6]\nNo pegar datos de contacto personales de las personas inscritas en una herramienta de chat con IA. [Traspaso-Seoyeon-5]\n\nPuntos por definir\nRequiere confirmación quién aprueba la comprobación final del material de difusión. [Traspaso-Seoyeon-9]\nComo las notas de Seoyeon no contienen el resultado de la confirmación del lugar, la decisión más reciente debe confirmarse con Minseo. [Traspaso-Seoyeon-2]\n\nPreguntas de quien recibe la tarea\n- A Minseo: ¿se puede confirmar cuál es el resultado de la decisión del lugar? [Traspaso-Seoyeon-2]\n- A Seoyeon: ¿cómo se puede distinguir el documento en el que se está trabajando actualmente dentro de Carpeta compartida/Taller/Difusión? [Traspaso-Seoyeon-3]\n- A Minseo o Seoyeon: ¿quién aprueba la comprobación final del material de difusión? [Traspaso-Seoyeon-9]"
+            },
+            {
+              "type": "p",
+              "text": "Este documento no crea trabajo nuevo para Junho, sino que conecta con las próximas acciones las condiciones previas que ya aparecen en las notas de Seoyeon. En especial, el resultado de la confirmación del lugar y el aprobador final no se rellenan como si fueran hechos, sino que se dejan como elementos que requieren confirmación. Las ubicaciones de los materiales también conservan las rutas exactamente, para que quien recibe la tarea pueda pasar del documento al material de trabajo real."
+            }
+          ]
+        },
+        {
+          "id": "bad-handover",
+          "heading": "5. Rellenar los vacíos con suposiciones hace más peligroso el traspaso",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nComo Seoyeon estará ausente a partir del 2026-10-26, Doyun se encargará de recibir las inscripciones. El lugar se ha confirmado como Opción A y el material de difusión puede distribuirse el 2026-10-27. Si el número de inscritos supera el cupo, se pasará automáticamente a una lista de espera y Minseo será el aprobador final."
+            },
+            {
+              "type": "p",
+              "text": "Este ejemplo rellena los vacíos de forma natural, pero no coincide con el original. Quien recibe la tarea es Junho, no Doyun, y tampoco hay información que diga que el lugar se haya confirmado como Opción A. La fecha de distribución del 2026-10-27, la regla para gestionar una lista de espera y la decisión de que Minseo sea el aprobador final tampoco aparecen en la entrada. En un documento de traspaso, estas suposiciones pueden transmitirse como si fueran reglas reales de trabajo, por lo que lo no confirmado debe convertirse en una pregunta."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Revisión humana antes del traspaso\n- Comprobar que el periodo de ausencia y la persona que recibe el traspaso coincidan con el original.\n- Comprobar que el estado actual y las próximas acciones estén separados.\n- Comprobar que las rutas de las carpetas compartidas coincidan con la ubicación real de los materiales del equipo.\n- Comprobar que no se hayan añadido aprobadores, plazos ni decisiones que no estén en la entrada.\n- Comprobar que los puntos por definir no se hayan rellenado con suposiciones y permanezcan como preguntas.\n- Comprobar que el documento y la entrada de IA no contengan datos personales, contraseñas ni credenciales."
+            }
+          ]
+        },
+        {
+          "id": "questions-and-use",
+          "heading": "6. El documento se completa cuando quedan claras las preguntas de quien recibe la tarea",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Un buen documento de traspaso de trabajo con IA no es uno que rellena todos los vacíos, sino uno que muestra hasta dónde puede avanzar directamente quien recibe la tarea y en qué punto debe preguntar. En especial, cuanto más intente la IA completar contenidos que no aparecen en el original, como el aprobador o una decisión final, mayor es el riesgo. Junho debe dejar sus preguntas después de recibir el documento, y luego Minseo o Seoyeon deben responderlas e incorporar esas respuestas al registro original."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Comprobar si con solo leer el contexto se entiende por qué es necesario el traspaso.",
+                "Comprobar si, después de leer el estado actual, queda conectada la ubicación del material que debe abrirse de inmediato.",
+                "Comprobar si se muestran las decisiones previas necesarias para las próximas acciones.",
+                "Comprobar si las precauciones están vinculadas con riesgos reales del trabajo.",
+                "Comprobar si los puntos por definir se han convertido en preguntas y permiten saber a quién debe consultar quien recibe la tarea."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "En el siguiente artículo no se trata de transferir el trabajo de una sola persona como en un traspaso, sino de colocar juntas las distintas opiniones de los miembros y los hechos confirmados para comparar opciones: “Comparar opiniones dispersas con IA para colaboración en equipo: apoyo para decidir entre el lugar A y el B”."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Datos ficticios de entrada y ejemplo editorial · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que el periodo de ausencia de Seoyeon y Junho como persona que recibe el traspaso coincidan entre input y output",
+          "Comprobar que las rutas de las carpetas compartidas de difusión e inscripciones se mantengan exactamente como en la entrada",
+          "Comprobar que no se inventen el resultado de la confirmación del lugar ni el aprobador del material de difusión y se conserven como elementos que requieren confirmación",
+          "Comprobar que los responsables, fechas, horas y cifras del output existan en los datos de entrada",
+          "Comprobar que no se induzca a introducir en la IA datos de contacto personales de las personas inscritas, contraseñas ni credenciales",
+          "Comprobar que no se inventen porcentajes ni múltiplos para representar efectos"
+        ],
+        "limits": "No es un registro de ejecución de una herramienta de IA real, sino un ejemplo editorial para explicar una situación ficticia de traspaso en un equipo. En un traspaso real, las personas deben comprobar los originales más recientes y el procedimiento de aprobación del equipo, y los datos identificativos personales y la información confidencial deben tratarse por separado conforme a la política de protección de la información de la organización."
+      }
+    },
+    {
+      "slug": "team-decision-options",
+      "title": "Comparar opiniones dispersas con IA para colaboración en equipo: apoyo para decidir entre el lugar A y el B",
+      "summary": "Cuando las opiniones de varios miembros del equipo difieren, se practica una forma de usar la IA sin dejar que tome la conclusión por el equipo: se comparan en un mismo marco los hechos confirmados, las razones, las opiniones contrarias y los supuestos no verificados. Con las opciones A y B del lugar para el taller del equipo Haneul como ejemplo, se aclaran la persona responsable de decidir y la fecha límite, y se dejan los puntos que el equipo debe comprobar antes de tomar la decisión final.",
+      "audience": "Personas no desarrolladoras que quieren usar IA para colaboración en equipo para comparar opiniones de varias personas, manteniendo en el equipo la responsabilidad de la decisión final y la trazabilidad de las razones",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Poder distinguir y organizar las opiniones de cada miembro del equipo y los hechos confirmados",
+        "Usar un ejemplo ficticio en lugar de información confidencial o datos de clientes reales",
+        "Comparar directamente con el original el resultado de la comparación generado por la IA"
+      ],
+      "tags": [
+        "DecisiónEnEquipo",
+        "ComparaciónDeOpiniones",
+        "RevisiónConIA"
+      ],
+      "sections": [
+        {
+          "id": "problem-and-case",
+          "heading": "1. Cuantas más opiniones haya, primero separar los hechos de las preferencias",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Al elegir entre varias opciones en un equipo, hay que separar los hechos confirmados, las preferencias personales y los supuestos aún no verificados. La opinión de que «la opción B es más segura» puede basarse en el hecho de que tiene mayor capacidad, pero que realmente se produzcan inscripciones por encima del cupo y que sea posible reservar la opción B son cuestiones que requieren una comprobación aparte. La IA para colaboración en equipo puede usarse como herramienta de apoyo para separar estas frases por categorías y añadir sus fuentes, pero la elección final debe hacerla la persona responsable."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Categoría",
+                "Qué organizará la IA",
+                "Qué debe comprobar una persona"
+              ],
+              "rows": [
+                [
+                  "Hechos confirmados",
+                  "Información indicada explícitamente en el original, como capacidad, equipamiento y estado de confirmación de la reserva",
+                  "Si coincide exactamente con el original"
+                ],
+                [
+                  "Opiniones del equipo",
+                  "Quién prefiere qué opción y qué razón dio",
+                  "Si una opinión se convirtió en un hecho"
+                ],
+                [
+                  "Supuestos no verificados",
+                  "Premisas aún no confirmadas, como la posibilidad de que las inscripciones superen el cupo",
+                  "Si hace falta una comprobación adicional"
+                ],
+                [
+                  "Opinión contraria",
+                  "Razones o preocupaciones distintas de la opinión mayoritaria",
+                  "Si se omitió una opinión minoritaria"
+                ],
+                [
+                  "Condiciones de decisión",
+                  "Persona responsable de decidir, fecha límite y puntos que comprobar antes de decidir",
+                  "Si la decisión final fue realmente aprobada"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "En este caso ficticio, el equipo Haneul está eligiendo el lugar para el Taller Vecinal de Habilidades Digitales Básicas. Como las opciones A y B tienen distintos niveles de confirmación y distintas preferencias entre los miembros del equipo, el resultado no se reduce a una sola línea de recomendación: también se conservan las razones y los puntos no confirmados."
+            }
+          ]
+        },
+        {
+          "id": "copyable-input",
+          "heading": "2. Introducir las opiniones del equipo y los hechos comunes con etiquetas de fuente",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La siguiente entrada es material ficticio para aprendizaje. Si se coloca una etiqueta de fuente delante de cada frase, es más fácil volver a localizar la evidencia en el resultado. Las opiniones diferentes se proporcionan sin fusionarlas y conservando su estado original."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Equipo ficticio: equipo Haneul\n[Común-Evento-1] Nombre del evento: Taller Vecinal de Habilidades Digitales Básicas\n[Común-Evento-2] Fecha del evento: 2026-11-14\n[Común-Evento-3] Horario del evento: 14:00–16:00\n[Común-Evento-4] Cupo: 30 personas\n[Común-Evento-5] Público: residentes locales\n[Común-Evento-6] Cuota de participación: ninguna\n[Común-Lugar-1] Opción A: sala de seminarios del 3.er piso del centro cívico, capacidad para 32 personas, proyector disponible, ascensor disponible, disponibilidad de reserva confirmada\n[Común-Lugar-2] Opción B: auditorio de la biblioteca del distrito, capacidad para 60 personas, disponibilidad de reserva sin confirmar\n[Común-Calendario-1] Fecha límite para confirmar el lugar: 2026-10-24\n[Común-Calendario-2] Fecha límite para la versión final del material de difusión: 2026-10-28\n[Común-Calendario-3] Fecha límite para confirmar al instructor: 2026-10-30\n[Común-Inscripción-1] Número de inscritos a fecha de 2026-10-23: 22 personas\n\n[Nota-Minseo-1] Minseo es la líder del equipo, se encarga del calendario general y tiene la responsabilidad final de decidir el lugar.\n[Nota-Minseo-2] Minseo quiere considerar primero la opción A porque su disponibilidad de reserva está confirmada y puede acoger el cupo de 30 personas.\n[Nota-Junho-1] Junho se encarga del lugar y los materiales. Resumió que la opción A tiene capacidad para 32 personas, proyector disponible, ascensor disponible y disponibilidad de reserva confirmada.\n[Nota-Junho-2] Junho confirmó que la opción B tiene capacidad para 60 personas, pero todavía no ha podido confirmar si está disponible para reservar.\n[Nota-Seoyeon-1] Seoyeon se encarga de la difusión y la recepción de inscripciones. A fecha de 2026-10-23 hay 22 personas inscritas y la fecha límite para la versión final del material de difusión es 2026-10-28.\n[Nota-Seoyeon-2] Seoyeon prefiere la opción A porque el lugar debe quedar confirmado antes de 2026-10-24 para poder cerrar de forma estable la indicación del lugar en el material de difusión.\n[Nota-Doyun-1] Doyun se encarga del programa y del contacto con el instructor. Prefiere la opción B, con capacidad para 60 personas, para estar preparado ante la posibilidad de que las inscripciones superen el cupo.\n[Nota-Doyun-2] Doyun también sabe que no está confirmada la disponibilidad de reserva de la opción B y anotó que debe comprobarse antes de decidir.\n[Supuesto-1] Con los datos actuales no se puede confirmar si realmente habrá inscripciones por encima del cupo de 30 personas."
+            },
+            {
+              "type": "p",
+              "text": "«La opción B tiene capacidad para 60 personas» es un hecho confirmado, pero «habrá inscripciones por encima del cupo» es un supuesto. Aunque varias personas prefieran la opción A, no debe eliminarse la preferencia de Doyun por la opción B. En la solicitud también se especifica que hay que distinguir entre hechos, preferencias y supuestos."
+            }
+          ]
+        },
+        {
+          "id": "comparison-prompt",
+          "heading": "3. Pedir una estructura de comparación y preguntas de comprobación, no una conclusión",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La clave de la solicitud es no pedir a la IA que elija el lugar. Para cada opción, se le pide separar las razones confirmadas, las opiniones contrarias y los supuestos no verificados, y añadir etiquetas de fuente. También se limita la creación de responsables, fechas límite o decisiones que no aparezcan en los datos."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Compara las opciones A y B del lugar del equipo Haneul usando únicamente la entrada ficticia anterior.\nEl objetivo no es que la IA decida el lugar, sino organizar las razones para que el equipo pueda decidir.\n\nEscribe con el siguiente formato.\n- Hechos confirmados y razones de cada opción\n- Opiniones de miembros del equipo que apoyan cada opción y sus etiquetas de fuente\n- Opiniones contrarias o preocupaciones sobre cada opción y sus etiquetas de fuente\n- Supuestos que no se han confirmado como hechos\n- Puntos que comprobar antes de decidir\n- Persona responsable de decidir y fecha límite de decisión\n\nReglas:\n1) Usa únicamente nombres, fechas, horas y números que estén en la entrada.\n2) No omitas las opiniones minoritarias que difieren de la opinión mayoritaria.\n3) Distingue los hechos confirmados de las preferencias de los miembros del equipo.\n4) No inventes responsables, fechas límite ni decisiones que no estén en los datos; escribe 'Requiere confirmación'.\n5) No escribas que se ha elegido finalmente la opción A o la opción B.\n6) Siempre que sea posible, añade a cada razón una fuente [Nota-Nombre-Número], [Común-Categoría-Número] o [Supuesto-1]."
+            }
+          ]
+        },
+        {
+          "id": "good-output",
+          "heading": "4. Conservar juntas las opciones, las razones, las opiniones contrarias y los supuestos no verificados",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El siguiente es un ejemplo editado creado solo con la entrada. No es un resultado de una ejecución real de IA ni decide el lugar en nombre del equipo."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nComparación de opciones de lugar\n\nOpción A: sala de seminarios del 3.er piso del centro cívico\n- Hecho confirmado: capacidad para 32 personas, proyector disponible, ascensor disponible, disponibilidad de reserva confirmada. [Común-Lugar-1] [Nota-Junho-1]\n- Opinión favorable: Minseo dijo que quiere considerar primero la opción A porque puede acoger el cupo de 30 personas y su disponibilidad de reserva está confirmada. [Nota-Minseo-2]\n- Opinión favorable: Seoyeon prefiere la opción A teniendo en cuenta la fecha límite para confirmar el lugar, 2026-10-24, y la fecha límite para la versión final del material de difusión, 2026-10-28. [Nota-Seoyeon-2] [Común-Calendario-1] [Común-Calendario-2]\n- Opinión contraria o preocupación: Doyun opina que, para prepararse ante la posibilidad de que las inscripciones superen el cupo, sería mejor la opción B, con capacidad para 60 personas. [Nota-Doyun-1]\n- Supuesto no verificado: no se ha confirmado si realmente habrá inscripciones por encima del cupo de 30 personas. [Supuesto-1]\n\nOpción B: auditorio de la biblioteca del distrito\n- Hecho confirmado: capacidad para 60 personas, disponibilidad de reserva sin confirmar. [Común-Lugar-2] [Nota-Junho-2]\n- Opinión favorable: Doyun prefiere la opción B para estar preparado ante la posibilidad de que las inscripciones superen el cupo. [Nota-Doyun-1]\n- Opinión contraria o preocupación: todavía no se ha confirmado la disponibilidad de reserva de la opción B. Doyun también anotó que debe comprobarse antes de decidir. [Nota-Doyun-2]\n- Situación actual de las inscripciones: a fecha de 2026-10-23, 22 personas. [Común-Inscripción-1] [Nota-Seoyeon-1]\n- Supuesto no verificado: no se ha confirmado si habrá inscripciones por encima del cupo de 30 personas. [Supuesto-1]\n\nQué comprobar antes de decidir\n- Confirmar la disponibilidad de reserva de la opción B. [Común-Lugar-2]\n- El equipo debe comprobar si la posibilidad de superar el cupo se utilizará realmente como criterio de decisión. [Supuesto-1]\n- Revisar la idoneidad del lugar sin cambiar las condiciones comunes: fecha del evento 2026-11-14, horario 14:00–16:00 y cupo de 30 personas. [Común-Evento-2] [Común-Evento-3] [Común-Evento-4]\n\nResponsable de la decisión: Minseo [Nota-Minseo-1]\nFecha límite de decisión: 2026-10-24 [Común-Calendario-1]\nElección final: todavía no aparece en la entrada. Minseo debe decidir después de comprobar la información."
+            },
+            {
+              "type": "p",
+              "text": "Un buen resultado de comparación debe permitir al equipo volver al texto original. La certeza operativa de la opción A, la mayor capacidad disponible de la opción B y el estado no confirmado tanto de la reserva de la opción B como de la posibilidad de superar el cupo deben mantenerse separados para que los demás miembros del equipo puedan revisar omisiones o exageraciones."
+            }
+          ]
+        },
+        {
+          "id": "bad-output-and-fix",
+          "heading": "5. Comprobar que la IA no convierte la opinión mayoritaria en una conclusión ni un supuesto en un hecho",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Es problemático que la IA haga también la elección. Convertir en un hecho confirmado una reserva de la opción B que todavía no está verificada, o escribir como si fuera una decisión de Minseo una elección que el equipo no ha aprobado, distorsiona el original."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nMinseo tomó la decisión final de elegir la Opción B: auditorio de la biblioteca del distrito. La reserva de la opción B está confirmada y se prevé que el número de inscritos aumente hasta 35 personas, por lo que es más adecuada que la opción A. Junho debe completar la reserva de la biblioteca antes de 2026-10-25."
+            },
+            {
+              "type": "p",
+              "text": "En la entrada no hay ningún registro de que Minseo haya elegido definitivamente la opción B y la reserva de la opción B tampoco está confirmada. La previsión del número de inscritos y la nueva fecha límite de reserva para Junho carecen de fundamento. Al corregirlo, se eliminan esos contenidos y se devuelven a 'Requiere confirmación' tanto la disponibilidad de reserva de la opción B como la posibilidad de superar el cupo."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Comprobación final\n- ¿La capacidad y el estado de confirmación de la reserva de las opciones A y B son iguales que en la entrada?\n- ¿Las opiniones de Minseo / Junho / Seoyeon / Doyun están separadas de los hechos?\n- ¿No se ha omitido una opinión minoritaria, como la preferencia de Doyun por la opción B?\n- ¿La posibilidad de inscripciones por encima del cupo no se ha escrito como un hecho confirmado?\n- ¿La IA no ha dado por hecha la elección final en nombre del equipo?\n- ¿La persona responsable de decidir y la fecha límite coinciden con la evidencia de la entrada?\n- ¿No se ha incluido información confidencial real ni datos de clientes?"
+            }
+          ]
+        },
+        {
+          "id": "team-review-and-next",
+          "heading": "6. Después de compartir la comparación, el equipo deja un registro de la decisión",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El borrador de comparación de la IA no es un registro de decisión terminado. Cada miembro debe comprobar su propia opinión y su fuente, investigar los puntos no confirmados y después Minseo debe aprobar directamente la elección final y sus razones."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Junho compara con el original el equipamiento del lugar y el estado de confirmación de la reserva.",
+                "Seoyeon comprueba la situación de las inscripciones y la explicación del calendario de difusión.",
+                "Doyun comprueba que el motivo de su preferencia por la opción B y el supuesto no verificado estén separados correctamente.",
+                "Minseo aprueba directamente el lugar final y las razones de la decisión después de la revisión del equipo.",
+                "Antes de la aprobación, el borrador de la IA no se comparte como una decisión definitiva del equipo."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Una vez organizadas las opciones, una solicitud de ejecución ambigua todavía puede volver a generar confusión. El siguiente artículo, “Aclarar solicitudes de trabajo ambiguas con IA en equipo: requisitos, criterios de finalización y preguntas de confirmación”, explica cómo convertir una petición breve de Minseo en una solicitud que el equipo pueda revisar."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Entrada ficticia y ejemplo editado · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas, horas, cifras y etiquetas de fuente",
+        "items": [
+          "Comprobar que el role de todos los bloques code sea uno de input, prompt, output, bad_output o checklist",
+          "Comparar mediante expresiones regulares que los nombres, fechas, horas y números del output existan en el input del mismo artículo",
+          "Comprobar que la capacidad, el equipamiento y el estado de reserva de las opciones A y B coincidan con el caso ficticio común",
+          "Comprobar que no se omitan la preferencia de Doyun por la opción B ni el supuesto no verificado de que las inscripciones puedan superar el cupo",
+          "Comprobar que no se escriba que la IA decidió el lugar final y que se distingan Minseo como responsable de decidir y la fecha límite de decisión",
+          "Comprobar que no haya frases que expresen efectos mediante porcentajes o múltiplos"
+        ],
+        "limits": "No son resultados de una ejecución real de IA, una comprobación real del lugar ni una investigación de solicitantes reales. Todos los casos son materiales ficticios para aprendizaje; en el trabajo real, las personas deben comprobar la política de protección de información de la organización y realizar la decisión final y la verificación de hechos."
+      }
+    },
+    {
+      "slug": "team-request-clarify",
+      "title": "Aclarar solicitudes de trabajo ambiguas con IA en equipo: requisitos, criterios de finalización y preguntas de confirmación",
+      "summary": "Se practica cómo convertir una petición de trabajo breve enviada por la líder del equipo en un borrador de solicitud que el equipo pueda volver a acordar, separando los requisitos confirmados de las condiciones que faltan, sin dejar que la IA complete por su cuenta lo desconocido. Con la petición del equipo Haneul «prepara algo de material para el taller» como ejemplo, se dejan como preguntas de confirmación los criterios de finalización, el alcance incluido y excluido y las condiciones de entrega.",
+      "audience": "Miembros y líderes de equipos no desarrolladores que quieren reducir las diferencias de interpretación provocadas por instrucciones breves en mensajería o solicitudes verbales",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Preparar por separado la solicitud original y la información de contexto ya confirmada",
+        "Poder volver a preguntar a la persona solicitante sin decidir arbitrariamente las condiciones desconocidas",
+        "Usar material ficticio en lugar de información confidencial o datos personales reales"
+      ],
+      "tags": [
+        "SolicitudDeTrabajo",
+        "Requisitos",
+        "IAColaboraciónEquipo"
+      ],
+      "sections": [
+        {
+          "id": "why-vague-requests-fail",
+          "heading": "1. Antes de ejecutar una solicitud breve, revelar primero las diferencias de interpretación",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si Minseo envía a Doyun «prepara algo de material para el taller», no se sabe si es para presentación o para distribución, hasta qué nivel debe desarrollarse, en qué formato debe entregarse ni cuándo y con qué criterio se considerará terminado. Si la persona responsable empieza basándose en suposiciones, los criterios de finalización pueden no coincidir con los de quien hizo la solicitud."
+            },
+            {
+              "type": "p",
+              "text": "Aquí, el papel de la IA para colaboración en equipo no es imaginar y rellenar los huecos, sino separar la información confirmada de los requisitos que faltan y crear una lista de preguntas. Este artículo se centra, más que en redactar prompts individuales, en que quien solicita y quien ejecuta acuerden los mismos criterios de finalización."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Elemento",
+                "¿Se puede saber ahora?",
+                "Cómo tratarlo"
+              ],
+              "rows": [
+                [
+                  "Objetivo del trabajo",
+                  "Parcialmente",
+                  "Mantener solo el contexto de que es material para el evento y confirmar el objetivo detallado"
+                ],
+                [
+                  "Tipo de entregable",
+                  "No se puede saber",
+                  "Preguntar si se trata de material de presentación, material para distribuir u otro tipo"
+                ],
+                [
+                  "Criterios de finalización",
+                  "No se puede saber",
+                  "Preguntar por los criterios de revisión y quién aprueba"
+                ],
+                [
+                  "Alcance incluido",
+                  "No se puede saber",
+                  "Preguntar por el contenido obligatorio y el contenido que debe excluirse"
+                ],
+                [
+                  "Formato y ubicación de entrega",
+                  "No se puede saber",
+                  "Preguntar por el formato del archivo y dónde debe entregarse"
+                ],
+                [
+                  "Fecha límite de entrega",
+                  "No se puede saber",
+                  "Preguntar por la fecha real de entrega, separándola del calendario del evento y del instructor"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "copyable-request-input",
+          "heading": "2. Copiar solo la solicitud original y el contexto ya confirmado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A la IA se le proporcionan únicamente el mensaje original, los hechos ya confirmados y las responsabilidades asignadas. Si no se añade interpretación, el resultado puede separar con claridad qué información está confirmada y qué elementos deben quedar como preguntas."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Equipo ficticio: equipo Haneul\n[Rol-equipo-1] Minseo: líder del equipo / calendario general\n[Rol-equipo-2] Junho: lugar / materiales\n[Rol-equipo-3] Seoyeon: difusión / recepción de inscripciones\n[Rol-equipo-4] Doyun: programa / contacto con instructor\n\n[Evento-1] Nombre del evento: Taller Vecinal de Habilidades Digitales Básicas\n[Evento-2] Fecha del evento: 2026-11-14\n[Evento-3] Horario del evento: 14:00–16:00\n[Evento-4] Cupo: 30 personas\n[Evento-5] Público: residentes locales\n[Evento-6] Cuota de participación: ninguna\n[Lugar-1] Opción A: sala de seminarios del 3.er piso del centro cívico, capacidad para 32 personas, proyector disponible, ascensor disponible, disponibilidad de reserva confirmada\n[Lugar-2] Opción B: auditorio de la biblioteca del distrito, capacidad para 60 personas, disponibilidad de reserva sin confirmar\n[Calendario-1] Fecha límite para confirmar el lugar: 2026-10-24\n[Calendario-2] Fecha límite para la versión final del material de difusión: 2026-10-28\n[Calendario-3] Fecha límite para confirmar al instructor: 2026-10-30\n[Inscripción-1] Número de inscritos a fecha de 2026-10-23: 22 personas\n\n[Solicitud-Minseo-1] Texto original que Minseo envió a Doyun: \"Prepara algo de material para el taller.\"\n[Estado-Doyun-1] Doyun se encarga del programa y del contacto con el instructor, pero el texto original no indica qué tipo de material debe preparar.\n[Estado-Doyun-2] El texto original no indica la extensión del material, el formato del archivo, el contenido que debe incluirse, el contenido que debe excluirse, la ubicación de entrega, la fecha límite de entrega ni los criterios de revisión.\n[Estado-Doyun-3] La fecha límite para confirmar al instructor, 2026-10-30, está confirmada, pero no hay ningún registro de que sea la fecha límite para entregar el material."
+            },
+            {
+              "type": "p",
+              "text": "La última frase es especialmente importante. Que haya un calendario relacionado no significa que pueda convertirse directamente en la fecha límite de entrega del material. Confirmar al instructor y entregar el material son hechos distintos; si la solicitud original no establece una relación entre ellos, la fecha límite de entrega debe quedar como 'Requiere confirmación'."
+            }
+          ]
+        },
+        {
+          "id": "clarification-prompt",
+          "heading": "3. Pedir que se estructuren los huecos y las preguntas sin rellenar los requisitos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En vez de pedir a la IA una instrucción de trabajo ya completada, se le pide separar lo que puede confirmarse ahora de lo que requiere confirmación. Las preguntas deben ser breves y concretas para poder copiarlas y usarlas en una conversación real."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Usa únicamente la entrada anterior para convertir la solicitud de Minseo \"Prepara algo de material para el taller\" en un borrador claro de solicitud de trabajo.\nNo decidas arbitrariamente lo que la IA no sabe y deja siempre los campos vacíos como 'Requiere confirmación'.\n\nOrden de salida:\n- Contexto y responsable actualmente confirmados\n- Objetivo de la solicitud\n- Requisitos\n- Criterios de finalización\n- Alcance incluido\n- Alcance excluido\n- Formato / ubicación de entrega\n- Fecha límite de entrega\n- Preguntas para confirmar con Minseo\n- Qué puede empezar Doyun antes de recibir respuestas y qué no debe empezar\n\nReglas:\n1) Usa únicamente nombres, fechas, horas y números que estén en la entrada.\n2) No conviertas la fecha límite para confirmar al instructor en la fecha límite para entregar el material.\n3) El material de presentación, los documentos para distribuir, el formato del archivo, la extensión y el contenido obligatorio no están en la entrada, así que no los confirmes.\n4) No inventes nuevas personas responsables ni aprobadores que no estén en los datos.\n5) Al final de cada elemento, añade siempre que sea posible una fuente [Solicitud-Minseo-1], [Estado-Doyun-Número], [Evento-Número] o [Calendario-Número].\n6) Al final, propone una lista breve de comprobación que la persona solicitante y la responsable puedan revisar juntas."
+            }
+          ]
+        },
+        {
+          "id": "clarified-output",
+          "heading": "4. Crear un borrador de solicitud separando los requisitos confirmados de las preguntas de confirmación",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La clave del siguiente ejemplo editado es que deja los huecos de forma explícita. Aunque tenga la forma de una «solicitud», no completa entregables ni fechas límite que no estén en la entrada. Se confirma que Doyun es la persona responsable, pero debe preguntar a Minseo qué hay que crear para considerar el trabajo terminado."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nBorrador de solicitud de trabajo\n\nSolicitante: Minseo [Rol-equipo-1] [Solicitud-Minseo-1]\nResponsable: Doyun [Rol-equipo-4] [Solicitud-Minseo-1]\n\nContexto confirmado\n- Evento: Taller Vecinal de Habilidades Digitales Básicas [Evento-1]\n- Fecha del evento: 2026-11-14 [Evento-2]\n- Horario del evento: 14:00–16:00 [Evento-3]\n- Cupo: 30 personas [Evento-4]\n- Público: residentes locales [Evento-5]\n- Fecha límite para confirmar al instructor: 2026-10-30 [Calendario-3]\n\nSolicitud original\n- Minseo: \"Prepara algo de material para el taller.\" [Solicitud-Minseo-1]\n\nObjetivo de la solicitud\n- Parece tratarse de preparar material para usar en el taller, pero el propósito concreto del material requiere confirmación. [Solicitud-Minseo-1] [Estado-Doyun-1]\n\nRequisitos\n- Tipo de material: Requiere confirmación. [Estado-Doyun-1]\n- Extensión: Requiere confirmación. [Estado-Doyun-2]\n- Formato del archivo: Requiere confirmación. [Estado-Doyun-2]\n\nCriterios de finalización\n- Requiere confirmación. El texto original no indica criterios de revisión. [Estado-Doyun-2]\n\nAlcance incluido\n- Requiere confirmación. El texto original no indica el contenido que debe incluirse. [Estado-Doyun-2]\n\nAlcance excluido\n- Requiere confirmación. El texto original no indica el contenido que debe excluirse. [Estado-Doyun-2]\n\nFormato / ubicación de entrega\n- Requiere confirmación. [Estado-Doyun-2]\n\nFecha límite de entrega\n- Requiere confirmación. La fecha límite para confirmar al instructor, 2026-10-30, está confirmada, pero no hay registro de que sea la fecha límite para entregar el material. [Estado-Doyun-3]\n\nPreguntas para Minseo\n- ¿Para qué se utilizará el material que hay que preparar?\n- ¿Cuál es el tipo de entregable y cuál debe ser el formato del archivo?\n- ¿Qué contenido debe incluirse obligatoriamente y qué debe excluirse?\n- ¿En qué estado se considerará terminado?\n- ¿Quién revisará y hará la comprobación final?\n- ¿Dónde debe entregarse el material?\n- ¿Cuál es la fecha límite real de entrega del material?\n\nAntes de que Doyun reciba las respuestas\n- Trabajo que puede empezar: organizar la información de contexto ya confirmada, como la fecha del evento 2026-11-14, el horario 14:00–16:00, el cupo de 30 personas y el público de residentes locales. [Evento-2] [Evento-3] [Evento-4] [Evento-5]\n- Trabajo que no debe empezar: confirmar sin comprobación el tipo de material, la extensión, el formato del archivo, el alcance incluido y excluido o la fecha límite de entrega. [Estado-Doyun-2] [Estado-Doyun-3]"
+            },
+            {
+              "type": "p",
+              "text": "Este borrador no completa el trabajo; prepara el inicio de la conversación. Cuando Minseo responda sobre el entregable y los criterios de finalización, esas respuestas se incorporan de nuevo a la solicitud. Si se decide arbitrariamente el entregable antes de recibir respuestas, los requisitos supuestos pueden quedar fijados como si fueran reales."
+            }
+          ]
+        },
+        {
+          "id": "bad-assumptions",
+          "heading": "5. No ampliar sin fundamento un calendario relacionado o una responsabilidad general hasta convertirlos en instrucciones detalladas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El riesgo más común al introducir una solicitud ambigua en una IA es que un resultado que rellena los huecos de manera natural parezca una instrucción de trabajo confirmada. El siguiente ejemplo inventa un formato de entregable, una extensión, una fecha límite de entrega y una persona revisora que no estaban en la entrada."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nDoyun preparará 20 diapositivas para la presentación y también 2 tipos de impresos para los participantes. Enviará el borrador a Junho antes de 2026-10-27 18:00 para que lo revise y entregará la versión final el 2026-10-30."
+            },
+            {
+              "type": "p",
+              "text": "La entrada no contiene ningún tipo de entregable como diapositivas para presentación o impresos, ni indica la extensión o la hora de entrega del borrador. Tampoco hay ningún registro de que Junho sea la persona revisora, ni base para usar la fecha límite de confirmación del instructor como fecha límite de entrega del material final. Cuanto más concreta parezca una salida así, más peligrosa puede ser. Al corregirla, se devuelven todas las condiciones añadidas arbitrariamente a 'Requiere confirmación' y se trasladan a preguntas para Minseo."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Lista de comprobación humana\n- ¿Se ha mantenido la expresión de la solicitud original?\n- ¿La información confirmada del evento está separada de los requisitos por definir del material?\n- ¿No se ha confundido la fecha límite para confirmar al instructor con la fecha límite para entregar el material?\n- ¿La IA no ha inventado el tipo de entregable, la extensión, el formato del archivo o el alcance incluido y excluido?\n- ¿No se han añadido personas revisoras o aprobadoras que no estén en los datos?\n- ¿Está claro qué elementos no deben confirmarse antes de responder a las preguntas de confirmación?\n- Al aplicarlo al trabajo real, ¿no se ha introducido material que infrinja la política de protección de información de la organización?"
+            }
+          ]
+        },
+        {
+          "id": "agree-and-share",
+          "heading": "6. Completar las respuestas entre quien solicita y quien ejecuta, y después fijarlas como criterio compartido",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Después de enviar la lista de preguntas creada por la IA, hay que recibir las respuestas de Minseo, actualizar la solicitud y comprobar que Doyun la entiende con el mismo significado. En particular, se acuerda en una sola frase qué significa «terminado», y la IA se limita a organizar lo ya acordado."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Minseo responde sobre el tipo de entregable, el objetivo, el alcance incluido y excluido y la fecha límite real de entrega.",
+                "Doyun vuelve a leer los criterios de finalización tal como los entendió para confirmarlos.",
+                "Los elementos ambiguos no se rellenan a la fuerza y siguen marcados como 'Requiere confirmación'.",
+                "La solicitud confirmada se comparte en una ubicación definida y accesible para el equipo, pero la información confidencial y los datos personales reales se excluyen de la entrada de IA.",
+                "Si después hay cambios, se registra qué cambió para no confundirlos con la solicitud anterior."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Incluso una solicitud aclarada puede volver a desestabilizarse si cada equipo usa expresiones diferentes. El siguiente artículo, “Crear una solicitud compartida de IA para el equipo: gestionar por versiones los criterios para organizar notas de reunión”, explica cómo crear una solicitud compartida que gestione todo el equipo, en lugar de un prompt personal, y cómo dejar un historial de cambios."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Entrada ficticia y ejemplo editado · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas, horas y cifras, y de elementos por definir",
+        "items": [
+          "Comprobar que el role de todos los bloques code sea un valor permitido",
+          "Comprobar que cada artículo contenga input, prompt, output y bad_output",
+          "Comparar mediante expresiones regulares que los nombres, fechas, horas y números del output existan en el input del mismo artículo",
+          "Comprobar que la fecha límite para confirmar al instructor no se haya afirmado como fecha límite para entregar el material",
+          "Comprobar que el tipo de entregable, la extensión, el formato del archivo, el alcance incluido y excluido y la ubicación de entrega no se hayan confirmado sin fundamento",
+          "Comprobar que no haya frases que expresen efectos mediante porcentajes o múltiplos"
+        ],
+        "limits": "No es una ejecución real de IA ni un resultado de trabajo real del equipo, sino un ejemplo editado para aprendizaje. En solicitudes reales deben comprobarse la política de protección de información de la organización, y la persona solicitante y la responsable deben acordar directamente los requisitos, los criterios de finalización y las fechas límite."
+      }
+    },
+    {
+      "slug": "team-shared-prompt",
+      "title": "Crear una solicitud compartida de IA para el equipo: gestionar por versiones los criterios para organizar notas de reunión",
+      "summary": "Se explica cómo convertir el uso de IA para colaboración en equipo en un activo del equipo que todos revisan y corrigen, en lugar de depender de solicitudes individuales. Se sigue el proceso de mejorar la solicitud para organizar actas de reunión con IA del equipo Haneul desde v1.0 hasta v1.1 y volver a comprobarla con la misma entrada de prueba.",
+      "audience": "Equipos no desarrolladores que quieren usar IA para organizar el mismo tipo de notas de reunión y mantener alineados el formato de salida y los criterios de revisión",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Usar material ficticio en lugar de información confidencial o datos de clientes reales",
+        "Mantener un registro de versiones de la solicitud que los miembros del equipo puedan revisar juntos",
+        "Comparar directamente el resultado de la IA con las notas originales"
+      ],
+      "tags": [
+        "PromptCompartido",
+        "ActasConIA",
+        "ControlDeVersiones"
+      ],
+      "sections": [
+        {
+          "id": "why-shared-prompt",
+          "heading": "1. Convertirlo en un criterio compartido por el equipo, no en una solicitud individual",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Aunque se organicen las mismas notas de reunión, si cada miembro del equipo da instrucciones diferentes a la IA pueden cambiar los nombres de las categorías, la forma de mostrar las fuentes y la manera de tratar los elementos por definir. El objetivo de este artículo no es crear «buenas frases». Es reunir en un solo documento el formato de entrada que el equipo usará repetidamente, la salida esperada, las prohibiciones y la forma de revisión, y registrar por qué se hacen los cambios. A diferencia de guardar prompts personales, otros miembros del equipo deben poder volver a comprobar quién cambió qué."
+            },
+            {
+              "type": "p",
+              "text": "El equipo Haneul ficticio prepara el Taller Vecinal de Habilidades Digitales Básicas para residentes locales el 2026-11-14 de 14:00–16:00. El cupo es de 30 personas y no hay cuota de participación. La fecha límite para confirmar el lugar es 2026-10-24, la versión final del material de difusión debe estar lista el 2026-10-28 y la confirmación del instructor debe completarse el 2026-10-30. A fecha de 2026-10-23 hay 22 personas inscritas. Estos hechos no deben modificarse arbitrariamente aunque cambie la solicitud compartida del equipo."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Elemento que debe incluir la solicitud compartida",
+                "Criterio que debe definir el equipo",
+                "Motivo"
+              ],
+              "rows": [
+                [
+                  "Formato de entrada",
+                  "Proporcionar juntos el autor de la nota y el número de elemento",
+                  "Facilita volver a localizar la fuente"
+                ],
+                [
+                  "Formato de salida",
+                  "Separar decisiones / tareas / por definir / conflictos",
+                  "Evita mezclar lo acordado con lo que debe confirmarse"
+                ],
+                [
+                  "Indicación de fuentes",
+                  "Mantener la etiqueta de la nota al final de cada elemento",
+                  "Permite rastrear los registros de varias personas"
+                ],
+                [
+                  "Prohibiciones",
+                  "No inferir responsables / fechas límite / decisiones",
+                  "Evita confirmar cosas que no están en el original"
+                ],
+                [
+                  "Registro de cambios",
+                  "Registrar versión / fecha / persona que modifica / motivo",
+                  "Conserva la justificación de los cambios de un documento compartido"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "test-input",
+          "heading": "2. Fijar la misma entrada de prueba para poder comparar",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si cada vez que se corrige una versión también se cambia la entrada de prueba, es difícil distinguir qué causó la diferencia en el resultado. Los siguientes datos son notas ficticias de tres personas sobre la reunión del 2026-10-20. Hay diferencias de expresión y, en el calendario del material de difusión, aparece una expresión relativa de una de las personas. También se introducen el historial de versiones de la propia solicitud compartida del equipo y la persona que hizo cada cambio, para que el output posterior no invente información nueva."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Hechos comunes del equipo Haneul\n- Evento: Taller Vecinal de Habilidades Digitales Básicas\n- Fecha del evento: 2026-11-14\n- Horario del evento: 14:00–16:00\n- Cupo: 30 personas\n- Público: residentes locales\n- Cuota de participación: ninguna\n- Fecha límite para confirmar el lugar: 2026-10-24\n- Fecha límite para la versión final del material de difusión: 2026-10-28\n- Fecha límite para confirmar al instructor: 2026-10-30\n- Situación de inscripciones: a fecha de 2026-10-23, 22 personas\n\nFunciones del equipo\n- Minseo: líder del equipo / calendario general\n- Junho: lugar / materiales\n- Seoyeon: difusión / recepción de inscripciones\n- Doyun: programa / contacto con instructor\n\nReunión de prueba: 2026-10-20\n\n[Nota-Minseo-1] Se considerará primero la Opción A: sala de seminarios del 3.er piso del centro cívico. La decisión final se tomará antes de 2026-10-24.\n[Nota-Minseo-2] La versión final del material de difusión se preparará antes de 2026-10-28.\n[Nota-Junho-1] La Opción A: sala de seminarios del 3.er piso del centro cívico, tiene capacidad para 32 personas, proyector disponible, ascensor disponible y disponibilidad de reserva confirmada.\n[Nota-Junho-2] La Opción B: auditorio de la biblioteca del distrito, tiene capacidad para 60 personas y su disponibilidad de reserva todavía no está confirmada.\n[Nota-Seoyeon-1] El material de difusión necesita una revisión final después de confirmar el lugar.\n[Nota-Junho-3] Escuché que el material de difusión se terminaría 'durante la próxima semana'. Quiero volver a confirmar la fecha exacta.\n[Nota-Doyun-1] La fecha límite para confirmar al instructor es 2026-10-30.\n\nHistorial de versiones de la solicitud compartida\n- v1.0: 2026-10-22, modificó Minseo, creación de la primera versión compartida\n- v1.1: 2026-10-23, modificó Seoyeon, revisión para especificar las reglas sobre elementos en conflicto e indicación de fuentes"
+            },
+            {
+              "type": "p",
+              "text": "Esta entrada no contiene información real de una organización ni datos de clientes. También al crear una solicitud compartida en el trabajo real, no deben pegarse directamente información confidencial, contraseñas, credenciales ni datos de identificación personal; primero hay que comprobar la política de protección de información de la organización."
+            }
+          ]
+        },
+        {
+          "id": "shared-prompt-v11",
+          "heading": "3. Fijar en una sola solicitud las reglas de entrada, salida y prohibiciones",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "La clave de v1.1 no es escribir más, sino hacer explícitas las reglas de decisión. En particular, cuando los registros de varias personas entren en conflicto, se exige no elegir automáticamente uno de ellos, sino conservar ambos y separarlos como elementos que necesitan confirmación. También se prohíbe completar de forma plausible responsables o fechas que no aparezcan en las notas."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Organiza las siguientes notas de reunión de varias personas para compartirlas con el equipo.\n\nReglas de entrada\n- Usa como fuente el autor y el número de elemento de cada nota.\n- Distingue los hechos comunes de las notas individuales.\n\nFormato de salida\n1) Contenido decidido\n2) Tareas\n3) Por definir\n4) Registros que entran en conflicto o tienen expresiones diferentes\nAñade la etiqueta de fuente original al final de cada elemento.\n\nProhibiciones\n- No inventes responsables, fechas, horas, números ni decisiones que no estén en la entrada.\n- No conviertas expresiones de fecha relativa en un YYYY-MM-DD arbitrario.\n- No elijas arbitrariamente uno de los registros en conflicto.\n- Si no está claro si algo está confirmado, escribe 'Requiere confirmación'.\n\nAl final, indica brevemente qué elementos debe comparar una persona con el original."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Versión",
+                "Cambio realizado",
+                "Punto de revisión"
+              ],
+              "rows": [
+                [
+                  "v1.0",
+                  "Primera versión compartida",
+                  "Comprobar si la clasificación de elementos es suficiente para el uso del equipo"
+                ],
+                [
+                  "v1.1",
+                  "Añadidas reglas para conservar conflictos e indicar fuentes",
+                  "Comprobar que no desaparezcan registros minoritarios ni expresiones diferentes"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "expected-output",
+          "heading": "4. Un buen resultado deja evidencia en lugar de parecer una respuesta definitiva",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Lo siguiente no es una salida de una ejecución real de IA, sino un ejemplo editado para revisar la solicitud. Lo importante es no inventar nuevas decisiones y conservar los registros diferentes junto con sus etiquetas originales."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nSolicitud compartida: v1.1\nRegistro de cambio: 2026-10-23, modificó Seoyeon\n\nContenido decidido\n- La fecha del evento es 2026-11-14, el horario es 14:00–16:00 y el cupo es de 30 personas.\n- La fecha límite para confirmar al instructor es 2026-10-30. [Nota-Doyun-1]\n\nTareas\n- Se considerará primero la Opción A: sala de seminarios del 3.er piso del centro cívico, y la decisión final se tomará antes de 2026-10-24. [Nota-Minseo-1]\n- El material de difusión necesita una revisión final después de confirmar el lugar. [Nota-Seoyeon-1]\n\nPor definir\n- La disponibilidad de reserva de la Opción B: auditorio de la biblioteca del distrito, requiere confirmación. [Nota-Junho-2]\n\nRegistros que entran en conflicto o tienen expresiones diferentes\n- Minseo registró la fecha límite de la versión final del material de difusión como 2026-10-28. [Nota-Minseo-2]\n- Junho registró que había escuchado que el material de difusión se terminaría 'durante la próxima semana' y que quería volver a confirmar la fecha exacta. [Nota-Junho-3]\n- Por tanto, la expresión de la fecha límite del material de difusión necesita comprobarse con el original y no se elimina arbitrariamente ninguno de los registros.\n\nElementos que debe comparar una persona\n- Comprobar juntos los registros de Minseo y Junho sobre la fecha límite del material de difusión.\n- Comprobar si ha aparecido nueva información sobre la disponibilidad de reserva de la opción B registrada por Junho."
+            },
+            {
+              "type": "p",
+              "text": "Este formato no es un mecanismo para que la IA decida la conclusión de la reunión, sino para mostrar dónde debe revisar el equipo. En especial, si se elimina una de dos expresiones diferentes como [Nota-Minseo-2] y [Nota-Junho-3], desaparece precisamente el asunto que debe revisarse."
+            }
+          ]
+        },
+        {
+          "id": "bad-output-and-fix",
+          "heading": "5. Registrar también en equipo cómo falla la solicitud compartida",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si se considera terminada la solicitud compartida después de escribirla una sola vez, pueden repetirse los mismos errores. Conviene registrar como motivo del cambio de versión qué salida incorrecta apareció y qué regla se añadió para evitar ese error."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\n- Se confirmó la opción B como lugar.\n- Junho terminará el material de difusión.\n- La fecha límite del material de difusión es 2026-10-27.\n- La opción B está disponible para reservar."
+            },
+            {
+              "type": "p",
+              "text": "Este ejemplo inventa una decisión que no está en la entrada, asigna una nueva tarea a Junho aunque no sea la persona responsable de la difusión, y confirma una fecha no proporcionada y la disponibilidad de reserva de la opción B. La corrección no consiste en pulir las frases, sino en añadir a la solicitud reglas de «no inferir», «conservar conflictos» y «mantener etiquetas de fuente», y volver a comprobarla con la misma entrada de prueba."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Lista de revisión de la solicitud compartida\n- ¿El formato de entrada conserva el autor y el número del elemento original?\n- ¿Se distinguen decisiones / tareas / por definir / conflictos?\n- ¿Se prohíbe inventar responsables / fechas / horas / números que no estén en la entrada?\n- ¿No se fusionan los registros diferentes en uno solo?\n- ¿Los miembros del equipo pueden comprobar la versión modificada / fecha / persona que modifica / motivo?\n- ¿Se ha comprobado la política de protección de información de la organización antes de introducir datos de trabajo reales?"
+            }
+          ]
+        },
+        {
+          "id": "team-review-cycle",
+          "heading": "6. Volver a revisar cada cambio de versión con la misma entrada",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Un prompt compartido por el equipo se parece más a una pequeña regla operativa que a un producto terminado. Al crear una nueva versión, quien modifica registra el motivo y otro miembro revisa con la misma entrada de prueba el formato del resultado y las posibles omisiones antes de compartirla. Si las reglas de entrada y salida se dejan por escrito en vez de depender de la configuración de un producto concreto de IA, es más fácil mantener los criterios de revisión del equipo aunque cambie la herramienta."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "La persona que corrigió la solicitud y la que la revisó leen juntas qué cambió.",
+                "Se mantiene igual la entrada de prueba y se comprueba que continúe la clasificación en decisiones / tareas / por definir / conflictos.",
+                "Se comprueba que en la nueva versión no desaparezcan etiquetas de fuente ni se convierta información no confirmada en información confirmada.",
+                "Solo la versión que el equipo haya decidido usar realmente se marca con claridad en la ubicación compartida."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "El siguiente artículo, “Cómo revisar y aprobar resultados de IA en equipo: comprobación antes de compartir el informe semanal”, explica cómo revisar por separado los hechos, las omisiones, la información sensible, las personas responsables y el estado de aprobación antes de compartir incluso resultados creados con una solicitud compartida."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Entrada ficticia y ejemplo editado · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que todos los bloques code tengan uno de los roles input, prompt, output, bad_output o checklist",
+          "Comprobar que los nombres de personas, fechas YYYY-MM-DD, horas HH:MM y números del output existan en el input del mismo artículo",
+          "Comprobar que los registros de cambio de v1.0 y v1.1 coincidan con la versión, la fecha y la persona que modifica indicadas en la entrada",
+          "Comprobar que los registros en conflicto sobre la fecha límite del material de difusión no se hayan fusionado arbitrariamente en uno solo en el output",
+          "Comprobar que el lugar, el calendario del evento, el cupo, las fechas límite principales y la situación de inscripciones no contradigan los hechos comunes de la serie",
+          "Comprobar que no se usen cifras de efecto como porcentajes de ahorro de tiempo o mejora de productividad"
+        ],
+        "limits": "No son resultados ejecutados en una herramienta real de IA, sino una entrada ficticia y ejemplos editados creados para explicar el uso de IA para colaboración en equipo. Como los datos reales de un equipo pueden contener información confidencial o personal, antes de introducirlos deben comprobarse la política de protección de información de la organización y el alcance de divulgación del original."
+      }
+    },
+    {
+      "slug": "team-ai-review-approval",
+      "title": "Cómo revisar y aprobar resultados de IA en equipo: comprobación antes de compartir el informe semanal",
+      "summary": "Se explica cómo revisar por función los hechos, las omisiones, la información sensible, las personas responsables y el estado de aprobación antes de compartir con el equipo un borrador de informe semanal generado por IA. Se separan las funciones de redacción, revisión y aprobación y se registra qué evidencia se comprobó para evitar que un resultado de IA se interprete automáticamente como la conclusión oficial del equipo.",
+      "audience": "Equipos no desarrolladores que quieren establecer un proceso en el que varias personas revisen y aprueben un informe organizado por IA antes de compartirlo",
+      "prerequisites": [
+        "Una herramienta de chat con IA en la que se pueda introducir texto",
+        "Poder ver juntos el original que se revisará y el borrador de IA",
+        "Usar datos ficticios o enmascarados en lugar de datos personales o de clientes reales",
+        "Asignar la responsabilidad de aprobación final a una persona del equipo, no a la IA"
+      ],
+      "tags": [
+        "RevisiónDeIA",
+        "InformeSemanalIA",
+        "AprobaciónDeEquipo"
+      ],
+      "sections": [
+        {
+          "id": "review-before-share",
+          "heading": "1. Distinguir entre un borrador de IA y un documento aprobado por el equipo",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Aunque la IA organice la información con un formato claro de informe semanal, ese documento no se convierte automáticamente en el informe oficial del equipo. En un documento que integra información de varias personas hay que comprobar por separado no solo los errores de hechos, sino también las omisiones, la atribución incorrecta de responsables, el uso de información no confirmada como si estuviera confirmada y la exposición de información sensible. En este artículo se practica cómo separar las funciones de redacción, revisión y aprobación y dejar un registro de las comprobaciones realizadas antes de aprobar."
+            },
+            {
+              "type": "p",
+              "text": "El equipo Haneul ficticio tiene previsto realizar el Taller Vecinal de Habilidades Digitales Básicas el 2026-11-14 de 14:00–16:00. El cupo es de 30 personas, el público son residentes locales y no hay cuota de participación. El lugar debe confirmarse antes de 2026-10-24, la versión final del material de difusión antes de 2026-10-28 y el instructor antes de 2026-10-30. A fecha de 2026-10-23 hay 22 personas inscritas. La revisión siguiente se basa en estos hechos comunes y en las actualizaciones originales de los miembros del equipo."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Función",
+                "Responsable",
+                "Comprobación principal"
+              ],
+              "rows": [
+                [
+                  "Redactora",
+                  "Seoyeon",
+                  "Preparar el borrador y las fuentes a partir del original"
+                ],
+                [
+                  "Revisor",
+                  "Junho",
+                  "Comparar con el original los hechos, las omisiones, la información sensible y la indicación de responsables"
+                ],
+                [
+                  "Aprobadora",
+                  "Minseo",
+                  "Comprobar si quedan elementos que necesitan confirmación y decidir si se comparte"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "source-and-draft-input",
+          "heading": "2. Reunir en el mismo material de revisión el original y el borrador de IA",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si la persona revisora solo lee el borrador de IA, resulta difícil saber qué se ha omitido. Por eso se proporcionan en un mismo conjunto de entrada las actualizaciones originales, el borrador, el estado de enmascarado de información sensible y las funciones de aprobación. El contacto siguiente no es un número real, sino una representación enmascarada; al usar datos reales hay que comprobar la política de protección de información de la organización."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Hechos comunes del equipo Haneul\n- Evento: Taller Vecinal de Habilidades Digitales Básicas\n- Fecha del evento: 2026-11-14\n- Horario del evento: 14:00–16:00\n- Cupo: 30 personas\n- Público: residentes locales\n- Cuota de participación: ninguna\n- Fecha límite para confirmar el lugar: 2026-10-24\n- Fecha límite para la versión final del material de difusión: 2026-10-28\n- Fecha límite para confirmar al instructor: 2026-10-30\n- Situación de inscripciones: a fecha de 2026-10-23, 22 personas\n\nFunciones de revisión\n- Redactora: Seoyeon\n- Revisor: Junho\n- Aprobadora: Minseo\n- Responsable del programa: Doyun\n\nActualizaciones originales\n[Actualización-Minseo-1] A fecha de 2026-10-23, el lugar todavía no está confirmado definitivamente y debe decidirse antes de 2026-10-24.\n[Actualización-Junho-1] La Opción A: sala de seminarios del 3.er piso del centro cívico, tiene capacidad para 32 personas, proyector disponible, ascensor disponible y disponibilidad de reserva confirmada.\n[Actualización-Junho-2] La Opción B: auditorio de la biblioteca del distrito, tiene capacidad para 60 personas y su disponibilidad de reserva no está confirmada.\n[Actualización-Seoyeon-1] A fecha de 2026-10-23, hay 22 personas inscritas.\n[Actualización-Seoyeon-2] En el material de consultas de inscripción aparece el contacto enmascarado 010-XXXX-XXXX. El contacto en sí no debe incluirse en la versión compartida externamente.\n[Actualización-Doyun-1] La fecha límite para confirmar al instructor es 2026-10-30 y actualmente aún no está confirmado definitivamente.\n\nBorrador que se revisará\n- El evento se realizará el 2026-11-14 de 14:00–16:00.\n- El lugar se confirmó como la Opción A: sala de seminarios del 3.er piso del centro cívico.\n- Hay 22 personas inscritas.\n- El instructor está confirmado.\n- Contacto para consultas de inscripción: 010-XXXX-XXXX\n\nCriterios del registro de aprobación\n- Estado: sin comprobar / necesita corrección / aprobado\n- Momento del registro de revisión: 2026-10-23 16:00\n- Fecha / hora de aprobación: se registran cuando la persona aprobadora apruebe"
+            },
+            {
+              "type": "p",
+              "text": "El borrador que se revisará contiene de forma intencionada errores y elementos expuestos en exceso. Aunque se ha confirmado que la opción A está disponible para reservar, no hay ningún original que diga que el lugar en sí esté confirmado definitivamente, y el instructor tampoco está confirmado todavía. Aunque el contacto esté enmascarado, el original indica que no debe incluirse en la versión compartida externamente, por lo que debe eliminarse."
+            }
+          ]
+        },
+        {
+          "id": "review-prompt",
+          "heading": "3. Separar en la solicitud de revisión los hechos, las omisiones, la información sensible y la responsabilidad",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si solo se pide a la IA «encuentra lo que está mal», pueden mezclarse cuestiones de redacción con errores de hechos. Separar los criterios de revisión facilita que la persona revisora sepa qué original debe volver a consultar. Como la IA no tiene autoridad para aprobar, también se especifica que no debe cambiar por sí sola el estado final a 'aprobado'."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Compara las actualizaciones originales con el borrador que se revisará y crea una tabla de revisión antes de compartirla con el equipo.\n\nComprueba por separado las siguientes categorías.\n- Hechos: si el contenido del borrador está respaldado por el original\n- Omisiones: si faltan en el borrador elementos importantes del original\n- Información sensible: si queda información que debe eliminarse de la versión compartida externamente\n- Responsables: si no se han cambiado arbitrariamente las funciones de redactora / revisor / aprobadora\n- Estado de aprobación: antes de que una persona apruebe, déjalo como 'sin comprobar' o 'necesita corrección'.\n\nAñade una etiqueta de fuente original a cada juicio. No inventes personas, fechas, horas, números ni decisiones que no estén en la entrada. Al final, indica qué debe comprobar la persona aprobadora después de la corrección."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Categoría de revisión",
+                "Pregunta",
+                "Evidencia necesaria antes de aprobar"
+              ],
+              "rows": [
+                [
+                  "Hechos",
+                  "¿Lo que se escribió como confirmado está realmente confirmado?",
+                  "Fuente original"
+                ],
+                [
+                  "Omisiones",
+                  "¿Se omitieron estados en curso o elementos no confirmados?",
+                  "Comparación entre los elementos del original y del borrador"
+                ],
+                [
+                  "Información sensible",
+                  "¿Quedó información que se decidió no compartir?",
+                  "Instrucción sobre el alcance de divulgación del original"
+                ],
+                [
+                  "Responsables",
+                  "¿Las funciones coinciden con los datos de entrada?",
+                  "Tabla de funciones de revisión"
+                ],
+                [
+                  "Aprobación",
+                  "¿La persona aprobadora lo comprobó directamente?",
+                  "Registro de estado / fecha / hora"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "review-output",
+          "heading": "4. El resultado de la revisión conserva juntos el fundamento de la corrección y el estado de aprobación",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El siguiente resultado no es una salida de una ejecución real de IA, sino un ejemplo editado para ayudar a una persona a comprender los criterios de revisión. Un buen resultado no se limita a señalar una frase incorrecta; también muestra qué original obliga a corregirla y cuál es el estado antes de la aprobación."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Resultado de ejemplo · no es una salida real de IA]\nEstado de revisión: necesita corrección\nRedactora: Seoyeon\nRevisor: Junho\nAprobadora: Minseo\n\nComprobación de hechos\n- La fecha del evento 2026-11-14 y el horario 14:00–16:00 coinciden con los hechos comunes.\n- Las 22 personas inscritas coinciden con [Actualización-Seoyeon-1].\n- La expresión 'el lugar se confirmó como la Opción A: sala de seminarios del 3.er piso del centro cívico' necesita corrección. En [Actualización-Minseo-1], a fecha de 2026-10-23 todavía no está confirmado definitivamente.\n- La expresión 'el instructor está confirmado' necesita corrección. En [Actualización-Doyun-1], debe confirmarse antes de 2026-10-30 y actualmente aún no está confirmado definitivamente.\n\nComprobación de omisiones\n- En el borrador falta el estado de que el lugar debe decidirse antes de 2026-10-24. [Actualización-Minseo-1]\n- En el borrador falta la información de que la disponibilidad de reserva de la Opción B: auditorio de la biblioteca del distrito, no está confirmada. [Actualización-Junho-2]\n\nComprobación de información sensible\n- Aunque 010-XXXX-XXXX es una representación enmascarada, se indica que no debe incluirse en la versión compartida externamente, por lo que se elimina. [Actualización-Seoyeon-2]\n\nRegistro de aprobación\n- El estado actual es necesita corrección.\n- Minseo decidirá si aprueba después de comprobar la versión corregida.\n- El momento del registro de revisión es 2026-10-23 16:00. La fecha / hora de aprobación se registrarán cuando Minseo apruebe y actualmente están por definir."
+            },
+            {
+              "type": "p",
+              "text": "En este ejemplo, Junho es el revisor y Minseo es la aprobadora final. Que el revisor encuentre errores no significa que el estado deba cambiar de inmediato a aprobado. En especial, en cuestiones como el lugar y el instructor, «disponible» o «con fecha límite definida» no significan lo mismo que «confirmado definitivamente», por lo que debe conservarse la expresión del original."
+            }
+          ]
+        },
+        {
+          "id": "bad-approval",
+          "heading": "5. Evitar confundir un informe bien presentado con un informe aprobado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Si el borrador de IA suena natural y la tabla está bien ordenada, puede parecer que la revisión ya terminó. Sin embargo, si se añaden expresiones de confirmación sin fuente, se deja información sensible o se cambia el estado sin la comprobación de la persona aprobadora, se vuelve borrosa la frontera de responsabilidades del documento del equipo."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Resultado erróneo frecuente · no es una salida real de IA]\nAprobación final completada\n- Lugar: Opción A: sala de seminarios del 3.er piso del centro cívico, confirmado\n- Instructor: Doyun completó el contacto\n- Consultas de inscripción: 010-XXXX-XXXX\n- Aprobador final: Junho"
+            },
+            {
+              "type": "p",
+              "text": "Este resultado no coincide con la entrada. El lugar y el instructor todavía no están confirmados definitivamente, el contacto enmascarado también debe eliminarse de la versión compartida externamente y la persona aprobadora no es Junho, sino Minseo. La corrección consiste en conectar cada frase con su fuente original y separar los hechos comprobados por el revisor del estado que debe decidir la aprobadora."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Lista de revisión humana antes de compartir con el equipo\n- Hechos: ¿las fechas / horas / números / estados coinciden con el original?\n- Omisiones: ¿no faltan retrasos / elementos no confirmados / conflictos / dependencias?\n- Información sensible: ¿se eliminaron los contactos o datos identificativos que se decidió no compartir?\n- Responsables: ¿redactora / revisor / aprobadora coinciden con la entrada?\n- Fuentes: ¿se puede volver a localizar el elemento original de cada juicio importante?\n- Aprobación: ¿no se ha cambiado el estado a aprobado antes de que la persona aprobadora compruebe directamente la versión corregida?"
+            }
+          ]
+        },
+        {
+          "id": "approval-record",
+          "heading": "6. El registro de aprobación conserva el flujo de responsabilidad, no solo el resultado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El propósito del registro de aprobación no es señalar quién tiene más autoridad, sino distinguir qué documento está sin revisar, cuál está en corrección y cuál puede compartirse como versión final. La redactora prepara el original y el borrador, el revisor compara los hechos, las omisiones y la información sensible, y la aprobadora observa los elementos que aún necesitan confirmación y decide si se comparte. La IA no sustituye ninguna de estas funciones."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "La redactora prepara un borrador en el que puedan verse las fuentes originales.",
+                "El revisor marca los errores y las omisiones junto con el fundamento de la corrección.",
+                "La aprobadora comprueba directamente la versión corregida y los elementos que todavía necesitan confirmación.",
+                "La versión compartida conserva el estado de aprobación y el momento del registro para distinguirla del borrador."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Con esto, el recorrido de los 8 artículos vuelve al primer paso. La próxima vez se puede regresar al criterio del artículo 1, “IA para colaboración en equipo: ¿por dónde empezar? Comparar tareas repetitivas y elegir la primera aplicación”, y volver a elegir en qué tarea repetitiva del equipo conviene aplicar primero un procedimiento de apoyo de IA y revisión humana."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Entrada ficticia y ejemplo editado · sin ejecución real de IA · comprobación de coincidencia de nombres, fechas y cifras",
+        "items": [
+          "Comprobar que todos los bloques code tengan uno de los roles input / prompt / output / bad_output / checklist",
+          "Comprobar que los nombres de personas, fechas YYYY-MM-DD, horas HH:MM y números del output existan en el input del mismo artículo",
+          "Comprobar que el estado original de que el lugar y el instructor aún no están confirmados definitivamente no se haya convertido arbitrariamente en confirmado en el output",
+          "Comprobar que el contacto enmascarado esté marcado para eliminarse de la versión compartida externamente",
+          "Comprobar que las funciones de Seoyeon como redactora, Junho como revisor y Minseo como aprobadora coincidan con la entrada",
+          "Comprobar que el calendario del evento, el cupo, las fechas límite y la situación de inscripciones no contradigan los hechos comunes de la serie y que no haya cifras de efecto"
+        ],
+        "limits": "No es un registro de una ejecución real de IA ni de una prueba del proceso de aprobación de una organización real, sino un ejemplo editado con datos ficticios de un equipo. Al revisar informes reales, las personas deben comprobar directamente el original, la política de protección de información de la organización y el procedimiento interno de aprobación."
+      }
+    }
+  ]
+}

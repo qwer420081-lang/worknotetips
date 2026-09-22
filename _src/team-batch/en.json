@@ -1,0 +1,1554 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "team-ai-where-to-start",
+      "title": "Team Collaboration AI: Where Should You Start? Compare Repetitive Tasks and Choose the First Use Case",
+      "summary": "When introducing team collaboration AI for the first time, it is easier to manage if you compare tasks where multiple people repeatedly collect and verify information rather than starting with eye-catching features. Using 6 fictional tasks from Team Haneul, this guide describes expected benefits qualitatively, checks review burden and sensitive-information risk, and then narrows down the first use case. AI organizes the candidates, but the team makes the final choice.",
+      "audience": "Non-developer employees and students who want to apply AI for the first time to shared work in a small team rather than to individual tasks",
+      "prerequisites": [
+        "A general AI chat tool that accepts text input",
+        "Be able to list several tasks that repeat within the team",
+        "Use fictional or de-identified data instead of real customer information, contact details, or confidential information",
+        "Have a team member compare the AI-generated comparison directly with the source material"
+      ],
+      "tags": [
+        "teamCollaborationAI",
+        "taskSelection",
+        "jointReview"
+      ],
+      "sections": [
+        {
+          "id": "choose-small-start",
+          "heading": "1. Start with repetitive work the team reviews together, not with features",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When choosing the first task for team collaboration AI, it is better to first write down 'what information is repeatedly gathered in our team, and who checks it again?' rather than 'what is AI good at?' Compared with work one person completes alone, work that combines several people's notes, statuses, or opinions into one format for sharing makes it easier to define the boundary between input and output and is relatively clear about who should review it."
+            },
+            {
+              "type": "p",
+              "text": "The example is the fictional “Neighborhood Digital Basics Workshop” being prepared by Team Haneul. When selecting a first-use candidate, describe the expected benefits qualitatively, such as 'easier to gather information in one place' or 'easier to find omissions.' In the same table, also check whether the review burden is high and whether real materials may contain personal or confidential information. This comparison is a draft for team discussion, not an automated decision."
+            }
+          ]
+        },
+        {
+          "id": "candidate-input",
+          "heading": "2. Turn repetitive-task candidates and shared facts into input material",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The following input is fictional material created for practice. Do not include a real applicant list or contact details; use only aggregated registration counts. When using real organizational data, first check the internal information-security policy and define team rules for what must not be entered into AI."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Fictional team: Team Haneul\nMembers: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\nEvent: Neighborhood Digital Basics Workshop\nEvent date: 2026-11-14\nEvent time: 14:00–16:00\nCapacity: 30 people\nAudience: local residents\nParticipation fee: none\nVenue candidate Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\nVenue candidate Option B: district library auditorium, capacity 60 people, booking availability not confirmed\nKey deadlines: venue confirmation 2026-10-24 / final promotional material 2026-10-28 / instructor confirmation 2026-10-30\nRegistration status: as of 2026-10-23, 22 people\n\nRepetitive-task candidates\n[Candidate-A] Merge meeting notes from multiple attendees into one document / Frequency: every meeting / Related: Minseo / Junho / Seoyeon / Doyun\n[Candidate-B] Collect each member's progress and draft a shared status table / Frequency: weekly / Related: Minseo / Junho / Seoyeon / Doyun\n[Candidate-C] Organize confirmed facts and unconfirmed items for venue candidates / Frequency: as needed before venue confirmation / Related: Minseo / Junho\n[Candidate-D] Organize draft promotional copy for team review / Frequency: as needed before promotional materials are finalized / Related: Minseo / Seoyeon\n[Candidate-E] Aggregate registration status and share it with the team / Frequency: weekly / Related: Minseo / Seoyeon / Note: do not enter real applicant names or contact details\n[Candidate-F] Organize instructor-outreach notes by progress status / Frequency: as needed during outreach / Related: Minseo / Doyun"
+            },
+            {
+              "type": "p",
+              "text": "When listing candidates, include not only the task name but also its frequency and the people involved. This makes it easier to think about who will use the result and who will review it. For tasks likely to contain personal information, it is important to define the input boundary in advance, for example, 'use aggregated values only.'"
+            }
+          ]
+        },
+        {
+          "id": "comparison-prompt",
+          "heading": "3. Ask for comparison criteria before asking for a recommendation",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Rather than asking AI only, 'What should we start with?', provide both evaluation criteria and judgments it must not make. Here, compare repetitiveness, the extent to which information from multiple people is combined, expected qualitative benefits, human review burden, and sensitive-information risk. Also state explicitly that AI must not make the final decision."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Using only the fictional input above, compare the task candidates for the first use of AI in team collaboration.\n\nRequirements:\n- Compare each candidate qualitatively by repetitiveness, collaboration scope, expected benefits, review burden, and sensitive-information risk.\n- Do not invent effect metrics or performance figures that are not in the input.\n- Do not suggest putting real personal information or contact details into AI.\n- Recommend one candidate, but include both the reason for the recommendation and cautions.\n- State that the recommendation is a draft for team discussion, not a decision.\n- Do not invent owners, deadlines, or policies that are not in the input.\n- Mark uncertain content as 'Needs confirmation'."
+            }
+          ]
+        },
+        {
+          "id": "comparison-output",
+          "heading": "4. Read expected benefits and review burden together in the comparison table",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The following table is an edited example reorganized from the input so that a person can review it easily. 'Fit' is not a performance score; it is a qualitative judgment about how easy it is to compare input and output in the first exercise."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Task candidate",
+                "Repetitiveness",
+                "Collaboration scope",
+                "Expected benefit",
+                "Review burden",
+                "Sensitive-information risk",
+                "First-use perspective"
+              ],
+              "rows": [
+                [
+                  "Merge meeting notes",
+                  "Every meeting",
+                  "Entire team",
+                  "Compare different records in one view",
+                  "Need to check sources and omissions",
+                  "Depends on note content",
+                  "Easy to trace inputs and sources"
+                ],
+                [
+                  "Roll up progress",
+                  "Weekly",
+                  "Entire team",
+                  "Makes delays and dependencies easier to view together",
+                  "Need to verify the latest status",
+                  "Depends on task content",
+                  "Easier to use after defining a shared format"
+                ],
+                [
+                  "Organize venue facts",
+                  "As needed",
+                  "Minseo / Junho",
+                  "Separate confirmed facts from unconfirmed items",
+                  "Need to recheck booking status",
+                  "Relatively low",
+                  "Suitable for fact review before a decision"
+                ],
+                [
+                  "Organize promotional copy",
+                  "As needed",
+                  "Minseo / Seoyeon",
+                  "Put copy to review into one format",
+                  "Need to check both wording and facts",
+                  "Relatively low",
+                  "May mix factual review with writing-quality judgment"
+                ],
+                [
+                  "Share registration status",
+                  "Weekly",
+                  "Minseo / Seoyeon",
+                  "Share aggregated status",
+                  "Need to verify aggregation criteria",
+                  "Raw data may be high risk",
+                  "A rule to enter aggregated values only should come first"
+                ],
+                [
+                  "Organize instructor-outreach notes",
+                  "As needed",
+                  "Minseo / Doyun",
+                  "Separate in-progress and TBD items",
+                  "Need to verify external-contact content",
+                  "Depends on content",
+                  "Define the input scope first"
+                ]
+              ]
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nSuggested first-use candidate: merge meeting notes from multiple attendees\n\nReasons:\n- It is a shared team task that compares records from Minseo / Junho / Seoyeon / Doyun in one document.\n- The original notes and the organized result can be placed side by side to check sources, omissions, and TBD items.\n- The process can be practiced with fictional notes without entering real applicant names or contact details.\n\nCautions:\n- Sentences merged by AI are not automatically the team's confirmed decisions.\n- Do not overwrite differing records with one version; keep them together with their sources.\n- Team Haneul makes the final choice after review."
+            },
+            {
+              "type": "p",
+              "text": "Check whether the recommendation is explained in terms of input-output traceability, joint reviewability, and information risk rather than simply saying 'AI seems good at it.' For a first use case, a task where the cause of failure is easy to identify may be more appropriate than the most important task."
+            }
+          ]
+        },
+        {
+          "id": "bad-choice",
+          "heading": "5. Do not treat a recommendation as a confirmed decision",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nMeeting-note merging is the most efficient task, so implement it immediately. The review burden is small, so the AI-organized version can be used as the shared record without team-member review. Registration status can also be organized more accurately by entering the raw data directly."
+            },
+            {
+              "type": "p",
+              "text": "This example needs correction in three respects. First, the input contains no measured evidence that any task is 'the most efficient.' Second, merging meeting notes requires people to check sources and omissions, so there is no basis for skipping review. Third, the registration-status candidate explicitly says not to enter real applicant names or contact details, yet the example recommends entering raw data. Use recommendations only to narrow candidates; the team must decide whether to adopt the workflow and what data scope to allow."
+            }
+          ]
+        },
+        {
+          "id": "team-check-and-next",
+          "heading": "6. Confirm what the team must agree on and move to the next exercise",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Before choosing the first task, agree on who will receive the output, who will compare it with the source, and what information must not be entered. If the same task will be repeated, also record the 'input format' and 'review criteria' so that the next person can use the same standard."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Team review checklist\n- Do the repetitive-task candidates reflect the team's actual workflow?\n- Is it clear where information from multiple people is combined?\n- Are expected benefits described as observable changes rather than numbers?\n- Is someone assigned to compare the result with the source?\n- Is the scope that excludes real personal information, customer information, and confidential information defined?\n- Are AI recommendations clearly separated from the team's final decision?"
+            },
+            {
+              "type": "p",
+              "text": "If you selected meeting-note merging as the first exercise candidate, continue with the next article, “AI Meeting Notes: Merge Multiple Attendees' Notes into Decisions, Action Items, and TBD Items” which shows how to combine differing records while preserving their sources."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+        "items": [
+          "Check that every code block has a role and uses only allowed role values",
+          "Compare names, dates, times, and numbers in output against the input in the same article",
+          "Check that 2026-11-14, 14:00–16:00, capacity 30 people, and key deadlines match the shared fictional case",
+          "Check that, as of 2026-10-23, the registration status of 22 people has not changed to another value",
+          "Check that every table row has the same number of columns as its header",
+          "Check that effects are not expressed as percentages or multiples"
+        ],
+        "limits": "This is not a result of running an actual AI tool to measure effects, but a fictional input and edited example for learning. Each organization must define its own policies, data-sensitivity rules, and review responsibilities, and real confidential information, customer information, or authentication information must not be entered."
+      }
+    },
+    {
+      "slug": "team-meeting-notes-merge",
+      "title": "AI Meeting Notes: Merge Multiple Attendees' Notes into Decisions, Action Items, and TBD Items",
+      "summary": "When creating AI meeting notes, instead of polishing only one person's notes, practice combining records from multiple attendees and organizing decisions, action items, TBD items, and differences between records together with source tags. Using fictional Team Haneul meeting notes from 2026-10-20, this guide shows how to create a draft for team sharing without forcing different wording into a single version.",
+      "audience": "Non-developer teams that want to merge meeting notes from multiple attendees into one document without losing the original sources or unresolved items",
+      "prerequisites": [
+        "A general AI chat tool that accepts text input",
+        "Prepare each attendee's notes for the same meeting separately",
+        "Use fictional or de-identified data instead of real confidential information, customer information, or contact details",
+        "Have someone compare the AI-organized version against the original notes"
+      ],
+      "tags": [
+        "AImeetingNotes",
+        "noteMerging",
+        "sourceTracking"
+      ],
+      "sections": [
+        {
+          "id": "merge-with-sources",
+          "heading": "1. Preserve sources when merging multiple notes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After a meeting, each attendee's notes emphasize different things. One person may record only decisions, while another leaves their own action items or wording that has not yet been confirmed. In AI meeting notes, the important point is not to make the sentences flow smoothly, but to preserve traceability so the team can see which note each item came from."
+            },
+            {
+              "type": "p",
+              "text": "This article uses a fictional Team Haneul meeting held on 2026-10-20. The purpose of the meeting notes is not to invent decisions that are absent from the input, but to separate commonly confirmed facts, assigned tasks, TBD items, and differences between records so the team can review them again."
+            }
+          ]
+        },
+        {
+          "id": "meeting-input",
+          "heading": "2. Enter each attendee's notes with item numbers",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Attach the attendee's name and an item number to the input material. Even when two notes appear to describe the same thing, keep different wording as written. This example includes one note that records the promotional-material deadline as an exact date and another that uses a relative expression."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Meeting: Team Haneul workshop preparation meeting\nMeeting date: 2026-10-20\nTeam members: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\nEvent: Neighborhood Digital Basics Workshop\nEvent date: 2026-11-14\nEvent time: 14:00–16:00\nCapacity: 30 people\nAudience: local residents\nParticipation fee: none\nVenue candidate Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\nVenue candidate Option B: district library auditorium, capacity 60 people, booking availability not confirmed\nShared schedule: venue confirmation 2026-10-24 / final promotional material 2026-10-28 / instructor confirmation 2026-10-30\nShared registration status: as of 2026-10-23, 22 people\n\nMinseo notes\n[Note-Minseo-1] Reconfirmed the plan for event date 2026-11-14, time 14:00–16:00, and capacity 30 people.\n[Note-Minseo-2] Confirm the venue by 2026-10-24. Junho will organize and share the confirmation status of Option A and Option B.\n[Note-Minseo-3] Final promotional material deadline is 2026-10-28. Seoyeon will prepare the final version reflecting the confirmed venue.\n[Note-Minseo-4] Instructor confirmation deadline is 2026-10-30. Doyun will organize the outreach progress status.\n\nJunho notes\n[Note-Junho-1] Option A: Civic Center 3rd-floor seminar room has capacity 32 people, projector / elevator available, and booking availability confirmed.\n[Note-Junho-2] Heard that the promotional material would be finished 'sometime next week.'\n[Note-Junho-3] Option B: district library auditorium has capacity 60 people. Booking availability has not yet been confirmed.\n\nSeoyeon notes\n[Note-Seoyeon-1] Recorded that the final promotional material should be ready by 2026-10-28.\n[Note-Seoyeon-2] Once the venue is confirmed, the venue wording in the promotional material must be updated.\n[Note-Seoyeon-3] Registration is still ongoing, and the registration count was not separately recorded in the meeting notes."
+            },
+            {
+              "type": "p",
+              "text": "The shared registration status is listed separately to keep the series background consistent, but the 2026-10-20 meeting notes themselves do not pull in a later registration count as though it were a decision made at the meeting. Distinguishing the time scope of inputs is also an important part of reviewing meeting notes."
+            }
+          ]
+        },
+        {
+          "id": "merge-prompt",
+          "heading": "3. Ask to separate decisions, action items, TBD items, and record differences",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "In the prompt, specify classification criteria rather than asking only for a summary. In particular, when records differ, do not have AI choose the more plausible sentence and treat it as confirmed; require both sources to remain. Also ask that owners and deadlines be left as 'TBD' or 'Needs confirmation' when the input does not support them."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Organize the attendee-by-attendee meeting notes above into one draft of AI meeting notes for team sharing.\n\nCategories:\n- Decisions or reconfirmed facts\n- Action items: show an owner and deadline only when they appear in the input\n- TBD or Needs confirmation\n- Different records or wording differences\n- Draft team-sharing message\n\nRules:\n- Keep the original source tag that supports each item at the end of the item.\n- Do not arbitrarily delete one of two different records or treat one as confirmed.\n- Use the shared schedule and attendee notes as distinct sources.\n- Do not invent owners, deadlines, or completion status that are not in the input.\n- Do not present information from after the meeting as though it were a decision made during the meeting.\n- Do not add real contact details or personal information."
+            }
+          ]
+        },
+        {
+          "id": "merged-output",
+          "heading": "4. Review a team-shareable draft that preserves source tags",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nDecisions / Reconfirmed\n- Reconfirmed the plan for event date 2026-11-14, time 14:00–16:00, and capacity 30 people. [Note-Minseo-1]\n\nAction items\n- Junho: organize and share the confirmation status of Option A and Option B. Venue confirmation deadline 2026-10-24. [Note-Minseo-2] [Note-Junho-1] [Note-Junho-3]\n- Seoyeon: prepare the final promotional material reflecting the confirmed venue. The date in the shared schedule and in Minseo / Seoyeon notes is 2026-10-28. [Note-Minseo-3] [Note-Seoyeon-1] [Note-Seoyeon-2]\n- Doyun: organize instructor-outreach progress. Instructor confirmation deadline 2026-10-30. [Note-Minseo-4]\n\nTBD / Needs confirmation\n- The final venue is still TBD. Booking availability for Option B needs confirmation. [Note-Junho-3]\n\nRecord differences\n- Junho recorded the promotional-material completion timing as 'sometime next week,' while Seoyeon recorded 2026-10-28. The shared schedule also lists 2026-10-28, but the wording difference between the meeting records should remain visible and be checked when sharing with the team. [Note-Junho-2] [Note-Seoyeon-1]\n\nDraft team-sharing message\n- Team Haneul meeting notes have been merged. The venue is scheduled to be confirmed by 2026-10-24, and Junho will organize the candidate status. Seoyeon's final promotional material deadline is recorded as 2026-10-28, and Doyun's instructor confirmation deadline as 2026-10-30. The final venue and booking availability for Option B need confirmation. The promotional-material deadline is worded differently across notes, so please check the original source tags as well."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Category",
+                "Content",
+                "Owner",
+                "Deadline",
+                "Source"
+              ],
+              "rows": [
+                [
+                  "Reconfirmed",
+                  "Keep event schedule / capacity plan",
+                  "Minseo",
+                  "No confirmation needed",
+                  "[Note-Minseo-1]"
+                ],
+                [
+                  "Action item",
+                  "Share confirmation status of venue candidates",
+                  "Junho",
+                  "2026-10-24",
+                  "[Note-Minseo-2] [Note-Junho-1] [Note-Junho-3]"
+                ],
+                [
+                  "Action item",
+                  "Prepare final promotional material reflecting the confirmed venue",
+                  "Seoyeon",
+                  "2026-10-28",
+                  "[Note-Minseo-3] [Note-Seoyeon-1] [Note-Seoyeon-2]"
+                ],
+                [
+                  "Action item",
+                  "Organize instructor-outreach progress status",
+                  "Doyun",
+                  "2026-10-30",
+                  "[Note-Minseo-4]"
+                ],
+                [
+                  "TBD",
+                  "Final venue and booking availability for Option B",
+                  "Junho",
+                  "2026-10-24",
+                  "[Note-Minseo-2] [Note-Junho-3]"
+                ],
+                [
+                  "Record difference",
+                  "Wording for promotional-material completion timing",
+                  "Seoyeon",
+                  "2026-10-28 / sometime next week",
+                  "[Note-Junho-2] [Note-Seoyeon-1]"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "A good merged version is not a document that chooses the most plausible note. It is a document that lines up the points the team needs to verify again. In particular, relative expressions such as 'sometime next week' should not be converted arbitrarily into a date; preserve the original wording. Even if the shared schedule contains an exact date, the wording difference between meeting notes can still be preserved as a record."
+            }
+          ]
+        },
+        {
+          "id": "bad-merge",
+          "heading": "5. Fix meeting notes that erase TBD items and record differences",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nAll venue discussions have been resolved, and the promotional-material schedule was agreed without disagreement. Each owner can proceed according to the existing plan, and there is nothing else to confirm."
+            },
+            {
+              "type": "p",
+              "text": "This example removes the TBD status and record differences that remain in the input. The final venue has not yet been decided, and booking availability for Option B has not been confirmed. In addition, Junho's 'sometime next week' record and Seoyeon's exact-date record use different wording. Removing this difference makes it difficult to trace later who understood the schedule based on which evidence. To fix it, restore the TBD / Needs confirmation items and both source tags."
+            }
+          ]
+        },
+        {
+          "id": "human-review",
+          "heading": "6. Before sharing, have people verify the source text, timing, and owners",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Before team sharing, having only one attendee read the organized version may not be enough. Check that no source items were omitted, that owners and deadlines actually appear in the notes, and that information created after the meeting has not been mixed in as though it were a decision made during the meeting. Important decisions are confirmed through the team's approval process, not by the wording of the meeting notes alone."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Pre-share review checklist\n- Are decisions, action items, TBD items, and record differences clearly separated?\n- Does each key item retain its original note tag?\n- Are owners and deadlines actually present in the input?\n- Were different records kept separate rather than arbitrarily merged into one?\n- Was post-meeting status kept from being presented as a decision made during the meeting?\n- Are real confidential information, customer information, and contact details excluded?"
+            },
+            {
+              "type": "p",
+              "text": "The next step after merging notes from multiple people is to collect multiple people's progress updates under the same criteria. The next article, “AI Weekly Report: Roll Up Multiple Team Members' Progress into One Report” shows how to combine completed work, work in progress, delays, dependencies, help requests, and items needing confirmation in one report."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+        "items": [
+          "Check that every code block has a role and that it is one of input / prompt / output / bad_output / checklist",
+          "Compare names, YYYY-MM-DD dates, HH:MM times, and numbers in output against the input in the same article",
+          "Check that the timing of the 2026-10-20 meeting notes is not confused with the registration status as of 2026-10-23",
+          "Check that 2026-11-14, 14:00–16:00, capacity 30 people, and key deadlines match the shared fictional case",
+          "Check that source tags remain on record differences and TBD items",
+          "Check that every table row has the same number of columns as the header and that no effect metrics are expressed"
+        ],
+        "limits": "This is an edited example based on fictional notes, not meeting notes generated by an actual AI tool. In real meetings, people must compare each attendee's original notes with the latest status and separately follow the team's decision and approval process."
+      }
+    },
+    {
+      "slug": "team-weekly-status-rollup",
+      "title": "AI Weekly Report: Roll Up Multiple Team Members' Progress into One Report",
+      "summary": "Practice using AI to collect weekly updates in different formats from each team member and reorganize them into completed work, work in progress, delays, dependencies, help needed, and items needing confirmation. Using Team Haneul reports from the same period, this guide creates an AI weekly report example that preserves both reference times and sources when numbers differ instead of deleting one value.",
+      "audience": "Non-developers who want to organize multiple team members' progress into one team-shareable report while also checking omissions, conflicts, and dependencies",
+      "prerequisites": [
+        "An AI chat tool that accepts text input",
+        "Be able to view each team member's update in its original form",
+        "Practice with fictional data instead of real personal information, customer information, or confidential information",
+        "Have each owner verify the facts before sharing the AI draft"
+      ],
+      "tags": [
+        "AIweeklyReport",
+        "teamStatusRollup",
+        "sourceTracking"
+      ],
+      "sections": [
+        {
+          "id": "problem-and-context",
+          "heading": "1. Combining individual reports is not the same as building a team status view",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When multiple people write weekly updates separately, completed work, planned work, and help requests are scattered across different formats. The role of team collaboration AI is not simply to shorten sentences, but to reveal the statuses and connections the team needs to see together."
+            },
+            {
+              "type": "p",
+              "text": "This example combines Team Haneul's 2026-10-19~2026-10-23 updates into one AI weekly report. Different registration-count records are not deleted; their reference times and sources are retained together."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Report item",
+                "What to check when combining",
+                "Problem if merged as-is"
+              ],
+              "rows": [
+                [
+                  "Completed / In progress",
+                  "Finished work and ongoing work",
+                  "Current statuses may be mixed together"
+                ],
+                [
+                  "Delayed",
+                  "Original plan and current action",
+                  "Delays may be buried"
+                ],
+                [
+                  "Dependencies",
+                  "Work that requires prerequisite tasks",
+                  "Bottlenecks may be missed"
+                ],
+                [
+                  "Help needed",
+                  "Who needs to check what",
+                  "Requests may remain only in personal notes"
+                ],
+                [
+                  "Conflicting reports",
+                  "Reference time and source",
+                  "AI may arbitrarily choose one side"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "source-updates",
+          "heading": "2. Combine updates from four people and shared facts into the input",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After the shared facts, attach each team member's original items and source tags. For values that can change during the same period, such as registration counts, include the date and time so the team can determine whether the difference is an update or a conflict."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Shared facts\n- Team Haneul 4 members: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Participation fee: none\n- Option A: Civic Center 3rd-floor seminar room: capacity 32 people, projector available, elevator available, booking availability confirmed\n- Option B: district library auditorium: capacity 60 people, booking availability not confirmed\n- Venue confirmation deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status: as of 2026-10-23, 22 people\n- This week's reporting period: 2026-10-19~2026-10-23\n\nMinseo update\n[Update-Minseo-1] Noted that the registration status received from Seoyeon at 2026-10-23 09:00 was 20 people.\n[Update-Minseo-2] The venue must be confirmed by 2026-10-24. A decision is needed after comparing Option A and Option B.\n[Update-Minseo-3] The final promotional material must include the venue name, so it can be completed after the venue is confirmed.\n\nJunho update\n[Update-Junho-1] Confirmed booking availability, projector, and elevator for Option A and organized venue-comparison material.\n[Update-Junho-2] Option B has capacity 60 people, but booking availability has not yet been confirmed.\n[Update-Junho-3] Planned to finish checking supply quantities on 2026-10-23 but did not complete it. Will check again on 2026-10-26.\n\nSeoyeon update\n[Update-Seoyeon-1] As of 2026-10-23 16:00, the registration count is 22 people.\n[Update-Seoyeon-2] Promotional copy is in progress, and the final version is needed by 2026-10-28.\n[Update-Seoyeon-3] The final venue name must be included in the promotional material, so the venue-confirmation result is needed.\n\nDoyun update\n[Update-Doyun-1] Drafted version 1 of the program structure.\n[Update-Doyun-2] Instructor outreach is in progress, and the confirmation deadline is 2026-10-30.\n[Update-Doyun-3] Asked Junho for help checking the projector connection method."
+            },
+            {
+              "type": "p",
+              "text": "The values 20 people and 22 people cannot be assumed to be a typo. Because the records are from 09:00 and 16:00 on the same date, keep both values and show the difference in reference times."
+            }
+          ]
+        },
+        {
+          "id": "prompt-for-rollup",
+          "heading": "3. Ask AI to separate status, dependencies, and conflicts",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The prompt should separate completed work, work in progress, delays, and dependencies, and include a rule not to arbitrarily merge different numbers or statuses."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Using the input above, write a weekly report for team sharing.\n\nRules:\n- Separate items into completed, in progress, delayed, dependencies, help needed, and Needs confirmation.\n- Keep the original source tag at the end of each item.\n- Do not merge or delete differing reports in favor of one side.\n- For values with different reference times, such as registration counts, show the date and time together and explain why confirmation is needed.\n- Do not invent owners, dates, times, numbers, or completion status that are not in the input.\n- Write 'Needs confirmation' for unconfirmed content.\n- Do not add real personal information or contact details.\n- At the end, briefly list only the items the team should check immediately."
+            }
+          ]
+        },
+        {
+          "id": "good-rollup",
+          "heading": "4. A good example does not hide conflicts or dependencies",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The following is an edited example, not a record from an actual AI run. Each item keeps its original source so team members can trace the evidence."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nTeam Haneul weekly status rollup\nReporting period: 2026-10-19~2026-10-23\n\nCompleted\n- Junho: completed confirmation of booking availability, projector, and elevator for Option A and organized the venue-comparison material. [Update-Junho-1]\n- Doyun: drafted version 1 of the program structure. [Update-Doyun-1]\n\nIn progress\n- Seoyeon: promotional copy is in progress, and the final-version deadline is 2026-10-28. [Update-Seoyeon-2]\n- Doyun: instructor outreach is in progress, and the confirmation deadline is 2026-10-30. [Update-Doyun-2]\n- Minseo: needs to compare Option A and Option B and confirm the venue by 2026-10-24. [Update-Minseo-2]\n\nDelayed\n- Junho: did not finish the supply-quantity check scheduled for completion on 2026-10-23 and plans to check again on 2026-10-26. [Update-Junho-3]\n\nDependencies\n- Seoyeon's final promotional material depends on the venue-confirmation result because the final venue name is required. [Update-Minseo-3] [Update-Seoyeon-3]\n\nHelp needed\n- Doyun asked Junho for help checking the projector connection method. [Update-Doyun-3]\n\nNeeds confirmation\n- Registration-count records differ: as of 2026-10-23 09:00, 20 people, and as of 2026-10-23 16:00, 22 people. Because the reference times differ, this may reflect an update process; when sharing, keep both sources. [Update-Minseo-1] [Update-Seoyeon-1]\n- Option B has capacity 60 people, but booking availability remains unconfirmed. [Update-Junho-2]\n\nTeam check items\n- Minseo: needs to share the venue-confirmation result. [Update-Minseo-2]\n- Junho: needs to check supply quantities and the projector connection method. [Update-Junho-3] [Update-Doyun-3]\n- Seoyeon: needs to preserve the registration reference time when sharing the latest status. [Update-Seoyeon-1]"
+            },
+            {
+              "type": "p",
+              "text": "Delays, the promotional-material dependency on the venue, and the difference in registration-count reference times are shown separately. Because source tags remain, each owner can compare the report directly with their original update."
+            }
+          ]
+        },
+        {
+          "id": "bad-rollup-and-fix",
+          "heading": "5. Distinguish plausible but risky weekly reports",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nTeam Haneul is generally proceeding according to plan. Registration is confirmed at 25 people, and the venue has been decided as Option A. Junho will prepare all supplies by 2026-10-25, and Doyun has completed the instructor contract. The promotional material can be distributed immediately because the venue issue has been resolved."
+            },
+            {
+              "type": "p",
+              "text": "This example is concise, but it is inappropriate for source review. The input does not contain 25 registered people or a record that Option A was selected. Junho's new deadline and Doyun's completed instructor contract are also invented, and the promotional-material dependency has been arbitrarily resolved. To correct it, delete facts that are absent from the input, return unresolved items to Needs confirmation, and restore delays and conflicts as separate sections."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Human review before sharing\n- Each team member compares their completed / in-progress status with the original update.\n- Check that delayed work has not been mixed into normal in-progress items.\n- Check that items requiring results from other work are marked as dependencies.\n- Check that help requests were not omitted and owners were not changed.\n- Check that conflicting numbers retain their date / time / source together.\n- When using real data, check the organization's information-security policy and do not put sensitive information into an AI chat tool."
+            }
+          ]
+        },
+        {
+          "id": "team-review",
+          "heading": "6. An AI draft becomes a shared version only after team members verify it",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An AI weekly report is useful as a draft that brings multiple updates into one view, but the team must determine which report is latest and how delays should be handled. In particular, AI may not be able to determine from the original text alone whether a numeric change is a normal update or comes from different aggregation criteria. Before sharing, get confirmation from each author and leave unconfirmed items as unconfirmed."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "The owner of each task confirms whether it is complete.",
+                "The person overseeing the overall schedule also checks deadlines and dependencies.",
+                "When numbers differ, do not first decide which record to delete; check the reference time and source.",
+                "Check that new interpretations created by AI have not been mixed in as source facts.",
+                "In the team-shared version, keep confirmed content separate from content that needs confirmation."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The next article goes one step beyond combining multiple people's statuses and addresses how another person can continue the work when one person is absent: “Create an AI Work Handover Document: Organize Scattered Notes So Someone Else Can Continue the Work”"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+        "items": [
+          "Check that updates from all four people are reflected appropriately under completed / in progress / delayed / dependencies / help needed / Needs confirmation",
+          "Check that the registration counts of 20 people and 22 people are both preserved with their respective reference times and sources",
+          "Check that owners, dates, times, and numbers in the output exist in the input material",
+          "Check that the delayed supply-quantity check and the promotional-material venue dependency are not omitted",
+          "Check that AI does not arbitrarily decide or confirm the status of Option A or Option B",
+          "Check that no percentages or multiple-based effect figures are invented"
+        ],
+        "limits": "This is not a result obtained by running an actual AI tool, but fictional material and an edited example for explaining a team-collaboration process. When using real team data, owners must compare it directly with the source, and sensitive information must be handled according to the organization's information-security policy."
+      }
+    },
+    {
+      "slug": "team-handover-document",
+      "title": "Create an AI Work Handover Document: Organize Scattered Notes So Someone Else Can Continue the Work",
+      "summary": "This guide explains how to reorganize scattered notes into background, current status, material locations, next actions, cautions, and TBD items so someone else can continue the work immediately when the owner is absent. Using a fictional case in which Seoyeon's promotion and registration work is handed over to Junho, it creates both an AI work handover document and questions the recipient should verify.",
+      "audience": "Non-developers who want to transfer work context and next actions to a teammate without omissions before leave, absence, or a role change",
+      "prerequisites": [
+        "An AI chat tool that accepts text input",
+        "Original notes that let you verify the current status and material locations",
+        "Practice with fictional data instead of real personal information, customer information, or confidential information",
+        "Have the recipient read the document and ask about TBD items"
+      ],
+      "tags": [
+        "AIhandover",
+        "teamWorkSharing",
+        "workContinuity"
+      ],
+      "sections": [
+        {
+          "id": "handover-goal",
+          "heading": "1. In a handover, context comes before a task list",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If a handover lists only file locations and tasks, the recipient has to ask for the context again. This exercise focuses on creating a narrative document that helps the recipient understand the current status and continue with the next actions."
+            },
+            {
+              "type": "p",
+              "text": "In Team Haneul, Seoyeon will be absent from 2026-10-26~2026-11-01, and Junho will take over promotion and registration work. The event is on 2026-11-14 14:00–16:00 with capacity 30 people, and as of 2026-10-23 there are 22 registrants. The final promotional material deadline is 2026-10-28, and Seoyeon's notes do not yet contain the venue-confirmation result."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Document section",
+                "What the recipient needs to know",
+                "Caution"
+              ],
+              "rows": [
+                [
+                  "Background",
+                  "Event / role / absence period",
+                  "Do not omit it even if it seems obvious to the team"
+                ],
+                [
+                  "Current status",
+                  "Completed / in progress / waiting",
+                  "Do not mark items complete by guessing"
+                ],
+                [
+                  "Material location",
+                  "Shared folder and materials",
+                  "Do not write passwords / authentication information"
+                ],
+                [
+                  "Next actions",
+                  "Work to continue and prerequisites",
+                  "Do not invent new deadlines"
+                ],
+                [
+                  "Cautions",
+                  "Personal information / checks before distribution",
+                  "Do not put original personal information into AI"
+                ],
+                [
+                  "TBD items",
+                  "Unconfirmed decisions",
+                  "Do not fill gaps by guessing"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "scattered-notes",
+          "heading": "2. Gather scattered notes together with their original sources",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Collect only the necessary parts of Seoyeon's notes as fictional input. In a real environment, do not copy personally identifiable information such as applicant names or phone numbers; transfer only work status and material locations."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Shared facts\n- Team Haneul 4 members: Minseo (team lead / overall schedule), Junho (venue / supplies), Seoyeon (promotion / registration), Doyun (program / instructor outreach)\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Participation fee: none\n- Option A: Civic Center 3rd-floor seminar room: capacity 32 people, projector available, elevator available, booking availability confirmed\n- Option B: district library auditorium: capacity 60 people, booking availability not confirmed\n- Venue confirmation deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status: as of 2026-10-23, 22 people\n- Seoyeon absence: 2026-10-26~2026-11-01\n- Recipient: Junho\n\nSeoyeon's scattered notes\n[Handover-Seoyeon-1] Promotional copy is in progress. The final version is needed by 2026-10-28. The final venue name must be included.\n[Handover-Seoyeon-2] The venue-confirmation result is not yet in my notes. Minseo manages the overall schedule, so the latest decision needs to be confirmed with Minseo.\n[Handover-Seoyeon-3] Promotion-related file location: Shared folder/Workshop/Promotion\n[Handover-Seoyeon-4] Registration-status file location: Shared folder/Workshop/Registration\n[Handover-Seoyeon-5] As of 2026-10-23, there are 22 registrants. Capacity is 30 people. Do not paste applicants' personal contact details into an AI chat tool.\n[Handover-Seoyeon-6] Do not distribute the promotional material as the final version before confirming the final venue name.\n[Handover-Seoyeon-7] When a new registration arrives, update the internal status in Shared folder/Workshop/Registration, and share only the total registration status with the team.\n[Handover-Seoyeon-8] During the absence period, Junho takes over promotion and registration work.\n[Handover-Seoyeon-9] My notes do not say who approves the final check of the promotional material. Needs confirmation."
+            },
+            {
+              "type": "p",
+              "text": "Because file locations, statuses, prohibited actions, owners, and TBD items are mixed together, the input needs item-by-item restructuring rather than a simple summary. Ask AI to leave unsupported content as Needs confirmation."
+            }
+          ]
+        },
+        {
+          "id": "handover-prompt",
+          "heading": "3. Specify a structure that lets the recipient continue the work",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Design the prompt around the recipient's action flow rather than around summarization. Put the background and current status first, then material locations, then next actions, and finally questions about TBD items. Preserving source tags also lets the recipient know which of Seoyeon's notes to revisit when something is unclear."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Using the notes above, draft a work handover document that lets Junho continue the work immediately.\n\nStructure:\n- Background\n- Current status\n- Material locations\n- Next actions\n- Cautions\n- TBD items\n- Questions the recipient should ask Seoyeon or Minseo\n\nRules:\n- Add the relevant source tag at the end of each key sentence.\n- Do not invent owners, dates, times, numbers, decisions, or approvers that are not in the input.\n- Mark unknown content as 'Needs confirmation.'\n- Do not copy applicants' personal information into the document.\n- Keep the shared-folder paths exactly as written in the input.\n- Do not provide only a checklist; include short explanatory sentences so the recipient can understand the context."
+            }
+          ]
+        },
+        {
+          "id": "handover-example",
+          "heading": "4. A good handover connects current status to next actions",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nWork handover document — Seoyeon → Junho\n\nBackground\nSeoyeon will be absent from 2026-10-26~2026-11-01, and Junho will take over promotion and registration work during this period. [Handover-Seoyeon-8]\nThe event is on 2026-11-14 14:00–16:00 with capacity 30 people. [Handover-Seoyeon-5]\n\nCurrent status\nPromotional copy is in progress, and the final-version deadline is 2026-10-28. The final venue name must be included, but Seoyeon's notes do not contain the venue-confirmation result. [Handover-Seoyeon-1] [Handover-Seoyeon-2]\nRegistration status as of 2026-10-23 is 22 people. [Handover-Seoyeon-5]\n\nMaterial locations\nPromotion-related files: Shared folder/Workshop/Promotion [Handover-Seoyeon-3]\nRegistration-status file: Shared folder/Workshop/Registration [Handover-Seoyeon-4]\n\nNext actions\nJunho should confirm the latest venue-confirmation result with Minseo and then reflect the final venue name in the promotional material. [Handover-Seoyeon-1] [Handover-Seoyeon-2]\nWhen a new registration arrives, update the internal status in Shared folder/Workshop/Registration and share only the total registration status with the team. [Handover-Seoyeon-7]\n\nCautions\nDo not distribute the promotional material as the final version before confirming the final venue name. [Handover-Seoyeon-6]\nDo not paste applicants' personal contact details into an AI chat tool. [Handover-Seoyeon-5]\n\nTBD items\nWho approves the final check of the promotional material needs confirmation. [Handover-Seoyeon-9]\nBecause Seoyeon's notes do not contain the venue-confirmation result, the latest decision must be confirmed with Minseo. [Handover-Seoyeon-2]\n\nQuestions for the recipient to ask\n- To Minseo: Can you confirm the venue-confirmation result? [Handover-Seoyeon-2]\n- To Seoyeon: How can the document currently being worked on be identified in Shared folder/Workshop/Promotion? [Handover-Seoyeon-3]\n- To Minseo or Seoyeon: Who approves the final check of the promotional material? [Handover-Seoyeon-9]"
+            },
+            {
+              "type": "p",
+              "text": "This document does not invent new tasks for Junho. It connects prerequisites already present in Seoyeon's notes to the next actions. In particular, it leaves the venue-confirmation result and final approver as Needs confirmation instead of filling them in as facts. It also preserves the material paths exactly so the recipient can move from reading the document to the actual work files."
+            }
+          ]
+        },
+        {
+          "id": "bad-handover",
+          "heading": "5. Filling gaps with guesses makes handovers more dangerous",
+          "blocks": [
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nBecause Seoyeon will be absent starting 2026-10-26, Doyun will handle registration. The venue has been confirmed as Option A, and the promotional material can be distributed on 2026-10-27. If registrations exceed capacity, applicants will automatically be moved to a waitlist, and Minseo will be treated as the final approver."
+            },
+            {
+              "type": "p",
+              "text": "This example fills the gaps smoothly but does not match the source. The recipient is Junho, not Doyun, and there is no information that the venue has been confirmed as Option A. The 2026-10-27 distribution schedule, waitlist rule, and decision that Minseo is the final approver are also absent from the input. In a handover document, such guesses can be passed on as real work rules, so unconfirmed content should be turned into questions."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Human review before handover\n- Check that the absence period and recipient match the source.\n- Check that current status and next actions are separated.\n- Check that shared-folder paths match the team's actual material locations.\n- Check that no approver / deadline / decision absent from the input has been added.\n- Check that TBD items remain as questions rather than being filled by guesses.\n- Check that personal information / passwords / authentication information are not included in the document or AI input."
+            }
+          ]
+        },
+        {
+          "id": "questions-and-use",
+          "heading": "6. The document is complete only when the recipient's questions remain visible",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A good AI work handover document is not one that fills every blank. It shows how far the recipient can proceed immediately and where questions are required. In particular, the more AI fills in content absent from the source, such as an approver or a final decision, the riskier the document becomes. Junho needs to leave questions after receiving the document, then Minseo or Seoyeon should answer them, and those answers should be reflected in the source record."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Check whether the background alone explains why the handover is needed.",
+                "After reading the current status, check whether it connects to the material locations that should be opened next.",
+                "Check whether the prerequisite decisions needed for the next actions are visible.",
+                "Check whether the cautions are connected to actual work risks.",
+                "Check whether TBD items have been turned into questions so the recipient knows whom to ask."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The next article moves beyond handing one person's work to another and compares different team-member opinions alongside confirmed facts: “Compare Scattered Opinions with Team Collaboration AI: Support a Decision Between Venue Option A and Option B”"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input and edited examples · no actual AI execution · name, date, and number consistency check",
+        "items": [
+          "Check that Seoyeon's absence period and the recipient Junho match between input and output",
+          "Check that the shared-folder paths for promotional and registration materials are preserved exactly from the input",
+          "Check that the venue-confirmation result and promotional-material approver are not invented and remain Needs confirmation",
+          "Check that owners, dates, times, and numbers in the output exist in the input material",
+          "Check that the document does not encourage entering applicants' personal contact details, passwords, or authentication information into AI",
+          "Check that no percentages or multiple-based effect figures are invented"
+        ],
+        "limits": "This is not a record of running an actual AI tool, but an edited example explaining a fictional team's handover situation. In a real handover, people must verify the latest source material and the team's approval process, while personally identifiable and confidential information must be handled separately according to the organization's information-security policy."
+      }
+    },
+    {
+      "slug": "team-decision-options",
+      "title": "Compare Scattered Opinions with Team Collaboration AI: Support a Decision Between Venue Option A and Option B",
+      "summary": "Practice comparing confirmed facts, evidence, opposing views, and unverified assumptions in one framework without letting AI make the conclusion when team members disagree. Using Team Haneul’s Venue Option A and Option B for the workshop, we identify the decision owner and deadline clearly and leave items for the team to verify before making the final judgment.",
+      "audience": "Non-developers who want to compare multiple people’s opinions with team collaboration AI while keeping final decision responsibility and evidence traceability with the team",
+      "prerequisites": [
+        "An AI chat tool that accepts text input",
+        "Be able to separate each team member’s opinion from confirmed facts",
+        "Use fictional examples instead of real confidential or customer information",
+        "Compare the AI-generated comparison directly with the source text"
+      ],
+      "tags": [
+        "TeamDecision",
+        "OpinionComparison",
+        "AIReview"
+      ],
+      "sections": [
+        {
+          "id": "problem-and-case",
+          "heading": "1. Separate facts from preferences first when there are many opinions",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When a team chooses among options, it should separate confirmed facts, personal preferences, and assumptions that have not yet been verified. The opinion that 'Option B is safer' can be based on the fact that it has a larger capacity, but whether registrations will actually exceed capacity and whether Option B can be booked must be checked separately. Team collaboration AI can help split such statements into categories and attach sources, but the final choice must be made by the responsible person."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Category",
+                "What AI organizes",
+                "What a person checks"
+              ],
+              "rows": [
+                [
+                  "Confirmed facts",
+                  "Information explicitly stated in the source, such as capacity, facilities, and booking confirmation status",
+                  "Whether it exactly matches the source"
+                ],
+                [
+                  "Team member opinions",
+                  "Who prefers which option and what reasons they gave",
+                  "Whether an opinion was turned into a fact"
+                ],
+                [
+                  "Unverified assumptions",
+                  "Premises not yet verified, such as the possibility of registrations exceeding capacity",
+                  "Whether further verification is needed"
+                ],
+                [
+                  "Opposing views",
+                  "Evidence or concerns that differ from the majority view",
+                  "Whether minority views were omitted"
+                ],
+                [
+                  "Decision conditions",
+                  "Decision owner, decision deadline, and items to verify before deciding",
+                  "Whether the final decision was actually approved"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In this fictional case, Team Haneul is choosing a venue for the “Neighborhood Digital Basics Workshop.” Because Option A and Option B differ in verification status and team preferences, we do not reduce the result to a one-line recommendation; we keep the evidence and unverified items together."
+            }
+          ]
+        },
+        {
+          "id": "copyable-input",
+          "heading": "2. Enter team opinions and shared facts with source tags",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The input below is fictional data for practice. Placing a source tag before each statement makes it easier to trace evidence in the result. Different opinions are provided as written instead of being merged."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Fictional team: Team Haneul\n[Shared-Event-1] Event: Neighborhood Digital Basics Workshop\n[Shared-Event-2] Event date: 2026-11-14\n[Shared-Event-3] Event time: 14:00–16:00\n[Shared-Event-4] Capacity: 30 people\n[Shared-Event-5] Audience: local residents\n[Shared-Event-6] Fee: none\n[Shared-Venue-1] Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\n[Shared-Venue-2] Option B: district library auditorium, capacity 60 people, booking availability not confirmed\n[Shared-Schedule-1] Venue decision deadline: 2026-10-24\n[Shared-Schedule-2] Final promotional material deadline: 2026-10-28\n[Shared-Schedule-3] Instructor confirmation deadline: 2026-10-30\n[Shared-Registration-1] Registrations as of 2026-10-23: 22 people\n\n[Note-Minseo-1] Minseo is the team lead, manages the overall schedule, and is the final decision owner for the venue.\n[Note-Minseo-2] Minseo wants to prioritize reviewing Option A because booking availability is confirmed and it can accommodate the capacity of 30 people.\n[Note-Junho-1] Junho is responsible for the venue and supplies. He noted that Option A has a capacity of 32 people, has a projector and elevator, and has confirmed booking availability.\n[Note-Junho-2] Junho confirmed that Option B has a capacity of 60 people but has not yet confirmed booking availability.\n[Note-Seoyeon-1] Seoyeon is responsible for promotion and registration. Registrations as of 2026-10-23 are 22 people, and the final promotional material deadline is 2026-10-28.\n[Note-Seoyeon-2] Seoyeon prefers Option A because the venue needs to be confirmed by 2026-10-24 so the venue wording in the promotional material can be finalized reliably.\n[Note-Doyun-1] Doyun is responsible for the program and instructor outreach. He prefers Option B, with a capacity of 60 people, in case registrations exceed capacity.\n[Note-Doyun-2] Doyun also knows that booking availability for Option B is unconfirmed and wrote that it needs to be checked before the decision.\n[Assumption-1] The current data cannot confirm whether registrations will actually exceed the capacity of 30 people."
+            },
+            {
+              "type": "p",
+              "text": "'Option B has a capacity of 60 people' is a confirmed fact, but 'registrations will exceed capacity' is an assumption. Even if several people prefer Option A, Doyun’s preference for Option B should not be removed. The prompt should also explicitly separate facts, preferences, and assumptions."
+            }
+          ]
+        },
+        {
+          "id": "comparison-prompt",
+          "heading": "3. Ask for a comparison structure and verification questions instead of a conclusion",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The key is not to ask AI to choose the venue. For each option, have it separate confirmed evidence, opposing views, and unverified assumptions and attach source tags. Also prohibit it from inventing owners, deadlines, or decisions that are not in the data."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Using only the fictional input above, compare Team Haneul’s Venue Option A and Option B.\nThe goal is not for AI to decide the venue, but to organize the evidence so the team can decide.\n\nUse the following format.\n- Confirmed facts and evidence for each option\n- Team member opinions supporting each option and source tags\n- Opposing opinions or concerns for each option and source tags\n- Assumptions not confirmed as facts\n- Items to verify before deciding\n- Decision owner and decision deadline\n\nRules:\n1) Use only names, dates, times, and numbers that appear in the input.\n2) Do not omit minority opinions that differ from the majority.\n3) Separate confirmed facts from team member preferences.\n4) Do not invent owners, deadlines, or decisions that are not in the data; mark them as 'Needs confirmation'.\n5) Do not state that Option A or Option B has been finally selected.\n6) Whenever possible, attach a [Note-Name-Number], [Shared-Item-Number], or [Assumption-1] source tag to each piece of evidence."
+            }
+          ]
+        },
+        {
+          "id": "good-output",
+          "heading": "4. Keep options, evidence, opposing views, and unverified assumptions together",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The following is an edited example created only from the input. It is not an actual AI output and does not decide the venue on the team’s behalf."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nVenue option comparison\n\nOption A: Civic Center 3rd-floor seminar room\n- Confirmed facts: capacity 32 people, projector available, elevator available, booking availability confirmed. [Shared-Venue-1] [Note-Junho-1]\n- Supporting opinion: Minseo wants to prioritize Option A because it can accommodate the capacity of 30 people and booking availability is confirmed. [Note-Minseo-2]\n- Supporting opinion: Seoyeon prefers Option A considering the venue decision deadline of 2026-10-24 and the final promotional material deadline of 2026-10-28. [Note-Seoyeon-2] [Shared-Schedule-1] [Shared-Schedule-2]\n- Opposing opinion or concern: Doyun believes Option B, with a capacity of 60 people, is better in case registrations exceed capacity. [Note-Doyun-1]\n- Unverified assumption: it has not been confirmed whether registrations will actually exceed the capacity of 30 people. [Assumption-1]\n\nOption B: district library auditorium\n- Confirmed facts: capacity 60 people, booking availability not confirmed. [Shared-Venue-2] [Note-Junho-2]\n- Supporting opinion: Doyun prefers Option B in case registrations exceed capacity. [Note-Doyun-1]\n- Opposing opinion or concern: booking availability for Option B has not yet been confirmed. Doyun also wrote that it needs to be checked before the decision. [Note-Doyun-2]\n- Current registration status as of 2026-10-23: 22 people. [Shared-Registration-1] [Note-Seoyeon-1]\n- Unverified assumption: it has not been confirmed whether registrations will exceed the capacity of 30 people. [Assumption-1]\n\nItems to verify before deciding\n- Confirm booking availability for Option B. [Shared-Venue-2]\n- The team should determine whether the possibility of registrations exceeding capacity should be used as an actual decision criterion. [Assumption-1]\n- Review venue suitability without changing the shared conditions: event date 2026-11-14, time 14:00–16:00, and capacity 30 people. [Shared-Event-2] [Shared-Event-3] [Shared-Event-4]\n\nDecision owner: Minseo [Note-Minseo-1]\nDecision deadline: 2026-10-24 [Shared-Schedule-1]\nFinal choice: not present in the input yet. Minseo must review and decide."
+            },
+            {
+              "type": "p",
+              "text": "A good comparison should let the team return to the source. The operational certainty of Option A, the extra capacity of Option B, and the unverified status of Option B’s booking availability and the possibility of exceeding capacity should remain separate so other team members can review omissions or overstatements."
+            }
+          ]
+        },
+        {
+          "id": "bad-output-and-fix",
+          "heading": "5. Check that AI does not turn majority opinion into a conclusion or assumptions into facts",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "AI should not make the choice itself. Turning unconfirmed booking availability for Option B into a confirmed fact, or presenting a decision the team did not approve as Minseo’s decision, distorts the source."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nMinseo made the final decision to use Option B, the district library auditorium. Option B is more suitable than Option A because its booking is confirmed and registrations are expected to increase to 35 people. Junho should complete the library reservation by 2026-10-25."
+            },
+            {
+              "type": "p",
+              "text": "The input does not say that Minseo finally chose Option B, and booking availability for Option B is still unconfirmed. The registration forecast and Junho’s new reservation deadline also have no basis. To correct this, remove those claims and return Option B’s booking availability and the possibility of exceeding capacity to 'Needs confirmation'."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Final review checklist\n- Do the capacities and booking confirmation statuses of Option A and Option B match the input?\n- Are the opinions of Minseo, Junho, Seoyeon, and Doyun separated from facts?\n- Has a minority view such as Doyun’s preference for Option B been preserved?\n- Has the possibility of registrations exceeding capacity been avoided as if it were a confirmed fact?\n- Has AI avoided making the final choice on the team’s behalf?\n- Do the decision owner and decision deadline match the input evidence?\n- Is any real confidential or customer information included?"
+            }
+          ]
+        },
+        {
+          "id": "team-review-and-next",
+          "heading": "6. After sharing the comparison, have the team record the decision",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An AI comparison draft is not a completed decision record. Team members should verify their own opinions and sources and investigate unverified items, after which Minseo should directly approve the final choice and its rationale."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Junho compares the venue facilities and booking confirmation status with the source.",
+                "Seoyeon checks the registration status and the description of the promotion schedule.",
+                "Doyun checks that the reason for preferring Option B is clearly separated from unverified assumptions.",
+                "Minseo directly approves the final venue and decision rationale after the team members review them.",
+                "Do not share the AI draft as a confirmed team decision before approval."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Even after the options are organized, an ambiguous execution request can cause confusion again. The next article, “Clarify Vague Work Requests with Team Collaboration AI: Requirements, Completion Criteria, and Clarifying Questions”, explains how to turn Minseo’s short request into a work request the team can review."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, times, numbers, and source tags",
+        "items": [
+          "Check that every code block role is one of input, prompt, output, bad_output, or checklist",
+          "Use regular expressions to verify that names, dates, times, and numbers in the output exist in the input of the same article",
+          "Check that the capacities, facilities, and booking confirmation statuses of Option A and Option B match the shared fictional case",
+          "Check that Doyun’s preference for Option B and the unverified assumption that registrations may exceed capacity are not omitted",
+          "Check that the text does not say AI decided the final venue and that decision owner Minseo is distinguished from the decision deadline",
+          "Check that no sentence expresses effects as percentages or multiples"
+        ],
+        "limits": "This is not a record of actual AI tool execution, actual venue verification, or an actual registration survey. All cases are fictional data for learning. In real work, people must check the organization’s information security policy and perform the final decision-making and fact verification themselves."
+      }
+    },
+    {
+      "slug": "team-request-clarify",
+      "title": "Clarify Vague Work Requests with Team Collaboration AI: Requirements, Completion Criteria, and Clarifying Questions",
+      "summary": "Practice turning a short work request from a team lead into a draft request the team can agree on again, separating confirmed requirements from missing conditions instead of letting AI fill in the gaps arbitrarily. Using Team Haneul’s request, 'Please prepare some workshop materials,' we leave completion criteria, included and excluded scope, and submission conditions as clarifying questions.",
+      "audience": "Non-developer team members and team leads who want to reduce inconsistent interpretations caused by short messenger instructions or verbal requests",
+      "prerequisites": [
+        "An AI chat tool that accepts text input",
+        "Prepare the original work request separately from background information that has already been confirmed",
+        "Be able to ask the requester again instead of arbitrarily deciding unknown conditions",
+        "Use fictional data instead of real confidential or personal information"
+      ],
+      "tags": [
+        "WorkRequest",
+        "Requirements",
+        "TeamCollaborationAI"
+      ],
+      "sections": [
+        {
+          "id": "why-vague-requests-fail",
+          "heading": "1. Surface interpretation gaps before acting on a short request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If Minseo sends Doyun the message 'Please prepare some workshop materials,' it is unclear whether the materials are for presentation or distribution, how much detail to cover, what format to deliver, or what should count as complete and by when. If the assignee starts by guessing, their completion criteria may diverge from the requester’s."
+            },
+            {
+              "type": "p",
+              "text": "Here, the role of team collaboration AI is not to imagine what belongs in the blanks, but to separate confirmed information from missing requirements and create a list of questions. This article focuses on having the requester and assignee agree on the same completion criteria rather than on writing an individual prompt."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Can it be known now?",
+                "How to handle it"
+              ],
+              "rows": [
+                [
+                  "Work purpose",
+                  "Partly",
+                  "Keep only the background that it is event material and confirm the detailed purpose"
+                ],
+                [
+                  "Deliverable type",
+                  "Unknown",
+                  "Ask whether it is presentation material, handout material, or something else"
+                ],
+                [
+                  "Completion criteria",
+                  "Unknown",
+                  "Ask about review criteria and who approves"
+                ],
+                [
+                  "Included scope",
+                  "Unknown",
+                  "Ask about required content and exclusions"
+                ],
+                [
+                  "Submission format and location",
+                  "Unknown",
+                  "Ask about file format and delivery location"
+                ],
+                [
+                  "Submission deadline",
+                  "Unknown",
+                  "Ask for the actual submission deadline separately from the event and instructor schedule"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "copyable-request-input",
+          "heading": "2. Copy in only the original request and already confirmed background",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Give AI only the original message, facts that have already been confirmed, and assigned roles. Avoid adding interpretation so the result can clearly distinguish confirmed information from items that should remain questions."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Fictional team: Team Haneul\n[Team-Role-1] Minseo: team lead · overall schedule\n[Team-Role-2] Junho: venue · supplies\n[Team-Role-3] Seoyeon: promotion · registration\n[Team-Role-4] Doyun: program · instructor outreach\n\n[Event-1] Event: Neighborhood Digital Basics Workshop\n[Event-2] Event date: 2026-11-14\n[Event-3] Event time: 14:00–16:00\n[Event-4] Capacity: 30 people\n[Event-5] Audience: local residents\n[Event-6] Fee: none\n[Venue-1] Option A: Civic Center 3rd-floor seminar room, capacity 32 people, projector available, elevator available, booking availability confirmed\n[Venue-2] Option B: district library auditorium, capacity 60 people, booking availability not confirmed\n[Schedule-1] Venue decision deadline: 2026-10-24\n[Schedule-2] Final promotional material deadline: 2026-10-28\n[Schedule-3] Instructor confirmation deadline: 2026-10-30\n[Registration-1] Registrations as of 2026-10-23: 22 people\n\n[Request-Minseo-1] Original message Minseo sent to Doyun: \"Please prepare some workshop materials.\"\n[Status-Doyun-1] Doyun is responsible for the program and instructor outreach, but the original message does not state what type of material to prepare.\n[Status-Doyun-2] The original message does not state the amount of material, file format, content to include, content to exclude, submission location, submission deadline, or review criteria.\n[Status-Doyun-3] The instructor confirmation deadline of 2026-10-30 is confirmed, but there is no record that this is the material submission deadline."
+            },
+            {
+              "type": "p",
+              "text": "The final sentence is especially important. A related date should not automatically be turned into the material submission deadline. Instructor confirmation and material submission are different events, so if the original request contains no basis linking them, the submission deadline should remain 'Needs confirmation'."
+            }
+          ]
+        },
+        {
+          "id": "clarification-prompt",
+          "heading": "3. Ask AI to structure gaps and questions instead of filling requirements in",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Instead of asking AI for a completed work instruction, ask it to separate what can currently be confirmed from what still needs verification. Make the clarifying questions short and specific enough to copy into an actual conversation."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Using only the input above, turn Minseo’s request \"Please prepare some workshop materials\" into a clear draft work request.\nDo not arbitrarily decide anything AI does not know, and leave every blank item as 'Needs confirmation'.\n\nOutput order:\n- Currently confirmed background and assignee\n- Request purpose\n- Requirements\n- Completion criteria\n- Included scope\n- Excluded scope\n- Submission format · location\n- Submission deadline\n- Questions to ask Minseo\n- What Doyun may start before receiving answers and what he should not start\n\nRules:\n1) Use only names, dates, times, and numbers that appear in the input.\n2) Do not turn the instructor confirmation deadline into the material submission deadline.\n3) Presentation material, handouts, file format, amount, and required content are not in the input, so do not confirm them.\n4) Do not invent an assignee or approver that is not in the data.\n5) Whenever possible, attach [Request-Minseo-1], [Status-Doyun-Number], [Event-Number], or [Schedule-Number] at the end of each item.\n6) At the end, propose a short checklist for the requester and assignee to review together."
+            }
+          ]
+        },
+        {
+          "id": "clarified-output",
+          "heading": "4. Draft a work request that separates confirmed requirements from clarifying questions",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The key point in the following edited example is that it deliberately leaves blanks unresolved. Even though it is formatted as a 'work request,' it does not fill in deliverables or deadlines that are not in the input. Doyun is confirmed as the assignee, but Minseo must be asked what must be produced for the work to count as complete."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nDraft work request\n\nRequester: Minseo [Team-Role-1] [Request-Minseo-1]\nAssignee: Doyun [Team-Role-4] [Request-Minseo-1]\n\nConfirmed background\n- Event: Neighborhood Digital Basics Workshop [Event-1]\n- Event date: 2026-11-14 [Event-2]\n- Event time: 14:00–16:00 [Event-3]\n- Capacity: 30 people [Event-4]\n- Audience: local residents [Event-5]\n- Instructor confirmation deadline: 2026-10-30 [Schedule-3]\n\nOriginal request\n- Minseo: \"Please prepare some workshop materials.\" [Request-Minseo-1]\n\nRequest purpose\n- It appears to be preparation of materials for use at the workshop, but the specific purpose of the materials Needs confirmation. [Request-Minseo-1] [Status-Doyun-1]\n\nRequirements\n- Material type: Needs confirmation. [Status-Doyun-1]\n- Amount: Needs confirmation. [Status-Doyun-2]\n- File format: Needs confirmation. [Status-Doyun-2]\n\nCompletion criteria\n- Needs confirmation. The original request does not state review criteria. [Status-Doyun-2]\n\nIncluded scope\n- Needs confirmation. The original request does not state what content to include. [Status-Doyun-2]\n\nExcluded scope\n- Needs confirmation. The original request does not state what content to exclude. [Status-Doyun-2]\n\nSubmission format · location\n- Needs confirmation. [Status-Doyun-2]\n\nSubmission deadline\n- Needs confirmation. The instructor confirmation deadline of 2026-10-30 is confirmed, but there is no record that it is the material submission deadline. [Status-Doyun-3]\n\nQuestions to ask Minseo\n- What will the materials be used for?\n- What type of deliverable and file format are required?\n- What content must be included, and what should be excluded?\n- What state counts as complete?\n- Who reviews and gives final confirmation?\n- Where should the materials be delivered?\n- What is the actual material submission deadline?\n\nBefore Doyun receives answers\n- May start: organize already confirmed background information such as event date 2026-11-14, time 14:00–16:00, capacity 30 people, and audience local residents. [Event-2] [Event-3] [Event-4] [Event-5]\n- Should not start: confirm the material type, amount, file format, included or excluded scope, or submission deadline without clarification. [Status-Doyun-2] [Status-Doyun-3]"
+            },
+            {
+              "type": "p",
+              "text": "This draft prepares the team to start a conversation rather than pretending the work request is complete. Once Minseo answers about the deliverable and completion criteria, those answers can be incorporated back into the request. Arbitrarily defining the deliverable before receiving an answer can lock in guessed requirements."
+            }
+          ]
+        },
+        {
+          "id": "bad-assumptions",
+          "heading": "5. Do not expand related schedules or roles into detailed instructions without evidence",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A common risk when giving AI an ambiguous request is that naturally filled-in blanks can look like confirmed work instructions. The following example invents a deliverable format, amount, submission deadline, and reviewer that were not in the input."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nDoyun will create 20 presentation slides and prepare 2 types of participant handouts. He will send the draft to Junho for review by 2026-10-27 18:00 and submit the final version on 2026-10-30."
+            },
+            {
+              "type": "p",
+              "text": "The input does not specify presentation slides or handouts as deliverable types, nor does it give an amount or draft submission time. There is also no record that Junho is the reviewer, and there is no basis for using the instructor confirmation deadline as the material final-submission deadline. The more specific such a result sounds, the more misleading it can be. To correct it, return every invented condition to 'Needs confirmation' and move it into the questions for Minseo."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Human review checklist\n- Has the wording of the original request been preserved?\n- Are confirmed event facts separated from unresolved material requirements?\n- Has the instructor confirmation deadline not been mistaken for the material submission deadline?\n- Has AI avoided inventing the deliverable type, amount, file format, included scope, or excluded scope?\n- Has no reviewer or approver absent from the data been added?\n- Is it clear which items must not be confirmed before the clarifying questions are answered?\n- When applying this to real work, has any data that violates the organization’s information security policy been kept out of the input?"
+            }
+          ]
+        },
+        {
+          "id": "agree-and-share",
+          "heading": "6. Confirm a shared standard after the requester and assignee fill in the answers",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After sending the AI-generated question list, update the request with Minseo’s answers and confirm that Doyun understands them the same way. In particular, agree on what 'complete' means in one sentence and have AI organize only what has been agreed."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Minseo answers the deliverable type, purpose, included and excluded scope, and actual submission deadline.",
+                "Doyun reads back the completion criteria as he understands them and confirms them.",
+                "Keep unclear items as 'Needs confirmation' instead of forcing an answer.",
+                "Share the confirmed request in a designated location accessible to the team, while excluding real confidential and personal information from AI input.",
+                "If anything changes later, record what changed so it is not confused with the previous request."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Even a clarified request can become inconsistent again if team members use different wording. The next article, “Create a Shared Team AI Prompt: Version-Control the Rules for Organizing Meeting Notes”, explains how to create a shared prompt managed by the team rather than a personal prompt and how to keep a change history."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, times, numbers, and unresolved items",
+        "items": [
+          "Check that every code block role uses an allowed value",
+          "Check that every article contains input, prompt, output, and bad_output",
+          "Use regular expressions to verify that names, dates, times, and numbers in the output exist in the input of the same article",
+          "Check that the instructor confirmation deadline is not asserted to be the material submission deadline",
+          "Check that the deliverable type, amount, file format, included scope, excluded scope, and submission location are not confirmed without evidence",
+          "Check that no sentence expresses effects as percentages or multiples"
+        ],
+        "limits": "These are edited learning examples, not actual AI execution or actual team work results. For a real request, check the organization’s information security policy, and have the requester and assignee directly agree on requirements, completion criteria, and deadlines."
+      }
+    },
+    {
+      "slug": "team-shared-prompt",
+      "title": "Create a Shared Team AI Prompt: Version-Control the Rules for Organizing Meeting Notes",
+      "summary": "Learn how to turn team collaboration AI into a team asset that is reviewed and revised together rather than a set of individual prompts. We follow Team Haneul as it improves an AI meeting-notes prompt from v1.0 to v1.1 and checks it again with the same test input.",
+      "audience": "Non-developer teams that want multiple people to organize the same type of meeting notes with AI while aligning output format and review criteria",
+      "prerequisites": [
+        "A general AI chat tool that accepts text input",
+        "Use fictional data rather than real confidential or customer information",
+        "Keep a prompt version history that team members can review together",
+        "Have a person compare the AI output directly with the source notes"
+      ],
+      "tags": [
+        "SharedTeamPrompt",
+        "AIMeetingNotes",
+        "VersionControl"
+      ],
+      "sections": [
+        {
+          "id": "why-shared-prompt",
+          "heading": "1. Make it a shared team standard, not an individual prompt",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even when organizing the same meeting notes, different instructions from each team member can produce different section names, source-labeling methods, and ways of handling TBD items. The goal here is not to create 'good wording.' It is to combine the input format, expected output, prohibited behavior, and review method the team will reuse into one document and record why it changes. Unlike keeping a personal prompt, other team members should be able to see who changed what."
+            },
+            {
+              "type": "p",
+              "text": "The fictional Team Haneul is preparing the “Neighborhood Digital Basics Workshop” for local residents on 2026-11-14 from 14:00–16:00. Capacity is 30 people and there is no fee. The venue decision deadline is 2026-10-24, the final promotional material deadline is 2026-10-28, and the instructor confirmation deadline is 2026-10-30. Registrations as of 2026-10-23 are 22 people. These facts must not be changed arbitrarily even if the shared team prompt changes."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Element to include in the shared prompt",
+                "Team standard",
+                "Reason"
+              ],
+              "rows": [
+                [
+                  "Input format",
+                  "Provide the note author together with the item number",
+                  "Makes it easier to trace the source again"
+                ],
+                [
+                  "Output format",
+                  "Separate decisions, action items, TBD items, and conflicts",
+                  "Keeps agreed content separate from items to verify"
+                ],
+                [
+                  "Source labeling",
+                  "Keep note tags at the end of each item",
+                  "Makes multiple people’s records traceable"
+                ],
+                [
+                  "Prohibited behavior",
+                  "Do not guess owners, deadlines, or decisions",
+                  "Prevents confirmation not supported by the source"
+                ],
+                [
+                  "Change history",
+                  "Record version, date, changer, and reason",
+                  "Preserves the rationale for changes to a jointly owned document"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "test-input",
+          "heading": "2. Keep the same test input fixed for comparison",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If you change the test input every time you revise a version, it becomes difficult to tell what caused the output to change. The data below contains fictional notes from three people about the 2026-10-20 meeting. Their wording differs, and one person uses a relative expression for the promotional-material schedule. We also include the version history and changer for the shared team prompt itself so the later output does not invent new information."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Team Haneul shared facts\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Fee: none\n- Venue decision deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status as of 2026-10-23: 22 people\n\nTeam member roles\n- Minseo: team lead · overall schedule\n- Junho: venue · supplies\n- Seoyeon: promotion · registration\n- Doyun: program · instructor outreach\n\nTest meeting: 2026-10-20\n\n[Note-Minseo-1] Prioritize reviewing Option A: Civic Center 3rd-floor seminar room. Make the final decision by 2026-10-24.\n[Note-Minseo-2] Prepare the final promotional material by 2026-10-28.\n[Note-Junho-1] Option A: Civic Center 3rd-floor seminar room has a capacity of 32 people, a projector, an elevator, and confirmed booking availability.\n[Note-Junho-2] Option B: district library auditorium has a capacity of 60 people, and booking availability has not yet been confirmed.\n[Note-Seoyeon-1] The promotional material needs final revision after the venue is confirmed.\n[Note-Junho-3] I heard the promotional material would be finished 'sometime next week.' I want to confirm the exact date again.\n[Note-Doyun-1] The instructor confirmation deadline is 2026-10-30.\n\nShared prompt version history\n- v1.0: 2026-10-22, changed by Minseo, initial shared draft created\n- v1.1: 2026-10-23, changed by Seoyeon, revised to specify rules for preserving conflicts and labeling sources"
+            },
+            {
+              "type": "p",
+              "text": "This input contains no real organizational information or customer data. When creating a shared prompt in real work, do not paste confidential information, passwords, authentication information, or personally identifiable information as-is; check the organization’s information security policy first."
+            }
+          ]
+        },
+        {
+          "id": "shared-prompt-v11",
+          "heading": "3. Fix input, output, and prohibited behavior in one prompt",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The point of v1.1 is not to make the prompt longer, but to state the decision rules. In particular, when records from different people conflict, it requires keeping both records and separating them as Needs confirmation instead of automatically choosing one. It also prohibits filling in plausible owners or dates that are not in the notes."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Organize the meeting notes from multiple people below for team sharing.\n\nInput rules\n- Use each note’s author and item number as the source.\n- Distinguish shared facts from individual notes.\n\nOutput format\n1) Decisions\n2) Action items\n3) TBD items\n4) Records that conflict or use different wording\nAttach the original source tag at the end of each item.\n\nProhibited behavior\n- Do not invent owners, dates, times, numbers, or decisions that are not in the input.\n- Do not convert relative date expressions into an arbitrary YYYY-MM-DD.\n- Do not arbitrarily adopt one of the conflicting records.\n- If confirmation status is unclear, write 'Needs confirmation'.\n\nAt the end, briefly list the items a person should compare with the source."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Version",
+                "Change",
+                "Review point"
+              ],
+              "rows": [
+                [
+                  "v1.0",
+                  "Initial shared draft",
+                  "Check whether the item categories are sufficient for team use"
+                ],
+                [
+                  "v1.1",
+                  "Added rules for preserving conflicts and labeling sources",
+                  "Check that minority records or different wording do not disappear"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "expected-output",
+          "heading": "4. A good result preserves evidence rather than looking like the single right answer",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The following is an edited example created to review the prompt, not an actual AI output. The important point is that it does not invent new decisions and preserves differing records together with their source tags."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nShared prompt: v1.1\nChange record: 2026-10-23, changed by Seoyeon\n\nDecisions\n- The event date is 2026-11-14, the time is 14:00–16:00, and the capacity is 30 people.\n- The instructor confirmation deadline is 2026-10-30. [Note-Doyun-1]\n\nAction items\n- Prioritize reviewing Option A: Civic Center 3rd-floor seminar room and make the final decision by 2026-10-24. [Note-Minseo-1]\n- The promotional material needs final revision after the venue is confirmed. [Note-Seoyeon-1]\n\nTBD items\n- Booking availability for Option B: district library auditorium Needs confirmation. [Note-Junho-2]\n\nRecords that conflict or use different wording\n- Minseo recorded the final promotional material deadline as 2026-10-28. [Note-Minseo-2]\n- Junho recorded that he heard the promotional material would be finished 'sometime next week' and wrote that he wanted to confirm the exact date again. [Note-Junho-3]\n- Therefore, the wording of the promotional material deadline needs source verification, and neither record should be deleted arbitrarily.\n\nItems for a person to compare\n- Check Minseo’s and Junho’s records of the promotional material deadline together.\n- Check whether any new confirmation result for Option B booking availability has appeared in Junho’s notes."
+            },
+            {
+              "type": "p",
+              "text": "This format is not a mechanism for AI to decide the meeting conclusion; it is a mechanism for showing team members what they need to verify. In particular, when wording differs as in [Note-Minseo-2] and [Note-Junho-3], removing one side makes the issue that needs review disappear."
+            }
+          ]
+        },
+        {
+          "id": "bad-output-and-fix",
+          "heading": "5. Have the team record how the shared prompt fails as well",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If the team treats a shared prompt as finished after writing it once, repeated errors can persist. It is better to record what flawed output appeared and what rule was added to prevent it as part of the reason for a version change."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\n- The venue was confirmed as Option B.\n- Junho will complete the promotional material.\n- The promotional material deadline is 2026-10-27.\n- Option B is available for booking."
+            },
+            {
+              "type": "p",
+              "text": "This example invents a decision not present in the input, assigns new work to Junho even though he is not responsible for promotion, and confirms a date and Option B booking availability that were never provided. The fix is not to polish the wording, but to add rules such as 'no guessing,' 'preserve conflicts,' and 'keep source tags' to the prompt and test it again with the same input."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Shared prompt review checklist\n- Does the input format retain the author and original item number?\n- Are decisions, action items, TBD items, and conflicts separated?\n- Does the prompt prohibit inventing owners, dates, times, or numbers not in the input?\n- Does it avoid merging different records into one side?\n- Can team members verify the changed version, date, changer, and reason?\n- Was the organization’s information security policy checked before entering real work data?"
+            }
+          ]
+        },
+        {
+          "id": "team-review-cycle",
+          "heading": "6. Re-review version changes with the same input",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A shared team prompt is closer to a small operating rule than a finished product. When creating a new version, the person making the change should record the reason, and another team member should use the same test input to check the output format and omissions before sharing it. Keeping input and output rules in text rather than relying on settings in a specific AI product makes it easier to preserve the team’s review criteria even if tools change."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "The person who revised the prompt and the person reviewing it read together what changed.",
+                "Keep the test input unchanged and check that the decision, action-item, TBD, and conflict categories are preserved.",
+                "Check that source tags are not lost and unverified information is not turned into confirmed information in the new version.",
+                "Clearly mark only the version the team has decided to use in the shared location."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "The next article, “How to Review and Approve AI Output as a Team: Checks Before Sharing a Weekly Report”, explains how to separately verify facts, omissions, sensitive information, owners, and final approval status before sharing even when the output was created with a shared prompt."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, and numbers",
+        "items": [
+          "Check that every code block has a role of input, prompt, output, bad_output, or checklist",
+          "Check that person names, YYYY-MM-DD dates, HH:MM times, and numbers in the output exist in the input of the same article",
+          "Check that the v1.0 and v1.1 change records match the versions, dates, and changers in the input data",
+          "Check that conflicting promotional material deadline records are not arbitrarily merged into one side in the output",
+          "Check that the venue, event schedule, capacity, major deadlines, and registration status do not contradict the shared facts of the series",
+          "Check that no effect metrics such as time-saving rates or productivity-improvement figures are used"
+        ],
+        "limits": "These are fictional inputs and edited examples created to explain how to use team collaboration AI, not results from an actual AI tool. Real team data may contain confidential or personal information, so check the organization’s information security policy and the permitted disclosure scope of the source before entering it."
+      }
+    },
+    {
+      "slug": "team-ai-review-approval",
+      "title": "How to Review and Approve AI Output as a Team: Checks Before Sharing a Weekly Report",
+      "summary": "Learn how to check facts, omissions, sensitive information, owners, and approval status by role before sharing an AI weekly-report draft with the team. Separate the author, reviewer, and approver and record what evidence was checked so AI output is not mistaken for the team’s official conclusion.",
+      "audience": "Non-developer teams that want a multi-person review and approval process instead of immediately sharing an AI-organized team report",
+      "prerequisites": [
+        "A general AI chat tool that accepts text input",
+        "Be able to view the source being reviewed together with the AI draft",
+        "Use fictional or masked data instead of real personal or customer information",
+        "Assign final approval responsibility to a team member, not AI"
+      ],
+      "tags": [
+        "AIOutputReview",
+        "AIWeeklyReport",
+        "TeamApproval"
+      ],
+      "sections": [
+        {
+          "id": "review-before-share",
+          "heading": "1. Distinguish an AI draft from an approved team document",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even if AI organizes information into a polished weekly-report format, the document does not automatically become the team’s official report. In a document that combines information from multiple people, you must separately check not only factual errors but also omissions, misidentified owners, unverified information presented as confirmed, and exposure of sensitive information. This article practices separating the roles of author, reviewer, and approver and leaving a review trail before approval."
+            },
+            {
+              "type": "p",
+              "text": "The fictional Team Haneul plans to run the “Neighborhood Digital Basics Workshop” on 2026-11-14 from 14:00–16:00. Capacity is 30 people, the audience is local residents, and there is no fee. The venue must be decided by 2026-10-24, the final promotional material is due by 2026-10-28, and the instructor must be confirmed by 2026-10-30. Registrations as of 2026-10-23 are 22 people. The review below uses these shared facts and the team members’ source updates as its basis."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Role",
+                "Person",
+                "Main check"
+              ],
+              "rows": [
+                [
+                  "Author",
+                  "Seoyeon",
+                  "Prepare the draft and sources based on the source text"
+                ],
+                [
+                  "Reviewer",
+                  "Junho",
+                  "Compare facts, omissions, sensitive information, and owner labels with the source"
+                ],
+                [
+                  "Approver",
+                  "Minseo",
+                  "Check whether any items still need confirmation and decide whether to share"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "source-and-draft-input",
+          "heading": "2. Bundle the source and AI draft together as review material",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A reviewer cannot easily tell what is missing by reading the AI draft alone. Therefore, provide the source updates, draft, sensitive-information masking status, and approval roles as one input bundle. The contact number below is masked rather than real, and when using real data you should check the organization’s information security policy."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "input",
+              "text": "Team Haneul shared facts\n- Event: Neighborhood Digital Basics Workshop\n- Event date: 2026-11-14\n- Event time: 14:00–16:00\n- Capacity: 30 people\n- Audience: local residents\n- Fee: none\n- Venue decision deadline: 2026-10-24\n- Final promotional material deadline: 2026-10-28\n- Instructor confirmation deadline: 2026-10-30\n- Registration status as of 2026-10-23: 22 people\n\nReview roles\n- Author: Seoyeon\n- Reviewer: Junho\n- Approver: Minseo\n- Program owner: Doyun\n\nSource updates\n[Update-Minseo-1] As of 2026-10-23, the venue is not yet finally confirmed and must be decided by 2026-10-24.\n[Update-Junho-1] Option A: Civic Center 3rd-floor seminar room has a capacity of 32 people, a projector, an elevator, and confirmed booking availability.\n[Update-Junho-2] Option B: district library auditorium has a capacity of 60 people, and booking availability is not confirmed.\n[Update-Seoyeon-1] As of 2026-10-23, there are 22 registrants.\n[Update-Seoyeon-2] The registration inquiry material contains the masked contact number 010-XXXX-XXXX. Do not include the contact number itself in the external shared version.\n[Update-Doyun-1] The instructor confirmation deadline is 2026-10-30, and the instructor is currently not finally confirmed.\n\nDraft to review\n- The event will be held on 2026-11-14 from 14:00–16:00.\n- The venue has been confirmed as Option A: Civic Center 3rd-floor seminar room.\n- There are 22 registrants.\n- The instructor has been confirmed.\n- Registration inquiry contact: 010-XXXX-XXXX\n\nApproval record standard\n- Status: Not checked / Revision needed / Approved\n- Review record time: 2026-10-23 16:00\n- Approval date · time: record when the approver approves"
+            },
+            {
+              "type": "p",
+              "text": "The draft under review intentionally contains errors and an item that should not be disclosed. Booking availability for Option A is confirmed, but the source does not say the venue itself has been finally confirmed, and the instructor is also not yet finally confirmed. Even though the contact number is masked, the source says not to include it in the external shared version, so it should be removed."
+            }
+          ]
+        },
+        {
+          "id": "review-prompt",
+          "heading": "3. Separate facts, omissions, sensitive information, and responsibility in the review request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If you only ask AI to 'find what is wrong,' wording issues and factual errors can be mixed together. Separating the review criteria makes it easier for a person to identify which source text to revisit. AI is not the approver, so explicitly instruct it not to change the final status to 'Approved' on its own."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "prompt",
+              "text": "Compare the source updates with the draft to review and create a pre-sharing review table for the team.\n\nCheck each of the following categories.\n- Facts: Is the draft content supported by the source?\n- Omissions: Is any important source item missing from the draft?\n- Sensitive information: Does any information that should be removed from the external shared version remain?\n- Owners: Have the author, reviewer, or approver roles been changed arbitrarily?\n- Approval status: Keep it as 'Not checked' or 'Revision needed' until a person approves it.\n\nAttach the source tag to each judgment. Do not invent people, dates, times, numbers, or decisions that are not in the input. At the end, list what the approver should check after revision."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Review category",
+                "Question",
+                "Evidence needed before approval"
+              ],
+              "rows": [
+                [
+                  "Facts",
+                  "Was something written as confirmed actually confirmed?",
+                  "Source reference"
+                ],
+                [
+                  "Omissions",
+                  "Are progress status or unverified items missing?",
+                  "Item-by-item comparison of source and draft"
+                ],
+                [
+                  "Sensitive information",
+                  "Does information that should not be shared remain?",
+                  "Source instruction on disclosure scope"
+                ],
+                [
+                  "Owners",
+                  "Do the roles match the input data?",
+                  "Review-role table"
+                ],
+                [
+                  "Approval",
+                  "Did the approver check it directly?",
+                  "Status · date · time record"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "review-output",
+          "heading": "4. Keep the revision basis and approval status together in the review result",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The result below is an edited example for understanding the review criteria, not an actual AI output. A good review result does more than point out incorrect sentences; it also shows which source requires the revision and what the status is before approval."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "output",
+              "text": "[Example result · not an actual AI output]\nReview status: Revision needed\nAuthor: Seoyeon\nReviewer: Junho\nApprover: Minseo\n\nFact check\n- The event date 2026-11-14 and time 14:00–16:00 match the shared facts.\n- The 22 registrants match [Update-Seoyeon-1].\n- The statement 'The venue has been confirmed as Option A: Civic Center 3rd-floor seminar room' needs revision. [Update-Minseo-1] says that as of 2026-10-23 it is not yet finally confirmed.\n- The statement 'The instructor has been confirmed' needs revision. [Update-Doyun-1] says the instructor must be confirmed by 2026-10-30 and is currently not finally confirmed.\n\nOmission check\n- The draft omits that the venue must be decided by 2026-10-24. [Update-Minseo-1]\n- The draft omits that booking availability for Option B: district library auditorium is unconfirmed. [Update-Junho-2]\n\nSensitive-information check\n- 010-XXXX-XXXX is masked, but it should be deleted because the source explicitly says not to include it in the external shared version. [Update-Seoyeon-2]\n\nApproval record\n- Current status is Revision needed.\n- Minseo decides whether to approve after checking the revised version.\n- The review record time is 2026-10-23 16:00. The approval date · time is recorded when Minseo approves and is currently TBD."
+            },
+            {
+              "type": "p",
+              "text": "In this example, Junho is the reviewer and Minseo is the final approver. Finding errors does not allow the reviewer to immediately change the status to approved. For the venue and instructor in particular, states such as 'available' or 'a deadline is set' are different from 'finally confirmed,' so the source wording must be preserved."
+            }
+          ]
+        },
+        {
+          "id": "bad-approval",
+          "heading": "5. Avoid mistaking a polished report for an approved report",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A natural-sounding AI draft with a clean table can look as if review is already complete. But adding confirmed statements without sources, leaving sensitive information in place, or changing status without the approver’s check blurs responsibility boundaries in the team document."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "bad_output",
+              "text": "[Common flawed result · not an actual AI output]\nFinal approval complete\n- Venue: Option A: Civic Center 3rd-floor seminar room confirmed\n- Instructor: Doyun completed outreach\n- Registration inquiry: 010-XXXX-XXXX\n- Final approver: Junho"
+            },
+            {
+              "type": "p",
+              "text": "This result differs from the input. The venue and instructor are not yet finally confirmed, the masked contact number must also be removed from the external shared version, and the approver is Minseo, not Junho. To correct it, connect each statement to its source and separate the facts checked by the reviewer from the status that the approver decides."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "role": "checklist",
+              "text": "Human review checklist before team sharing\n- Facts: Do dates, times, numbers, and statuses match the source?\n- Omissions: Are delays, unverified items, conflicts, and dependencies all retained?\n- Sensitive information: Have contact details or identifying information that should not be shared been removed?\n- Owners: Do the author, reviewer, and approver match the input?\n- Sources: Can the source item be traced again for every important judgment?\n- Approval: Has the status remained unapproved until the approver directly checks the revised version?"
+            }
+          ]
+        },
+        {
+          "id": "approval-record",
+          "heading": "6. An approval record captures the responsibility flow, not just the result",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The purpose of an approval record is not to show who has more authority, but to distinguish documents that are unreviewed, under revision, or ready for final sharing. The author prepares the source and draft, the reviewer compares facts, omissions, and sensitive information, and the approver decides whether to share after checking any remaining items that need confirmation. AI does not take over any of these roles."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "The author prepares a draft with visible source references.",
+                "The reviewer marks errors and omissions together with the basis for revision.",
+                "The approver directly checks the revised version and any remaining items that need confirmation.",
+                "Record the approval status and record time in the shared version so it is distinguishable from a draft."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "This brings the 8-article sequence back to the first step. Next, you can return to the criteria in Article 1, “Team Collaboration AI: Where Should You Start? Compare Repetitive Tasks and Choose the First Use Case”, and choose again which recurring team task should first use AI assistance and a human review process."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Fictional input data and edited examples · no actual AI execution · checks for matching names, dates, and numbers",
+        "items": [
+          "Check that every code block role is one of input, prompt, output, bad_output, or checklist",
+          "Check that names, YYYY-MM-DD dates, HH:MM times, and numbers in the output exist in the input of the same article",
+          "Check that the source status showing the venue and instructor are not finally confirmed is not arbitrarily changed to confirmed in the output",
+          "Check that the masked contact number is marked for removal from the external shared version",
+          "Check that the roles of author Seoyeon, reviewer Junho, and approver Minseo match the input",
+          "Check that the event schedule, capacity, deadlines, and registration status do not contradict the series’ shared facts and that no effect metrics are added"
+        ],
+        "limits": "This is an edited example using fictional team data, not a record of running an actual AI tool or testing an actual organization’s approval process. When reviewing a real report, people must directly check the source, the organization’s information security policy, and the internal approval process."
+      }
+    }
+  ]
+}
