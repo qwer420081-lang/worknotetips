@@ -20,15 +20,21 @@ LABELS = {
 def route(lang, slug):
  return ('/' if lang == 'en' else '/' + lang + '/') + 'articles/' + slug + '/'
 
-def main():
+def main(batch='beginner-batch', modified='2026-09-21'):
+ index=ROOT/'_src/_index.json'; slugs=json.loads(index.read_text(encoding='utf-8'))
+ incoming=json.loads((ROOT/'_src'/batch/'en.json').read_text(encoding='utf-8'))['articles']
+ for article in incoming:
+  if article['slug'] not in slugs: slugs.append(article['slug'])
+ total=len(slugs)
  for lang in LANGS:
-  data = json.loads((ROOT / '_src/beginner-batch' / (lang + '.json')).read_text(encoding='utf-8'))
-  assert data['lang'] == lang and len(data['articles']) == 3
+  data = json.loads((ROOT / '_src' / batch / (lang + '.json')).read_text(encoding='utf-8'))
+  assert data['lang'] == lang and data['articles']
   base = ROOT / ('' if lang == 'en' else lang)
   template = (base / 'articles/ai-email-draft-check/index.html').read_text(encoding='utf-8')
   cards = []
   home = BeautifulSoup((base/'index.html').read_text(encoding='utf-8'), 'html.parser')
-  for number, article in enumerate(data['articles'], 54):
+  for article in data['articles']:
+   number=slugs.index(article['slug'])+1
    slug = article['slug']; url = 'https://worknotetips.com' + route(lang, slug)
    doc = BeautifulSoup(template, 'html.parser')
    doc.body['class'] = [*doc.body.get('class',[]),'beginner-article']
@@ -49,7 +55,7 @@ def main():
    for script in doc.select('script[type="application/ld+json"]'):
     payload = json.loads(script.string)
     if payload.get('@type') == 'TechArticle':
-     payload.update(headline=article['title'],description=article['summary'],url=url,dateModified='2026-09-21')
+     payload.update(headline=article['title'],description=article['summary'],url=url,dateModified=modified)
     else:
      for item in payload.get('itemListElement',[]):
       if isinstance(item.get('item'),str) and 'ai-email-draft-check' in item['item']:
@@ -58,6 +64,8 @@ def main():
    doc.h1.string = article['title']
    doc.select_one('.article-summary').string = article['summary']
    doc.select_one('.article-meta').find_all('span')[-1].string = LABELS[lang][0]
+   meta_date=doc.select_one('.article-meta').find('span')
+   meta_date.string=re.sub(r'\d{4}\.\d{2}\.\d{2}',modified.replace('-','.'),meta_date.text)
    doc.select_one('.aside-note').string = LABELS[lang][2]
    messages=doc.select_one('#ui-messages'); ui=json.loads(messages.string)
    ui['copySuccess']={'en':'Example text copied.','ko':'예시 텍스트를 복사했습니다.','ja':'例文をコピーしました。','es':'Texto de ejemplo copiado.','pt-BR':'Texto de exemplo copiado.'}[lang]
@@ -128,26 +136,25 @@ def main():
    count=len(grid.select('.article-card')); page.select_one('#result-count').string=str(count)
    note=page.select_one('.list-heading p')
    if note:
-    note.string=re.sub(r'(?<!\d)(53|56|22|25)(?!\d)',str(count),note.get_text())
+    note.string=re.sub(r'\d+(?!.*\d)',str(count),note.get_text())
    target.write_text(str(page),encoding='utf-8')
   for target in [base/'index.html',*base.glob('category/*/index.html')]:
    page=BeautifulSoup(target.read_text(encoding='utf-8'),'html.parser')
    for link in page.select('.category-rail a[href]'):
     count=link.select_one('.count')
-    if count and link['href']==('/' if lang=='en' else '/'+lang+'/'): count.string='56'
-    if count and link['href'].endswith('/category/ai/'): count.string='25'
+    if count and link['href']==('/' if lang=='en' else '/'+lang+'/'): count.string=str(total)
+    if count and link['href'].endswith('/category/ai/'):
+     ai_page=BeautifulSoup((base/'category/ai/index.html').read_text(encoding='utf-8'),'html.parser')
+     count.string=ai_page.select_one('#result-count').text
    target.write_text(str(page),encoding='utf-8')
- index=ROOT/'_src/_index.json'; slugs=json.loads(index.read_text(encoding='utf-8'))
- for a in data['articles']:
-  if a['slug'] not in slugs: slugs.append(a['slug'])
  index.write_text(json.dumps(sorted(slugs),ensure_ascii=False),encoding='utf-8')
  ns='http://www.sitemaps.org/schemas/sitemap/0.9'; ET.register_namespace('',ns); path=ROOT/'sitemap.xml'; tree=ET.parse(path); root=tree.getroot(); existing={e.text for e in root.findall('{'+ns+'}url/{'+ns+'}loc')}
  for lang in LANGS:
   for a in data['articles']:
    url='https://worknotetips.com'+route(lang,a['slug'])
    if url not in existing:
-    e=ET.SubElement(root,'{'+ns+'}url'); ET.SubElement(e,'{'+ns+'}loc').text=url; ET.SubElement(e,'{'+ns+'}lastmod').text='2026-09-21'
+    e=ET.SubElement(root,'{'+ns+'}url'); ET.SubElement(e,'{'+ns+'}loc').text=url; ET.SubElement(e,'{'+ns+'}lastmod').text=modified
  tree.write(path,encoding='utf-8',xml_declaration=True)
- print(f'Built {3*len(LANGS)} articles; updated {2*len(LANGS)} indexes and sitemap.')
+ print(f'Built {len(incoming)*len(LANGS)} articles; updated {2*len(LANGS)} indexes and sitemap.')
 
 if __name__ == '__main__': main()

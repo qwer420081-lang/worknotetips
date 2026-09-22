@@ -1,0 +1,179 @@
+{
+  "slug": "generative-ai-basics",
+  "title": "What Is Generative AI? Understand How Answers Are Generated and Why Hallucinations Happen",
+  "summary": "Learn what generative AI does and how text-generating AI produces responses by continuing tokens from the context it has been given. Because fluent language and factual accuracy are not the same thing, you will also practice separating confirmed information from unknown information and checking the result yourself.",
+  "audience": "General users who are new to generative AI or want a basic understanding of how responses are produced and why errors occur",
+  "prerequisites": [
+    "Be able to have a simple text conversation with an AI tool",
+    "Compare AI answers with source material or calculations instead of assuming they are always factual",
+    "Practice with fictional examples rather than personally identifiable information or real customer data"
+  ],
+  "tags": [
+    "generative AI",
+    "LLM basics",
+    "hallucination checks"
+  ],
+  "sections": [
+    {
+      "id": "what-it-generates",
+      "heading": "1. What does generative AI create?",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Generative AI refers to AI systems that produce new outputs such as text, images, audio, or code from a user's request and input. This article focuses only on text-generating models used in conversational services, especially the basic principles of large language models (LLMs)."
+        },
+        {
+          "type": "p",
+          "text": "The fact that generative AI can produce natural-sounding sentences does not mean we should assume it understands or makes conscious judgments in the same way a person does. Its answers are also not guaranteed to be correct or always up to date. A useful starting point is to separate the ability to write fluently from the ability to state facts accurately."
+        }
+      ]
+    },
+    {
+      "id": "tokens-and-context",
+      "heading": "2. How answers continue through tokens and context",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Text-generation models handle language internally in units called tokens. A token may be a whole word, part of a word, punctuation, or another smaller unit, and the exact tokenization can differ by language and model."
+        },
+        {
+          "type": "p",
+          "text": "Many text-generating LLMs use the context provided so far to estimate possible next tokens and repeat that process to continue a response. This does not mean they must always select the single highest-probability token every time; the result can vary depending on how generation is configured. Transformer-based models use attention mechanisms to account for relationships among elements in the context."
+        },
+        {
+          "type": "p",
+          "text": "It is also important to distinguish model training from response generation. You should not assume that every conversation is immediately turned into new training data whenever the model answers. Nor does the model necessarily search the live web for every sentence or copy each sentence from a database. When search or calculation capabilities are available, they may be provided through separate tools, which are different from the basic language-generation process."
+        }
+      ]
+    },
+    {
+      "id": "why-errors-happen",
+      "heading": "3. Why a natural-sounding answer can still be wrong",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A language model can be good at producing language that flows naturally, but fluency and factual accuracy are not the same criterion. Producing plausible but false content is often described as hallucination or confabulation. For example, a model may present a nonexistent book, paper, link, statistic, or quotation in a convincing format."
+        },
+        {
+          "type": "p",
+          "text": "When a question requires sources, compare details such as the title, author, date, and link with the actual source. The same principle applies to calculations. Even when search or calculator tools are connected, the result does not automatically become perfect, so important numbers and references still need independent verification."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Do not treat a statement as factual just because it sounds natural",
+            "When a source is provided, check that it exists and actually supports the claim",
+            "Recalculate important numbers independently when possible",
+            "When freshness matters, check the date or time period of the information"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "try-and-check",
+      "heading": "4. Try a small example and check the result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The following is an editorial exercise, not a record from an actual service. Imagine a fictional library notice where the confirmed information is 'reading group on Saturday at 14:00' and 'capacity: 8 people,' while the application method is still undecided. The goal is not merely to shorten the notice, but to separate confirmed facts from unknown information."
+        },
+        {
+          "type": "code",
+          "language": "text",
+          "text": "Summarize the following fictional library notice in no more than 2 sentences, then list 'Confirmed information' and 'Undecided information' separately below it.\nConfirmed information: reading group on Saturday at 14:00, capacity 8 people.\nUndecided information: application method.\nDo not guess or invent an application URL, phone number, or deadline that was not provided."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Check item",
+            "Correct criterion"
+          ],
+          "rows": [
+            [
+              "Day and time",
+              "Keep Saturday at 14:00 unchanged"
+            ],
+            [
+              "Capacity",
+              "Keep it at 8 people"
+            ],
+            [
+              "Application method",
+              "Mark it as undecided"
+            ],
+            [
+              "Application URL",
+              "Do not guess or create one"
+            ],
+            [
+              "Phone number and deadline",
+              "Do not add them because they were not provided"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If the AI adds information such as 'apply online,' an invented URL, or a phone number that was not in the source, remove it or mark it as 'needs confirmation.' A summary is supposed to be shorter, but being shorter does not automatically make it accurate."
+        }
+      ]
+    },
+    {
+      "id": "where-to-use-it",
+      "heading": "5. Where can you use this understanding next?",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Once you understand the basic principle, the next step is to create actual outputs. The same generative AI requires different prompting and checking methods depending on the task."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Question you may have",
+            "Output to create",
+            "What to verify"
+          ],
+          "rows": [
+            [
+              "How should I ask to get the answer I want?",
+              "A request that includes the goal, context, constraints, and format",
+              "Check whether the given facts and constraints remain unchanged in the result"
+            ],
+            [
+              "How can I study with AI without just looking at the answer?",
+              "A practice conversation with hints and review of wrong answers",
+              "Check whether AI avoids immediately replacing your reasoning with the final answer"
+            ],
+            [
+              "Can AI make a plan that fits the time I actually have?",
+              "A weekly plan that respects daily limits",
+              "Recalculate total time, daily maximums, and task counts"
+            ],
+            [
+              "If I summarize a long document, could important content disappear?",
+              "A condensed summary of the source",
+              "Compare key facts, numbers, and conditions against the original text"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "These four tasks produce different outputs: a structured request, a learning exercise, a scheduling decision, and a document summary. Instead of learning only how to 'ask AI well,' it is more useful to learn a verification method that matches each type of output."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Concept explanation and editorial exercise · Actual AI responses may differ",
+    "items": [
+      "Check that the article distinguishes generative AI in general from its narrower focus on text LLMs",
+      "Check that tokens are described as potentially being words, word pieces, or other units that vary by language and model",
+      "Check that many LLMs are described as continuing next tokens from context without claiming they always choose only the single highest-probability token",
+      "Check that model training and response generation are treated as different processes",
+      "Check that live web search or database copying is not presented as the default mechanism behind every answer",
+      "Check that hallucination, factual accuracy, and the need to verify separate search or calculation tools are explained",
+      "Check that the exercise preserves Saturday at 14:00, capacity 8 people, and an undecided application method",
+      "Check that the criteria prohibit guessing an application URL, phone number, or deadline"
+    ],
+    "limits": "This article is educational editorial content that explains basic generative AI concepts for general readers. It does not attempt to describe every internal detail of a specific model. Actual responses, tokenization, generation methods, and search or calculation capabilities vary by model and service, and important facts, sources, and calculations should be independently verified."
+  }
+}

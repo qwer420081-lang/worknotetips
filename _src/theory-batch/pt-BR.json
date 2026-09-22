@@ -1,0 +1,211 @@
+{
+  "lang": "pt-BR",
+  "articles": [
+    {
+      "slug": "generative-ai-basics",
+      "title": "O que é IA generativa? Entenda como ela responde e por que pode alucinar",
+      "summary": "Aprenda o que a IA generativa cria e como modelos de texto produzem respostas continuando tokens a partir do contexto recebido. Como uma resposta natural não é necessariamente uma resposta factual, você também vai praticar como separar informações confirmadas de informações ainda indefinidas e como verificar o resultado por conta própria.",
+      "audience": "Pessoas que estão começando a usar IA generativa ou querem entender de forma básica como as respostas são produzidas e por que erros podem acontecer",
+      "prerequisites": [
+        "Conseguir manter uma conversa simples com uma IA baseada em texto",
+        "Comparar respostas da IA com a fonte ou com cálculos próprios em vez de assumir que elas estão sempre corretas",
+        "Praticar com exemplos fictícios e não com informações pessoais identificáveis nem dados reais de clientes"
+      ],
+      "tags": [
+        "IA generativa",
+        "conceitos de LLM",
+        "verificação"
+      ],
+      "sections": [
+        {
+          "id": "what-it-generates",
+          "heading": "1. O que a IA generativa cria?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "IA generativa é o nome dado a sistemas de IA que produzem novos resultados, como texto, imagens, áudio ou código, a partir das instruções e entradas do usuário. Este artigo se limita aos modelos que geram texto em serviços de conversa, especialmente aos princípios básicos dos grandes modelos de linguagem, ou LLMs."
+            },
+            {
+              "type": "p",
+              "text": "O fato de uma IA generativa produzir frases naturais não significa que devemos afirmar que ela entende ou toma decisões conscientes da mesma forma que uma pessoa. Também não significa que todas as respostas sejam corretas ou estejam sempre atualizadas. Um bom ponto de partida é separar a capacidade de escrever com fluidez da capacidade de apresentar fatos corretamente."
+            }
+          ]
+        },
+        {
+          "id": "tokens-and-context",
+          "heading": "2. Como a resposta é construída com tokens e contexto",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Modelos de geração de texto tratam a linguagem internamente em unidades chamadas tokens. Um token pode ser uma palavra inteira, parte de uma palavra, um símbolo ou outra unidade menor, e a forma de divisão pode variar conforme o idioma e o modelo."
+            },
+            {
+              "type": "p",
+              "text": "Muitos LLMs de geração de texto usam o contexto fornecido até aquele momento para estimar quais tokens podem vir em seguida e repetem esse processo para continuar a resposta. Isso não significa que eles precisem escolher sempre apenas o token de maior probabilidade; o resultado pode variar conforme a configuração e o método de geração. Modelos da família Transformer usam mecanismos de attention para considerar as relações entre os elementos presentes no contexto."
+            },
+            {
+              "type": "p",
+              "text": "Também é importante distinguir o processo de treinamento do modelo do processo de gerar uma resposta quando o usuário faz uma pergunta. Não se deve presumir que toda conversa se transforme imediatamente em novos dados de treinamento cada vez que o modelo responde. Também não significa que ele pesquise a web em tempo real para cada frase ou copie cada sentença de um banco de dados. Quando há recursos de busca ou cálculo, eles podem estar conectados como ferramentas separadas da geração básica de linguagem."
+            }
+          ]
+        },
+        {
+          "id": "why-errors-happen",
+          "heading": "3. Por que uma resposta natural ainda pode estar errada",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um modelo de linguagem pode ser muito bom em produzir frases que soam naturais, mas fluidez e precisão factual não são o mesmo critério. A geração de conteúdo plausível, porém falso, costuma ser chamada de alucinação ou confabulation. Por exemplo, o modelo pode apresentar de forma convincente um livro, artigo, link, estatística ou fala de uma pessoa que na realidade não existe."
+            },
+            {
+              "type": "p",
+              "text": "Por isso, quando uma pergunta exige fontes, compare informações como título, autor, data e link com a fonte real. O mesmo princípio vale para cálculos. Mesmo quando há ferramentas de busca ou cálculo conectadas, o resultado não se torna automaticamente perfeito, então números e referências importantes ainda precisam ser verificados de forma independente."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Não considerar uma afirmação verdadeira apenas porque ela soa natural",
+                "Quando uma fonte for apresentada, verificar se ela existe e se realmente sustenta a afirmação",
+                "Refazer cálculos importantes de forma independente quando possível",
+                "Quando a atualidade for importante, verificar a data ou o período da informação"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "try-and-check",
+          "heading": "4. Faça um pequeno teste e confira o resultado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O exemplo a seguir é um exercício editorial, não um registro real de uso de um serviço. Imagine um aviso de uma biblioteca fictícia em que as informações confirmadas são 'grupo de leitura no sábado às 14:00' e 'limite de 8 pessoas', enquanto a forma de inscrição ainda está indefinida. O objetivo não é apenas resumir, mas separar os fatos confirmados das informações ainda não decididas."
+            },
+            {
+              "type": "code",
+              "language": "text",
+              "text": "Resuma o seguinte aviso fictício de biblioteca em no máximo 2 frases e, abaixo, separe 'Informações confirmadas' de 'Informações indefinidas'.\nInformações confirmadas: grupo de leitura no sábado às 14:00, limite de 8 pessoas.\nInformações indefinidas: forma de inscrição.\nNão adivinhe nem invente uma URL de inscrição, número de telefone ou prazo que não tenham sido fornecidos."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item de verificação",
+                "Critério correto"
+              ],
+              "rows": [
+                [
+                  "Dia e horário",
+                  "Manter sábado às 14:00"
+                ],
+                [
+                  "Limite de participantes",
+                  "Manter 8 pessoas"
+                ],
+                [
+                  "Forma de inscrição",
+                  "Marcar como indefinida"
+                ],
+                [
+                  "URL de inscrição",
+                  "Não adivinhar nem criar"
+                ],
+                [
+                  "Telefone e prazo",
+                  "Não acrescentar porque não foram fornecidos"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Se a IA acrescentar informações que não estavam na fonte, como 'inscrição online', uma URL inventada ou um número de telefone, remova essas informações ou marque como 'precisa de confirmação'. Resumir significa reduzir o conteúdo, mas o fato de o texto ficar menor não garante que o resumo esteja correto."
+            }
+          ]
+        },
+        {
+          "id": "where-to-use-it",
+          "heading": "5. Onde aplicar esse conhecimento depois?",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Depois de entender os princípios básicos, o próximo passo é criar resultados práticos. Mesmo usando a mesma IA generativa, a forma de pedir e de verificar muda conforme o objetivo."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Pergunta que pode surgir",
+                "Resultado a criar",
+                "O que verificar"
+              ],
+              "rows": [
+                [
+                  "Como devo perguntar para obter a resposta que quero?",
+                  "Uma solicitação com objetivo, contexto, condições e formato",
+                  "Verificar se os fatos e condições fornecidos continuam presentes no resultado"
+                ],
+                [
+                  "Como estudar com IA sem apenas olhar a resposta?",
+                  "Uma conversa de prática com dicas e revisão de erros",
+                  "Verificar se a IA não substitui imediatamente seu raciocínio pela resposta final"
+                ],
+                [
+                  "A IA consegue montar um plano que caiba no tempo que eu realmente tenho?",
+                  "Um plano semanal que respeita os limites de cada dia",
+                  "Recalcular o tempo total, os limites diários e a quantidade de tarefas"
+                ],
+                [
+                  "Se eu resumir um texto longo, informações importantes podem desaparecer?",
+                  "Um resumo condensado do texto original",
+                  "Comparar fatos principais, números e condições com o original"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Essas quatro tarefas produzem resultados diferentes: uma solicitação estruturada, uma prática de aprendizagem, uma decisão de planejamento e um resumo de documento. Por isso, em vez de aprender apenas a 'perguntar bem para a IA', é mais útil aprender também um critério de verificação adequado para cada tipo de resultado."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Explicação conceitual e exercício editorial · As respostas reais de IA podem variar",
+        "items": [
+          "Verificar se o texto distingue IA generativa em geral do foco específico deste artigo em LLMs de texto",
+          "Verificar se os tokens são descritos como palavras, partes de palavras ou outras unidades que podem variar conforme idioma e modelo",
+          "Verificar se o texto explica que muitos LLMs continuam tokens a partir do contexto sem afirmar que sempre escolhem apenas o token de maior probabilidade",
+          "Verificar se treinamento do modelo e geração de resposta são tratados como processos diferentes",
+          "Verificar se pesquisa em tempo real na web ou cópia de bancos de dados não são apresentadas como o mecanismo padrão de todas as respostas",
+          "Verificar se o texto explica alucinações, precisão factual e a necessidade de validar até ferramentas separadas de busca ou cálculo",
+          "Verificar se o exercício mantém sábado às 14:00, limite de 8 pessoas e forma de inscrição indefinida",
+          "Verificar se os critérios proíbem inventar URL de inscrição, número de telefone ou prazo"
+        ],
+        "limits": "Este artigo é um conteúdo editorial educativo para explicar conceitos básicos de IA generativa a leitores em geral e não pretende descrever toda a estrutura interna ou o funcionamento completo de um modelo específico. Respostas reais, tokenização, métodos de geração e recursos de busca ou cálculo variam conforme o modelo e o serviço, e fatos, fontes e cálculos importantes devem ser verificados de forma independente."
+      }
+    }
+  ],
+  "discovery": {
+    "heading": "O que você quer experimentar agora?",
+    "intro": "Escolha uma pergunta que interesse você e crie um resultado prático.",
+    "theoryLabel": "Se você quiser entender primeiro os princípios",
+    "links": [
+      {
+        "slug": "ai-clear-request",
+        "question": "Como devo perguntar para obter a resposta que quero?",
+        "benefit": "Crie uma solicitação que deixe claros o objetivo e as condições."
+      },
+      {
+        "slug": "ai-practice-tutor",
+        "question": "Como estudar com IA sem apenas olhar a resposta?",
+        "benefit": "Pratique com dicas e revisão de erros."
+      },
+      {
+        "slug": "ai-weekly-plan",
+        "question": "A IA consegue montar um plano que caiba no tempo que eu realmente tenho?",
+        "benefit": "Crie um plano semanal que respeite seus limites de tempo."
+      },
+      {
+        "slug": "ai-summary-source-check",
+        "question": "Se eu resumir um texto longo, informações importantes podem desaparecer?",
+        "benefit": "Aprenda a comparar um resumo com o texto original."
+      }
+    ]
+  }
+}
