@@ -68,3 +68,5 @@ html:not([lang="ko"]):not([lang="ja"]):not([lang="zh-Hans"]) h1,html:not([lang="
 .beginner-article .toc a span{flex-shrink:0;white-space:nowrap}
 
 .ai-discovery{margin:28px 0;padding:22px;background:#eef3ef;border:1px solid #ceddd4;border-radius:6px}.ai-discovery>p{margin-top:10px;color:var(--muted)}.ai-discovery a{color:var(--green);text-decoration:underline;text-underline-offset:3px}.ai-discovery ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:18px 0 0}.ai-discovery li{background:white;border:1px solid var(--line);padding:16px;border-radius:5px}.ai-discovery li>a{font-weight:700}.ai-discovery li p{font-size:.875rem;margin:7px 0 0;color:var(--muted)}@media(max-width:560px){.ai-discovery{padding:16px}.ai-discovery ul{grid-template-columns:1fr}}
+
+.table-wrap.wide{overflow-x:auto;-webkit-overflow-scrolling:touch}.table-wrap.wide table{min-width:42rem}

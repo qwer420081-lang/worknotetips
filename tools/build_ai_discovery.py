@@ -16,7 +16,7 @@ def main():
   targets=[base/'category/ai/index.html',base/'articles'/THEORY/'index.html',*[base/'articles'/x['slug']/'index.html' for x in discovery['links']]]
   for p in targets:
    doc=BeautifulSoup(p.read_text(encoding='utf-8'),'html.parser')
-   doc.select_one('link[rel="stylesheet"]')['href']='/assets/styles.css?v=20260922-discovery'
+   doc.select_one('link[rel="stylesheet"]')['href']='/assets/styles.css?v=20260922-team'
    def tag(name,text=None,**attrs):
     el=doc.new_tag(name,attrs=attrs)
     if text is not None: el.string=text

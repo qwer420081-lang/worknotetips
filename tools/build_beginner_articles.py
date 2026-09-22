@@ -17,6 +17,14 @@ LABELS = {
  'pt-BR': ('Prompts para copiar', 'Prompt', 'Confira os fatos e as condições antes de usar uma resposta de IA.'),
 }
 
+ROLE_LABELS = {
+ 'input': {'en':'Sample input','ko':'입력 자료','ja':'入力資料','es':'Datos de entrada','pt-BR':'Dados de entrada'},
+ 'prompt': {'en':'Prompt','ko':'요청문','ja':'プロンプト','es':'Instrucción','pt-BR':'Prompt'},
+ 'output': {'en':'Example result','ko':'예시 결과','ja':'結果例','es':'Resultado de ejemplo','pt-BR':'Resultado de exemplo'},
+ 'bad_output': {'en':'Flawed result','ko':'잘못된 결과','ja':'誤った結果例','es':'Resultado erróneo','pt-BR':'Resultado incorreto'},
+ 'checklist': {'en':'Checklist','ko':'확인 목록','ja':'確認リスト','es':'Lista de control','pt-BR':'Lista de verificação'},
+}
+
 def route(lang, slug):
  return ('/' if lang == 'en' else '/' + lang + '/') + 'articles/' + slug + '/'
 
@@ -38,7 +46,7 @@ def main(batch='beginner-batch', modified='2026-09-21'):
    slug = article['slug']; url = 'https://worknotetips.com' + route(lang, slug)
    doc = BeautifulSoup(template, 'html.parser')
    doc.body['class'] = [*doc.body.get('class',[]),'beginner-article']
-   doc.select_one('link[rel="stylesheet"]')['href']='/assets/styles.css?v=20260921-beginner'
+   doc.select_one('link[rel="stylesheet"]')['href']='/assets/styles.css?v=20260922-team'
    def tag(name, text=None, **attrs):
     x = doc.new_tag(name, attrs=attrs)
     if text is not None: x.string = str(text)
@@ -95,10 +103,11 @@ def main(batch='beginner-batch', modified='2026-09-21'):
      elif kind == 'code':
       ident=f'prompt-{i}-{j}'; wrapper=tag('div',**{'class':'code-block'}); bar=tag('div',**{'class':'code-toolbar'})
       label = {'en':'Editorial example','ko':'편집 예시','ja':'編集例','es':'Ejemplo editorial','pt-BR':'Exemplo editorial'}[lang] if block['text'].startswith('[') else LABELS[lang][1]
+      if block.get('role') in ROLE_LABELS: label = ROLE_LABELS[block['role']][lang]
       bar.append(tag('span',label)); button=tag('button',ui['copy'],type='button',**{'data-copy':ident,'aria-label':ui['copy']+' '+label}); bar.append(button)
       pre=tag('pre',tabindex='0',dir='auto'); pre.append(tag('code',block['text'],id=ident)); wrapper.extend([bar,pre]); el.append(wrapper)
      elif kind == 'table':
-      wrapper=tag('div',**{'class':'table-wrap'}); table=tag('table'); head=tag('thead'); tr=tag('tr')
+      wrapper=tag('div',**{'class':'table-wrap wide' if len(block['headers'])>=5 else 'table-wrap'}); table=tag('table'); head=tag('thead'); tr=tag('tr')
       for value in block['headers']: tr.append(tag('th',value,scope='col'))
       head.append(tr); table.append(head); body=tag('tbody')
       for row in block['rows']:
