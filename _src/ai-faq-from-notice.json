@@ -1,0 +1,240 @@
+{
+  "slug": "ai-faq-from-notice",
+  "title": "Create an FAQ from a Notice with AI: Leave Unsupported Answers as Needs Confirmation",
+  "summary": "This exercise turns a short notice into six FAQ entries. Questions supported by the source receive source IDs, while topics such as fees, refunds, and waitlists that do not appear in the notice are left as needs confirmation instead of being answered from assumptions.",
+  "tags": [
+    "AI FAQ",
+    "notice organization",
+    "source checking"
+  ],
+  "audience": "Beginners who want to organize common questions from an event, class, or meeting notice but are concerned that AI may invent answers beyond the source",
+  "prerequisites": [
+    "You only need to be able to separate a notice into individual statements.",
+    "Add source IDs such as S1 and S2 before each statement.",
+    "No real personal data or actual organization information is required."
+  ],
+  "sections": [
+    {
+      "id": "prepare-notice",
+      "heading": "1. Turn the notice into a fact list with source IDs",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Before creating an FAQ, separate the facts that can actually be confirmed from the notice. The event in this exercise is entirely fictional, and only S1–S4 should be treated as official input. In particular, there are no statements about participation fees, refunds, or a waitlist. Explicitly marking these gaps helps prevent AI from filling them with common event practices."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "S1 Event date and time: 11-20 at 16:00\nS2 Participation: advance registration required, capacity 16 people\nS3 What to bring: writing utensils\nS4 Online participation: not provided\n\nItems not included in the source:\n- No fee information\n- No refund information\n- No waitlist information"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source ID",
+            "Source fact",
+            "What the FAQ can answer"
+          ],
+          "rows": [
+            [
+              "S1",
+              "11-20 at 16:00",
+              "Event date and start time"
+            ],
+            [
+              "S2",
+              "Advance registration required, capacity 16 people",
+              "Whether registration is required and capacity"
+            ],
+            [
+              "S3",
+              "Writing utensils",
+              "What to bring"
+            ],
+            [
+              "S4",
+              "Online participation not provided",
+              "Whether online participation is available"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "A source ID is not decoration. It is a verification marker. Someone reading the FAQ should be able to see S2 and immediately locate the original S2 statement."
+        }
+      ]
+    },
+    {
+      "id": "design-six-questions",
+      "heading": "2. Design questions that include both answerable and unresolved topics",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An FAQ does not need a definite answer for every question. You can include questions that readers are likely to ask and mark them as needs confirmation when the source does not contain the answer. In this exercise, you will create exactly six questions, with fees and refunds combined into one question."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Create 6 FAQ entries from the notice below.\n\nRules:\n- Use only information that actually appears in S1–S4.\n- If an answer has supporting evidence, show the source ID at the end.\n- If the source does not contain the answer, do not guess. Mark it as needs confirmation.\n- Preserve the fact that fee, refund, and waitlist information is not provided in the source.\n- Do not change online participation not provided into online participation being available.\n- Do not change the date, time, or capacity number.\n\nUse these 6 FAQ questions:\n1. When is the event held?\n2. Is advance registration required, and what is the capacity?\n3. What should I bring?\n4. Can I participate online?\n5. What are the participation fee and refund policy?\n6. If capacity is full, can I join a waitlist?"
+        },
+        {
+          "type": "p",
+          "text": "Because the questions themselves are fixed in this prompt, AI is less likely to add extra questions or omit important facts. Marking an answer as unknown is not a failure. It is a valid result when the source does not support an answer."
+        }
+      ]
+    },
+    {
+      "id": "review-faq-output",
+      "heading": "3. Compare the FAQ example against the notice",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The table below is not actual output from a particular AI service and does not measure AI performance. It is an editorial example created and reviewed with AI assistance to demonstrate the relationship between the input and answers. In real use, each answer should be checked directly against the referenced source ID."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "Q1. When is the event held?\nA. It is held on 11-20 at 16:00. Evidence: S1\n\nQ2. Is advance registration required, and what is the capacity?\nA. Advance registration is required, and the capacity is 16 people. Evidence: S2\n\nQ3. What should I bring?\nA. Please bring writing utensils. Evidence: S3\n\nQ4. Can I participate online?\nA. Online participation is not provided. Evidence: S4\n\nQ5. What are the participation fee and refund policy?\nA. The source does not provide fee or refund information. Needs confirmation.\n\nQ6. If capacity is full, can I join a waitlist?\nA. The source does not provide waitlist or waitlist registration information. Needs confirmation."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Question",
+            "Answer summary",
+            "Evidence",
+            "Status"
+          ],
+          "rows": [
+            [
+              "When is the event held?",
+              "11-20 at 16:00",
+              "S1",
+              "Supported"
+            ],
+            [
+              "Is registration required, and what is the capacity?",
+              "Advance registration required, capacity 16 people",
+              "S2",
+              "Supported"
+            ],
+            [
+              "What should I bring?",
+              "Writing utensils",
+              "S3",
+              "Supported"
+            ],
+            [
+              "Can I participate online?",
+              "Not provided",
+              "S4",
+              "Supported"
+            ],
+            [
+              "What are the fee and refund policy?",
+              "No information in source",
+              "None",
+              "Needs confirmation"
+            ],
+            [
+              "Can I join a waitlist?",
+              "No information in source",
+              "None",
+              "Needs confirmation"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "detect-invented-answers",
+      "heading": "4. Filter out plausible but unsupported FAQ answers",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The main risk in automatic FAQ creation is turning common real-world practices into source-backed facts. Free admission, no-refund policies, and waitlist registration may be common in some situations, but none of them appear in this fictional notice. Plausible does not mean supported."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "Q. What are the participation fee and refund policy?\nA. Participation is free, so there is no separate refund process.\n\nQ. If capacity is full, can I join a waitlist?\nA. Yes. Once the 16-person capacity is reached, applicants are automatically placed on the waitlist."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Invented detail",
+            "Source status",
+            "Correct treatment"
+          ],
+          "rows": [
+            [
+              "Participation is free",
+              "No fee information",
+              "Needs confirmation"
+            ],
+            [
+              "No separate refund process",
+              "No refund information",
+              "Needs confirmation"
+            ],
+            [
+              "Automatic waitlist registration",
+              "No waitlist information",
+              "Needs confirmation"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "When revising, removing unsupported claims is more important than making the answer sound polished. Even if you want to add contact information after needs confirmation, do not invent a phone number or email address if the source does not contain one."
+        }
+      ]
+    },
+    {
+      "id": "request-source-only-revision",
+      "heading": "5. Re-request correction only for answers without source support",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When an unsupported FAQ answer appears, specify exactly which statement goes beyond the source. Do not ask AI to fill the gap with new information. Instead, ask it to clearly mark the information as absent from the source. Any answer without a source ID should be treated as something to review again."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Revise only Q5 and Q6 from the previous FAQ.\n\nThe claims in Q5 that participation is free and that there is no refund process do not appear in the source. Change both fee and refund information to needs confirmation.\nThe automatic waitlist registration in Q6 also does not appear in the source. Change waitlist availability to needs confirmation.\nDo not invent contact details, policies, or exceptions that are not in S1–S4.\nDo not change the date, time, 16-person capacity, writing utensils, or online participation not provided in Q1–Q4."
+        },
+        {
+          "type": "p",
+          "text": "This kind of re-request locks the response back to the source. Even after correction, check that Q1–Q4 were not unintentionally changed."
+        }
+      ]
+    },
+    {
+      "id": "faq-checklist",
+      "heading": "6. Check the FAQ by source ID before publishing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "An FAQ should be easy to read, but it should not contain more facts than the original notice. You can rephrase questions naturally, but changing dates, capacity, negative conditions, or unresolved items turns it into a different notice. Check each item below."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[ ] Are there exactly 6 FAQ entries?\n[ ] Does 11-20 at 16:00 match S1?\n[ ] Do advance registration required and capacity 16 people match S2?\n[ ] Is the required item still writing utensils?\n[ ] Is the negative wording online participation not provided preserved?\n[ ] Does the FAQ avoid saying free or paid when no fee information exists?\n[ ] Does the FAQ avoid inventing a refund policy when none is provided?\n[ ] Does the FAQ avoid guessing whether a waitlist is available?\n[ ] Are unsupported answers marked needs confirmation?"
+        },
+        {
+          "type": "p",
+          "text": "When applying this method to a real notice, unsupported questions can also be collected in a separate list for a person in charge to verify before updating the source notice itself. This tutorial does not determine real organization policies or legal obligations. It only practices preserving facts within the fictional notice provided."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example in which six FAQ entries were checked by a human against the fictional S1–S4 event notice and the explicitly missing fee, refund, and waitlist information",
+    "items": [
+      "Check that there are exactly 6 FAQ entries",
+      "Check that the date, time, capacity, what-to-bring item, and online participation condition from S1–S4 are preserved",
+      "Check that no fee, refund, or waitlist information was invented",
+      "Check that unsupported questions are marked needs confirmation"
+    ],
+    "limits": "The result is an educational editorial example created and reviewed with AI assistance. It is not a result of executing an actual AI product, measuring response accuracy, or verifying any specific service's FAQ-generation feature."
+  }
+}

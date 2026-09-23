@@ -1,0 +1,2026 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "ai-compare-document-versions",
+      "title": "Compare Two Document Versions with AI: Separate Changed, Added, Deleted, and Unchanged Items",
+      "summary": "This exercise uses AI to compare V1 and V2 of the same event notice and classify five comparison items as changed, added, deleted, or unchanged. You will learn how to record only differences that actually appear in the documents without assuming why a deleted sentence disappeared.",
+      "tags": [
+        "AI document comparison",
+        "change tracking",
+        "prompt practice"
+      ],
+      "audience": "Beginners who want to quickly organize differences between document revisions but are not yet familiar with how to tell AI exactly what to compare",
+      "prerequisites": [
+        "You only need to be able to copy the two document versions as text.",
+        "Use only the fictional material below instead of real personal data or internal company documents.",
+        "No programming or code execution is required."
+      ],
+      "sections": [
+        {
+          "id": "prepare-source",
+          "heading": "1. Prepare the two versions with item IDs",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The first step in document comparison is to keep V1 and V2 clearly separated instead of mixing their sentences together. In this exercise, you will use a fictional event notice and assign row IDs A1–A4 and B1–B4 to each sentence. IDs make it easier to check which sentence AI used as evidence. The material below contains no personal information, and all people, events, and conditions are fictional."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Event Notice V1]\nA1 Event date and time: 11-14 at 14:00\nA2 Capacity: 20 people\nA3 Registration deadline: 11-10\nA4 What to bring: notebook\n\n[Event Notice V2]\nB1 Event date and time: 11-14 at 15:00\nB2 Capacity: 24 people\nB3 Registration deadline: 11-10\nB4 Online participation: not provided"
+            },
+            {
+              "type": "p",
+              "text": "The two versions contain a total of eight rows, but there are exactly five meaningful comparison items: event date and time, capacity, registration deadline, what to bring, and online participation. The fact that the what-to-bring sentence from V1 is absent in V2 and the fact that a new online participation sentence appears in V2 are different types of changes and should be treated as separate items."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Comparison item",
+                "V1 evidence",
+                "V2 evidence",
+                "What to compare"
+              ],
+              "rows": [
+                [
+                  "Event date and time",
+                  "A1",
+                  "B1",
+                  "Check whether 11-14 is unchanged and the time changed from 14:00 to 15:00"
+                ],
+                [
+                  "Capacity",
+                  "A2",
+                  "B2",
+                  "Compare 20 people and 24 people"
+                ],
+                [
+                  "Registration deadline",
+                  "A3",
+                  "B3",
+                  "Check whether 11-10 remained unchanged"
+                ],
+                [
+                  "What to bring",
+                  "A4",
+                  "No corresponding row",
+                  "Check whether the item disappeared from V2"
+                ],
+                [
+                  "Online participation",
+                  "No corresponding row",
+                  "B4",
+                  "Check whether a new item was added in V2"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "write-comparison-prompt",
+          "heading": "2. State the comparison rules explicitly in the prompt",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If you simply ask AI to compare two documents, wording differences and meaning differences can become mixed together. In this exercise, limit the comparison to exactly five items and require each status to be one of changed, added, deleted, or unchanged. In particular, the disappearance of the what-to-bring sentence in V2 does not mean that nothing needs to be brought. The reason for the deletion is unknown."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare V1 and V2 below.\n\nUse exactly these 5 comparison items only.\n1. Event date and time\n2. Capacity\n3. Registration deadline\n4. What to bring\n5. Online participation\n\nFor each item, label the status as changed, added, deleted, or unchanged. Include the V1 evidence ID and V2 evidence ID, and explain the difference in one sentence.\n\nImportant rules:\n- Do not guess why information is missing from a document.\n- Do not assume that no item needs to be brought just because the what-to-bring item disappeared from V2.\n- Do not change or supplement dates or numbers.\n- Do not add explanations that are unsupported by the source.\n\n[Source]\nV1: A1 Event date and time 11-14 at 14:00 / A2 Capacity 20 people / A3 Registration deadline 11-10 / A4 What to bring notebook\nV2: B1 Event date and time 11-14 at 15:00 / B2 Capacity 24 people / B3 Registration deadline 11-10 / B4 Online participation not provided"
+            },
+            {
+              "type": "p",
+              "text": "The key is to state not only what should be compared but also what should not be done. Deletion and change of meaning are different. A deleted sentence is an observable document state, while deciding whether the item is still required needs additional information."
+            }
+          ]
+        },
+        {
+          "id": "review-example-output",
+          "heading": "3. Check the five comparison items one by one in the example result",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The result below is not a test of the performance of any actual AI product. It is an editorial example created and reviewed with AI assistance to show the correspondence between the input and output in this tutorial. Readers should verify each status and number directly against the source text."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "1. Event date and time — changed\nEvidence: A1, B1\n11-14 is unchanged, but the start time changed from 14:00 to 15:00.\n\n2. Capacity — changed\nEvidence: A2, B2\nThe capacity changed from 20 people to 24 people.\n\n3. Registration deadline — unchanged\nEvidence: A3, B3\nThe registration deadline is 11-10 in both versions.\n\n4. What to bring — deleted\nEvidence: A4, no corresponding row in V2\nThe notebook item in V1 is not found in V2. The reason for deletion and whether anything still needs to be brought cannot be determined from the source.\n\n5. Online participation — added\nEvidence: no corresponding row in V1, B4\nA new item stating that online participation is not provided was added in V2."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Status",
+                "Source to check",
+                "What the reader should verify"
+              ],
+              "rows": [
+                [
+                  "Event date and time",
+                  "Changed",
+                  "A1 ↔ B1",
+                  "Whether 14:00 changed to 15:00"
+                ],
+                [
+                  "Capacity",
+                  "Changed",
+                  "A2 ↔ B2",
+                  "Whether 20 people changed to 24 people"
+                ],
+                [
+                  "Registration deadline",
+                  "Unchanged",
+                  "A3 ↔ B3",
+                  "Whether both say 11-10"
+                ],
+                [
+                  "What to bring",
+                  "Deleted",
+                  "A4 ↔ absent in V2",
+                  "Whether the result only says the notebook item is absent from V2"
+                ],
+                [
+                  "Online participation",
+                  "Added",
+                  "Absent in V1 ↔ B4",
+                  "Whether the negative wording not provided is preserved"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "find-bad-comparison",
+          "heading": "4. Find the error of interpreting a deleted item without evidence",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A major risk in document comparison is confusing a change in the text with the reason behind the change. You can confirm that the what-to-bring sentence is absent in V2, but there is no evidence that the organizer no longer requires a notebook. The online participation item must also preserve the negative condition not provided rather than merely recording that an item was added."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "What to bring — changed\nA notebook is no longer required in V2, so participants do not need to bring one.\n\nOnline participation — added\nOnline participation is available starting with V2."
+            },
+            {
+              "type": "p",
+              "text": "The first sentence guesses the reason for the deletion, and the second reverses the meaning of B4. The correct record should only say that the what-to-bring item is not found in V2, while the online participation item must retain the original statement that it is not provided."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Incorrect wording",
+                "Problem",
+                "Correction rule"
+              ],
+              "rows": [
+                [
+                  "A notebook is no longer required",
+                  "It infers a reason from the deletion",
+                  "Record only that the what-to-bring item is not found in V2"
+                ],
+                [
+                  "Online participation is available",
+                  "It reverses the negative meaning of not provided",
+                  "Preserve the original meaning that online participation is not provided"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "request-correction",
+          "heading": "5. Re-request correction of only the incorrect parts instead of rewriting everything",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If only one or two items are wrong, it is easier to review the correction when you specify the scope instead of asking for a full comparison again. In the correction request, state the incorrect items, their source evidence, and the facts that must not change. This makes it easier to compare before and after."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Revise only the what-to-bring and online participation items in the previous comparison.\n\nCorrection rules:\n- A4 says what to bring: notebook, but there is no what-to-bring row in V2. Therefore, label the status as deleted and remove the inference that a notebook is no longer required.\n- B4 says online participation is not provided. Do not change this to online participation being available.\n- Do not modify the existing results for event date and time, capacity, or registration deadline.\n- Keep exactly 5 items in the final result."
+            },
+            {
+              "type": "p",
+              "text": "This re-request explicitly tells AI not to alter the three items that were already correct. Even during correction, values such as dates, times, and capacity can change unintentionally, so all five items should still be checked again at the end."
+            }
+          ]
+        },
+        {
+          "id": "final-check",
+          "heading": "6. Perform a final check against the source text",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Use the AI comparison result as a draft for human review rather than as a final decision table. In revised documents, dates, numbers, negative wording, and addition or deletion status can matter more than small wording differences. Keep the checklist below next to the source and verify each item one by one."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Are there exactly 5 comparison items: event date and time, capacity, registration deadline, what to bring, and online participation?\n[ ] Is the A1 to B1 change from 14:00 to 15:00 correct?\n[ ] Is the A2 to B2 change from 20 people to 24 people correct?\n[ ] Is the A3 to B3 registration deadline of 11-10 marked unchanged?\n[ ] Is the absence of A4 from V2 recorded as deleted?\n[ ] Is the deletion of the what-to-bring item left uninterpreted rather than treated as no longer needed?\n[ ] Is B4's negative wording that online participation is not provided preserved?\n[ ] Were no unsupported reasons or policies added?"
+            },
+            {
+              "type": "p",
+              "text": "The same method can be applied to real work documents. First define the comparison units, assign identifiers to the relevant sentences, and then check the status suggested by AI against the original text. During practice, it is safer to use fictional text instead of sensitive real-world documents."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example reviewed by a human by comparing the fixed row IDs, five comparison items, numbers, dates, and negative wording in the fictional event notice V1 and V2",
+        "items": [
+          "Check that there are exactly 5 comparison items",
+          "Check that the values in A1–A4 and B1–B4 were not changed in the result",
+          "Check that deletion of the what-to-bring item was not interpreted as no longer needed",
+          "Check that the negative meaning of online participation not provided was preserved"
+        ],
+        "limits": "The result is an educational editorial example created and reviewed with AI assistance. It was not produced by executing or benchmarking any particular AI product, and it does not verify accuracy or performance."
+      }
+    },
+    {
+      "slug": "ai-faq-from-notice",
+      "title": "Create an FAQ from a Notice with AI: Leave Unsupported Answers as Needs Confirmation",
+      "summary": "This exercise turns a short notice into six FAQ entries. Questions supported by the source receive source IDs, while topics such as fees, refunds, and waitlists that do not appear in the notice are left as needs confirmation instead of being answered from assumptions.",
+      "tags": [
+        "AI FAQ",
+        "notice organization",
+        "source checking"
+      ],
+      "audience": "Beginners who want to organize common questions from an event, class, or meeting notice but are concerned that AI may invent answers beyond the source",
+      "prerequisites": [
+        "You only need to be able to separate a notice into individual statements.",
+        "Add source IDs such as S1 and S2 before each statement.",
+        "No real personal data or actual organization information is required."
+      ],
+      "sections": [
+        {
+          "id": "prepare-notice",
+          "heading": "1. Turn the notice into a fact list with source IDs",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Before creating an FAQ, separate the facts that can actually be confirmed from the notice. The event in this exercise is entirely fictional, and only S1–S4 should be treated as official input. In particular, there are no statements about participation fees, refunds, or a waitlist. Explicitly marking these gaps helps prevent AI from filling them with common event practices."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1 Event date and time: 11-20 at 16:00\nS2 Participation: advance registration required, capacity 16 people\nS3 What to bring: writing utensils\nS4 Online participation: not provided\n\nItems not included in the source:\n- No fee information\n- No refund information\n- No waitlist information"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "Source fact",
+                "What the FAQ can answer"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "11-20 at 16:00",
+                  "Event date and start time"
+                ],
+                [
+                  "S2",
+                  "Advance registration required, capacity 16 people",
+                  "Whether registration is required and capacity"
+                ],
+                [
+                  "S3",
+                  "Writing utensils",
+                  "What to bring"
+                ],
+                [
+                  "S4",
+                  "Online participation not provided",
+                  "Whether online participation is available"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "A source ID is not decoration. It is a verification marker. Someone reading the FAQ should be able to see S2 and immediately locate the original S2 statement."
+            }
+          ]
+        },
+        {
+          "id": "design-six-questions",
+          "heading": "2. Design questions that include both answerable and unresolved topics",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An FAQ does not need a definite answer for every question. You can include questions that readers are likely to ask and mark them as needs confirmation when the source does not contain the answer. In this exercise, you will create exactly six questions, with fees and refunds combined into one question."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Create 6 FAQ entries from the notice below.\n\nRules:\n- Use only information that actually appears in S1–S4.\n- If an answer has supporting evidence, show the source ID at the end.\n- If the source does not contain the answer, do not guess. Mark it as needs confirmation.\n- Preserve the fact that fee, refund, and waitlist information is not provided in the source.\n- Do not change online participation not provided into online participation being available.\n- Do not change the date, time, or capacity number.\n\nUse these 6 FAQ questions:\n1. When is the event held?\n2. Is advance registration required, and what is the capacity?\n3. What should I bring?\n4. Can I participate online?\n5. What are the participation fee and refund policy?\n6. If capacity is full, can I join a waitlist?"
+            },
+            {
+              "type": "p",
+              "text": "Because the questions themselves are fixed in this prompt, AI is less likely to add extra questions or omit important facts. Marking an answer as unknown is not a failure. It is a valid result when the source does not support an answer."
+            }
+          ]
+        },
+        {
+          "id": "review-faq-output",
+          "heading": "3. Compare the FAQ example against the notice",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The table below is not actual output from a particular AI service and does not measure AI performance. It is an editorial example created and reviewed with AI assistance to demonstrate the relationship between the input and answers. In real use, each answer should be checked directly against the referenced source ID."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Q1. When is the event held?\nA. It is held on 11-20 at 16:00. Evidence: S1\n\nQ2. Is advance registration required, and what is the capacity?\nA. Advance registration is required, and the capacity is 16 people. Evidence: S2\n\nQ3. What should I bring?\nA. Please bring writing utensils. Evidence: S3\n\nQ4. Can I participate online?\nA. Online participation is not provided. Evidence: S4\n\nQ5. What are the participation fee and refund policy?\nA. The source does not provide fee or refund information. Needs confirmation.\n\nQ6. If capacity is full, can I join a waitlist?\nA. The source does not provide waitlist or waitlist registration information. Needs confirmation."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Question",
+                "Answer summary",
+                "Evidence",
+                "Status"
+              ],
+              "rows": [
+                [
+                  "When is the event held?",
+                  "11-20 at 16:00",
+                  "S1",
+                  "Supported"
+                ],
+                [
+                  "Is registration required, and what is the capacity?",
+                  "Advance registration required, capacity 16 people",
+                  "S2",
+                  "Supported"
+                ],
+                [
+                  "What should I bring?",
+                  "Writing utensils",
+                  "S3",
+                  "Supported"
+                ],
+                [
+                  "Can I participate online?",
+                  "Not provided",
+                  "S4",
+                  "Supported"
+                ],
+                [
+                  "What are the fee and refund policy?",
+                  "No information in source",
+                  "None",
+                  "Needs confirmation"
+                ],
+                [
+                  "Can I join a waitlist?",
+                  "No information in source",
+                  "None",
+                  "Needs confirmation"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "detect-invented-answers",
+          "heading": "4. Filter out plausible but unsupported FAQ answers",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The main risk in automatic FAQ creation is turning common real-world practices into source-backed facts. Free admission, no-refund policies, and waitlist registration may be common in some situations, but none of them appear in this fictional notice. Plausible does not mean supported."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Q. What are the participation fee and refund policy?\nA. Participation is free, so there is no separate refund process.\n\nQ. If capacity is full, can I join a waitlist?\nA. Yes. Once the 16-person capacity is reached, applicants are automatically placed on the waitlist."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Invented detail",
+                "Source status",
+                "Correct treatment"
+              ],
+              "rows": [
+                [
+                  "Participation is free",
+                  "No fee information",
+                  "Needs confirmation"
+                ],
+                [
+                  "No separate refund process",
+                  "No refund information",
+                  "Needs confirmation"
+                ],
+                [
+                  "Automatic waitlist registration",
+                  "No waitlist information",
+                  "Needs confirmation"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "When revising, removing unsupported claims is more important than making the answer sound polished. Even if you want to add contact information after needs confirmation, do not invent a phone number or email address if the source does not contain one."
+            }
+          ]
+        },
+        {
+          "id": "request-source-only-revision",
+          "heading": "5. Re-request correction only for answers without source support",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When an unsupported FAQ answer appears, specify exactly which statement goes beyond the source. Do not ask AI to fill the gap with new information. Instead, ask it to clearly mark the information as absent from the source. Any answer without a source ID should be treated as something to review again."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Revise only Q5 and Q6 from the previous FAQ.\n\nThe claims in Q5 that participation is free and that there is no refund process do not appear in the source. Change both fee and refund information to needs confirmation.\nThe automatic waitlist registration in Q6 also does not appear in the source. Change waitlist availability to needs confirmation.\nDo not invent contact details, policies, or exceptions that are not in S1–S4.\nDo not change the date, time, 16-person capacity, writing utensils, or online participation not provided in Q1–Q4."
+            },
+            {
+              "type": "p",
+              "text": "This kind of re-request locks the response back to the source. Even after correction, check that Q1–Q4 were not unintentionally changed."
+            }
+          ]
+        },
+        {
+          "id": "faq-checklist",
+          "heading": "6. Check the FAQ by source ID before publishing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "An FAQ should be easy to read, but it should not contain more facts than the original notice. You can rephrase questions naturally, but changing dates, capacity, negative conditions, or unresolved items turns it into a different notice. Check each item below."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Are there exactly 6 FAQ entries?\n[ ] Does 11-20 at 16:00 match S1?\n[ ] Do advance registration required and capacity 16 people match S2?\n[ ] Is the required item still writing utensils?\n[ ] Is the negative wording online participation not provided preserved?\n[ ] Does the FAQ avoid saying free or paid when no fee information exists?\n[ ] Does the FAQ avoid inventing a refund policy when none is provided?\n[ ] Does the FAQ avoid guessing whether a waitlist is available?\n[ ] Are unsupported answers marked needs confirmation?"
+            },
+            {
+              "type": "p",
+              "text": "When applying this method to a real notice, unsupported questions can also be collected in a separate list for a person in charge to verify before updating the source notice itself. This tutorial does not determine real organization policies or legal obligations. It only practices preserving facts within the fictional notice provided."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example in which six FAQ entries were checked by a human against the fictional S1–S4 event notice and the explicitly missing fee, refund, and waitlist information",
+        "items": [
+          "Check that there are exactly 6 FAQ entries",
+          "Check that the date, time, capacity, what-to-bring item, and online participation condition from S1–S4 are preserved",
+          "Check that no fee, refund, or waitlist information was invented",
+          "Check that unsupported questions are marked needs confirmation"
+        ],
+        "limits": "The result is an educational editorial example created and reviewed with AI assistance. It is not a result of executing an actual AI product, measuring response accuracy, or verifying any specific service's FAQ-generation feature."
+      }
+    },
+    {
+      "slug": "ai-feedback-theme-map",
+      "title": "Map Free-Text Feedback into Themes with AI: Handle Multiple Labels and Unclassified Responses",
+      "summary": "This exercise classifies six short free-text comments into predefined themes and allows multiple labels when one response contains more than one topic. It also explains why the total number of labels can exceed the number of respondents and how to avoid unsupported conclusions about satisfaction or emotional intensity.",
+      "tags": [
+        "AI feedback classification",
+        "theme map",
+        "free-text analysis"
+      ],
+      "audience": "Beginners who want to organize short survey or review comments by theme but are unsure how much they can trust the counts and interpretation",
+      "prerequisites": [
+        "You only need to be able to separate short comments into individual lines.",
+        "All F1–F6 responses in this exercise are fictional.",
+        "You do not need to enter personal data from real customers, employees, or participants."
+      ],
+      "sections": [
+        {
+          "id": "prepare-feedback",
+          "heading": "1. Prepare the six comments exactly as written with IDs",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When classifying free-text feedback, first preserve each sentence as written instead of summarizing it immediately. A single short response can contain two different themes. In this example, F3 mentions both text size and insufficient location signage, so choosing only one would lose information. F6, which says no comment, should not be forced into a positive or negative category."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "F1 The information text is too small\nF2 The location guidance is difficult to follow\nF3 The information text is too small and there are not enough location signs\nF4 The facilitator's explanation is friendly\nF5 I would like to participate again\nF6 No comment"
+            },
+            {
+              "type": "p",
+              "text": "The labels used in this exercise are visual guidance, location guidance, facilitator, repeat participation, and hold for classification. Emotional scores or satisfaction levels are not present in the source, so they should not be created."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Response ID",
+                "Key expression",
+                "Possible number of labels"
+              ],
+              "rows": [
+                [
+                  "F1",
+                  "Information text is too small",
+                  "1"
+                ],
+                [
+                  "F2",
+                  "Location guidance is difficult",
+                  "1"
+                ],
+                [
+                  "F3",
+                  "Information text is too small and location signs are insufficient",
+                  "2"
+                ],
+                [
+                  "F4",
+                  "Facilitator's explanation is friendly",
+                  "1"
+                ],
+                [
+                  "F5",
+                  "Would like to participate again",
+                  "1"
+                ],
+                [
+                  "F6",
+                  "No comment",
+                  "1"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "define-label-rules",
+          "heading": "2. State the rules for multiple labels and hold for classification",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When asking AI to classify themes, define not only the label names but also whether multiple labels are allowed. If one person's response can cover several themes, the total number of labels does not have to equal the number of respondents. In this example, the target counts are visual guidance 2, location guidance 2, facilitator 1, repeat participation 1, and hold for classification 1, for a total of 7 labels."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Classify comments F1–F6 using the 5 labels below.\n\nLabels:\n- Visual guidance\n- Location guidance\n- Facilitator\n- Repeat participation\n- Hold for classification\n\nRules:\n- Allow multiple labels when one comment clearly contains different themes.\n- If two themes are explicitly present, as in F3, assign both labels.\n- If a response has no evaluative content, such as no comment, assign hold for classification.\n- Do not infer positive or negative emotional intensity, satisfaction scores, or whether all participants were satisfied.\n- Do not add reasons that are not in the original comment.\n- Preserve each response ID and original text.\n- At the end, count the number of responses assigned to each label."
+            },
+            {
+              "type": "p",
+              "text": "If the instruction allowing multiple labels is omitted, F3 may be forced into only one category. Allowing a hold category in advance also reduces the temptation to force an empty response into an unrelated theme."
+            }
+          ]
+        },
+        {
+          "id": "review-theme-map",
+          "heading": "3. Check individual labels and totals together",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The result below is not a measurement of the classification accuracy of any particular AI system. It is an editorial example created and reviewed with AI assistance to show how the input connects to label counts. A person should read F1–F6 one by one and verify the assigned labels."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "F1 → Visual guidance\nF2 → Location guidance\nF3 → Visual guidance, Location guidance\nF4 → Facilitator\nF5 → Repeat participation\nF6 → Hold for classification\n\nLabel counts:\nVisual guidance 2\nLocation guidance 2\nFacilitator 1\nRepeat participation 1\nHold for classification 1\n\nNumber of respondents: 6\nTotal labels: 7\nBecause F3 has multiple labels, a total of 7 labels being greater than 6 respondents is not an error."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ID",
+                "Original comment",
+                "Label",
+                "Contribution to count"
+              ],
+              "rows": [
+                [
+                  "F1",
+                  "The information text is too small",
+                  "Visual guidance",
+                  "Visual guidance +1"
+                ],
+                [
+                  "F2",
+                  "The location guidance is difficult to follow",
+                  "Location guidance",
+                  "Location guidance +1"
+                ],
+                [
+                  "F3",
+                  "The information text is too small and there are not enough location signs",
+                  "Visual guidance, Location guidance",
+                  "Visual guidance +1, Location guidance +1"
+                ],
+                [
+                  "F4",
+                  "The facilitator's explanation is friendly",
+                  "Facilitator",
+                  "Facilitator +1"
+                ],
+                [
+                  "F5",
+                  "I would like to participate again",
+                  "Repeat participation",
+                  "Repeat participation +1"
+                ],
+                [
+                  "F6",
+                  "No comment",
+                  "Hold for classification",
+                  "Hold for classification +1"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "avoid-overinterpretation",
+          "heading": "4. Do not expand theme classification into unsupported satisfaction analysis",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A theme map organizes what topics were mentioned. It does not automatically determine participants' emotions or overall satisfaction. F4 says the facilitator was friendly and F5 says the respondent would like to participate again, but that does not support a claim that all 6 respondents were satisfied. The complaints in F1–F3 also do not provide a basis for assigning an intensity score."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Overall participant satisfaction was very high. All 6 participants were positive about the event, and F1–F3 only expressed mild dissatisfaction. F6 had no particular complaints, so that respondent can also be considered satisfied."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Unsupported inference",
+                "Why it is a problem",
+                "What to record instead"
+              ],
+              "rows": [
+                [
+                  "All 6 were positive",
+                  "F1–F3 and F6 do not provide evidence for overall satisfaction",
+                  "Record only the theme labels for each response"
+                ],
+                [
+                  "Mild dissatisfaction",
+                  "Emotional intensity is not stated in the source",
+                  "Record only the content about text size or location guidance"
+                ],
+                [
+                  "F6 was satisfied",
+                  "No comment does not mean satisfied",
+                  "Hold for classification"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "To reduce this type of error, treat themes, emotions, satisfaction, and behavioral intention as different analysis dimensions. This exercise classifies only themes. F5's statement about participating again is recorded only as repeat participation."
+            }
+          ]
+        },
+        {
+          "id": "request-count-correction",
+          "heading": "5. Correct missing labels or unsupported interpretation with a targeted re-request",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If F3 is classified only as location guidance or F6 is classified as positive, you can specify those IDs and ask for a correction. Providing expected totals as a check value also makes it easier for a person to verify the revised result."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Review the classification result again.\n\n- F3 contains both information text is too small and location signs are insufficient, so assign both Visual guidance and Location guidance.\n- F6 says no comment and contains no evaluative content, so assign Hold for classification.\n- Do not infer emotional intensity or satisfaction.\n\nAfter correction, check whether the counts match the following:\nVisual guidance 2\nLocation guidance 2\nFacilitator 1\nRepeat participation 1\nHold for classification 1\n\nThere are 6 respondents, but because multiple labels are allowed, the total number of labels is 7. Do not treat this difference as an error."
+            },
+            {
+              "type": "p",
+              "text": "Providing expected totals does not mean classifications should be forced to match the numbers. The totals are check values that should be recalculated from the source. The final decision should come from verifying whether each response matches the label definition."
+            }
+          ]
+        },
+        {
+          "id": "theme-checklist",
+          "heading": "6. Final check: keep respondent count and label count separate",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "With multiple labels, it is normal for the number of people and the number of labels to differ. When reporting results, do not treat 6 respondents and 7 labels as the same type of count. Use the checklist below to verify both the individual assignments and the totals."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Is F1 labeled Visual guidance?\n[ ] Is F2 labeled Location guidance?\n[ ] Does F3 have both Visual guidance and Location guidance?\n[ ] Is F4 labeled Facilitator?\n[ ] Is F5 labeled Repeat participation?\n[ ] Is F6 labeled Hold for classification?\n[ ] Are the counts Visual guidance 2, Location guidance 2, Facilitator 1, Repeat participation 1, Hold for classification 1?\n[ ] Are there 6 respondents and 7 total labels?\n[ ] Is the total of 7 labels correctly treated as not an error?\n[ ] Were unsupported interpretations such as everyone was satisfied or emotional intensity avoided?"
+            },
+            {
+              "type": "p",
+              "text": "With real free-text data, it is useful to test label definitions on a small set of examples before fixing the classification rules. This tutorial is an editorial exercise using 6 fictional comments and does not evaluate the representativeness or statistical significance of survey results."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example in which a human recalculated the multiple-label assignments and label totals for the fictional F1–F6 free-text comments",
+        "items": [
+          "Check that F3 has both Visual guidance and Location guidance",
+          "Check that F6 is Hold for classification",
+          "Check that the label counts are 2, 2, 1, 1, 1",
+          "Check that 6 respondents and 7 total labels are treated as different counts",
+          "Check that emotional intensity or universal satisfaction was not inferred"
+        ],
+        "limits": "The result is an educational editorial example created and reviewed with AI assistance. It is not the result of analyzing real survey data, measuring classification accuracy, or verifying the automatic classification performance of any specific AI product."
+      }
+    },
+    {
+      "slug": "ai-plain-language-guide",
+      "title": "Rewrite Difficult Instructions in Plain Language with AI: Preserve Conditions, Exceptions, Negation, and Deadlines",
+      "summary": "This exercise rewrites four fictional borrowing rules in clearer language while preserving the registered-member requirement, the 7-day deadline, the prohibition on extending reserved materials, and the rule that non-reserved materials may be submitted for one extension request without guaranteeing approval.",
+      "tags": [
+        "plain language",
+        "AI text editing",
+        "condition preservation"
+      ],
+      "audience": "Beginners who want to make formal instructions easier for general readers to understand without accidentally removing important conditions or exceptions",
+      "prerequisites": [
+        "You only need to be able to copy the original rules as separate sentences.",
+        "S1–S4 below are entirely fictional operating instructions, not laws or actual regulations.",
+        "No real membership details or personal data are required."
+      ],
+      "sections": [
+        {
+          "id": "read-original-rules",
+          "heading": "1. Mark the conditions that must remain before rewriting",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The goal of plain-language editing is not to remove content but to express the same rules more clearly. Before rewriting, identify elements that would change the meaning if removed, such as membership requirements, time limits, prohibitions, the number of requests allowed, and whether approval is guaranteed. The following text is a fictional operating guide created for this tutorial, not a rule from any real library or organization."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1 Borrowing is available only to registered members.\nS2 Items must be returned within 7 days, including the borrowing date.\nS3 Reserved materials cannot be extended.\nS4 Non-reserved materials may be submitted for 1 extension request before the return deadline, but making a request does not mean the extension has been approved."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "Element that must be preserved",
+                "Meaning that must not change"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Registered members only",
+                  "Must not be changed to anyone can borrow"
+                ],
+                [
+                  "S2",
+                  "Including the borrowing date, within 7 days",
+                  "Must not be changed to 7 days starting the day after borrowing"
+                ],
+                [
+                  "S3",
+                  "Reserved materials, no extension",
+                  "Must not be changed to extension available under some condition"
+                ],
+                [
+                  "S4",
+                  "Non-reserved materials, before the deadline, 1 request, extension request allowed, approval not guaranteed",
+                  "Requesting an extension must not be changed to automatic approval"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "S4 contains several conditions in one sentence. It can be split into shorter sentences, but all of the following must remain: non-reserved materials, before the deadline, 1 request, the distinction between requesting and approval."
+            }
+          ]
+        },
+        {
+          "id": "write-plain-prompt",
+          "heading": "2. Ask for clear wording and meaning preservation at the same time",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "If you only ask AI to make the text easier, conditions may be omitted. State explicitly which information must be preserved. In this exercise, ask for shorter sentences and everyday wording while preventing the addition of new benefits or exceptions."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Rewrite the fictional instructions S1–S4 below in plain language that a beginner can understand.\n\nRules:\n- Preserve the meaning of each source ID exactly.\n- Do not remove or soften conditions, exceptions, negative wording, numbers, or deadlines.\n- Preserve registered members only in S1.\n- Preserve including the borrowing date and within 7 days in S2.\n- Preserve reserved materials cannot be extended in S3.\n- Preserve all of the following in S4: non-reserved materials, before the return deadline, 1 extension request, request allowed, approval not guaranteed.\n- Do not change request allowed into approved or automatically extended.\n- Do not invent fees, penalties, additional extensions, or exceptions that do not appear in the source.\n\nFor each source ID, show the plain-language version and the key conditions preserved from the original."
+            },
+            {
+              "type": "p",
+              "text": "Plain wording can be created by shortening sentences or splitting one sentence into two. However, if the revised text expands or restricts a user's rights or obligations compared with the source, it is no longer simple editing. It has changed the rule."
+            }
+          ]
+        },
+        {
+          "id": "compare-plain-version",
+          "heading": "3. Match each original sentence with its plain-language version",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The result below is not a measurement of any actual service's rewriting performance. It is an editorial example created and reviewed with AI assistance to demonstrate meaning preservation. Before deciding whether the text sounds easier, first check whether every original condition is still present."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "S1 Plain language: Only registered members can borrow materials.\nPreserved condition: borrowing available only to registered members\n\nS2 Plain language: Return the item within 7 days, counting the day you borrowed it as the first day.\nPreserved condition: including the borrowing date, within 7 days\n\nS3 Plain language: You cannot extend the borrowing period for reserved materials.\nPreserved condition: reserved materials, no extension\n\nS4 Plain language: For materials that are not reserved, you may request 1 extension before the return deadline. However, submitting a request does not mean the extension has been approved.\nPreserved condition: non-reserved materials, before the deadline, 1 request, request allowed, approval not guaranteed"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ID",
+                "Original meaning",
+                "Plain-language meaning",
+                "Preserved?"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Registered members only",
+                  "Only registered members can borrow",
+                  "Preserved"
+                ],
+                [
+                  "S2",
+                  "Within 7 days including the borrowing date",
+                  "Within 7 days counting the borrowing date",
+                  "Preserved"
+                ],
+                [
+                  "S3",
+                  "Reserved materials cannot be extended",
+                  "Reserved materials cannot be extended",
+                  "Preserved"
+                ],
+                [
+                  "S4",
+                  "Non-reserved materials: 1 extension request before the deadline, approval not guaranteed",
+                  "Non-reserved materials: 1 request before the deadline, request does not guarantee approval",
+                  "Preserved"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "find-meaning-change",
+          "heading": "4. Find sentences that are simpler but change the rule",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The most important error to catch is turning a statement that says you may request an extension into a statement that says you may extend it or that the extension is approved. The wording difference may look small, but the condition communicated to the reader changes substantially. Removing the phrase including the borrowing date from the deadline calculation creates the same kind of problem."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "S2 Plain language: You can use the item for 7 days starting the day after you borrow it.\n\nS4 Plain language: Non-reserved materials can be automatically extended once until the return date."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Incorrect part",
+                "How it changes the source",
+                "Correction"
+              ],
+              "rows": [
+                [
+                  "7 days starting the day after borrowing",
+                  "Changes S2's rule that the borrowing date is included",
+                  "Restore within 7 days including the day borrowed"
+                ],
+                [
+                  "Automatically extended",
+                  "Changes S4's request allowed into approval or automatic processing",
+                  "Restore that 1 extension request may be submitted but approval is not guaranteed"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In plain-language editing, preserving logical relationships matters more than removing words. Even if the explanation becomes slightly longer, it is better to keep the second sentence that distinguishes a request from approval."
+            }
+          ]
+        },
+        {
+          "id": "ask-clarifying-questions",
+          "heading": "5. If the source itself is unclear, create clarification questions instead of guessing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Rewriting can reveal details that the original instructions do not define. For example, S4 does not state what criteria are used to approve an extension request. In that situation, do not ask AI to invent a rule. Instead, ask it to create a list of questions for the person responsible for the policy."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Keep the meaning of S1–S4 unchanged and write clarification questions about points that a user may still want to know but that cannot be answered from the source alone.\n\nConditions:\n- Do not guess answers that are not in the source.\n- Write questions only.\n- In particular, distinguish whether S4 defines the approval criteria or processing method for an extension request.\n- Do not invent new rules, penalties, fees, or exceptions."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Example questions that need confirmation:\n1. What criteria are used to approve an extension request for a non-reserved material?\n2. How is the user informed whether an extension request has been approved?\n3. If an extension is approved, how is the new return deadline determined?\n\nThe answers to these questions do not appear in S1–S4 and require separate confirmation."
+            },
+            {
+              "type": "p",
+              "text": "Creating a clarification question does not justify guessing its answer. Leaving information unresolved when the source does not define it is better than creating an incorrect rule."
+            }
+          ]
+        },
+        {
+          "id": "plain-language-checklist",
+          "heading": "6. Final check: confirm the meaning is unchanged before judging readability",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "For the final review, place the original and plain-language versions side by side and mark conditions, numbers, deadlines, and negative wording. Only after that should you judge whether the text reads naturally. Words such as only, within, cannot, request, and approval deserve special attention because small changes can alter the meaning."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Does S1 still say registered members only?\n[ ] Does S2 still include the borrowing date in the calculation?\n[ ] Is the number 7 in S2 unchanged?\n[ ] Does S3 still preserve the negative rule that reserved materials cannot be extended?\n[ ] Does S4 still apply only to non-reserved materials?\n[ ] Does S4 still require the request to be made before the return deadline?\n[ ] Is the number of extension requests in S4 still 1?\n[ ] Was request allowed kept distinct from automatic approval or guaranteed approval?\n[ ] Were no fees, penalties, exceptions, or approval criteria invented?"
+            },
+            {
+              "type": "p",
+              "text": "Real organization terms of use or legal documents may require review by the responsible staff and additional standards. This article does not replace that process. It only practices the basic method of preserving meaning while rewriting fictional operating instructions that are not laws or legal rules."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial example in which a human compared fictional non-legal operating instructions S1–S4 and checked whether conditions, deadlines, negation, and the distinction between request and approval were preserved in the plain-language version",
+        "items": [
+          "Check that the registered-members-only condition is preserved",
+          "Check that within 7 days including the borrowing date is unchanged",
+          "Check that reserved materials still cannot be extended",
+          "Check that S4 preserves non-reserved materials, before the deadline, 1 extension request, request allowed, and approval not guaranteed",
+          "Check that no new rules or exceptions were added"
+        ],
+        "limits": "The result is an educational editorial example created and reviewed with AI assistance. It does not verify any actual organization's rules, provide legal interpretation, or test the rewriting accuracy or latest features of any specific AI product."
+      }
+    },
+    {
+      "slug": "ai-research-question-plan",
+      "title": "Use AI to Build Research Questions and a Search Plan",
+      "summary": "This exercise shows how to break a vague research goal into factual questions, experience questions, and decision questions, then plan what to verify and where to look. Instead of asking AI to invent search results, you first organize the sources to check and the items that are still unknown.",
+      "tags": [
+        "AI research planning",
+        "search strategy",
+        "question design"
+      ],
+      "audience": "Beginners who want to use AI to start research but are unsure what to investigate first",
+      "prerequisites": [
+        "You do not need to know any specific AI product or current user interface.",
+        "You do not need to enter real personal information.",
+        "You should be able to choose the region and reference date for your research yourself."
+      ],
+      "sections": [
+        {
+          "id": "define-goal",
+          "heading": "1. Separate What You Already Know from the Research Goal Before Searching",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The fictional goal in this exercise is to investigate whether a neighborhood library needs a weekday evening program. If you immediately ask AI for a conclusion, it may mix unverified demand or budget assumptions into the answer. Start by separating the information you were given from what is still unknown. Keep the source IDs S1, S2, and S3 unchanged throughout the later steps."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Fictional research notes]\nS1: The program under consideration is a 60-minute weekday evening program.\nS2: The primary audience is adult beginners.\nS3: Actual demand, schedules at other facilities, and the budget have not yet been confirmed.\n\nNotes:\n- No search has been conducted yet.\n- The reader chooses the region.\n- The reader also chooses the research reference date.\n- Do not invent unverified statistics, URLs, or user reactions."
+            },
+            {
+              "type": "p",
+              "text": "S1 and S2 are current planning conditions, while S3 lists unverified items. In particular, the input does not say that there is a demonstrated need for the program. Preserving this distinction makes it easier to avoid treating search results and interview findings as the same kind of evidence later."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "current status",
+                "content",
+                "role in the research"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "given condition",
+                  "Considering a 60-minute weekday evening program",
+                  "Program format and time condition"
+                ],
+                [
+                  "S2",
+                  "given condition",
+                  "Audience is adult beginners",
+                  "Target user scope"
+                ],
+                [
+                  "S3",
+                  "unverified",
+                  "Actual demand, schedules at other facilities, and budget",
+                  "Requires further research"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "split-questions",
+          "heading": "2. Break the Goal into Factual, Experience, and Decision Questions",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even within the same research project, different question types require different ways of checking them. Operating hours and existing program schedules can be verified through official sources, while questions such as why adult beginners prefer or avoid evening times require asking users about their experiences directly. The final decision question should remain unanswered until the earlier evidence has been collected."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Using only the fictional research notes below, design research questions.\n\nS1: The program under consideration is a 60-minute weekday evening program.\nS2: The primary audience is adult beginners.\nS3: Actual demand, schedules at other facilities, and the budget have not yet been confirmed.\n\nRequirements:\n1. Divide the questions into 'factual questions,' 'experience questions,' and 'decision questions.'\n2. State what kind of source is needed for each question.\n3. Do not invent facts, statistics, URLs, or organization names that are not in the input.\n4. Do not write as if any search has already been completed.\n5. Keep the S1, S2, and S3 labels unchanged.\n6. Separate the roles of official operating information and user interviews."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Editorial example created and reviewed with AI assistance — not a validation of actual product performance]\n\nFactual questions\n- What are the facility's operating hours on weekday evenings?\n- Is there currently, or was there recently, a program for adult beginners?\n- At what times do similar local facilities run weekday evening programs?\n\nExperience questions\n- What factors affect the time slots adult beginners choose for a program?\n- How do actual users feel about a 60-minute program length: burdensome, appropriate, or otherwise?\n\nDecision question\n- When confirmed demand, available operating hours, and budget conditions are considered together, is there enough evidence to continue considering a weekday evening program?\n\nAt this point, only S1 and S2 are confirmed. The actual demand, schedules at other facilities, and budget in S3 remain unverified."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "question type",
+                "example question",
+                "main source to check",
+                "can it be answered now?"
+              ],
+              "rows": [
+                [
+                  "Factual question",
+                  "Is weekday evening operation possible?",
+                  "Official operating hours and program information",
+                  "No"
+                ],
+                [
+                  "Factual question",
+                  "When do similar facilities run programs?",
+                  "Official pages of other facilities",
+                  "No"
+                ],
+                [
+                  "Experience question",
+                  "What time slots do adult beginners choose?",
+                  "User interviews",
+                  "No"
+                ],
+                [
+                  "Experience question",
+                  "How do users feel about a 60-minute length?",
+                  "User interviews",
+                  "No"
+                ],
+                [
+                  "Decision question",
+                  "Is there enough evidence to continue considering the program?",
+                  "Earlier factual and experience evidence plus budget confirmation",
+                  "No"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-search-plan",
+          "heading": "3. Plan Search Terms and the Types of Sources to Check",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The purpose of this step is not to obtain search results but to create a plan before searching. The reader fills in the region name and reference date. Instead of using search terms that assume a conclusion, such as 'other libraries also run many evening programs,' combine checkable elements such as operating hours, adult programs, and evening schedules."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "purpose",
+                "candidate search terms",
+                "primary source to check",
+                "supporting source",
+                "what to record after searching"
+              ],
+              "rows": [
+                [
+                  "Current facility operating availability",
+                  "[region name] library weekday operating hours",
+                  "Official page of the facility",
+                  "Official notices",
+                  "Day, operating hours, and applicable date"
+                ],
+                [
+                  "Whether an adult beginner program exists",
+                  "[region name] library adult beginner program",
+                  "Official program information",
+                  "Official schedule",
+                  "Program name, audience, time, and publication date"
+                ],
+                [
+                  "Weekday evening schedules at other facilities",
+                  "[region name] library adult program evening",
+                  "Official page of each facility",
+                  "Official event information",
+                  "Day, start time, duration, and reference date"
+                ],
+                [
+                  "User experience",
+                  "Do not replace with a search query",
+                  "User interviews",
+                  "Anonymous feedback collection if needed",
+                  "Recurring experiences and exceptions"
+                ],
+                [
+                  "Budget conditions",
+                  "Requires internal confirmation",
+                  "Approved internal materials",
+                  "Confirmation with the responsible person",
+                  "Confirmed amount or still-undecided status"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Official operating pages are used to verify public facts such as operating hours and schedules, while interviews are used to understand actual user experiences. These sources do not replace each other. The existence of an evening program on an official page does not prove high demand, and one user's preference for evenings does not by itself determine operating hours."
+            }
+          ]
+        },
+        {
+          "id": "set-freshness",
+          "heading": "4. Define Freshness Criteria and an Unverified-Items Table First",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Operating hours and program schedules can change, so define the date against which information will be checked before searching. This example does not claim that any particular time window is the correct standard for freshness. Instead, the reader chooses a reference date that fits the research purpose. If a source has no publication date or its current applicability cannot be confirmed, do not assume it is current; leave it marked as unverified."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "item",
+                "freshness check",
+                "if verification fails",
+                "current status"
+              ],
+              "rows": [
+                [
+                  "Current facility operating hours",
+                  "Check whether the official information applies on the reader's chosen reference date",
+                  "Record applicability date as unknown",
+                  "Unverified"
+                ],
+                [
+                  "Recent program schedule",
+                  "Check both the publication date and event date",
+                  "Mark separately as a past schedule",
+                  "Unverified"
+                ],
+                [
+                  "Other facilities' schedules",
+                  "Check dates individually on each facility's official page",
+                  "Record current operation as unverified",
+                  "Unverified"
+                ],
+                [
+                  "Actual demand",
+                  "Record the date of any interview or separate research",
+                  "Record that interviews have not yet been conducted",
+                  "Unverified"
+                ],
+                [
+                  "Budget",
+                  "Check whether there is a currently approved source",
+                  "Keep the budget marked as undecided",
+                  "Unverified"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Explicitly marking unknowns this way makes it easier to detect when AI fills gaps with plausible-looking numbers. At the research-planning stage, 'we do not know yet' is a valid and normal result."
+            }
+          ]
+        },
+        {
+          "id": "fix-bad-plan",
+          "heading": "5. Find Problems in a Bad Example and Ask Again",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A research plan cannot be trusted if it presents unsearched information as already verified or invents percentages and URLs that were not in the input. Even if numbers or links look precise, they are not evidence until you verify the source yourself."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Incorrect editorial example]\n72% of local adults want weekday evening programs, and all 5 nearby libraries run similar programs at 7 PM. Therefore, demand is sufficient for a 60-minute evening program. Detailed statistics are available at https://example.invalid/library-survey."
+            },
+            {
+              "type": "p",
+              "text": "There are 4 problems. The input contains no 72% statistic, no record that 5 nearby facilities were researched, and no information showing a 7 PM program time. The URL is also not an actually verified source. In addition, S3 explicitly says that demand is unverified, yet the example reaches a firm conclusion anyway."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Rewrite the previous answer.\n- Remove every statement implying that a search has already been completed.\n- Delete numbers, facility counts, times, and URLs that are not in the input.\n- Keep S1 and S2 as given conditions.\n- Keep the actual demand, schedules at other facilities, and budget in S3 marked as 'unverified.'\n- Instead of results, provide factual questions, experience questions, decision questions, candidate search terms, source types to verify, and freshness criteria.\n- Separate the roles of official operating pages and user interviews."
+            }
+          ]
+        },
+        {
+          "id": "verify-plan",
+          "heading": "6. Checklist for the Reader Before Conducting the Actual Search",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Once the plan is complete, do not jump directly to a conclusion. Check the items below yourself. Then use the region and reference date you selected to review actual official sources, and investigate experience questions separately through interviews. The results in this article are editorial examples created and reviewed with AI assistance; they are not evidence validating the search performance or research accuracy of an actual AI product."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Reader checklist]\n□ Did I choose the region for the research myself?\n□ Did I choose the research reference date myself?\n□ Was the 60-minute condition in S1 preserved?\n□ Was the adult beginner audience in S2 preserved?\n□ Do actual demand, schedules at other facilities, and the budget in S3 remain unverified?\n□ Are factual questions and experience questions kept separate?\n□ Are operating hours and schedules assigned to official operating pages for verification?\n□ Are user experiences assigned to interviews for verification?\n□ Were any nonexistent statistics, organizations, or URLs added?\n□ Is there a place to record publication dates and applicability dates?\n□ Was a conclusion avoided before the research was conducted?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial-example review scope: checked that the distinction between facts and unverified items in S1-S3, the question categories, the search-plan structure, and the separation between official sources and user interviews are internally consistent.",
+        "items": [
+          "Preserved the 60-minute program condition in S1",
+          "Preserved the adult beginner audience in S2",
+          "Kept actual demand, schedules at other facilities, and budget in S3 unverified",
+          "No fabricated statistics, URLs, or claims that a search was completed",
+          "Instructed the reader to choose the region and reference date",
+          "Separated the roles of official operating pages and user interviews"
+        ],
+        "limits": "No actual AI product was used to run searches or validate result accuracy, freshness, or performance. In real research, the reader must verify the publication date and applicability date of official sources directly. This article does not replace legal, policy, or budget judgment."
+      }
+    },
+    {
+      "slug": "ai-user-interview-questions",
+      "title": "Use AI to Create User Research Interview Questions",
+      "summary": "This exercise shows how to design a 15-minute user interview for improving a fictional application form. You will revise leading questions into neutral questions about recent real behavior and learn not to treat predicted responses as evidence before any interviews have been conducted.",
+      "tags": [
+        "user interviews",
+        "question design",
+        "AI use"
+      ],
+      "audience": "Beginners who want to create short user interview questions before improving a service or process",
+      "prerequisites": [
+        "The scenario is a user experience interview, not a job interview.",
+        "You do not need to enter real personal information.",
+        "Keep the status that the interview has not yet been conducted."
+      ],
+      "sections": [
+        {
+          "id": "set-interview-scope",
+          "heading": "1. Fix the Interview Goal and Excluded Topics First",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "This exercise uses a fictional user study intended to improve a program application form. The goal is to understand difficulties users actually experienced during a recent application process. Because the interview is short, focus on recent behavior instead of trying to ask for every opinion, and avoid unnecessary personal, health, or income information."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Fictional interview design notes]\nS1: The goal is to understand difficulties users experienced during a recent application process.\nS2: The total interview time is 15 minutes.\nS3: Do not ask for personal information, health information, or income information.\n\nTime allocation:\n- Introduction 2 minutes\n- Experience questions 8 minutes\n- Improvement questions 3 minutes\n- Closing 2 minutes\nTotal 15 minutes\n\nThe interviews have not yet been conducted.\nThis is not a job interview; it is research about the application-form experience."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "content",
+                "effect on question design"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Understand difficulties in a recent application process",
+                  "Ask about actual recent behavior before opinions"
+                ],
+                [
+                  "S2",
+                  "Total 15 minutes",
+                  "Limit the number of questions and follow-ups"
+                ],
+                [
+                  "S3",
+                  "No personal, health, or income questions",
+                  "Exclude sensitive questions unnecessary to the goal"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "At this stage, do not assume that 'users find the application form inconvenient.' S1 defines a goal of checking whether and where difficulties occurred; it does not state that difficulties definitely existed."
+            }
+          ]
+        },
+        {
+          "id": "write-neutral-questions",
+          "heading": "2. Turn Leading Questions into Neutral Questions About Recent Real Behavior",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Leading questions can push participants toward the answer the researcher expects. Instead of asking, 'The application form was too complicated, right?' ask participants to recall their most recent application process and describe where they paused, went back, or checked something again."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Create user interview questions using the following conditions.\n\nS1: Understand difficulties users experienced during a recent application process.\nS2: Total time is 15 minutes.\nS3: Do not ask for personal information, health information, or income information.\n\nStructure the interview as 2 minutes of introduction, 8 minutes of experience questions, 3 minutes of improvement questions, and 2 minutes of closing.\nRequirements:\n1. Prioritize neutral questions about actual recent application behavior.\n2. Do not use leading questions such as 'It was inconvenient, right?' or 'Shouldn't it be simpler?'\n3. Do not invent predicted responses as if they were actual user statements.\n4. State that the interviews have not yet been conducted.\n5. Do not create job interview questions."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "example leading question",
+                "problem",
+                "revised neutral question"
+              ],
+              "rows": [
+                [
+                  "The application form was too complicated, right?",
+                  "Assumes in advance that it was complicated",
+                  "Think back to the most recent application process from the beginning. Was there any point where you reread something or paused? If so, what were you trying to check?"
+                ],
+                [
+                  "Weren't there too many fields?",
+                  "Assumes the number of fields was the problem",
+                  "Were there any fields that took a long time to complete or that you wanted to skip?"
+                ],
+                [
+                  "The button location was confusing, right?",
+                  "Builds a specific cause into the question",
+                  "When moving to the next step, what did you look for and what did you select?"
+                ],
+                [
+                  "It would be better if it were simpler, right?",
+                  "Pushes a particular improvement direction",
+                  "If you could change 1 part, what would you change first? Please explain why."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-15-minute-script",
+          "heading": "3. Build an Interview Flow That Fits Within 15 Minutes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Creating a large number of questions is less useful than arranging them so you can hear enough about actual experiences within the available time. The editorial example below allocates exactly 15 minutes: 2 minutes for the introduction, 8 minutes for experience questions, 3 minutes for improvement questions, and 2 minutes for closing."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Editorial example created and reviewed with AI assistance — not actual interview results]\n\nIntroduction 2 minutes\n1. Today, this interview is intended to understand your actual experience with the application process. There are no right answers, and you do not need to share personal, health, or income information.\n2. Briefly think back to the most recent time you used this application form.\n\nExperience questions 8 minutes\n3. What steps did you follow from starting the application to completing it?\n4. Was there any point where you paused or went back to an earlier step? If so, what were you trying to check?\n5. Was there any wording that was difficult to understand or that you had to read again to confirm its meaning?\n6. After finishing the entries, were there any items you checked again before submitting?\n7. If anything happened differently from what you expected, what was it?\n\nImprovement questions 3 minutes\n8. If you could change only 1 part, what would you change first?\n9. Is there any part you would prefer to keep as it is?\n\nClosing 2 minutes\n10. Is there anything I did not ask that you think is important for understanding the application experience?\n\nStatus: The interviews have not yet been conducted. The content above is an interview-question draft."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "section",
+                "time",
+                "main purpose",
+                "question numbers"
+              ],
+              "rows": [
+                [
+                  "Introduction",
+                  "2 minutes",
+                  "Explain the purpose and recall the recent experience",
+                  "1-2"
+                ],
+                [
+                  "Experience questions",
+                  "8 minutes",
+                  "Understand actual behavior, pauses, and rechecking",
+                  "3-7"
+                ],
+                [
+                  "Improvement questions",
+                  "3 minutes",
+                  "Identify desired changes and things to keep",
+                  "8-9"
+                ],
+                [
+                  "Closing",
+                  "2 minutes",
+                  "Check for experiences not yet covered",
+                  "10"
+                ],
+                [
+                  "Total",
+                  "15 minutes",
+                  "Meets S2",
+                  "All"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "separate-evidence",
+          "heading": "4. Separate Predicted Responses from Actual Interview Evidence",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "While preparing questions, you may expect that a participant will answer in a certain way. A predicted response can be used as a planning note for checking the question flow, but it is not actual user evidence. Before interviews take place, you cannot confirm response counts, representative opinions, or recurring difficulties."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "statement",
+                "can it be used now?",
+                "reason"
+              ],
+              "rows": [
+                [
+                  "Users said the submit button was difficult to find.",
+                  "Cannot use",
+                  "The interviews have not yet been conducted"
+                ],
+                [
+                  "Ask whether there was confusion at the submission step.",
+                  "Can use",
+                  "This describes a question to investigate"
+                ],
+                [
+                  "Several users requested fewer fields.",
+                  "Cannot use",
+                  "There are no actual responses"
+                ],
+                [
+                  "Neutrally check whether the number of fields felt burdensome.",
+                  "Can use",
+                  "This is pre-interview question design"
+                ],
+                [
+                  "After the interviews, record recurring experiences separately from exceptions.",
+                  "Can use",
+                  "This describes a future analysis procedure"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Even after actual interviews are completed, do not generalize 1 person's response to all users. This article does not cover statistical representativeness or sampling design after interviews; it focuses only on preparing the interview questions."
+            }
+          ]
+        },
+        {
+          "id": "repair-leading-output",
+          "heading": "5. Ask Again When You Find Problems in the Question Draft",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When AI tries to interpret the research goal quickly, it may create questions that assume the problem in advance. It may also ask for sensitive information or present predicted responses as if they were actual results. Check for all of these problems."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Incorrect editorial example]\n1. The application form was so complicated that you wanted to give up, right?\n2. You want a simpler application form, right?\n3. What is your annual income?\n4. Were there health-related reasons that made the application difficult?\n\nExpected result: Most users will say that the application form is complicated and that the submit button is hard to find."
+            },
+            {
+              "type": "p",
+              "text": "The first 2 questions push participants toward a desired answer, while the 3rd and 4th violate the exclusions in S3. The final sentence also presents a prediction as a result even though no interviews have been conducted. Refocus the questions on recent actual behavior and explicitly state that predictions are not evidence."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Rewrite the interview questions.\n- Turn them into neutral questions about recent actual application behavior.\n- Remove wording that supplies the answer in advance.\n- Remove every question about personal information, health information, and income information.\n- State that the interviews have not yet been conducted.\n- Do not present predicted answers as actual results.\n- Keep the schedule as introduction 2 minutes + experience questions 8 minutes + improvement questions 3 minutes + closing 2 minutes = total 15 minutes."
+            }
+          ]
+        },
+        {
+          "id": "verify-interview-guide",
+          "heading": "6. Reader Checklist Before Conducting the Interview",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Before the interview, read through the completed guide yourself and check for leading wording, time allocation, and sensitive-information questions. During an actual interview, participants may answer in directions you did not expect, so maintaining the research goal in S1 is more important than mechanically completing every question in order. The results in this article are editorial examples created and reviewed with AI assistance; they are not evidence validating the quality or effectiveness of an actual AI product for interview design."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Reader checklist]\n□ Does the goal remain understanding difficulties in the recent application process?\n□ Is it clearly stated that the interviews have not yet been conducted?\n□ Does introduction 2 minutes + experience 8 minutes + improvement 3 minutes + closing 2 minutes equal 15 minutes?\n□ Are there no leading phrases such as 'It was inconvenient, right?'\n□ Are there questions that prompt participants to recall recent actual behavior?\n□ Does the guide avoid asking for personal information?\n□ Does the guide avoid asking for health information?\n□ Does the guide avoid asking for income information?\n□ Are predicted responses kept separate from actual user evidence?\n□ Has the guide avoided turning into a job interview?\n□ After the real interviews, am I prepared to record observed responses separately from pre-interview expectations?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial-example review scope: checked that the purpose, time, and excluded-information conditions in S1-S3, the 2+8+3+2-minute total, the method for revising leading questions, and the not-yet-conducted interview status are internally consistent.",
+        "items": [
+          "Confirmed total interview time of 15 minutes",
+          "Preserved 2 minutes introduction, 8 minutes experience, 3 minutes improvement, and 2 minutes closing",
+          "Excluded personal, health, and income questions",
+          "Revised leading questions into neutral questions about recent actual behavior",
+          "Did not use predicted responses as actual evidence",
+          "Maintained the scope as user research rather than a job interview"
+        ],
+        "limits": "No actual interviews were conducted, and no AI product's interview-generation quality, accuracy, or effectiveness was validated. The appropriateness of questions may vary by research context and participant characteristics. This example does not replace guidance on privacy, research ethics, or law."
+      }
+    },
+    {
+      "slug": "ai-brainstorm-with-constraints",
+      "title": "Use AI to Brainstorm Ideas with Clear Constraints",
+      "summary": "This exercise shows how to define constraints such as participant count, time, printed materials, purchasing limits, and available equipment before asking AI for 4 distinct alternatives. Instead of deciding which idea is best, you check whether each option satisfies the constraints and learn how to revise the request when the constraints change.",
+      "tags": [
+        "AI brainstorming",
+        "constraints",
+        "idea generation"
+      ],
+      "audience": "Beginners who want several realistic alternatives that respect practical constraints rather than a vague list of ideas",
+      "prerequisites": [
+        "The activity is fictional and does not require actual purchases or equipment use.",
+        "No executable program code is used.",
+        "Do not assume AI guarantees that an idea is feasible."
+      ],
+      "sections": [
+        {
+          "id": "lock-constraints",
+          "heading": "1. Write Down the Fixed Constraints Before Generating Ideas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The fictional task is to design a beginner reading activity for a library. In brainstorming, it is easier to review the results if you first lock the conditions that must be satisfied instead of simply asking for 'lots of good ideas.' Here, the constraints are 8 participants, a total of 30 minutes, a maximum of 16 printed sheets, no additional purchases, and only paper and pens as equipment."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Fictional activity design constraints]\nS1: There are 8 participants.\nS2: The entire activity lasts 30 minutes.\nS3: A maximum of 16 printed sheets may be used.\nS4: No additional purchases are allowed.\nS5: The only available equipment is paper and pens.\n\nGoal: Generate 4 alternative reading activities suitable for beginners.\nNote: The task is to create distinct alternatives, not to select the best one."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "constraint",
+                "how to check it"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "8 participants",
+                  "Check whether group assignments and handouts are based on 8 participants"
+                ],
+                [
+                  "S2",
+                  "Total 30 minutes",
+                  "Check whether the sum of all step times is 30 minutes"
+                ],
+                [
+                  "S3",
+                  "Maximum 16 printed sheets",
+                  "Check whether the total printed materials for each idea are 16 sheets or fewer"
+                ],
+                [
+                  "S4",
+                  "No additional purchases",
+                  "Check whether any new materials or paid items are required"
+                ],
+                [
+                  "S5",
+                  "Paper and pens only",
+                  "Check whether extra equipment such as a projector, smartphone, or speaker is required"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "request-diverse-ideas",
+          "heading": "2. Ask for 4 Alternatives with Different Activity Formats",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Without explicit constraints, AI may repeat essentially the same activity under different names. State that the 4 ideas should differ in their activity structure, and ask for the sequence, minute-by-minute timing, number of printed sheets, and unresolved conditions for each one."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Create 4 beginner reading activity ideas that satisfy all of the following constraints.\n\nS1: 8 participants\nS2: Total 30 minutes\nS3: Maximum 16 printed sheets\nS4: No additional purchases\nS5: Paper and pens only\n\nRequirements:\n1. The 4 ideas must use different activity formats.\n2. For each idea, list the steps and give the time for each step in minutes.\n3. Make the step times add up to exactly 30 minutes.\n4. State the total number of printed sheets and confirm that it is 16 or fewer.\n5. Include at least 1 condition that a person must verify before implementation.\n6. Do not add equipment or materials on your own.\n7. Do not rank the ideas or conclude that any 1 idea is the best.\n8. Do not claim that feasibility is guaranteed."
+            },
+            {
+              "type": "p",
+              "text": "This request combines idea generation with constraint checking, but it still does not verify the actual space, participants' reading levels, or the content of available documents. That is why it is important to keep an 'unverified condition' field in the result."
+            }
+          ]
+        },
+        {
+          "id": "review-four-options",
+          "heading": "3. Check the Time and Printed-Material Counts in 4 Editorial Examples",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The 4 alternatives below are editorial examples showing different activity structures. Each is set to 30 minutes and uses no more than 16 printed sheets, but suitability for real participants and smooth operation in an actual setting have not been verified."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Editorial example created and reviewed with AI assistance — not a validation of actual implementation performance]\n\nIdea A: Mark 1 sentence and explain it to a partner\n- 5 minutes: Read a short text and mark 1 memorable sentence\n- 8 minutes: Write notes explaining why you chose it\n- 10 minutes: Work in pairs and explain your choices to each other\n- 5 minutes: Each pair records 1 point they had in common\n- 2 minutes: Closing\nTotal 30 minutes\nPrinted materials: 8 copies of the reading text\nUnverified: Need to confirm whether the reading level is appropriate for beginners\n\nIdea B: Create your own question card\n- 5 minutes: Read a short text\n- 7 minutes: Each participant writes 1 question on paper\n- 10 minutes: Split into 2 groups of 4 and take turns answering the questions\n- 6 minutes: Each group selects and records 1 memorable question\n- 2 minutes: Closing\nTotal 30 minutes\nPrinted materials: 8 reading sheets + 8 instruction sheets = 16 sheets\nUnverified: Need to confirm whether participants are comfortable creating their own questions\n\nIdea C: Build a shared summary without printed materials\n- 5 minutes: The facilitator reads a prepared short text 1 sentence at a time while participants note keywords\n- 8 minutes: Each participant selects 3 keywords\n- 10 minutes: Split into 2 groups of 4 and write a shared summary\n- 5 minutes: The 2 groups read their summaries to each other\n- 2 minutes: Closing\nTotal 30 minutes\nPrinted materials: 0 sheets\nUnverified: Need to confirm whether the facilitator can prepare an appropriate text to read aloud in advance\n\nIdea D: Reconstruct the sequence of scenes\n- 4 minutes: Read a short story\n- 6 minutes: Each participant notes 3 key scenes\n- 10 minutes: Split into 2 groups of 4 and discuss the order of the scenes\n- 8 minutes: Each group writes down its chosen order and reasons\n- 2 minutes: Closing\nTotal 30 minutes\nPrinted materials: 8 copies of the reading text\nUnverified: Need to confirm whether the selected story is suitable for discussing scene order"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "idea",
+                "activity format",
+                "total time",
+                "printed materials",
+                "constraint check",
+                "unverified condition"
+              ],
+              "rows": [
+                [
+                  "A",
+                  "Individual marking followed by partner explanation",
+                  "30 minutes",
+                  "8 sheets",
+                  "30 minutes or less; 16 sheets or fewer",
+                  "Reading difficulty"
+                ],
+                [
+                  "B",
+                  "Create questions individually, then discuss in groups",
+                  "30 minutes",
+                  "16 sheets",
+                  "30 minutes or less; 16 sheets or fewer",
+                  "Comfort with creating questions"
+                ],
+                [
+                  "C",
+                  "Keyword notes followed by a shared summary",
+                  "30 minutes",
+                  "0 sheets",
+                  "30 minutes or less; 16 sheets or fewer",
+                  "Whether a suitable read-aloud text can be prepared"
+                ],
+                [
+                  "D",
+                  "Reconstruct scene order",
+                  "30 minutes",
+                  "8 sheets",
+                  "30 minutes or less; 16 sheets or fewer",
+                  "Story suitability"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "check-constraints",
+          "heading": "4. Check Constraint Violations Before Judging Whether an Idea Looks Fun",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When reviewing brainstorming results, first check the numbers and conditions rather than deciding which idea looks most interesting. In this exercise, confirm that each activity stays within 30 minutes, uses no more than 16 printed sheets, and does not require extra equipment or purchases."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "check",
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "rows": [
+                [
+                  "Based on 8 participants",
+                  "Meets",
+                  "Meets",
+                  "Meets",
+                  "Meets"
+                ],
+                [
+                  "30 minutes or less",
+                  "30 minutes",
+                  "30 minutes",
+                  "30 minutes",
+                  "30 minutes"
+                ],
+                [
+                  "16 printed sheets or fewer",
+                  "8 sheets",
+                  "16 sheets",
+                  "0 sheets",
+                  "8 sheets"
+                ],
+                [
+                  "No additional purchases",
+                  "None in the example",
+                  "None in the example",
+                  "None in the example",
+                  "None in the example"
+                ],
+                [
+                  "No equipment beyond paper and pens",
+                  "None in the example",
+                  "None in the example",
+                  "None in the example",
+                  "None in the example"
+                ],
+                [
+                  "Feasibility validation",
+                  "Not conducted",
+                  "Not conducted",
+                  "Not conducted",
+                  "Not conducted"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Here, 'none in the example' does not mean that no additional preparation would ever be needed in a real setting. It only means that the written activity plan does not explicitly require extra items. A person still needs to verify on-site conditions such as space, noise, and participants' reading levels."
+            }
+          ]
+        },
+        {
+          "id": "revise-constraints",
+          "heading": "5. Revise a Constraint-Violating Answer or Update the Constraints",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "AI can produce an interesting idea while overlooking numerical limits. In that case, you do not have to discard the entire idea. Specify which constraints were violated and ask for only those parts to be corrected. If the real situation changes and the constraints themselves are different, clearly state only the changed values and ask AI to preserve the rest."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Incorrect editorial example]\nActivity E: Give each of 8 participants 3 colored cards and use tablets to search for book covers.\n- Explanation 5 minutes\n- Individual search 10 minutes\n- Group activity 12 minutes\n- Presentation 8 minutes\nTotal 35 minutes\nPrinted materials needed: 24 activity sheets\nMaterials: colored cards, tablets, paper, pens"
+            },
+            {
+              "type": "p",
+              "text": "This answer exceeds the 30-minute limit in S2 by 5 minutes and exceeds the 16-sheet maximum in S3 by 8 sheets. It also introduces materials that violate S4, no additional purchases, and S5, paper and pens only. Regardless of how interesting the activity may seem, it cannot be used as written because it violates the constraints."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Revise the previous idea so it fits the constraints.\n- Keep 8 participants.\n- Recalculate the total time so it is 30 minutes or less.\n- Reduce printed materials to 16 sheets or fewer.\n- Remove all materials that require additional purchases.\n- Remove all equipment other than paper and pens.\n- After revising, show the step-by-step time total and total number of printed sheets again.\n- Do not claim that feasibility is guaranteed; keep an unverified condition.\n\nIf the constraints themselves change, modify only the conditions I changed and keep the rest of S1-S5 unchanged."
+            }
+          ]
+        },
+        {
+          "id": "verify-brainstorm",
+          "heading": "6. Checklist for the Reader Before Choosing Any Option",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The purpose of this article is not to recommend or rank 1 of the 4 alternatives. The goal is to first obtain distinct ideas that satisfy the constraints, then let a person verify the actual setting and participant conditions before selecting or revising an option. The results in this article are editorial examples created and reviewed with AI assistance; they do not validate actual satisfaction, participation, educational effect, or AI product performance."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Reader checklist]\n□ Are there exactly 4 ideas?\n□ Do the 4 ideas use genuinely different activity formats?\n□ Is the participant count still 8?\n□ Did I manually add up the step times for each idea?\n□ Is each total 30 minutes or less?\n□ Is the printed-material total for each idea 16 sheets or fewer?\n□ Are there no items that require additional purchases?\n□ Is there no equipment other than paper and pens?\n□ Does each idea include an unverified condition to check before implementation?\n□ Was no arbitrary 'best idea' or ranking added?\n□ Is there no claim that feasibility is guaranteed?\n□ When changing constraints, did I separate the changed conditions from those that must remain unchanged?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial-example review scope: compared the 4 alternatives against the constraints of 8 participants, total 30 minutes, maximum 16 printed sheets, no additional purchases, and paper and pens only.",
+        "items": [
+          "Included 4 ideas",
+          "Confirmed a 30-minute total for each idea",
+          "Printed-material counts are 8 sheets, 16 sheets, 0 sheets, and 8 sheets, all within the 16-sheet limit",
+          "No additional purchases required",
+          "No equipment required beyond paper and pens",
+          "Included an unverified condition for each idea",
+          "Did not provide a ranking or final selection"
+        ],
+        "limits": "The activities were not carried out in an actual library or with actual participants, and feasibility, satisfaction, effectiveness, safety, and AI product performance were not validated. Before real use, a person must verify the space, participant characteristics, and available materials directly."
+      }
+    },
+    {
+      "slug": "ai-presentation-rehearsal",
+      "title": "Use AI to Prepare Presentation Questions and Short Answers",
+      "summary": "This exercise shows how to prepare 6 expected audience questions with source evidence, short answers, and a verification plan when the answer is unknown. It does not cover creating a presentation outline or AI voice evaluation; the focus is on answering questions without overstating limited evidence.",
+      "tags": [
+        "presentation practice",
+        "Q&A preparation",
+        "evidence checking"
+      ],
+      "audience": "Beginners who want to practice answering expected presentation questions without overstating numerical evidence",
+      "prerequisites": [
+        "This exercise does not create a new presentation outline.",
+        "No actual presentation audio or video analysis is performed.",
+        "Use only the fictional evidence in S1-S3."
+      ],
+      "sections": [
+        {
+          "id": "lock-presentation-facts",
+          "heading": "1. Lock the Source Evidence Used for Presentation Practice",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "In this exercise, you prepare Q&A responses using only the numbers and unresolved items already provided, rather than inventing new presentation content. The invited group, attendee group, anonymous survey respondents, and respondents who want to participate again are different populations, so the denominator for each percentage must be kept clear."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Fictional presentation evidence]\nS1: 24 people were invited, and 18 attended.\nS2: Among the attendees, 12 responded to an anonymous survey, and 9 of those respondents said they wanted to participate again.\nS3: The next program date and budget are still undecided.\n\nCalculable value:\n- Share of survey respondents who want to participate again: 9/12 = 75%\n\nNotes:\n- 75% is based on the 12 survey respondents.\n- Do not say that 75% of all 18 attendees wanted to participate again.\n- Do not apply the same percentage to all 24 invitees.\n- Do not claim that an actual AI voice evaluation of the presentation was performed."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "confirmed information",
+                "what cannot be claimed"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "24 invited, 18 attended",
+                  "Reasons for absence or attendee satisfaction"
+                ],
+                [
+                  "S2",
+                  "9 of 12 survey respondents want to participate again",
+                  "Preferences of the 6 attendees who did not respond"
+                ],
+                [
+                  "S3",
+                  "Next date and budget are undecided",
+                  "Confirmed schedule or confirmed budget"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "generate-audience-questions",
+          "heading": "2. Connect 6 Expected Audience Questions to the Source Evidence",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Useful expected questions help the presenter practice the limits of what can be answered instead of forcing a guess about unknown information. For each question, identify whether S1, S2, or S3 is relevant, and if the available evidence is insufficient, preserve that uncertainty in the answer."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Using only the fictional presentation evidence below, create 6 expected audience questions that could come up after the presentation.\n\nS1: 24 people were invited, and 18 attended.\nS2: Among the attendees, 12 responded to an anonymous survey, and 9 of those respondents said they wanted to participate again.\nS3: The next date and budget are undecided.\n\nFor each question, provide these 4 items:\n1. Expected question\n2. Source ID from the original evidence\n3. Short answer the presenter can give\n4. Verification plan if the answer is currently unknown\n\nNotes:\n- State clearly that 9/12 = 75% is based on survey respondents.\n- Do not extend 75% to all 18 attendees or all 24 invitees.\n- Do not invent reasons, satisfaction levels, costs, or dates that are not in the input.\n- Do not create a new presentation outline.\n- Do not claim that an actual AI voice evaluation was performed."
+            }
+          ]
+        },
+        {
+          "id": "build-answer-table",
+          "heading": "3. Build a Table of Questions, Evidence, Short Answers, and Verification Plans",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The table below is an editorial example for presentation practice, not a record of questions asked by real audience members. Keep each answer as short as possible while stating the limits of the evidence. For unresolved items such as S3, answer that they are undecided and state what source should be checked later."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Editorial example created and reviewed with AI assistance — not actual presentation results or AI voice evaluation]\n\nPrepare a total of 6 expected questions.\nWhen answering numerical questions, keep the groups of 24 invitees, 18 attendees, 12 survey respondents, and 9 respondents who want to participate again separate.\nWhenever using 75%, always add that it is 'among the 12 survey respondents.'\nThe next date and budget are currently undecided, so do not invent estimated values."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "expected audience question",
+                "source evidence",
+                "short answer",
+                "verification plan if unknown"
+              ],
+              "rows": [
+                [
+                  "How many people were invited, and how many actually attended?",
+                  "S1",
+                  "24 people were invited, and 18 attended.",
+                  "No additional verification needed"
+                ],
+                [
+                  "What percentage said they wanted to participate again?",
+                  "S2",
+                  "9 of the 12 anonymous survey respondents said they wanted to participate again, which is 75% of respondents.",
+                  "Do not infer the preferences of attendees who did not respond"
+                ],
+                [
+                  "So does that mean 75% of all 18 attendees want to participate again?",
+                  "S2",
+                  "No. The 75% uses only the 12 survey respondents as the denominator.",
+                  "Additional confirmation including nonrespondents would be needed to describe all attendees"
+                ],
+                [
+                  "Why did the 6 people who did not attend stay away?",
+                  "S1",
+                  "The current evidence does not include reasons for absence.",
+                  "Consider whether reasons for absence should be investigated separately"
+                ],
+                [
+                  "When will the next program take place?",
+                  "S3",
+                  "The next date is still undecided.",
+                  "Check the official announcement after the schedule is confirmed"
+                ],
+                [
+                  "What is the budget for the next program?",
+                  "S3",
+                  "The budget is also still undecided.",
+                  "Check once an approved budget source becomes available"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "plan-eight-minutes",
+          "heading": "4. Divide an 8-Minute Practice Session into Explanation, Questions, and Closing",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "After preparing the questions and answers, practice saying them aloud. Here, the rehearsal plan uses 4 minutes for explanation, 3 minutes for questions, and 1 minute for closing, for a total of 8 minutes. This is a practice allocation, not a claim that an actual presentation will take exactly this amount of time. A person should measure the real duration and adjust it."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "segment",
+                "planned time",
+                "what to practice",
+                "what the person should check"
+              ],
+              "rows": [
+                [
+                  "Explanation",
+                  "4 minutes",
+                  "Explain the key numbers and unresolved items in S1-S3",
+                  "Measure the actual speaking time"
+                ],
+                [
+                  "Questions",
+                  "3 minutes",
+                  "Choose some of the 6 expected questions and answer briefly",
+                  "Check that the numerical denominators are correct"
+                ],
+                [
+                  "Closing",
+                  "1 minute",
+                  "Separate confirmed facts from items that still need verification",
+                  "Check that no new conclusion is added"
+                ],
+                [
+                  "Total",
+                  "8 minutes",
+                  "Practice time allocation",
+                  "Adjust after measuring the real duration"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "If AI writes something labeled as '4 minutes,' that does not prove the actual speaking time will be 4 minutes. Speaking speed, pauses, and question length vary, so a person must measure this directly."
+            }
+          ]
+        },
+        {
+          "id": "repair-overclaim",
+          "heading": "5. Find Exaggerated Numerical Claims and Invented Undecided Information",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A key presentation-practice error is expanding a limited survey result to the entire attendee group or filling in undecided information as if it were known. The example below uses some correct numbers but mishandles the denominator and the unresolved status."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Incorrect editorial example]\n75% of attendees said they want to participate in the next program. Because strong interest in returning has been confirmed, the next program is expected to take place on the same weekday next month, and the budget will also be finalized at the previous level."
+            },
+            {
+              "type": "p",
+              "text": "The 9 people are not 75% of all 18 attendees; they are 75% of the 12 survey respondents. The preferences of the 6 attendees who did not respond are unknown. In addition, S3 says the next date and budget are undecided, so there is no basis for adding 'the same weekday next month' or 'the previous budget level.'"
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Rewrite the answer so it matches the original evidence.\n- State that the denominator for 75% is the 12 survey respondents.\n- Do not generalize the same percentage to all 18 attendees.\n- Do not generalize it to all 24 invitees either.\n- Keep the next date and budget marked as undecided.\n- Do not invent reasons for absence, satisfaction, costs, or schedules that are not in the input.\n- For unknown questions, answer 'the current evidence does not tell us' and state what should be checked.\n- Do not claim that AI analyzed or evaluated an actual presentation recording."
+            }
+          ]
+        },
+        {
+          "id": "verify-rehearsal",
+          "heading": "6. Checklist for the Presenter Before the Actual Presentation",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Finally, read through the expected-question table and check the denominator and source ID for every number. During actual rehearsal, measure the time yourself, shorten answers that run long, and practice not guessing when you do not know an answer. The results in this article are editorial examples created and reviewed with AI assistance; they do not validate actual presentation outcomes, audience reactions, AI voice-evaluation accuracy, or any specific product feature."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Reader checklist]\n□ Did I distinguish 24 invitees from 18 attendees?\n□ Did I preserve that 12 of the attendees responded to the survey?\n□ Did I confirm that 9 people who want to participate again are 9 of the 12 respondents?\n□ When saying 9/12 = 75%, do I state that the percentage is based on respondents?\n□ Did I avoid applying 75% to all 18 attendees?\n□ Did I avoid applying 75% to all 24 invitees?\n□ Did I keep the next date undecided?\n□ Did I keep the budget undecided?\n□ Are there exactly 6 expected questions?\n□ Does each question include source evidence, a short answer, and a verification plan?\n□ Did I confirm that 4 minutes explanation + 3 minutes questions + 1 minute closing = 8 minutes?\n□ Is the actual rehearsal time to be measured by a person?\n□ Did I avoid claiming that an actual AI voice evaluation was performed?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Editorial-example review scope: checked that the numbers and unresolved status in S1-S3, the denominator of 9/12 = 75%, the 6 expected questions, and the 4+3+1 = 8-minute practice plan are internally consistent.",
+        "items": [
+          "Distinguished 24 invitees from 18 attendees",
+          "Distinguished 12 survey respondents from 9 respondents who want to participate again",
+          "Expressed 75% only as a percentage of survey respondents",
+          "Included 6 expected audience questions",
+          "Kept the date and budget undecided",
+          "Confirmed 4 minutes explanation, 3 minutes questions, and 1 minute closing for a total of 8 minutes",
+          "Instructed the reader to measure actual duration personally",
+          "Made no claim that AI voice evaluation was performed"
+        ],
+        "limits": "No actual presentation, audience Q&A, voice analysis, or specific AI product evaluation feature was run or validated. The questions and answers shown are editorial examples based on fictional evidence and do not predict actual presentation performance or audience response."
+      }
+    }
+  ]
+}

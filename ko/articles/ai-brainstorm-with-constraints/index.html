@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html dir="ltr" lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>제약조건을 정해 AI로 아이디어 발상하기 | Worknote</title><meta content="참가 인원, 시간, 인쇄물, 구매 가능 여부, 사용 장비처럼 제약조건을 먼저 고정한 뒤 AI에게 서로 다른 대안 4개를 발상하게 하는 실습입니다. 어느 아이디어가 가장 좋은지 결정하는 대신 각 대안이 조건을 지키는지 확인하고, 조건이 바뀌었을 때 다시 요청하는 방법을 다룹니다." name="description"/><link href="https://worknotetips.com/ko/articles/ai-brainstorm-with-constraints/" rel="canonical"/><meta content="https://worknotetips.com/ko/articles/ai-brainstorm-with-constraints/" property="og:url"/><meta content="제약조건을 정해 AI로 아이디어 발상하기" property="og:title"/><meta content="참가 인원, 시간, 인쇄물, 구매 가능 여부, 사용 장비처럼 제약조건을 먼저 고정한 뒤 AI에게 서로 다른 대안 4개를 발상하게 하는 실습입니다. 어느 아이디어가 가장 좋은지 결정하는 대신 각 대안이 조건을 지키는지 확인하고, 조건이 바뀌었을 때 다시 요청하는 방법을 다룹니다." property="og:description"/><meta content="ko_KR" property="og:locale"/><meta content="article" property="og:type"/><meta content="#163b35" name="theme-color"/><link href="/favicon.svg" rel="icon" type="image/svg+xml"/><link href="/assets/styles.css?v=20260922-team" rel="stylesheet"/><script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "제약조건을 정해 AI로 아이디어 발상하기", "description": "참가 인원, 시간, 인쇄물, 구매 가능 여부, 사용 장비처럼 제약조건을 먼저 고정한 뒤 AI에게 서로 다른 대안 4개를 발상하게 하는 실습입니다. 어느 아이디어가 가장 좋은지 결정하는 대신 각 대안이 조건을 지키는지 확인하고, 조건이 바뀌었을 때 다시 요청하는 방법을 다룹니다.", "inLanguage": "ko", "dateModified": "2026-09-23", "url": "https://worknotetips.com/ko/articles/ai-brainstorm-with-constraints/", "datePublished": "2026-09-23"}</script><script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "튜토리얼", "item": "https://worknotetips.com/ko/"}, {"@type": "ListItem", "position": 2, "name": "AI 업무 활용", "item": "https://worknotetips.com/ko/category/ai/"}, {"@type": "ListItem", "position": 3, "name": "제약조건을 정해 AI로 아이디어 발상하기", "item": "https://worknotetips.com/ko/articles/ai-brainstorm-with-constraints/"}]}</script><script src="/assets/app.js" type="module"></script><link href="https://worknotetips.com/articles/ai-brainstorm-with-constraints/" hreflang="en" rel="alternate"/><link href="https://worknotetips.com/ko/articles/ai-brainstorm-with-constraints/" hreflang="ko" rel="alternate"/><link href="https://worknotetips.com/ja/articles/ai-brainstorm-with-constraints/" hreflang="ja" rel="alternate"/><link href="https://worknotetips.com/es/articles/ai-brainstorm-with-constraints/" hreflang="es" rel="alternate"/><link href="https://worknotetips.com/pt-BR/articles/ai-brainstorm-with-constraints/" hreflang="pt-BR" rel="alternate"/><link href="https://worknotetips.com/articles/ai-brainstorm-with-constraints/" hreflang="x-default" rel="alternate"/><script id="ui-messages" type="application/json">{"copy": "복사", "copied": "복사 완료", "copySuccess": "예시 텍스트를 복사했습니다.", "copyRetry": "다시 복사", "copyFailure": "자동 복사를 사용할 수 없습니다. 코드를 선택해 직접 복사해 주세요.", "searchCount": "검색 결과 {count}개"}</script></head><body class="beginner-article"><a class="skip-link" href="#main">본문으로 건너뛰기</a><header class="site-header"><div class="header-inner"><a aria-label="워크노트 홈" class="brand" href="/ko/"><span class="brand-mark"><svg aria-hidden="true" viewbox="0 0 32 32"><path d="M8 7H4v18h4M24 7h4v18h-4M10 11l3 10 3-6 3 6 3-10" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3"></path></svg></span><span>워크노트<small>스크립트와 AI 실무</small></span></a><nav aria-label="주 메뉴"><a aria-current="page" href="/ko/">튜토리얼</a><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a></nav><details class="language-menu"><summary aria-label="언어">◎ 한국어</summary><nav aria-label="언어"><a href="/articles/ai-brainstorm-with-constraints/" hreflang="en" lang="en">English</a><a aria-current="true" href="/ko/articles/ai-brainstorm-with-constraints/" hreflang="ko" lang="ko">한국어</a><a href="/ja/articles/ai-brainstorm-with-constraints/" hreflang="ja" lang="ja">日本語</a><a href="/es/articles/ai-brainstorm-with-constraints/" hreflang="es" lang="es">Español</a><a href="/pt-BR/articles/ai-brainstorm-with-constraints/" hreflang="pt-BR" lang="pt-BR">Português</a></nav></details><a aria-label="검색" class="header-search" href="/ko/#search"><svg aria-hidden="true" height="21" viewbox="0 0 24 24" width="21"><circle cx="10.5" cy="10.5" fill="none" r="6.5" stroke="currentColor" stroke-width="1.8"></circle><path d="m16 16 5 5" stroke="currentColor" stroke-width="1.8"></path></svg><span>검색</span><kbd>/</kbd></a></div></header><main class="article-layout" id="main"><div class="article-main"><nav aria-label="현재 위치" class="breadcrumbs"><a href="/ko/">튜토리얼</a><span>/</span><a href="/ko/category/ai/">AI 업무 활용</a></nav><header class="article-header"><span class="category-badge ai">AI 업무 활용</span><h1>제약조건을 정해 AI로 아이디어 발상하기</h1><p class="article-summary">참가 인원, 시간, 인쇄물, 구매 가능 여부, 사용 장비처럼 제약조건을 먼저 고정한 뒤 AI에게 서로 다른 대안 4개를 발상하게 하는 실습입니다. 어느 아이디어가 가장 좋은지 결정하는 대신 각 대안이 조건을 지키는지 확인하고, 조건이 바뀌었을 때 다시 요청하는 방법을 다룹니다.</p><div class="article-meta"><span>내용 확인 2026.09.23</span><span>복사해서 쓰는 요청문</span></div></header><details class="mobile-toc"><summary>목차 보기</summary><nav aria-label="이 글에서 다루는 내용" class="toc"><p>이 글에서 다루는 내용</p><ol><li><a href="#lock-constraints"><span>01</span>아이디어보다 먼저 바꿀 수 없는 조건 적기</a></li><li><a href="#request-diverse-ideas"><span>02</span>서로 다른 방식의 대안 4개를 요청하기</a></li><li><a href="#review-four-options"><span>03</span>네 가지 편집 예시의 시간과 인쇄물 수 확인하기</a></li><li><a href="#check-constraints"><span>04</span>아이디어의 재미보다 제약 위반부터 검사하기</a></li><li><a href="#revise-constraints"><span>05</span>조건을 어긴 답과 제약 수정 재요청 방법</a></li><li><a href="#verify-brainstorm"><span>06</span>선택 전에 독자가 직접 확인할 체크리스트</a></li><li><a href="#verification"><span>07</span>직접 확인할 항목</a></li></ol></nav></details><div class="reading-content"><div class="reader-setup"><p><strong>이런 분께</strong>막연한 아이디어 목록보다 현실적인 조건을 반영한 여러 대안을 얻고 싶은 초보자</p><div><strong>준비사항</strong><ul><li>실제 구매나 장비 사용 없이 가상 활동을 설계합니다.</li><li>실행프로그램 코드는 사용하지 않습니다.</li><li>아이디어의 실현 가능성을 AI가 보장한다고 가정하지 않습니다.</li></ul></div></div><section id="lock-constraints"><h2><span class="section-number">01</span>아이디어보다 먼저 바꿀 수 없는 조건 적기</h2><p>이번 가상 과제는 도서관의 초보 독서 활동을 설계하는 것입니다. 브레인스토밍에서는 먼저 '좋은 아이디어를 많이 내줘'라고 요청하기보다 실제로 지켜야 하는 조건을 고정하는 편이 결과를 검토하기 쉽습니다. 여기서는 참가 8명, 총 30분, 인쇄물 최대 16장, 추가 구매 없음, 장비는 종이와 펜만이라는 조건을 사용합니다.</p><div class="code-block"><div class="code-toolbar"><span>입력 자료</span><button aria-label="복사 입력 자료" data-copy="prompt-1-2" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-1-2">[가상 활동 설계 조건]
+S1: 참가자는 8명이다.
+S2: 전체 활동 시간은 총 30분이다.
+S3: 인쇄물은 최대 16장까지 사용할 수 있다.
+S4: 추가 구매는 하지 않는다.
+S5: 사용할 수 있는 장비는 종이와 펜뿐이다.
+
+목표: 초보자가 참여할 수 있는 독서 활동 대안 4개를 발상한다.
+주의: 가장 좋은 안을 고르는 과제가 아니라 서로 다른 대안을 만드는 과제다.</code></pre></div><div class="table-wrap"><table><thead><tr><th scope="col">source ID</th><th scope="col">제약조건</th><th scope="col">검사 방법</th></tr></thead><tbody><tr><td>S1</td><td>참가 8명</td><td>조 편성이나 배포물 수가 8명 기준인지 확인</td></tr><tr><td>S2</td><td>총 30분</td><td>각 단계 시간 합계가 30분인지 확인</td></tr><tr><td>S3</td><td>인쇄물 최대 16장</td><td>아이디어별 총 인쇄물 수가 16장 이하인지 확인</td></tr><tr><td>S4</td><td>추가 구매 없음</td><td>새 재료나 유료 물품 요구 여부 확인</td></tr><tr><td>S5</td><td>종이와 펜만 사용</td><td>프로젝터·스마트폰·스피커 등 추가 장비 요구 여부 확인</td></tr></tbody></table></div></section><section id="request-diverse-ideas"><h2><span class="section-number">02</span>서로 다른 방식의 대안 4개를 요청하기</h2><p>AI는 조건을 주지 않으면 비슷한 형식의 아이디어를 여러 이름으로 반복할 수 있습니다. 따라서 네 아이디어가 활동 방식 자체에서 달라야 한다고 명시하고, 각각 진행 순서·분 단위 시간·인쇄물 수·미확인 조건을 함께 적도록 요청합니다.</p><div class="code-block"><div class="code-toolbar"><span>요청문</span><button aria-label="복사 요청문" data-copy="prompt-2-2" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-2-2">다음 제약을 모두 지키는 초보 독서 활동 아이디어 4개를 만들어 주세요.
+
+S1: 참가 8명
+S2: 총 30분
+S3: 인쇄물 최대 16장
+S4: 추가 구매 없음
+S5: 종이와 펜만 사용
+
+요구사항:
+1. 네 아이디어는 활동 방식이 서로 달라야 합니다.
+2. 각 아이디어마다 진행 순서를 단계별로 적고 각 단계의 시간을 분 단위로 표시하세요.
+3. 단계별 시간 합계를 정확히 30분으로 적으세요.
+4. 필요한 인쇄물 총수를 적고 16장 이하인지 확인하세요.
+5. 실행 전에 사람이 확인해야 할 미확인 조건을 최소 1개 적으세요.
+6. 장비나 재료를 임의로 추가하지 마세요.
+7. 어느 안이 가장 좋다는 결론이나 순위를 만들지 마세요.
+8. 실현 가능성이 보장된다고 표현하지 마세요.</code></pre></div><p>이 요청은 아이디어 생성과 조건 검사를 함께 요구하지만 실제 공간, 참가자의 읽기 수준, 준비 가능한 문서의 내용은 아직 확인하지 않습니다. 따라서 결과에 '미확인 조건' 열을 남기는 것이 중요합니다.</p></section><section id="review-four-options"><h2><span class="section-number">03</span>네 가지 편집 예시의 시간과 인쇄물 수 확인하기</h2><p>아래 네 대안은 서로 다른 활동 구조를 보여 주기 위한 편집 예시입니다. 모든 안은 30분으로 맞추고 인쇄물은 16장 이하로 제한했지만, 실제 참가자에게 적합한지나 현장에서 원활하게 진행되는지는 검증하지 않았습니다.</p><div class="code-block"><div class="code-toolbar"><span>예시 결과</span><button aria-label="복사 예시 결과" data-copy="prompt-3-2" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-3-2">[AI 보조로 구성·검토한 편집 예시 — 실제 실행 성능 검증이 아님]
+
+아이디어 A: 한 문장 표시와 짝 설명
+- 5분: 짧은 글을 읽고 마음에 남는 한 문장 표시
+- 8분: 각자 선택 이유 메모
+- 10분: 2명씩 짝을 이루어 서로 설명
+- 5분: 각 짝에서 공통점 1개 기록
+- 2분: 마무리
+합계 30분
+인쇄물: 참가자용 글 8장
+미확인: 준비한 글의 난이도가 초보자에게 적절한지 확인 필요
+
+아이디어 B: 질문 카드 직접 만들기
+- 5분: 짧은 글 읽기
+- 7분: 각자 질문 1개를 종이에 작성
+- 10분: 4명씩 두 조로 질문을 돌려 답하기
+- 6분: 각 조에서 기억에 남는 질문 1개 정리
+- 2분: 마무리
+합계 30분
+인쇄물: 읽기자료 8장 + 안내지 8장 = 16장
+미확인: 참가자가 질문 작성 방식에 익숙한지 확인 필요
+
+아이디어 C: 인쇄물 없이 공동 요약문 만들기
+- 5분: 진행자가 준비한 짧은 글을 한 문장씩 읽어 주고 참가자는 핵심어 메모
+- 8분: 각자 핵심어 3개 선택
+- 10분: 4명씩 두 조로 공동 요약문 작성
+- 5분: 두 조가 요약문을 서로 읽기
+- 2분: 마무리
+합계 30분
+인쇄물: 0장
+미확인: 진행자가 읽어 줄 텍스트를 사전에 적절히 준비할 수 있는지 확인 필요
+
+아이디어 D: 장면 순서 다시 구성하기
+- 4분: 짧은 이야기 읽기
+- 6분: 각자 핵심 장면 3개 메모
+- 10분: 4명씩 두 조에서 장면 순서를 논의
+- 8분: 각 조가 선택한 순서와 이유를 종이에 정리
+- 2분: 마무리
+합계 30분
+인쇄물: 읽기자료 8장
+미확인: 사용할 이야기가 장면 순서를 논의하기에 적합한지 확인 필요</code></pre></div><div class="table-wrap wide"><table><thead><tr><th scope="col">아이디어</th><th scope="col">활동 방식</th><th scope="col">시간 합계</th><th scope="col">인쇄물</th><th scope="col">제약 검사</th><th scope="col">미확인 조건</th></tr></thead><tbody><tr><td>A</td><td>개인 표시 후 짝 설명</td><td>30분</td><td>8장</td><td>30분 이하·16장 이하</td><td>글 난이도</td></tr><tr><td>B</td><td>질문 직접 작성 후 조별 대화</td><td>30분</td><td>16장</td><td>30분 이하·16장 이하</td><td>질문 작성 익숙함</td></tr><tr><td>C</td><td>핵심어 메모 후 공동 요약</td><td>30분</td><td>0장</td><td>30분 이하·16장 이하</td><td>읽어 줄 텍스트 준비 가능 여부</td></tr><tr><td>D</td><td>장면 순서 재구성</td><td>30분</td><td>8장</td><td>30분 이하·16장 이하</td><td>이야기 적합성</td></tr></tbody></table></div></section><section id="check-constraints"><h2><span class="section-number">04</span>아이디어의 재미보다 제약 위반부터 검사하기</h2><p>브레인스토밍 결과를 받을 때는 먼저 재미있어 보이는지를 판단하기보다 숫자와 조건부터 확인합니다. 이 실습에서는 각 안의 시간 합계가 30분을 넘지 않는지, 인쇄물이 16장을 넘지 않는지, 추가 장비와 구매품이 들어가지 않았는지를 확인합니다.</p><div class="table-wrap wide"><table><thead><tr><th scope="col">검사 항목</th><th scope="col">A</th><th scope="col">B</th><th scope="col">C</th><th scope="col">D</th></tr></thead><tbody><tr><td>참가 8명 기준</td><td>충족</td><td>충족</td><td>충족</td><td>충족</td></tr><tr><td>시간 30분 이내</td><td>30분</td><td>30분</td><td>30분</td><td>30분</td></tr><tr><td>인쇄물 16장 이내</td><td>8장</td><td>16장</td><td>0장</td><td>8장</td></tr><tr><td>추가 구매 없음</td><td>예시상 없음</td><td>예시상 없음</td><td>예시상 없음</td><td>예시상 없음</td></tr><tr><td>종이·펜 외 장비 없음</td><td>예시상 없음</td><td>예시상 없음</td><td>예시상 없음</td><td>예시상 없음</td></tr><tr><td>실현 가능성 검증</td><td>미실시</td><td>미실시</td><td>미실시</td><td>미실시</td></tr></tbody></table></div><p>여기서 '예시상 없음'은 실제 현장에서 추가 준비물이 절대 필요하지 않다는 뜻이 아닙니다. 작성된 활동안 안에서 추가 품목을 요구하지 않았다는 뜻뿐입니다. 공간, 소음, 참가자의 읽기 수준 같은 현장 조건은 사람이 별도로 확인해야 합니다.</p></section><section id="revise-constraints"><h2><span class="section-number">05</span>조건을 어긴 답과 제약 수정 재요청 방법</h2><p>AI가 흥미로운 아이디어를 만들면서도 숫자 제약을 놓칠 수 있습니다. 이때 전체 아이디어를 버리기보다 어떤 조건이 위반되었는지 지정하고 해당 조건만 수정하도록 요청할 수 있습니다. 또한 실제 상황에서 제약 자체가 바뀌었다면 변경된 값만 명확하게 알려 주고 나머지는 그대로 유지하게 합니다.</p><div class="code-block"><div class="code-toolbar"><span>잘못된 결과</span><button aria-label="복사 잘못된 결과" data-copy="prompt-5-2" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-2">[잘못된 편집 예시]
+활동 E: 참가자 8명에게 컬러 카드 3장씩 배부하고 태블릿으로 책 표지를 검색한다.
+- 설명 5분
+- 개인 검색 10분
+- 조별 활동 12분
+- 발표 8분
+합계 35분
+필요 인쇄물: 활동지 24장
+준비물: 컬러 카드, 태블릿, 종이, 펜</code></pre></div><p>이 답은 S2의 30분을 5분 초과하고, S3의 인쇄물 최대 16장을 8장 초과합니다. 또한 S4의 추가 구매 없음과 S5의 종이·펜만 사용 조건에도 맞지 않는 준비물이 들어갔습니다. 아이디어의 내용이 흥미로운지와 별개로 제약 위반이므로 그대로 사용할 수 없습니다.</p><div class="code-block"><div class="code-toolbar"><span>요청문</span><button aria-label="복사 요청문" data-copy="prompt-5-4" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-5-4">방금 아이디어를 제약조건에 맞게 수정해 주세요.
+- 참가자 8명은 유지하세요.
+- 총 시간은 30분 이내로 다시 계산하세요.
+- 인쇄물은 16장 이내로 줄이세요.
+- 추가 구매가 필요한 재료는 모두 제거하세요.
+- 종이와 펜 외의 장비는 제거하세요.
+- 수정 후 단계별 시간 합계와 인쇄물 총수를 다시 표시하세요.
+- 실현 가능성이 보장된다고 표현하지 말고 미확인 조건을 남기세요.
+
+만약 제약 자체를 바꾸는 경우에는 내가 바꾼 조건만 변경하고 나머지 S1~S5는 그대로 유지하세요.</code></pre></div></section><section id="verify-brainstorm"><h2><span class="section-number">06</span>선택 전에 독자가 직접 확인할 체크리스트</h2><p>이 글의 목적은 네 대안 중 하나를 추천하거나 순위를 정하는 것이 아닙니다. 먼저 조건을 지킨 서로 다른 안을 확보하고, 이후 실제 공간이나 참여자 상황을 확인한 사람이 필요에 맞게 선택하거나 다시 수정하는 데 있습니다. 아래 결과 예시는 AI 보조로 구성·검토한 편집 예시이며 실제 활동의 만족도, 참여율, 교육효과 또는 AI 제품 성능을 검증한 결과가 아닙니다.</p><div class="code-block"><div class="code-toolbar"><span>확인 목록</span><button aria-label="복사 확인 목록" data-copy="prompt-6-2" type="button">복사</button></div><pre dir="auto" tabindex="0"><code id="prompt-6-2">[독자 확인 체크리스트]
+□ 아이디어가 정확히 4개인가?
+□ 네 아이디어의 활동 방식이 서로 다른가?
+□ 참가자 수가 8명으로 유지되는가?
+□ 각 아이디어의 단계별 시간 합계를 직접 더해 보았는가?
+□ 각 합계가 30분 이내인가?
+□ 인쇄물 총수가 각 안마다 16장 이하인가?
+□ 추가 구매가 필요한 품목이 없는가?
+□ 종이와 펜 이외 장비가 들어가지 않았는가?
+□ 각 안에 실제 실행 전 확인할 미확인 조건이 있는가?
+□ '가장 좋은 안'이나 순위가 임의로 추가되지 않았는가?
+□ 실현 가능성이 보장된다는 표현이 없는가?
+□ 제약을 수정할 때 변경한 조건과 유지할 조건을 구분했는가?</code></pre></div></section><section id="verification"><h2>직접 확인할 항목</h2><p>편집 예시 검토 범위: 참가 8명, 총 30분, 인쇄물 최대 16장, 추가 구매 없음, 종이와 펜만 사용이라는 제약을 네 대안의 시간·인쇄물 수와 대조했습니다.</p><ul><li>아이디어 4개 구성</li><li>각 아이디어 시간 합계 30분 확인</li><li>인쇄물 수 8장·16장·0장·8장으로 모두 16장 이하</li><li>추가 구매 요구 없음</li><li>종이와 펜 외 장비 요구 없음</li><li>각 아이디어에 미확인 조건 포함</li><li>순위나 최종 선택 결론을 제시하지 않음</li></ul><div class="verification-limits"><strong>검증 범위의 한계</strong><p>실제 도서관이나 참가자에게 활동을 실행하지 않았으며 실현 가능성, 만족도, 효과, 안전성 또는 AI 제품 성능을 검증하지 않았습니다. 실제 사용 전에는 공간, 참가자의 특성, 준비 가능한 자료를 사람이 직접 확인해야 합니다.</p></div></section></div><section class="related"><div class="list-heading"><h2>이어서 읽어 보세요</h2><a href="/ko/category/ai/">이 주제의 모든 글 <span aria-hidden="true">↗</span></a></div><div class="article-grid"><article class="article-card"><h3><a href="/ko/articles/ai-compare-document-versions/">AI로 문서 두 버전 비교하기: 변경·추가·삭제·동일 항목 구분</a></h3><p>같은 행사의 안내문 V1과 V2를 AI에 함께 제공하고, 다섯 가지 비교 항목을 변경·추가·삭제·동일로 나누어 확인하는 실습입니다. 삭제된 문장을 임의로 해석하지 않고 문서에 실제로 적힌 차이만 기록하는 방법을 익힙니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-faq-from-notice/">AI로 공지문에서 FAQ 만들기: 원문에 없는 답은 확인 필요로 남기기</a></h3><p>짧은 공지문을 바탕으로 여섯 개 FAQ를 만들면서, 근거가 있는 질문에는 source ID를 붙이고 요금·환불·대기처럼 원문에 없는 내용은 임의의 답을 만들지 않는 방법을 연습합니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-feedback-theme-map/">AI로 자유서술 의견을 주제별로 묶기: 복수 라벨과 분류 보류 다루기</a></h3><p>여섯 개의 짧은 자유서술 의견을 정해진 주제로 분류하고, 한 의견에 두 주제가 있으면 복수 라벨을 허용하는 실습입니다. 라벨 합계가 응답자 수보다 커질 수 있는 이유와 근거 없는 만족도·감정 강도 추론을 피하는 방법도 함께 확인합니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-plain-language-guide/">AI로 어려운 이용안내를 쉬운 말로 고치기: 조건·예외·부정·기한 보존</a></h3><p>가상의 자료 대여 안내 네 문장을 쉬운 표현으로 바꾸면서 등록회원 조건, 7일 기한, 예약자료 연장 불가, 비예약자료의 1회 연장 요청 가능과 승인 미확정이라는 핵심 조건을 잃지 않는 방법을 연습합니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-research-question-plan/">AI로 조사 질문과 검색 계획 만들기</a></h3><p>막연한 조사 목표를 사실 질문, 경험 질문, 결정 질문으로 나누고 무엇을 어디서 확인해야 하는지 검색 계획을 만드는 실습입니다. AI에게 검색 결과를 지어내게 하지 않고, 확인해야 할 자료와 미확인 항목을 먼저 구조화합니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-user-interview-questions/">AI로 이용자 조사 인터뷰 질문 만들기</a></h3><p>가상 신청서 이용 경험을 조사하기 위한 15분 인터뷰 질문을 AI와 설계하는 실습입니다. 유도질문을 최근 실제 행동에 대한 중립 질문으로 고치고, 아직 실시하지 않은 인터뷰의 예상 답변을 실제 증거처럼 쓰지 않는 방법을 다룹니다.</p></article><article class="article-card"><h3><a href="/ko/articles/ai-presentation-rehearsal/">AI로 발표 예상 질문과 짧은 답변 준비하기</a></h3><p>이미 정리된 가상 발표 자료를 바탕으로 예상 청중 질문 6개와 근거, 짧은 답변, 모를 때의 확인 계획을 만드는 실습입니다. 발표 목차 작성이나 AI 음성평가가 아니라 제한된 근거를 과장하지 않고 질문에 답하는 연습에 초점을 둡니다.</p></article></div></section></div><aside class="article-aside"><nav aria-label="이 글에서 다루는 내용" class="toc"><p>이 글에서 다루는 내용</p><ol><li><a href="#lock-constraints"><span>01</span>아이디어보다 먼저 바꿀 수 없는 조건 적기</a></li><li><a href="#request-diverse-ideas"><span>02</span>서로 다른 방식의 대안 4개를 요청하기</a></li><li><a href="#review-four-options"><span>03</span>네 가지 편집 예시의 시간과 인쇄물 수 확인하기</a></li><li><a href="#check-constraints"><span>04</span>아이디어의 재미보다 제약 위반부터 검사하기</a></li><li><a href="#revise-constraints"><span>05</span>조건을 어긴 답과 제약 수정 재요청 방법</a></li><li><a href="#verify-brainstorm"><span>06</span>선택 전에 독자가 직접 확인할 체크리스트</a></li><li><a href="#verification"><span>07</span>직접 확인할 항목</a></li></ol></nav><div class="aside-note">AI 답변을 사용하기 전에 사실과 조건을 확인하세요.</div></aside></main><footer class="site-footer"><div><a class="footer-brand" href="/ko/">워크노트<span>직접 해보고, 확인하고, 기록합니다.</span></a><nav aria-label="사이트 안내"><a href="/ko/about/">사이트 소개</a><a href="/ko/principles/">작성·검증 원칙</a><a href="/ko/privacy/">개인정보 안내</a><a href="/ko/rights/">자료 이용 안내</a></nav></div><p>AI 답변을 사용하기 전에 사실과 조건을 확인하세요.</p></footer><div aria-live="polite" class="toast" hidden="" id="toast" role="status"></div></body></html>

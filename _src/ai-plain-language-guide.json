@@ -1,0 +1,229 @@
+{
+  "slug": "ai-plain-language-guide",
+  "title": "Rewrite Difficult Instructions in Plain Language with AI: Preserve Conditions, Exceptions, Negation, and Deadlines",
+  "summary": "This exercise rewrites four fictional borrowing rules in clearer language while preserving the registered-member requirement, the 7-day deadline, the prohibition on extending reserved materials, and the rule that non-reserved materials may be submitted for one extension request without guaranteeing approval.",
+  "tags": [
+    "plain language",
+    "AI text editing",
+    "condition preservation"
+  ],
+  "audience": "Beginners who want to make formal instructions easier for general readers to understand without accidentally removing important conditions or exceptions",
+  "prerequisites": [
+    "You only need to be able to copy the original rules as separate sentences.",
+    "S1–S4 below are entirely fictional operating instructions, not laws or actual regulations.",
+    "No real membership details or personal data are required."
+  ],
+  "sections": [
+    {
+      "id": "read-original-rules",
+      "heading": "1. Mark the conditions that must remain before rewriting",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The goal of plain-language editing is not to remove content but to express the same rules more clearly. Before rewriting, identify elements that would change the meaning if removed, such as membership requirements, time limits, prohibitions, the number of requests allowed, and whether approval is guaranteed. The following text is a fictional operating guide created for this tutorial, not a rule from any real library or organization."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "S1 Borrowing is available only to registered members.\nS2 Items must be returned within 7 days, including the borrowing date.\nS3 Reserved materials cannot be extended.\nS4 Non-reserved materials may be submitted for 1 extension request before the return deadline, but making a request does not mean the extension has been approved."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source ID",
+            "Element that must be preserved",
+            "Meaning that must not change"
+          ],
+          "rows": [
+            [
+              "S1",
+              "Registered members only",
+              "Must not be changed to anyone can borrow"
+            ],
+            [
+              "S2",
+              "Including the borrowing date, within 7 days",
+              "Must not be changed to 7 days starting the day after borrowing"
+            ],
+            [
+              "S3",
+              "Reserved materials, no extension",
+              "Must not be changed to extension available under some condition"
+            ],
+            [
+              "S4",
+              "Non-reserved materials, before the deadline, 1 request, extension request allowed, approval not guaranteed",
+              "Requesting an extension must not be changed to automatic approval"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "S4 contains several conditions in one sentence. It can be split into shorter sentences, but all of the following must remain: non-reserved materials, before the deadline, 1 request, the distinction between requesting and approval."
+        }
+      ]
+    },
+    {
+      "id": "write-plain-prompt",
+      "heading": "2. Ask for clear wording and meaning preservation at the same time",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If you only ask AI to make the text easier, conditions may be omitted. State explicitly which information must be preserved. In this exercise, ask for shorter sentences and everyday wording while preventing the addition of new benefits or exceptions."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Rewrite the fictional instructions S1–S4 below in plain language that a beginner can understand.\n\nRules:\n- Preserve the meaning of each source ID exactly.\n- Do not remove or soften conditions, exceptions, negative wording, numbers, or deadlines.\n- Preserve registered members only in S1.\n- Preserve including the borrowing date and within 7 days in S2.\n- Preserve reserved materials cannot be extended in S3.\n- Preserve all of the following in S4: non-reserved materials, before the return deadline, 1 extension request, request allowed, approval not guaranteed.\n- Do not change request allowed into approved or automatically extended.\n- Do not invent fees, penalties, additional extensions, or exceptions that do not appear in the source.\n\nFor each source ID, show the plain-language version and the key conditions preserved from the original."
+        },
+        {
+          "type": "p",
+          "text": "Plain wording can be created by shortening sentences or splitting one sentence into two. However, if the revised text expands or restricts a user's rights or obligations compared with the source, it is no longer simple editing. It has changed the rule."
+        }
+      ]
+    },
+    {
+      "id": "compare-plain-version",
+      "heading": "3. Match each original sentence with its plain-language version",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The result below is not a measurement of any actual service's rewriting performance. It is an editorial example created and reviewed with AI assistance to demonstrate meaning preservation. Before deciding whether the text sounds easier, first check whether every original condition is still present."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "S1 Plain language: Only registered members can borrow materials.\nPreserved condition: borrowing available only to registered members\n\nS2 Plain language: Return the item within 7 days, counting the day you borrowed it as the first day.\nPreserved condition: including the borrowing date, within 7 days\n\nS3 Plain language: You cannot extend the borrowing period for reserved materials.\nPreserved condition: reserved materials, no extension\n\nS4 Plain language: For materials that are not reserved, you may request 1 extension before the return deadline. However, submitting a request does not mean the extension has been approved.\nPreserved condition: non-reserved materials, before the deadline, 1 request, request allowed, approval not guaranteed"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "ID",
+            "Original meaning",
+            "Plain-language meaning",
+            "Preserved?"
+          ],
+          "rows": [
+            [
+              "S1",
+              "Registered members only",
+              "Only registered members can borrow",
+              "Preserved"
+            ],
+            [
+              "S2",
+              "Within 7 days including the borrowing date",
+              "Within 7 days counting the borrowing date",
+              "Preserved"
+            ],
+            [
+              "S3",
+              "Reserved materials cannot be extended",
+              "Reserved materials cannot be extended",
+              "Preserved"
+            ],
+            [
+              "S4",
+              "Non-reserved materials: 1 extension request before the deadline, approval not guaranteed",
+              "Non-reserved materials: 1 request before the deadline, request does not guarantee approval",
+              "Preserved"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "find-meaning-change",
+      "heading": "4. Find sentences that are simpler but change the rule",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The most important error to catch is turning a statement that says you may request an extension into a statement that says you may extend it or that the extension is approved. The wording difference may look small, but the condition communicated to the reader changes substantially. Removing the phrase including the borrowing date from the deadline calculation creates the same kind of problem."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "S2 Plain language: You can use the item for 7 days starting the day after you borrow it.\n\nS4 Plain language: Non-reserved materials can be automatically extended once until the return date."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Incorrect part",
+            "How it changes the source",
+            "Correction"
+          ],
+          "rows": [
+            [
+              "7 days starting the day after borrowing",
+              "Changes S2's rule that the borrowing date is included",
+              "Restore within 7 days including the day borrowed"
+            ],
+            [
+              "Automatically extended",
+              "Changes S4's request allowed into approval or automatic processing",
+              "Restore that 1 extension request may be submitted but approval is not guaranteed"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "In plain-language editing, preserving logical relationships matters more than removing words. Even if the explanation becomes slightly longer, it is better to keep the second sentence that distinguishes a request from approval."
+        }
+      ]
+    },
+    {
+      "id": "ask-clarifying-questions",
+      "heading": "5. If the source itself is unclear, create clarification questions instead of guessing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Rewriting can reveal details that the original instructions do not define. For example, S4 does not state what criteria are used to approve an extension request. In that situation, do not ask AI to invent a rule. Instead, ask it to create a list of questions for the person responsible for the policy."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Keep the meaning of S1–S4 unchanged and write clarification questions about points that a user may still want to know but that cannot be answered from the source alone.\n\nConditions:\n- Do not guess answers that are not in the source.\n- Write questions only.\n- In particular, distinguish whether S4 defines the approval criteria or processing method for an extension request.\n- Do not invent new rules, penalties, fees, or exceptions."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "Example questions that need confirmation:\n1. What criteria are used to approve an extension request for a non-reserved material?\n2. How is the user informed whether an extension request has been approved?\n3. If an extension is approved, how is the new return deadline determined?\n\nThe answers to these questions do not appear in S1–S4 and require separate confirmation."
+        },
+        {
+          "type": "p",
+          "text": "Creating a clarification question does not justify guessing its answer. Leaving information unresolved when the source does not define it is better than creating an incorrect rule."
+        }
+      ]
+    },
+    {
+      "id": "plain-language-checklist",
+      "heading": "6. Final check: confirm the meaning is unchanged before judging readability",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For the final review, place the original and plain-language versions side by side and mark conditions, numbers, deadlines, and negative wording. Only after that should you judge whether the text reads naturally. Words such as only, within, cannot, request, and approval deserve special attention because small changes can alter the meaning."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[ ] Does S1 still say registered members only?\n[ ] Does S2 still include the borrowing date in the calculation?\n[ ] Is the number 7 in S2 unchanged?\n[ ] Does S3 still preserve the negative rule that reserved materials cannot be extended?\n[ ] Does S4 still apply only to non-reserved materials?\n[ ] Does S4 still require the request to be made before the return deadline?\n[ ] Is the number of extension requests in S4 still 1?\n[ ] Was request allowed kept distinct from automatic approval or guaranteed approval?\n[ ] Were no fees, penalties, exceptions, or approval criteria invented?"
+        },
+        {
+          "type": "p",
+          "text": "Real organization terms of use or legal documents may require review by the responsible staff and additional standards. This article does not replace that process. It only practices the basic method of preserving meaning while rewriting fictional operating instructions that are not laws or legal rules."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example in which a human compared fictional non-legal operating instructions S1–S4 and checked whether conditions, deadlines, negation, and the distinction between request and approval were preserved in the plain-language version",
+    "items": [
+      "Check that the registered-members-only condition is preserved",
+      "Check that within 7 days including the borrowing date is unchanged",
+      "Check that reserved materials still cannot be extended",
+      "Check that S4 preserves non-reserved materials, before the deadline, 1 extension request, request allowed, and approval not guaranteed",
+      "Check that no new rules or exceptions were added"
+    ],
+    "limits": "The result is an educational editorial example created and reviewed with AI assistance. It does not verify any actual organization's rules, provide legal interpretation, or test the rewriting accuracy or latest features of any specific AI product."
+  }
+}

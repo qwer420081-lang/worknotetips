@@ -1,0 +1,294 @@
+{
+  "slug": "ai-research-question-plan",
+  "title": "Use AI to Build Research Questions and a Search Plan",
+  "summary": "This exercise shows how to break a vague research goal into factual questions, experience questions, and decision questions, then plan what to verify and where to look. Instead of asking AI to invent search results, you first organize the sources to check and the items that are still unknown.",
+  "tags": [
+    "AI research planning",
+    "search strategy",
+    "question design"
+  ],
+  "audience": "Beginners who want to use AI to start research but are unsure what to investigate first",
+  "prerequisites": [
+    "You do not need to know any specific AI product or current user interface.",
+    "You do not need to enter real personal information.",
+    "You should be able to choose the region and reference date for your research yourself."
+  ],
+  "sections": [
+    {
+      "id": "define-goal",
+      "heading": "1. Separate What You Already Know from the Research Goal Before Searching",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The fictional goal in this exercise is to investigate whether a neighborhood library needs a weekday evening program. If you immediately ask AI for a conclusion, it may mix unverified demand or budget assumptions into the answer. Start by separating the information you were given from what is still unknown. Keep the source IDs S1, S2, and S3 unchanged throughout the later steps."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "[Fictional research notes]\nS1: The program under consideration is a 60-minute weekday evening program.\nS2: The primary audience is adult beginners.\nS3: Actual demand, schedules at other facilities, and the budget have not yet been confirmed.\n\nNotes:\n- No search has been conducted yet.\n- The reader chooses the region.\n- The reader also chooses the research reference date.\n- Do not invent unverified statistics, URLs, or user reactions."
+        },
+        {
+          "type": "p",
+          "text": "S1 and S2 are current planning conditions, while S3 lists unverified items. In particular, the input does not say that there is a demonstrated need for the program. Preserving this distinction makes it easier to avoid treating search results and interview findings as the same kind of evidence later."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source ID",
+            "current status",
+            "content",
+            "role in the research"
+          ],
+          "rows": [
+            [
+              "S1",
+              "given condition",
+              "Considering a 60-minute weekday evening program",
+              "Program format and time condition"
+            ],
+            [
+              "S2",
+              "given condition",
+              "Audience is adult beginners",
+              "Target user scope"
+            ],
+            [
+              "S3",
+              "unverified",
+              "Actual demand, schedules at other facilities, and budget",
+              "Requires further research"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "split-questions",
+      "heading": "2. Break the Goal into Factual, Experience, and Decision Questions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even within the same research project, different question types require different ways of checking them. Operating hours and existing program schedules can be verified through official sources, while questions such as why adult beginners prefer or avoid evening times require asking users about their experiences directly. The final decision question should remain unanswered until the earlier evidence has been collected."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Using only the fictional research notes below, design research questions.\n\nS1: The program under consideration is a 60-minute weekday evening program.\nS2: The primary audience is adult beginners.\nS3: Actual demand, schedules at other facilities, and the budget have not yet been confirmed.\n\nRequirements:\n1. Divide the questions into 'factual questions,' 'experience questions,' and 'decision questions.'\n2. State what kind of source is needed for each question.\n3. Do not invent facts, statistics, URLs, or organization names that are not in the input.\n4. Do not write as if any search has already been completed.\n5. Keep the S1, S2, and S3 labels unchanged.\n6. Separate the roles of official operating information and user interviews."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "[Editorial example created and reviewed with AI assistance — not a validation of actual product performance]\n\nFactual questions\n- What are the facility's operating hours on weekday evenings?\n- Is there currently, or was there recently, a program for adult beginners?\n- At what times do similar local facilities run weekday evening programs?\n\nExperience questions\n- What factors affect the time slots adult beginners choose for a program?\n- How do actual users feel about a 60-minute program length: burdensome, appropriate, or otherwise?\n\nDecision question\n- When confirmed demand, available operating hours, and budget conditions are considered together, is there enough evidence to continue considering a weekday evening program?\n\nAt this point, only S1 and S2 are confirmed. The actual demand, schedules at other facilities, and budget in S3 remain unverified."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "question type",
+            "example question",
+            "main source to check",
+            "can it be answered now?"
+          ],
+          "rows": [
+            [
+              "Factual question",
+              "Is weekday evening operation possible?",
+              "Official operating hours and program information",
+              "No"
+            ],
+            [
+              "Factual question",
+              "When do similar facilities run programs?",
+              "Official pages of other facilities",
+              "No"
+            ],
+            [
+              "Experience question",
+              "What time slots do adult beginners choose?",
+              "User interviews",
+              "No"
+            ],
+            [
+              "Experience question",
+              "How do users feel about a 60-minute length?",
+              "User interviews",
+              "No"
+            ],
+            [
+              "Decision question",
+              "Is there enough evidence to continue considering the program?",
+              "Earlier factual and experience evidence plus budget confirmation",
+              "No"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "build-search-plan",
+      "heading": "3. Plan Search Terms and the Types of Sources to Check",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The purpose of this step is not to obtain search results but to create a plan before searching. The reader fills in the region name and reference date. Instead of using search terms that assume a conclusion, such as 'other libraries also run many evening programs,' combine checkable elements such as operating hours, adult programs, and evening schedules."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "purpose",
+            "candidate search terms",
+            "primary source to check",
+            "supporting source",
+            "what to record after searching"
+          ],
+          "rows": [
+            [
+              "Current facility operating availability",
+              "[region name] library weekday operating hours",
+              "Official page of the facility",
+              "Official notices",
+              "Day, operating hours, and applicable date"
+            ],
+            [
+              "Whether an adult beginner program exists",
+              "[region name] library adult beginner program",
+              "Official program information",
+              "Official schedule",
+              "Program name, audience, time, and publication date"
+            ],
+            [
+              "Weekday evening schedules at other facilities",
+              "[region name] library adult program evening",
+              "Official page of each facility",
+              "Official event information",
+              "Day, start time, duration, and reference date"
+            ],
+            [
+              "User experience",
+              "Do not replace with a search query",
+              "User interviews",
+              "Anonymous feedback collection if needed",
+              "Recurring experiences and exceptions"
+            ],
+            [
+              "Budget conditions",
+              "Requires internal confirmation",
+              "Approved internal materials",
+              "Confirmation with the responsible person",
+              "Confirmed amount or still-undecided status"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Official operating pages are used to verify public facts such as operating hours and schedules, while interviews are used to understand actual user experiences. These sources do not replace each other. The existence of an evening program on an official page does not prove high demand, and one user's preference for evenings does not by itself determine operating hours."
+        }
+      ]
+    },
+    {
+      "id": "set-freshness",
+      "heading": "4. Define Freshness Criteria and an Unverified-Items Table First",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Operating hours and program schedules can change, so define the date against which information will be checked before searching. This example does not claim that any particular time window is the correct standard for freshness. Instead, the reader chooses a reference date that fits the research purpose. If a source has no publication date or its current applicability cannot be confirmed, do not assume it is current; leave it marked as unverified."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "item",
+            "freshness check",
+            "if verification fails",
+            "current status"
+          ],
+          "rows": [
+            [
+              "Current facility operating hours",
+              "Check whether the official information applies on the reader's chosen reference date",
+              "Record applicability date as unknown",
+              "Unverified"
+            ],
+            [
+              "Recent program schedule",
+              "Check both the publication date and event date",
+              "Mark separately as a past schedule",
+              "Unverified"
+            ],
+            [
+              "Other facilities' schedules",
+              "Check dates individually on each facility's official page",
+              "Record current operation as unverified",
+              "Unverified"
+            ],
+            [
+              "Actual demand",
+              "Record the date of any interview or separate research",
+              "Record that interviews have not yet been conducted",
+              "Unverified"
+            ],
+            [
+              "Budget",
+              "Check whether there is a currently approved source",
+              "Keep the budget marked as undecided",
+              "Unverified"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Explicitly marking unknowns this way makes it easier to detect when AI fills gaps with plausible-looking numbers. At the research-planning stage, 'we do not know yet' is a valid and normal result."
+        }
+      ]
+    },
+    {
+      "id": "fix-bad-plan",
+      "heading": "5. Find Problems in a Bad Example and Ask Again",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A research plan cannot be trusted if it presents unsearched information as already verified or invents percentages and URLs that were not in the input. Even if numbers or links look precise, they are not evidence until you verify the source yourself."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "[Incorrect editorial example]\n72% of local adults want weekday evening programs, and all 5 nearby libraries run similar programs at 7 PM. Therefore, demand is sufficient for a 60-minute evening program. Detailed statistics are available at https://example.invalid/library-survey."
+        },
+        {
+          "type": "p",
+          "text": "There are 4 problems. The input contains no 72% statistic, no record that 5 nearby facilities were researched, and no information showing a 7 PM program time. The URL is also not an actually verified source. In addition, S3 explicitly says that demand is unverified, yet the example reaches a firm conclusion anyway."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Rewrite the previous answer.\n- Remove every statement implying that a search has already been completed.\n- Delete numbers, facility counts, times, and URLs that are not in the input.\n- Keep S1 and S2 as given conditions.\n- Keep the actual demand, schedules at other facilities, and budget in S3 marked as 'unverified.'\n- Instead of results, provide factual questions, experience questions, decision questions, candidate search terms, source types to verify, and freshness criteria.\n- Separate the roles of official operating pages and user interviews."
+        }
+      ]
+    },
+    {
+      "id": "verify-plan",
+      "heading": "6. Checklist for the Reader Before Conducting the Actual Search",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Once the plan is complete, do not jump directly to a conclusion. Check the items below yourself. Then use the region and reference date you selected to review actual official sources, and investigate experience questions separately through interviews. The results in this article are editorial examples created and reviewed with AI assistance; they are not evidence validating the search performance or research accuracy of an actual AI product."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[Reader checklist]\n□ Did I choose the region for the research myself?\n□ Did I choose the research reference date myself?\n□ Was the 60-minute condition in S1 preserved?\n□ Was the adult beginner audience in S2 preserved?\n□ Do actual demand, schedules at other facilities, and the budget in S3 remain unverified?\n□ Are factual questions and experience questions kept separate?\n□ Are operating hours and schedules assigned to official operating pages for verification?\n□ Are user experiences assigned to interviews for verification?\n□ Were any nonexistent statistics, organizations, or URLs added?\n□ Is there a place to record publication dates and applicability dates?\n□ Was a conclusion avoided before the research was conducted?"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial-example review scope: checked that the distinction between facts and unverified items in S1-S3, the question categories, the search-plan structure, and the separation between official sources and user interviews are internally consistent.",
+    "items": [
+      "Preserved the 60-minute program condition in S1",
+      "Preserved the adult beginner audience in S2",
+      "Kept actual demand, schedules at other facilities, and budget in S3 unverified",
+      "No fabricated statistics, URLs, or claims that a search was completed",
+      "Instructed the reader to choose the region and reference date",
+      "Separated the roles of official operating pages and user interviews"
+    ],
+    "limits": "No actual AI product was used to run searches or validate result accuracy, freshness, or performance. In real research, the reader must verify the publication date and applicability date of official sources directly. This article does not replace legal, policy, or budget judgment."
+  }
+}

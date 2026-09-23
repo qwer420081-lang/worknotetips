@@ -1,0 +1,237 @@
+{
+  "slug": "ai-presentation-rehearsal",
+  "title": "Use AI to Prepare Presentation Questions and Short Answers",
+  "summary": "This exercise shows how to prepare 6 expected audience questions with source evidence, short answers, and a verification plan when the answer is unknown. It does not cover creating a presentation outline or AI voice evaluation; the focus is on answering questions without overstating limited evidence.",
+  "tags": [
+    "presentation practice",
+    "Q&A preparation",
+    "evidence checking"
+  ],
+  "audience": "Beginners who want to practice answering expected presentation questions without overstating numerical evidence",
+  "prerequisites": [
+    "This exercise does not create a new presentation outline.",
+    "No actual presentation audio or video analysis is performed.",
+    "Use only the fictional evidence in S1-S3."
+  ],
+  "sections": [
+    {
+      "id": "lock-presentation-facts",
+      "heading": "1. Lock the Source Evidence Used for Presentation Practice",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "In this exercise, you prepare Q&A responses using only the numbers and unresolved items already provided, rather than inventing new presentation content. The invited group, attendee group, anonymous survey respondents, and respondents who want to participate again are different populations, so the denominator for each percentage must be kept clear."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "[Fictional presentation evidence]\nS1: 24 people were invited, and 18 attended.\nS2: Among the attendees, 12 responded to an anonymous survey, and 9 of those respondents said they wanted to participate again.\nS3: The next program date and budget are still undecided.\n\nCalculable value:\n- Share of survey respondents who want to participate again: 9/12 = 75%\n\nNotes:\n- 75% is based on the 12 survey respondents.\n- Do not say that 75% of all 18 attendees wanted to participate again.\n- Do not apply the same percentage to all 24 invitees.\n- Do not claim that an actual AI voice evaluation of the presentation was performed."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source ID",
+            "confirmed information",
+            "what cannot be claimed"
+          ],
+          "rows": [
+            [
+              "S1",
+              "24 invited, 18 attended",
+              "Reasons for absence or attendee satisfaction"
+            ],
+            [
+              "S2",
+              "9 of 12 survey respondents want to participate again",
+              "Preferences of the 6 attendees who did not respond"
+            ],
+            [
+              "S3",
+              "Next date and budget are undecided",
+              "Confirmed schedule or confirmed budget"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "generate-audience-questions",
+      "heading": "2. Connect 6 Expected Audience Questions to the Source Evidence",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Useful expected questions help the presenter practice the limits of what can be answered instead of forcing a guess about unknown information. For each question, identify whether S1, S2, or S3 is relevant, and if the available evidence is insufficient, preserve that uncertainty in the answer."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Using only the fictional presentation evidence below, create 6 expected audience questions that could come up after the presentation.\n\nS1: 24 people were invited, and 18 attended.\nS2: Among the attendees, 12 responded to an anonymous survey, and 9 of those respondents said they wanted to participate again.\nS3: The next date and budget are undecided.\n\nFor each question, provide these 4 items:\n1. Expected question\n2. Source ID from the original evidence\n3. Short answer the presenter can give\n4. Verification plan if the answer is currently unknown\n\nNotes:\n- State clearly that 9/12 = 75% is based on survey respondents.\n- Do not extend 75% to all 18 attendees or all 24 invitees.\n- Do not invent reasons, satisfaction levels, costs, or dates that are not in the input.\n- Do not create a new presentation outline.\n- Do not claim that an actual AI voice evaluation was performed."
+        }
+      ]
+    },
+    {
+      "id": "build-answer-table",
+      "heading": "3. Build a Table of Questions, Evidence, Short Answers, and Verification Plans",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The table below is an editorial example for presentation practice, not a record of questions asked by real audience members. Keep each answer as short as possible while stating the limits of the evidence. For unresolved items such as S3, answer that they are undecided and state what source should be checked later."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "[Editorial example created and reviewed with AI assistance — not actual presentation results or AI voice evaluation]\n\nPrepare a total of 6 expected questions.\nWhen answering numerical questions, keep the groups of 24 invitees, 18 attendees, 12 survey respondents, and 9 respondents who want to participate again separate.\nWhenever using 75%, always add that it is 'among the 12 survey respondents.'\nThe next date and budget are currently undecided, so do not invent estimated values."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "expected audience question",
+            "source evidence",
+            "short answer",
+            "verification plan if unknown"
+          ],
+          "rows": [
+            [
+              "How many people were invited, and how many actually attended?",
+              "S1",
+              "24 people were invited, and 18 attended.",
+              "No additional verification needed"
+            ],
+            [
+              "What percentage said they wanted to participate again?",
+              "S2",
+              "9 of the 12 anonymous survey respondents said they wanted to participate again, which is 75% of respondents.",
+              "Do not infer the preferences of attendees who did not respond"
+            ],
+            [
+              "So does that mean 75% of all 18 attendees want to participate again?",
+              "S2",
+              "No. The 75% uses only the 12 survey respondents as the denominator.",
+              "Additional confirmation including nonrespondents would be needed to describe all attendees"
+            ],
+            [
+              "Why did the 6 people who did not attend stay away?",
+              "S1",
+              "The current evidence does not include reasons for absence.",
+              "Consider whether reasons for absence should be investigated separately"
+            ],
+            [
+              "When will the next program take place?",
+              "S3",
+              "The next date is still undecided.",
+              "Check the official announcement after the schedule is confirmed"
+            ],
+            [
+              "What is the budget for the next program?",
+              "S3",
+              "The budget is also still undecided.",
+              "Check once an approved budget source becomes available"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plan-eight-minutes",
+      "heading": "4. Divide an 8-Minute Practice Session into Explanation, Questions, and Closing",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "After preparing the questions and answers, practice saying them aloud. Here, the rehearsal plan uses 4 minutes for explanation, 3 minutes for questions, and 1 minute for closing, for a total of 8 minutes. This is a practice allocation, not a claim that an actual presentation will take exactly this amount of time. A person should measure the real duration and adjust it."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "segment",
+            "planned time",
+            "what to practice",
+            "what the person should check"
+          ],
+          "rows": [
+            [
+              "Explanation",
+              "4 minutes",
+              "Explain the key numbers and unresolved items in S1-S3",
+              "Measure the actual speaking time"
+            ],
+            [
+              "Questions",
+              "3 minutes",
+              "Choose some of the 6 expected questions and answer briefly",
+              "Check that the numerical denominators are correct"
+            ],
+            [
+              "Closing",
+              "1 minute",
+              "Separate confirmed facts from items that still need verification",
+              "Check that no new conclusion is added"
+            ],
+            [
+              "Total",
+              "8 minutes",
+              "Practice time allocation",
+              "Adjust after measuring the real duration"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "If AI writes something labeled as '4 minutes,' that does not prove the actual speaking time will be 4 minutes. Speaking speed, pauses, and question length vary, so a person must measure this directly."
+        }
+      ]
+    },
+    {
+      "id": "repair-overclaim",
+      "heading": "5. Find Exaggerated Numerical Claims and Invented Undecided Information",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A key presentation-practice error is expanding a limited survey result to the entire attendee group or filling in undecided information as if it were known. The example below uses some correct numbers but mishandles the denominator and the unresolved status."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "[Incorrect editorial example]\n75% of attendees said they want to participate in the next program. Because strong interest in returning has been confirmed, the next program is expected to take place on the same weekday next month, and the budget will also be finalized at the previous level."
+        },
+        {
+          "type": "p",
+          "text": "The 9 people are not 75% of all 18 attendees; they are 75% of the 12 survey respondents. The preferences of the 6 attendees who did not respond are unknown. In addition, S3 says the next date and budget are undecided, so there is no basis for adding 'the same weekday next month' or 'the previous budget level.'"
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Rewrite the answer so it matches the original evidence.\n- State that the denominator for 75% is the 12 survey respondents.\n- Do not generalize the same percentage to all 18 attendees.\n- Do not generalize it to all 24 invitees either.\n- Keep the next date and budget marked as undecided.\n- Do not invent reasons for absence, satisfaction, costs, or schedules that are not in the input.\n- For unknown questions, answer 'the current evidence does not tell us' and state what should be checked.\n- Do not claim that AI analyzed or evaluated an actual presentation recording."
+        }
+      ]
+    },
+    {
+      "id": "verify-rehearsal",
+      "heading": "6. Checklist for the Presenter Before the Actual Presentation",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Finally, read through the expected-question table and check the denominator and source ID for every number. During actual rehearsal, measure the time yourself, shorten answers that run long, and practice not guessing when you do not know an answer. The results in this article are editorial examples created and reviewed with AI assistance; they do not validate actual presentation outcomes, audience reactions, AI voice-evaluation accuracy, or any specific product feature."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[Reader checklist]\n□ Did I distinguish 24 invitees from 18 attendees?\n□ Did I preserve that 12 of the attendees responded to the survey?\n□ Did I confirm that 9 people who want to participate again are 9 of the 12 respondents?\n□ When saying 9/12 = 75%, do I state that the percentage is based on respondents?\n□ Did I avoid applying 75% to all 18 attendees?\n□ Did I avoid applying 75% to all 24 invitees?\n□ Did I keep the next date undecided?\n□ Did I keep the budget undecided?\n□ Are there exactly 6 expected questions?\n□ Does each question include source evidence, a short answer, and a verification plan?\n□ Did I confirm that 4 minutes explanation + 3 minutes questions + 1 minute closing = 8 minutes?\n□ Is the actual rehearsal time to be measured by a person?\n□ Did I avoid claiming that an actual AI voice evaluation was performed?"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial-example review scope: checked that the numbers and unresolved status in S1-S3, the denominator of 9/12 = 75%, the 6 expected questions, and the 4+3+1 = 8-minute practice plan are internally consistent.",
+    "items": [
+      "Distinguished 24 invitees from 18 attendees",
+      "Distinguished 12 survey respondents from 9 respondents who want to participate again",
+      "Expressed 75% only as a percentage of survey respondents",
+      "Included 6 expected audience questions",
+      "Kept the date and budget undecided",
+      "Confirmed 4 minutes explanation, 3 minutes questions, and 1 minute closing for a total of 8 minutes",
+      "Instructed the reader to measure actual duration personally",
+      "Made no claim that AI voice evaluation was performed"
+    ],
+    "limits": "No actual presentation, audience Q&A, voice analysis, or specific AI product evaluation feature was run or validated. The questions and answers shown are editorial examples based on fictional evidence and do not predict actual presentation performance or audience response."
+  }
+}

@@ -1,0 +1,263 @@
+{
+  "slug": "ai-user-interview-questions",
+  "title": "Use AI to Create User Research Interview Questions",
+  "summary": "This exercise shows how to design a 15-minute user interview for improving a fictional application form. You will revise leading questions into neutral questions about recent real behavior and learn not to treat predicted responses as evidence before any interviews have been conducted.",
+  "tags": [
+    "user interviews",
+    "question design",
+    "AI use"
+  ],
+  "audience": "Beginners who want to create short user interview questions before improving a service or process",
+  "prerequisites": [
+    "The scenario is a user experience interview, not a job interview.",
+    "You do not need to enter real personal information.",
+    "Keep the status that the interview has not yet been conducted."
+  ],
+  "sections": [
+    {
+      "id": "set-interview-scope",
+      "heading": "1. Fix the Interview Goal and Excluded Topics First",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "This exercise uses a fictional user study intended to improve a program application form. The goal is to understand difficulties users actually experienced during a recent application process. Because the interview is short, focus on recent behavior instead of trying to ask for every opinion, and avoid unnecessary personal, health, or income information."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "[Fictional interview design notes]\nS1: The goal is to understand difficulties users experienced during a recent application process.\nS2: The total interview time is 15 minutes.\nS3: Do not ask for personal information, health information, or income information.\n\nTime allocation:\n- Introduction 2 minutes\n- Experience questions 8 minutes\n- Improvement questions 3 minutes\n- Closing 2 minutes\nTotal 15 minutes\n\nThe interviews have not yet been conducted.\nThis is not a job interview; it is research about the application-form experience."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "source ID",
+            "content",
+            "effect on question design"
+          ],
+          "rows": [
+            [
+              "S1",
+              "Understand difficulties in a recent application process",
+              "Ask about actual recent behavior before opinions"
+            ],
+            [
+              "S2",
+              "Total 15 minutes",
+              "Limit the number of questions and follow-ups"
+            ],
+            [
+              "S3",
+              "No personal, health, or income questions",
+              "Exclude sensitive questions unnecessary to the goal"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "At this stage, do not assume that 'users find the application form inconvenient.' S1 defines a goal of checking whether and where difficulties occurred; it does not state that difficulties definitely existed."
+        }
+      ]
+    },
+    {
+      "id": "write-neutral-questions",
+      "heading": "2. Turn Leading Questions into Neutral Questions About Recent Real Behavior",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Leading questions can push participants toward the answer the researcher expects. Instead of asking, 'The application form was too complicated, right?' ask participants to recall their most recent application process and describe where they paused, went back, or checked something again."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Create user interview questions using the following conditions.\n\nS1: Understand difficulties users experienced during a recent application process.\nS2: Total time is 15 minutes.\nS3: Do not ask for personal information, health information, or income information.\n\nStructure the interview as 2 minutes of introduction, 8 minutes of experience questions, 3 minutes of improvement questions, and 2 minutes of closing.\nRequirements:\n1. Prioritize neutral questions about actual recent application behavior.\n2. Do not use leading questions such as 'It was inconvenient, right?' or 'Shouldn't it be simpler?'\n3. Do not invent predicted responses as if they were actual user statements.\n4. State that the interviews have not yet been conducted.\n5. Do not create job interview questions."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "example leading question",
+            "problem",
+            "revised neutral question"
+          ],
+          "rows": [
+            [
+              "The application form was too complicated, right?",
+              "Assumes in advance that it was complicated",
+              "Think back to the most recent application process from the beginning. Was there any point where you reread something or paused? If so, what were you trying to check?"
+            ],
+            [
+              "Weren't there too many fields?",
+              "Assumes the number of fields was the problem",
+              "Were there any fields that took a long time to complete or that you wanted to skip?"
+            ],
+            [
+              "The button location was confusing, right?",
+              "Builds a specific cause into the question",
+              "When moving to the next step, what did you look for and what did you select?"
+            ],
+            [
+              "It would be better if it were simpler, right?",
+              "Pushes a particular improvement direction",
+              "If you could change 1 part, what would you change first? Please explain why."
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "build-15-minute-script",
+      "heading": "3. Build an Interview Flow That Fits Within 15 Minutes",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Creating a large number of questions is less useful than arranging them so you can hear enough about actual experiences within the available time. The editorial example below allocates exactly 15 minutes: 2 minutes for the introduction, 8 minutes for experience questions, 3 minutes for improvement questions, and 2 minutes for closing."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "[Editorial example created and reviewed with AI assistance — not actual interview results]\n\nIntroduction 2 minutes\n1. Today, this interview is intended to understand your actual experience with the application process. There are no right answers, and you do not need to share personal, health, or income information.\n2. Briefly think back to the most recent time you used this application form.\n\nExperience questions 8 minutes\n3. What steps did you follow from starting the application to completing it?\n4. Was there any point where you paused or went back to an earlier step? If so, what were you trying to check?\n5. Was there any wording that was difficult to understand or that you had to read again to confirm its meaning?\n6. After finishing the entries, were there any items you checked again before submitting?\n7. If anything happened differently from what you expected, what was it?\n\nImprovement questions 3 minutes\n8. If you could change only 1 part, what would you change first?\n9. Is there any part you would prefer to keep as it is?\n\nClosing 2 minutes\n10. Is there anything I did not ask that you think is important for understanding the application experience?\n\nStatus: The interviews have not yet been conducted. The content above is an interview-question draft."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "section",
+            "time",
+            "main purpose",
+            "question numbers"
+          ],
+          "rows": [
+            [
+              "Introduction",
+              "2 minutes",
+              "Explain the purpose and recall the recent experience",
+              "1-2"
+            ],
+            [
+              "Experience questions",
+              "8 minutes",
+              "Understand actual behavior, pauses, and rechecking",
+              "3-7"
+            ],
+            [
+              "Improvement questions",
+              "3 minutes",
+              "Identify desired changes and things to keep",
+              "8-9"
+            ],
+            [
+              "Closing",
+              "2 minutes",
+              "Check for experiences not yet covered",
+              "10"
+            ],
+            [
+              "Total",
+              "15 minutes",
+              "Meets S2",
+              "All"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "separate-evidence",
+      "heading": "4. Separate Predicted Responses from Actual Interview Evidence",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "While preparing questions, you may expect that a participant will answer in a certain way. A predicted response can be used as a planning note for checking the question flow, but it is not actual user evidence. Before interviews take place, you cannot confirm response counts, representative opinions, or recurring difficulties."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "statement",
+            "can it be used now?",
+            "reason"
+          ],
+          "rows": [
+            [
+              "Users said the submit button was difficult to find.",
+              "Cannot use",
+              "The interviews have not yet been conducted"
+            ],
+            [
+              "Ask whether there was confusion at the submission step.",
+              "Can use",
+              "This describes a question to investigate"
+            ],
+            [
+              "Several users requested fewer fields.",
+              "Cannot use",
+              "There are no actual responses"
+            ],
+            [
+              "Neutrally check whether the number of fields felt burdensome.",
+              "Can use",
+              "This is pre-interview question design"
+            ],
+            [
+              "After the interviews, record recurring experiences separately from exceptions.",
+              "Can use",
+              "This describes a future analysis procedure"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "Even after actual interviews are completed, do not generalize 1 person's response to all users. This article does not cover statistical representativeness or sampling design after interviews; it focuses only on preparing the interview questions."
+        }
+      ]
+    },
+    {
+      "id": "repair-leading-output",
+      "heading": "5. Ask Again When You Find Problems in the Question Draft",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When AI tries to interpret the research goal quickly, it may create questions that assume the problem in advance. It may also ask for sensitive information or present predicted responses as if they were actual results. Check for all of these problems."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "[Incorrect editorial example]\n1. The application form was so complicated that you wanted to give up, right?\n2. You want a simpler application form, right?\n3. What is your annual income?\n4. Were there health-related reasons that made the application difficult?\n\nExpected result: Most users will say that the application form is complicated and that the submit button is hard to find."
+        },
+        {
+          "type": "p",
+          "text": "The first 2 questions push participants toward a desired answer, while the 3rd and 4th violate the exclusions in S3. The final sentence also presents a prediction as a result even though no interviews have been conducted. Refocus the questions on recent actual behavior and explicitly state that predictions are not evidence."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Rewrite the interview questions.\n- Turn them into neutral questions about recent actual application behavior.\n- Remove wording that supplies the answer in advance.\n- Remove every question about personal information, health information, and income information.\n- State that the interviews have not yet been conducted.\n- Do not present predicted answers as actual results.\n- Keep the schedule as introduction 2 minutes + experience questions 8 minutes + improvement questions 3 minutes + closing 2 minutes = total 15 minutes."
+        }
+      ]
+    },
+    {
+      "id": "verify-interview-guide",
+      "heading": "6. Reader Checklist Before Conducting the Interview",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Before the interview, read through the completed guide yourself and check for leading wording, time allocation, and sensitive-information questions. During an actual interview, participants may answer in directions you did not expect, so maintaining the research goal in S1 is more important than mechanically completing every question in order. The results in this article are editorial examples created and reviewed with AI assistance; they are not evidence validating the quality or effectiveness of an actual AI product for interview design."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[Reader checklist]\n□ Does the goal remain understanding difficulties in the recent application process?\n□ Is it clearly stated that the interviews have not yet been conducted?\n□ Does introduction 2 minutes + experience 8 minutes + improvement 3 minutes + closing 2 minutes equal 15 minutes?\n□ Are there no leading phrases such as 'It was inconvenient, right?'\n□ Are there questions that prompt participants to recall recent actual behavior?\n□ Does the guide avoid asking for personal information?\n□ Does the guide avoid asking for health information?\n□ Does the guide avoid asking for income information?\n□ Are predicted responses kept separate from actual user evidence?\n□ Has the guide avoided turning into a job interview?\n□ After the real interviews, am I prepared to record observed responses separately from pre-interview expectations?"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial-example review scope: checked that the purpose, time, and excluded-information conditions in S1-S3, the 2+8+3+2-minute total, the method for revising leading questions, and the not-yet-conducted interview status are internally consistent.",
+    "items": [
+      "Confirmed total interview time of 15 minutes",
+      "Preserved 2 minutes introduction, 8 minutes experience, 3 minutes improvement, and 2 minutes closing",
+      "Excluded personal, health, and income questions",
+      "Revised leading questions into neutral questions about recent actual behavior",
+      "Did not use predicted responses as actual evidence",
+      "Maintained the scope as user research rather than a job interview"
+    ],
+    "limits": "No actual interviews were conducted, and no AI product's interview-generation quality, accuracy, or effectiveness was validated. The appropriateness of questions may vary by research context and participant characteristics. This example does not replace guidance on privacy, research ethics, or law."
+  }
+}

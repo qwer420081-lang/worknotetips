@@ -1,0 +1,2026 @@
+{
+  "lang": "pt-BR",
+  "articles": [
+    {
+      "slug": "ai-compare-document-versions",
+      "title": "Comparar duas versões de um documento com IA: distinguir itens alterados, adicionados, excluídos e iguais",
+      "summary": "Neste exercício, você fornece à IA as versões V1 e V2 do mesmo aviso de evento e compara exatamente 5 itens, classificando cada um como alterado, adicionado, excluído ou igual. Você aprende a registrar somente as diferenças que realmente aparecem nos documentos, sem concluir por conta própria por que uma frase foi removida.",
+      "tags": [
+        "comparação de documentos com IA",
+        "verificação de alterações",
+        "prática de prompts"
+      ],
+      "audience": "Iniciantes que querem organizar rapidamente as diferenças entre versões de um documento, mas ainda não estão acostumados a dizer à IA exatamente o que comparar e como comparar",
+      "prerequisites": [
+        "Basta conseguir copiar as duas versões do documento como texto.",
+        "Use somente os dados fictícios abaixo, sem inserir dados pessoais reais nem materiais internos de uma empresa.",
+        "Não é necessário executar programas nem escrever código."
+      ],
+      "sections": [
+        {
+          "id": "prepare-source",
+          "heading": "1. Preparar as duas versões com IDs de linha",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O primeiro passo na comparação de documentos é manter V1 e V2 separadas, sem misturar as frases das duas versões. Neste exercício, usamos um aviso de evento fictício e atribuímos os IDs de linha A1~A4 e B1~B4 a cada frase. Com esses IDs, fica mais fácil verificar depois qual frase serviu de base para a decisão da IA. Os dados abaixo não contêm informações pessoais, e todas as pessoas, eventos e condições são fictícios."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Aviso do evento V1]\nA1 Data e horário do evento: 11-14 às 14h\nA2 Capacidade: 20 pessoas\nA3 Prazo de inscrição: 11-10\nA4 Item necessário: caderno\n\n[Aviso do evento V2]\nB1 Data e horário do evento: 11-14 às 15h\nB2 Capacidade: 24 pessoas\nB3 Prazo de inscrição: 11-10\nB4 Participação online: não oferecida"
+            },
+            {
+              "type": "p",
+              "text": "As duas versões têm 8 linhas no total, mas existem exatamente 5 unidades de comparação relevantes: data e horário do evento, capacidade, prazo de inscrição, item necessário e participação online. O fato de a linha sobre o item necessário da V1 não aparecer na V2 e o fato de uma nova linha sobre participação online surgir na V2 são mudanças diferentes e devem ser tratadas como itens separados."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item de comparação",
+                "Evidência na V1",
+                "Evidência na V2",
+                "O que comparar"
+              ],
+              "rows": [
+                [
+                  "Data e horário do evento",
+                  "A1",
+                  "B1",
+                  "Verificar se 11-14 continua igual e se o horário mudou de 14h para 15h"
+                ],
+                [
+                  "Capacidade",
+                  "A2",
+                  "B2",
+                  "Comparar 20 pessoas com 24 pessoas"
+                ],
+                [
+                  "Prazo de inscrição",
+                  "A3",
+                  "B3",
+                  "Verificar se 11-10 permaneceu igual"
+                ],
+                [
+                  "Item necessário",
+                  "A4",
+                  "Sem linha correspondente",
+                  "Verificar se o item desapareceu da V2"
+                ],
+                [
+                  "Participação online",
+                  "Sem linha correspondente",
+                  "B4",
+                  "Verificar se um novo item foi adicionado na V2"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "write-comparison-prompt",
+          "heading": "2. Declarar explicitamente os critérios de comparação no prompt",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Se você apenas pedir para comparar dois documentos, diferenças de redação e diferenças de significado podem acabar misturadas. Neste exercício, a comparação fica limitada a exatamente 5 itens, e cada estado deve ser somente alterado, adicionado, excluído ou igual. Em especial, o fato de a frase sobre o item necessário ter desaparecido da V2 não significa que nenhum item seja mais necessário. O motivo da remoção não aparece no documento."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare a V1 e a V2 abaixo.\n\nUse exatamente estes 5 itens de comparação.\n1. Data e horário do evento\n2. Capacidade\n3. Prazo de inscrição\n4. Item necessário\n5. Participação online\n\nPara cada item, classifique o estado como alterado, adicionado, excluído ou igual. Inclua o ID de evidência da V1 e o ID de evidência da V2 e explique a diferença em uma frase.\n\nRegras importantes:\n- Não deduza por que uma informação está ausente do documento.\n- Não conclua que nenhum item é necessário apenas porque o item necessário desapareceu da V2.\n- Não altere nem complemente datas ou números.\n- Não acrescente explicações sem base no texto.\n\n[Dados]\nV1: A1 Data e horário do evento 11-14 às 14h / A2 Capacidade 20 pessoas / A3 Prazo de inscrição 11-10 / A4 Item necessário caderno\nV2: B1 Data e horário do evento 11-14 às 15h / B2 Capacidade 24 pessoas / B3 Prazo de inscrição 11-10 / B4 Participação online não oferecida"
+            },
+            {
+              "type": "p",
+              "text": "O ponto principal do prompt é informar não apenas o que deve ser comparado, mas também o que não deve ser feito. Em particular, exclusão e mudança de significado são coisas diferentes. A remoção de uma frase é uma observação sobre o estado do documento; decidir se algo continua necessário exige informação adicional."
+            }
+          ]
+        },
+        {
+          "id": "review-example-output",
+          "heading": "3. Conferir os 5 itens, um por um, no exemplo de resultado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O resultado abaixo não é um teste de desempenho de um produto de IA real. É um exemplo editorial elaborado e revisado com auxílio de IA para mostrar a correspondência entre entrada e saída neste tutorial. O leitor deve comparar diretamente com o texto original os estados e números apresentados."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "1. Data e horário do evento — alterado\nEvidência: A1, B1\nA data 11-14 permanece igual, mas o horário de início mudou de 14h para 15h.\n\n2. Capacidade — alterado\nEvidência: A2, B2\nA capacidade mudou de 20 pessoas para 24 pessoas.\n\n3. Prazo de inscrição — igual\nEvidência: A3, B3\nO prazo de inscrição é 11-10 nas duas versões.\n\n4. Item necessário — excluído\nEvidência: A4, sem linha correspondente na V2\nO item caderno, presente na V1, não é encontrado na V2. Não é possível determinar, somente com esses dados, o motivo da exclusão nem se algum item ainda é necessário.\n\n5. Participação online — adicionado\nEvidência: sem linha correspondente na V1, B4\nFoi adicionado na V2 um novo item informando que a participação online não é oferecida."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item",
+                "Classificação",
+                "Texto original a verificar",
+                "O que a pessoa deve conferir"
+              ],
+              "rows": [
+                [
+                  "Data e horário do evento",
+                  "Alterado",
+                  "A1 ↔ B1",
+                  "Se 14h mudou para 15h"
+                ],
+                [
+                  "Capacidade",
+                  "Alterado",
+                  "A2 ↔ B2",
+                  "Se 20 pessoas mudou para 24 pessoas"
+                ],
+                [
+                  "Prazo de inscrição",
+                  "Igual",
+                  "A3 ↔ B3",
+                  "Se os dois dizem 11-10"
+                ],
+                [
+                  "Item necessário",
+                  "Excluído",
+                  "A4 ↔ ausente na V2",
+                  "Se o resultado apenas registra que o caderno não aparece na V2"
+                ],
+                [
+                  "Participação online",
+                  "Adicionado",
+                  "Ausente na V1 ↔ B4",
+                  "Se a expressão negativa não oferecida foi preservada"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "find-bad-comparison",
+          "heading": "4. Identificar o erro de interpretar arbitrariamente um item excluído",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um erro importante na comparação de documentos é confundir uma mudança no texto com o motivo dessa mudança. É possível confirmar que a frase sobre o item necessário não aparece na V2, mas não há base para concluir que o organizador deixou de exigir um caderno. Da mesma forma, no item sobre participação online, não basta registrar que houve uma adição: a condição negativa não oferecida também precisa ser preservada."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Item necessário — alterado\nNa V2, o caderno deixou de ser necessário, portanto não é preciso levá-lo.\n\nParticipação online — adicionado\nA partir da V2, a participação online está disponível."
+            },
+            {
+              "type": "p",
+              "text": "A primeira frase inventa o motivo da remoção, e a segunda inverte o significado de B4. O correto é apenas registrar que o item necessário não é encontrado na V2 e manter, na participação online, a negativa original de que ela não é oferecida."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Expressão incorreta",
+                "Problema",
+                "Princípio de correção"
+              ],
+              "rows": [
+                [
+                  "O caderno deixou de ser necessário",
+                  "Deduz arbitrariamente o motivo da exclusão",
+                  "Registrar apenas que o item necessário não é encontrado na V2"
+                ],
+                [
+                  "A participação online está disponível",
+                  "Inverte a negativa não oferecida",
+                  "Manter exatamente o sentido de que a participação online não é oferecida"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "request-correction",
+          "heading": "5. Se houver um problema, pedir a correção apenas da parte errada em vez de reescrever tudo",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Se apenas 1 ou 2 itens estiverem errados, fica mais fácil revisar a correção quando você delimita o escopo, em vez de solicitar uma nova comparação completa. Na nova solicitação, indique quais itens estão errados, qual é a evidência original e quais fatos não podem ser alterados. Assim, uma pessoa pode comparar diretamente o antes e o depois."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Corrija somente os itens sobre o item necessário e a participação online no resultado anterior.\n\nRegras de correção:\n- A4 informa item necessário: caderno, mas não existe uma linha sobre item necessário na V2. Portanto, classifique o estado como excluído e remova a inferência de que o caderno deixou de ser necessário.\n- B4 informa que a participação online não é oferecida. Não transforme isso em participação online disponível.\n- Não altere os resultados já existentes para data e horário do evento, capacidade ou prazo de inscrição.\n- Mantenha exatamente 5 itens no resultado final."
+            },
+            {
+              "type": "p",
+              "text": "Nesta nova solicitação, foi indicado explicitamente que os outros 3 itens, que já estavam corretos, não devem ser alterados. Mesmo durante uma correção, valores como data, horário e capacidade podem mudar sem intenção; por isso, no final, os 5 itens ainda precisam ser conferidos novamente."
+            }
+          ]
+        },
+        {
+          "id": "final-check",
+          "heading": "6. Fazer a verificação final consultando o texto original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Use o resultado da comparação da IA como rascunho para revisão humana, não como tabela final de decisão. Em documentos revisados, datas, números, negações e a presença de adições ou exclusões podem ser mais importantes do que pequenas diferenças de redação. Mantenha a lista de verificação abaixo ao lado do texto original e confirme cada item."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Existem exatamente 5 itens de comparação: data e horário do evento, capacidade, prazo de inscrição, item necessário e participação online?\n[ ] A alteração de A1 para B1, de 14h → 15h, está correta?\n[ ] A alteração de A2 para B2, de 20 pessoas → 24 pessoas, está correta?\n[ ] O prazo de inscrição 11-10 de A3 e B3 foi classificado como igual?\n[ ] O fato de A4 não aparecer na V2 foi registrado como exclusão?\n[ ] A exclusão do item necessário não foi interpretada como item desnecessário?\n[ ] A negativa de B4, participação online não oferecida, foi preservada?\n[ ] Nenhum motivo de alteração ou política que não aparece no texto original foi inventado?"
+            },
+            {
+              "type": "p",
+              "text": "O mesmo princípio pode ser aplicado à comparação de documentos reais de trabalho. Primeiro, defina as unidades de comparação, atribua identificadores às frases e depois confira no original os estados sugeridos pela IA. Na fase de prática, é mais seguro usar textos fictícios em vez de materiais reais sensíveis."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Exemplo editorial em que uma pessoa leu e verificou, no aviso fictício V1 e V2, a correspondência entre os IDs de linha de entrada, os 5 itens de comparação, números, datas e expressões negativas",
+        "items": [
+          "Verificar se há exatamente 5 itens de comparação",
+          "Verificar se os valores de A1~A4 e B1~B4 não foram alterados no resultado",
+          "Verificar se a exclusão do item necessário não foi interpretada como item desnecessário",
+          "Verificar se a expressão negativa participação online não oferecida foi preservada"
+        ],
+        "limits": "O resultado é um exemplo editorial educacional elaborado e revisado com auxílio de IA. Não foi executado em um produto de IA específico e não comprova precisão nem desempenho."
+      }
+    },
+    {
+      "slug": "ai-faq-from-notice",
+      "title": "Criar uma FAQ a partir de um aviso com IA: deixar como “precisa de confirmação” o que não aparece no original",
+      "summary": "Neste exercício, você cria 6 perguntas e respostas a partir de um aviso curto, adiciona source ID às respostas com base no original e evita inventar respostas sobre cobrança, reembolso ou lista de espera quando essas informações não aparecem na fonte.",
+      "tags": [
+        "FAQ com IA",
+        "organização de avisos",
+        "verificação de fontes"
+      ],
+      "audience": "Iniciantes que querem organizar perguntas frequentes a partir de avisos de eventos, cursos ou encontros, mas se preocupam com a possibilidade de a IA criar respostas que não existem no texto original",
+      "prerequisites": [
+        "Basta conseguir separar o aviso em frases individuais.",
+        "Adicione source IDs como S1 e S2 antes de cada frase.",
+        "Não é necessário inserir dados pessoais reais nem materiais de organizações reais."
+      ],
+      "sections": [
+        {
+          "id": "prepare-notice",
+          "heading": "1. Transformar o aviso em uma lista de fatos com source IDs",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Antes de criar a FAQ, separe os fatos que realmente podem ser confirmados no aviso. O evento deste exercício é totalmente fictício, e somente S1~S4 devem ser tratados como dados oficiais de entrada. Em especial, não existe no original nenhuma frase sobre taxa de participação, reembolso ou lista de espera. É importante indicar explicitamente essas lacunas para que a IA não use práticas comuns de outros eventos como se fossem respostas válidas."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1 Data e horário do evento: 11-20 às 16h\nS2 Participação: inscrição antecipada obrigatória, capacidade 16 pessoas\nS3 Item necessário: material para escrever\nS4 Participação online: não oferecida\n\nItens ausentes do texto original:\n- Sem informação sobre cobrança\n- Sem informação sobre reembolso\n- Sem informação sobre lista de espera"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "Fato do texto original",
+                "O que pode ser respondido na FAQ"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "11-20 às 16h",
+                  "Data e horário de início do evento"
+                ],
+                [
+                  "S2",
+                  "Inscrição antecipada obrigatória, capacidade 16 pessoas",
+                  "Necessidade de inscrição e capacidade"
+                ],
+                [
+                  "S3",
+                  "Item necessário: material para escrever",
+                  "Item necessário"
+                ],
+                [
+                  "S4",
+                  "Participação online não oferecida",
+                  "Disponibilidade de participação online"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "O source ID não serve para decorar a resposta, mas para facilitar a verificação. Quem lê a FAQ deve conseguir ver a marcação S2 e localizar rapidamente o S2 no texto original."
+            }
+          ]
+        },
+        {
+          "id": "design-six-questions",
+          "heading": "2. Planejar perguntas que podem ser respondidas e perguntas que precisam de confirmação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Uma FAQ não precisa ter uma resposta definitiva para todas as perguntas. Você pode incluir perguntas que os leitores provavelmente fariam e, quando o texto original não trouxer a informação, marcar a resposta como precisa de confirmação. Neste exercício, serão feitas exatamente 6 perguntas, e cobrança e reembolso serão reunidos em uma única pergunta."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Crie 6 itens de FAQ a partir do aviso abaixo.\n\nRegras:\n- Use somente informações que realmente aparecem em S1~S4.\n- Quando houver evidência, coloque o source ID ao final da resposta.\n- Quando não houver evidência, não invente. Marque como precisa de confirmação.\n- Preserve o fato de que cobrança, reembolso e lista de espera não aparecem no texto original.\n- Não transforme participação online não oferecida em participação online disponível.\n- Não altere a data, o horário nem o número da capacidade.\n\nUse exatamente estas 6 perguntas:\n1. Quando acontece o evento?\n2. É necessária inscrição antecipada? Qual é a capacidade?\n3. O que é preciso levar?\n4. É possível participar online?\n5. Como funcionam a taxa de participação e o reembolso?\n6. Se a capacidade for atingida, é possível entrar em uma lista de espera?"
+            },
+            {
+              "type": "p",
+              "text": "Como as próprias perguntas estão fixadas neste prompt, reduz-se a possibilidade de a IA aumentar arbitrariamente o número de perguntas ou omitir fatos importantes. Marcar algo como precisa de confirmação não é um fracasso; é uma resposta correta quando o texto original não contém a informação."
+            }
+          ]
+        },
+        {
+          "id": "review-faq-output",
+          "heading": "3. Comparar o exemplo de FAQ com o texto original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A tabela abaixo não é uma saída real de um serviço específico de IA nem uma medição de desempenho. É um exemplo editorial elaborado e revisado com auxílio de IA para mostrar a relação entre os dados de entrada e as respostas. Em uso real, cada resposta deve ser comparada diretamente com o source ID indicado."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Q1. Quando acontece o evento?\nA. O evento acontece em 11-20 às 16h. Evidência: S1\n\nQ2. É necessária inscrição antecipada? Qual é a capacidade?\nA. A inscrição antecipada é obrigatória e a capacidade é de 16 pessoas. Evidência: S2\n\nQ3. O que é preciso levar?\nA. É preciso levar material para escrever. Evidência: S3\n\nQ4. É possível participar online?\nA. A participação online não é oferecida. Evidência: S4\n\nQ5. Como funcionam a taxa de participação e o reembolso?\nA. O texto original não traz informações sobre cobrança nem reembolso. Precisa de confirmação.\n\nQ6. Se a capacidade for atingida, é possível entrar em uma lista de espera?\nA. O texto original não traz informações sobre lista de espera nem inscrição em lista de espera. Precisa de confirmação."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Pergunta",
+                "Resumo da resposta",
+                "Evidência",
+                "Classificação"
+              ],
+              "rows": [
+                [
+                  "Quando acontece o evento?",
+                  "11-20 às 16h",
+                  "S1",
+                  "Com evidência"
+                ],
+                [
+                  "É necessária inscrição? Qual é a capacidade?",
+                  "Inscrição antecipada obrigatória, capacidade 16 pessoas",
+                  "S2",
+                  "Com evidência"
+                ],
+                [
+                  "O que é preciso levar?",
+                  "Material para escrever",
+                  "S3",
+                  "Com evidência"
+                ],
+                [
+                  "É possível participar online?",
+                  "Não oferecida",
+                  "S4",
+                  "Com evidência"
+                ],
+                [
+                  "E a taxa e o reembolso?",
+                  "Sem informação no texto original",
+                  "Nenhuma",
+                  "Precisa de confirmação"
+                ],
+                [
+                  "É possível entrar em lista de espera?",
+                  "Sem informação no texto original",
+                  "Nenhuma",
+                  "Precisa de confirmação"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "detect-invented-answers",
+          "heading": "4. Filtrar respostas de FAQ plausíveis, mas ausentes do texto original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O maior cuidado na criação automática de FAQ é não transformar regras que parecem comuns em fatos do texto original. Eventos gratuitos, ausência de reembolso ou cadastro em lista de espera podem existir na prática, mas nada disso aparece neste aviso fictício. Ser plausível e ter evidência são coisas diferentes."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Q. Como funcionam a taxa de participação e o reembolso?\nA. A participação é gratuita e não existe procedimento separado de reembolso.\n\nQ. Se a capacidade for atingida, é possível entrar em uma lista de espera?\nA. Sim. Quando as 16 vagas forem preenchidas, os interessados serão automaticamente incluídos na lista de espera."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Conteúdo adicionado incorretamente",
+                "Situação no texto original",
+                "Tratamento correto"
+              ],
+              "rows": [
+                [
+                  "Participação gratuita",
+                  "Sem informação sobre cobrança",
+                  "Precisa de confirmação"
+                ],
+                [
+                  "Sem procedimento separado de reembolso",
+                  "Sem informação sobre reembolso",
+                  "Precisa de confirmação"
+                ],
+                [
+                  "Inclusão automática em lista de espera",
+                  "Sem informação sobre lista de espera",
+                  "Precisa de confirmação"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Na correção, é mais importante remover conteúdo sem fonte do que tornar a resposta mais elegante. Mesmo que você queira acrescentar um contato depois de precisa de confirmação, não invente telefone nem e-mail se o texto original não trouxer essas informações."
+            }
+          ]
+        },
+        {
+          "id": "request-source-only-revision",
+          "heading": "5. Pedir nova correção somente para respostas sem base na fonte",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao encontrar uma FAQ incorreta, indique especificamente qual frase está fora do que a fonte permite afirmar. Não peça para preencher a lacuna com novas informações. Em vez disso, solicite que a ausência de dados no texto original seja claramente marcada. Respostas sem source ID devem voltar para a lista de verificação."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Corrija apenas Q5 e Q6 da FAQ anterior.\n\nAs afirmações em Q5 de que a participação é gratuita e de que não existe procedimento de reembolso não aparecem no texto original. Altere cobrança e reembolso para precisa de confirmação.\nA inclusão automática em lista de espera mencionada em Q6 também não aparece no texto original. Altere a possibilidade de entrar em lista de espera para precisa de confirmação.\nNão crie novos contatos, políticas ou condições de exceção que não existam em S1~S4.\nNão altere, em Q1~Q4, a data, o horário, 16 pessoas, material para escrever nem a informação de que a participação online não é oferecida."
+            },
+            {
+              "type": "p",
+              "text": "Esse tipo de nova solicitação recoloca a resposta dentro dos limites do texto original. Mesmo depois da correção, ainda é necessário verificar se Q1~Q4 não foram alteradas por engano."
+            }
+          ]
+        },
+        {
+          "id": "faq-checklist",
+          "heading": "6. Conferir a FAQ com foco nos source IDs antes de publicar",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A FAQ deve ser fácil de ler, mas não pode passar a conter mais fatos do que o aviso original. As perguntas podem ser reformuladas de maneira natural, mas se datas, capacidade, condições negativas ou itens ainda não definidos forem alterados, o resultado se torna um aviso diferente. Verifique cada item abaixo."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] Existem exatamente 6 itens de FAQ?\n[ ] 11-20 às 16h corresponde a S1?\n[ ] Inscrição antecipada obrigatória e capacidade 16 pessoas correspondem a S2?\n[ ] O item necessário continua sendo material para escrever?\n[ ] A negativa participação online não oferecida foi preservada?\n[ ] A FAQ evita dizer que é gratuito ou pago quando não existe informação sobre cobrança?\n[ ] A FAQ evita inventar uma política de reembolso quando ela não aparece no original?\n[ ] A FAQ evita deduzir se existe lista de espera quando não há informação sobre isso?\n[ ] As respostas sem evidência foram marcadas como precisa de confirmação?"
+            },
+            {
+              "type": "p",
+              "text": "Ao aplicar esse método a um aviso real, perguntas sem fonte também podem ser reunidas em uma lista separada para que o responsável confirme as informações e depois complemente o próprio aviso original. Porém, este tutorial não determina políticas de organizações reais nem obrigações legais; ele apenas pratica a preservação de fatos dentro do aviso fictício fornecido."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Exemplo editorial em que uma pessoa conferiu a relação entre 6 itens de FAQ, o aviso fictício fixado em S1~S4 e as informações explicitamente ausentes sobre cobrança, reembolso e lista de espera",
+        "items": [
+          "Verificar se existem exatamente 6 itens de FAQ",
+          "Verificar se data, horário, capacidade, item necessário e condição sobre participação online de S1~S4 foram preservados",
+          "Verificar se não foram inventadas informações sobre cobrança, reembolso ou lista de espera",
+          "Verificar se as perguntas sem base no original foram marcadas como precisa de confirmação"
+        ],
+        "limits": "O resultado é um exemplo editorial educacional elaborado e revisado com auxílio de IA. Não corresponde à execução de um produto real de IA, à medição de precisão de respostas nem à validação da função de geração de FAQ de um serviço específico."
+      }
+    },
+    {
+      "slug": "ai-feedback-theme-map",
+      "title": "Mapear opiniões em texto livre por tema com IA: lidar com múltiplos rótulos e classificação pendente",
+      "summary": "Neste exercício, 6 opiniões curtas em texto livre são classificadas em temas definidos, permitindo múltiplos rótulos quando uma mesma resposta contém 2 temas. Também é explicado por que o total de rótulos pode ser maior que o número de respondentes e como evitar inferências arbitrárias sobre intensidade emocional ou satisfação geral.",
+      "tags": [
+        "classificação de opiniões com IA",
+        "mapa de temas",
+        "análise de texto livre"
+      ],
+      "audience": "Iniciantes que querem organizar respostas curtas de pesquisas ou comentários por tema, mas ainda não sabem até que ponto podem confiar nas contagens e interpretações",
+      "prerequisites": [
+        "Basta conseguir separar opiniões curtas em linhas individuais.",
+        "As respostas F1~F6 deste exercício são todas fictícias.",
+        "Não é necessário inserir dados pessoais de clientes, funcionários ou participantes reais."
+      ],
+      "sections": [
+        {
+          "id": "prepare-feedback",
+          "heading": "1. Preparar as 6 opiniões exatamente como foram escritas, com IDs",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao classificar opiniões em texto livre, primeiro preserve cada frase como está, sem resumir. Uma única resposta curta pode conter 2 temas diferentes. Neste exemplo, F3 menciona tanto o tamanho do texto quanto a falta de sinalização de localização; escolher apenas um tema faria parte da informação desaparecer. Já F6, que diz sem comentário, não deve ser forçado para uma categoria positiva ou negativa."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "F1 O texto das informações é pequeno\nF2 A orientação de localização é difícil\nF3 O texto das informações é pequeno e a sinalização de localização é insuficiente\nF4 A explicação do responsável pela condução é gentil\nF5 Quero participar novamente\nF6 Sem comentário"
+            },
+            {
+              "type": "p",
+              "text": "Os rótulos usados neste exercício são orientação visual, orientação de localização, responsável pela condução, nova participação e classificação pendente. Não existem no material de entrada pontuações de emoção nem níveis de satisfação, portanto eles não devem ser criados."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ID da resposta",
+                "Expressão principal",
+                "Número possível de rótulos"
+              ],
+              "rows": [
+                [
+                  "F1",
+                  "O texto das informações é pequeno",
+                  "1"
+                ],
+                [
+                  "F2",
+                  "A orientação de localização é difícil",
+                  "1"
+                ],
+                [
+                  "F3",
+                  "O texto das informações é pequeno e a sinalização de localização é insuficiente",
+                  "2"
+                ],
+                [
+                  "F4",
+                  "A explicação do responsável pela condução é gentil",
+                  "1"
+                ],
+                [
+                  "F5",
+                  "Quero participar novamente",
+                  "1"
+                ],
+                [
+                  "F6",
+                  "Sem comentário",
+                  "1"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "define-label-rules",
+          "heading": "2. Escrever no prompt as regras para múltiplos rótulos e classificação pendente",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao pedir à IA que faça uma classificação temática, é necessário definir não apenas os nomes dos rótulos, mas também se múltiplos rótulos são permitidos. Se a opinião de uma pessoa puder cobrir vários temas, o total de rótulos não precisa ser igual ao número de respondentes. Neste exemplo, as contagens esperadas são orientação visual 2, orientação de localização 2, responsável pela condução 1, nova participação 1 e classificação pendente 1; o total de rótulos é 7."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Classifique as opiniões F1~F6 usando os 5 rótulos abaixo.\n\nRótulos:\n- Orientação visual\n- Orientação de localização\n- Responsável pela condução\n- Nova participação\n- Classificação pendente\n\nRegras:\n- Permita múltiplos rótulos quando uma opinião contiver temas diferentes.\n- Quando 2 temas estiverem explicitamente presentes, como em F3, aplique os 2 rótulos.\n- Quando não houver conteúdo avaliativo real, como em sem comentário, use classificação pendente.\n- Não deduza intensidade emocional positiva ou negativa, pontuação de satisfação nem se todos os participantes ficaram satisfeitos.\n- Não acrescente motivos que não aparecem no texto original.\n- Preserve o ID e o texto original de cada resposta.\n- No final, conte quantas respostas foram atribuídas a cada rótulo."
+            },
+            {
+              "type": "p",
+              "text": "Se a instrução que permite múltiplos rótulos for omitida, F3 pode acabar sendo classificada em somente 1 tema. Permitir previamente uma categoria de classificação pendente também reduz a chance de uma resposta sem informação ser forçada para outro tema."
+            }
+          ]
+        },
+        {
+          "id": "review-theme-map",
+          "heading": "3. Conferir juntos a classificação individual e as contagens",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O resultado abaixo não mede a precisão da classificação automática de uma IA específica. É um exemplo editorial elaborado e revisado com auxílio de IA para mostrar como a entrada se relaciona com as contagens de rótulos. Uma pessoa deve ler F1~F6 uma por uma e conferir novamente os rótulos."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "F1 → Orientação visual\nF2 → Orientação de localização\nF3 → Orientação visual, Orientação de localização\nF4 → Responsável pela condução\nF5 → Nova participação\nF6 → Classificação pendente\n\nContagem por rótulo:\nOrientação visual 2\nOrientação de localização 2\nResponsável pela condução 1\nNova participação 1\nClassificação pendente 1\n\nNúmero de respondentes: 6\nTotal de rótulos: 7\nComo F3 recebeu múltiplos rótulos, o total de 7 rótulos ser maior que os 6 respondentes não é um erro."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ID",
+                "Texto original",
+                "Rótulo",
+                "Contribuição para a contagem"
+              ],
+              "rows": [
+                [
+                  "F1",
+                  "O texto das informações é pequeno",
+                  "Orientação visual",
+                  "Orientação visual +1"
+                ],
+                [
+                  "F2",
+                  "A orientação de localização é difícil",
+                  "Orientação de localização",
+                  "Orientação de localização +1"
+                ],
+                [
+                  "F3",
+                  "O texto das informações é pequeno e a sinalização de localização é insuficiente",
+                  "Orientação visual, Orientação de localização",
+                  "Orientação visual +1, Orientação de localização +1"
+                ],
+                [
+                  "F4",
+                  "A explicação do responsável pela condução é gentil",
+                  "Responsável pela condução",
+                  "Responsável pela condução +1"
+                ],
+                [
+                  "F5",
+                  "Quero participar novamente",
+                  "Nova participação",
+                  "Nova participação +1"
+                ],
+                [
+                  "F6",
+                  "Sem comentário",
+                  "Classificação pendente",
+                  "Classificação pendente +1"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "avoid-overinterpretation",
+          "heading": "4. Não ampliar a classificação temática para uma análise de satisfação sem evidência",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um mapa de temas serve para organizar quais assuntos foram mencionados; ele não determina automaticamente as emoções dos participantes nem a satisfação geral. F4 diz que a explicação foi gentil e F5 diz que gostaria de participar novamente, mas isso não permite afirmar que todos os 6 respondentes ficaram satisfeitos. As expressões de dificuldade em F1~F3 também não fornecem base para transformar a intensidade emocional em números."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "No geral, a satisfação dos participantes foi muito alta. Todos os 6 participantes foram positivos em relação ao evento, e F1~F3 representam apenas uma insatisfação leve. Como F6 não apresentou nenhuma reclamação específica, também pode ser considerado satisfeito."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Inferência incorreta",
+                "Por que é um problema",
+                "O que registrar no lugar"
+              ],
+              "rows": [
+                [
+                  "Todos os 6 foram positivos",
+                  "F1~F3 e F6 não fornecem base para concluir satisfação geral",
+                  "Registrar somente os rótulos temáticos de cada resposta"
+                ],
+                [
+                  "Insatisfação leve",
+                  "A intensidade emocional não aparece no texto original",
+                  "Registrar apenas o conteúdo sobre texto informativo e orientação de localização"
+                ],
+                [
+                  "F6 também estava satisfeito",
+                  "Sem comentário não significa satisfação",
+                  "Classificação pendente"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Para reduzir esse tipo de erro, tema, emoção, satisfação e intenção de comportamento devem ser tratados como dimensões de análise diferentes. Neste exercício, somente os temas são classificados, e a frase de F5 sobre querer participar novamente é registrada apenas como nova participação."
+            }
+          ]
+        },
+        {
+          "id": "request-count-correction",
+          "heading": "5. Corrigir rótulos ausentes ou interpretações incorretas com uma nova solicitação direcionada",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Se, por exemplo, F3 for classificada somente como orientação de localização ou F6 for classificada como positiva, você pode especificar apenas esses IDs e pedir nova correção. Fornecer também as contagens esperadas como referência facilita a conferência humana do resultado revisado."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Revise novamente o resultado da classificação.\n\n- F3 contém tanto o texto das informações é pequeno quanto a sinalização de localização é insuficiente, portanto aplique Orientação visual e Orientação de localização.\n- F6 diz sem comentário e não contém conteúdo avaliativo, portanto use Classificação pendente.\n- Não deduza intensidade emocional nem satisfação.\n\nDepois da correção, verifique se as contagens correspondem ao seguinte:\nOrientação visual 2\nOrientação de localização 2\nResponsável pela condução 1\nNova participação 1\nClassificação pendente 1\n\nExistem 6 respondentes, mas como múltiplos rótulos são permitidos, o total de rótulos é 7. Não corrija essa diferença como se fosse um erro."
+            },
+            {
+              "type": "p",
+              "text": "Fornecer as contagens esperadas não significa que a classificação deva ser forçada para bater com os números. As contagens funcionam como valores de conferência que devem ser recalculados a partir do texto original. A decisão final precisa vir da verificação de que o conteúdo de cada resposta realmente corresponde à definição do rótulo."
+            }
+          ]
+        },
+        {
+          "id": "theme-checklist",
+          "heading": "6. Na verificação final, separar o número de respondentes do número de rótulos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Quando múltiplos rótulos são permitidos, é normal que o número de pessoas e o número de rótulos sejam diferentes. Ao apresentar os resultados, também não se deve tratar 6 respondentes e 7 rótulos como o mesmo tipo de contagem. Use a lista abaixo para conferir simultaneamente os rótulos individuais e os totais."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] F1 está classificada como Orientação visual?\n[ ] F2 está classificada como Orientação de localização?\n[ ] F3 possui os 2 rótulos Orientação visual e Orientação de localização?\n[ ] F4 está classificada como Responsável pela condução?\n[ ] F5 está classificada como Nova participação?\n[ ] F6 está classificada como Classificação pendente?\n[ ] As contagens são Orientação visual 2, Orientação de localização 2, Responsável pela condução 1, Nova participação 1, Classificação pendente 1?\n[ ] Existem 6 respondentes e 7 rótulos no total?\n[ ] O total de 7 rótulos não foi tratado como erro?\n[ ] Não foram acrescentadas interpretações fora do original, como todos satisfeitos ou intensidade emocional?"
+            },
+            {
+              "type": "p",
+              "text": "Com dados reais de texto livre, é útil testar primeiro as definições dos rótulos em um pequeno conjunto de exemplos antes de fixar os critérios de classificação. Este tutorial é um exercício editorial com 6 frases fictícias e não avalia a representatividade nem o significado estatístico dos resultados de uma pesquisa."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Exemplo editorial em que uma pessoa recalculou os múltiplos rótulos e as contagens por categoria das opiniões fictícias F1~F6",
+        "items": [
+          "Verificar se F3 recebeu Orientação visual e Orientação de localização",
+          "Verificar se F6 ficou como Classificação pendente",
+          "Verificar se as contagens por rótulo são 2, 2, 1, 1, 1",
+          "Verificar se 6 respondentes e 7 rótulos totais foram tratados como contagens diferentes",
+          "Verificar se não foram inferidas intensidade emocional nem satisfação de todos"
+        ],
+        "limits": "O resultado é um exemplo editorial educacional elaborado e revisado com auxílio de IA. Não corresponde à análise de dados reais de pesquisa, à medição de precisão da classificação nem à validação do desempenho de classificação automática de um produto específico de IA."
+      }
+    },
+    {
+      "slug": "ai-plain-language-guide",
+      "title": "Reescrever orientações difíceis em linguagem simples com IA: preservar condições, exceções, negações e prazos",
+      "summary": "Neste exercício, 4 frases de um guia fictício de empréstimo são reescritas em linguagem simples, preservando a exigência de membro cadastrado, o prazo de 7 dias, a proibição de extensão para materiais reservados e a regra de que materiais não reservados permitem 1 solicitação de extensão sem garantia de aprovação.",
+      "tags": [
+        "linguagem simples",
+        "edição de texto com IA",
+        "preservação de condições"
+      ],
+      "audience": "Iniciantes que querem tornar orientações formais mais fáceis de entender para leitores comuns, mas se preocupam em perder condições ou exceções importantes",
+      "prerequisites": [
+        "Basta conseguir copiar o texto original separando cada frase.",
+        "S1~S4 abaixo são orientações operacionais totalmente fictícias, não leis nem regulamentos reais.",
+        "Não é necessário inserir dados reais de membros nem informações pessoais."
+      ],
+      "sections": [
+        {
+          "id": "read-original-rules",
+          "heading": "1. Marcar as condições que obrigatoriamente precisam permanecer antes de simplificar o texto",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O objetivo da edição em linguagem simples não é reduzir o conteúdo, mas expressar a mesma regra de forma mais fácil de entender. Antes de reescrever, identifique elementos cujo desaparecimento mudaria o sentido: requisitos de cadastro, períodos, proibições, número de solicitações permitidas e situação da aprovação. O conteúdo abaixo não corresponde às regras de uma biblioteca ou organização real; trata-se de uma orientação operacional fictícia criada para este tutorial."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1 O empréstimo está disponível somente para membros cadastrados.\nS2 A devolução deve ser feita em até 7 dias, incluindo o dia do empréstimo.\nS3 Materiais reservados não podem ter o prazo estendido.\nS4 Para materiais não reservados, é possível solicitar 1 extensão antes do prazo de devolução, mas fazer a solicitação não significa que a extensão foi aprovada."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "Elemento que precisa ser preservado",
+                "Sentido que não pode mudar"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Somente membros cadastrados",
+                  "Não pode virar qualquer pessoa pode fazer empréstimo"
+                ],
+                [
+                  "S2",
+                  "Incluindo o dia do empréstimo, em até 7 dias",
+                  "Não pode mudar para 7 dias a partir do dia seguinte ao empréstimo"
+                ],
+                [
+                  "S3",
+                  "Materiais reservados, extensão não permitida",
+                  "Não pode virar extensão permitida sob alguma condição"
+                ],
+                [
+                  "S4",
+                  "Materiais não reservados, antes do prazo, 1 solicitação, solicitação de extensão permitida, aprovação não garantida",
+                  "Solicitação permitida não pode virar aprovação automática"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "S4, em especial, reúne várias condições em uma única frase. É possível dividir a regra em frases menores, mas todos estes elementos devem permanecer: materiais não reservados, antes do prazo, 1 solicitação e a diferença entre solicitar e ter a extensão aprovada."
+            }
+          ]
+        },
+        {
+          "id": "write-plain-prompt",
+          "heading": "2. Pedir ao mesmo tempo uma redação simples e a preservação do significado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Se você apenas pedir para deixar o texto mais fácil, algumas condições podem desaparecer. Por isso, indique diretamente no prompt quais informações precisam ser preservadas. Neste exercício, a redação deve usar frases curtas e palavras comuns, sem criar novos benefícios nem novas exceções."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Reescreva as orientações fictícias S1~S4 abaixo em linguagem simples, fácil de entender para um iniciante.\n\nRegras:\n- Preserve exatamente o significado de cada source ID.\n- Não remova nem enfraqueça condições, exceções, expressões negativas, números ou prazos.\n- Preserve em S1 a condição somente membros cadastrados.\n- Preserve em S2 incluindo o dia do empréstimo e em até 7 dias.\n- Preserve em S3 que materiais reservados não podem ter o prazo estendido.\n- Preserve em S4 todos estes elementos: materiais não reservados, antes do prazo de devolução, 1 solicitação de extensão, solicitação permitida, aprovação não garantida.\n- Não transforme solicitação permitida em aprovado ou extensão automática.\n- Não invente taxas, penalidades, extensões adicionais ou exceções que não apareçam no original.\n\nNo resultado, mostre para cada source ID a versão em linguagem simples e as condições principais preservadas do texto original."
+            },
+            {
+              "type": "p",
+              "text": "É possível tornar o texto mais simples encurtando as frases ou dividindo uma frase em 2. Porém, se a nova versão ampliar ou reduzir direitos ou obrigações em relação ao original, já não se trata apenas de edição; a regra foi alterada."
+            }
+          ]
+        },
+        {
+          "id": "compare-plain-version",
+          "heading": "3. Colocar lado a lado o texto original e a versão em linguagem simples",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O resultado abaixo não é uma medição do desempenho real de reescrita de um serviço. É um exemplo editorial elaborado e revisado com auxílio de IA para mostrar como preservar o significado. Antes de avaliar se a redação parece mais simples, verifique se todas as condições originais continuam presentes."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "S1 Linguagem simples: Somente membros cadastrados podem pegar materiais emprestados.\nCondição preservada: empréstimo disponível somente para membros cadastrados\n\nS2 Linguagem simples: Devolva o item em até 7 dias, contando também o dia em que ele foi emprestado.\nCondição preservada: incluindo o dia do empréstimo, em até 7 dias\n\nS3 Linguagem simples: O prazo de empréstimo de materiais reservados não pode ser estendido.\nCondição preservada: materiais reservados, extensão não permitida\n\nS4 Linguagem simples: Para materiais que não estão reservados, você pode solicitar 1 extensão antes do prazo de devolução. Porém, fazer a solicitação não significa que a extensão foi aprovada.\nCondição preservada: materiais não reservados, antes do prazo, 1 solicitação, solicitação permitida, aprovação não garantida"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ID",
+                "Ponto principal do original",
+                "Ponto principal em linguagem simples",
+                "Preservado?"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Disponível somente para membros cadastrados",
+                  "Somente membros cadastrados podem pegar emprestado",
+                  "Preservado"
+                ],
+                [
+                  "S2",
+                  "Em até 7 dias incluindo o dia do empréstimo",
+                  "Em até 7 dias contando o dia do empréstimo",
+                  "Preservado"
+                ],
+                [
+                  "S3",
+                  "Materiais reservados não podem ter extensão",
+                  "Materiais reservados não podem ter o prazo estendido",
+                  "Preservado"
+                ],
+                [
+                  "S4",
+                  "Materiais não reservados: 1 solicitação de extensão antes do prazo, aprovação não garantida",
+                  "Materiais não reservados: 1 solicitação antes do prazo, solicitação não garante aprovação",
+                  "Preservado"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "find-meaning-change",
+          "heading": "4. Encontrar frases que ficaram mais simples, mas mudaram a regra",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O erro mais importante é transformar uma frase que diz que uma extensão pode ser solicitada em uma frase que diz que a extensão pode ser feita ou que já está aprovada. Pode parecer uma diferença pequena na redação, mas a condição transmitida ao usuário muda de forma importante. Retirar de S2 a expressão incluindo o dia do empréstimo provoca o mesmo tipo de problema."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "S2 Linguagem simples: O item pode ser usado por 7 dias a partir do dia seguinte ao empréstimo.\n\nS4 Linguagem simples: Materiais não reservados podem ser estendidos automaticamente 1 vez até a data de devolução."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Trecho incorreto",
+                "Como mudou em relação ao original",
+                "Como corrigir"
+              ],
+              "rows": [
+                [
+                  "7 dias a partir do dia seguinte ao empréstimo",
+                  "Altera a condição de S2 de incluir o dia do empréstimo",
+                  "Restaurar em até 7 dias incluindo o dia do empréstimo"
+                ],
+                [
+                  "Estendidos automaticamente",
+                  "Transforma a possibilidade de solicitar de S4 em aprovação ou processamento automático",
+                  "Restaurar a regra de que 1 extensão pode ser solicitada, mas a aprovação não é garantida"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Na edição em linguagem simples, preservar as relações lógicas é mais importante do que eliminar palavras. Mesmo que a redação fique um pouco mais longa, é melhor manter uma segunda frase que explique a diferença entre solicitação e aprovação."
+            }
+          ]
+        },
+        {
+          "id": "ask-clarifying-questions",
+          "heading": "5. Se o próprio original for ambíguo, criar perguntas de confirmação em vez de adivinhar",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Durante a simplificação, você também pode descobrir pontos que o texto original não define. Por exemplo, S4 não informa quais critérios são usados para aprovar uma solicitação de extensão. Nesse caso, em vez de pedir à IA que invente uma regra, você pode pedir que ela gere uma lista de perguntas para confirmar com a pessoa responsável."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Mantenha inalterado o significado de S1~S4 e crie perguntas de confirmação sobre pontos que o usuário pode querer saber, mas que não podem ser respondidos apenas com o texto original.\n\nCondições:\n- Não deduza respostas que não apareçam no original.\n- Escreva somente as perguntas.\n- Em especial, diferencie se S4 define ou não os critérios de aprovação e o método de processamento da solicitação de extensão.\n- Não crie novas regras, penalidades, taxas ou exceções."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Exemplos de perguntas que precisam de confirmação:\n1. Quais critérios são usados para aprovar uma solicitação de extensão de um material não reservado?\n2. Como o usuário é informado se a solicitação de extensão foi aprovada?\n3. Se a extensão for aprovada, como o novo prazo de devolução é definido?\n\nAs respostas para essas perguntas não aparecem em S1~S4 e precisam de confirmação separada."
+            },
+            {
+              "type": "p",
+              "text": "Criar uma pergunta de confirmação não significa que seja permitido adivinhar a resposta. Quando o original não define a informação, é melhor deixá-la pendente do que criar uma regra incorreta."
+            }
+          ]
+        },
+        {
+          "id": "plain-language-checklist",
+          "heading": "6. Na verificação final, confirmar primeiro se o significado continua igual",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Na revisão final, coloque o texto original e a versão em linguagem simples lado a lado e marque condições, números, prazos e expressões negativas. Só depois avalie se a redação está natural. Palavras como somente, em até, não pode, solicitar e aprovação merecem atenção especial porque pequenas mudanças podem alterar o sentido."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[ ] S1 ainda mantém a condição somente membros cadastrados?\n[ ] S2 ainda inclui o dia do empréstimo no cálculo?\n[ ] O número 7 em S2 permaneceu inalterado?\n[ ] S3 ainda preserva a negativa de que materiais reservados não podem ter o prazo estendido?\n[ ] S4 ainda se aplica somente a materiais não reservados?\n[ ] S4 ainda exige que a solicitação seja feita antes do prazo de devolução?\n[ ] O número de solicitações de extensão em S4 continua sendo 1?\n[ ] A possibilidade de solicitar foi mantida separada de aprovação automática ou aprovação garantida?\n[ ] Nenhuma taxa, penalidade, exceção ou critério de aprovação ausente no original foi inventado?"
+            },
+            {
+              "type": "p",
+              "text": "Ao lidar com termos de uso de organizações reais ou documentos jurídicos, pode ser necessária revisão por responsáveis e aplicação de critérios adicionais. Este artigo não substitui esse processo. Ele apenas pratica, com orientações operacionais fictícias e não jurídicas, o procedimento básico de simplificar a linguagem sem alterar o significado original."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Exemplo editorial em que uma pessoa comparou as orientações operacionais fictícias e não jurídicas S1~S4 e verificou se condições, prazos, negações e a diferença entre solicitação e aprovação foram preservadas na versão em linguagem simples",
+        "items": [
+          "Verificar se a condição somente membros cadastrados foi preservada",
+          "Verificar se em até 7 dias incluindo o dia do empréstimo permaneceu igual",
+          "Verificar se materiais reservados continuam sem possibilidade de extensão",
+          "Verificar se S4 preserva materiais não reservados, antes do prazo, 1 solicitação de extensão, solicitação permitida e aprovação não garantida",
+          "Verificar se nenhuma nova regra ou exceção foi adicionada"
+        ],
+        "limits": "O resultado é um exemplo editorial educacional elaborado e revisado com auxílio de IA. Ele não valida regras de nenhuma organização real, não fornece interpretação jurídica e não testa a precisão de reescrita nem recursos atuais de nenhum produto específico de IA."
+      }
+    },
+    {
+      "slug": "ai-research-question-plan",
+      "title": "Como usar IA para criar perguntas de pesquisa e um plano de busca",
+      "summary": "Este exercício mostra como dividir um objetivo de pesquisa vago em perguntas factuais, perguntas sobre experiências e perguntas de decisão, além de planejar o que verificar e onde procurar. Em vez de pedir à IA que invente resultados de busca, você primeiro organiza as fontes que precisam ser verificadas e os itens que ainda estão sem confirmação.",
+      "tags": [
+        "planejamento de pesquisa com IA",
+        "estratégia de busca",
+        "elaboração de perguntas"
+      ],
+      "audience": "Iniciantes que querem usar IA para começar uma pesquisa, mas não sabem por onde começar",
+      "prerequisites": [
+        "Não é necessário conhecer nenhum produto de IA específico nem a interface mais recente.",
+        "Não é necessário inserir informações pessoais reais.",
+        "O leitor deve conseguir definir por conta própria a região e a data de referência da pesquisa."
+      ],
+      "sections": [
+        {
+          "id": "define-goal",
+          "heading": "1. Antes de pesquisar, separe o objetivo da pesquisa dos fatos que já são conhecidos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O objetivo fictício deste exercício é investigar se uma biblioteca de bairro precisa de um programa noturno em dias úteis. Se você pedir à IA uma conclusão logo no início, ela pode misturar demanda ou orçamento ainda não confirmados como se fossem fatos. Por isso, comece separando as informações fornecidas daquilo que ainda não se sabe. Mantenha os source IDs S1, S2 e S3 sem alteração também nas etapas seguintes."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Anotações fictícias de pesquisa]\nS1: O programa em análise é um programa noturno de 60 minutos em um dia útil.\nS2: O público principal são adultos iniciantes.\nS3: A demanda real, os horários de outras instituições e o orçamento ainda não foram confirmados.\n\nAtenção:\n- A busca ainda não foi iniciada.\n- A região é definida pelo próprio leitor.\n- A data de referência da pesquisa também é definida pelo próprio leitor.\n- Não invente estatísticas, URLs ou reações de usuários que não tenham sido confirmadas."
+            },
+            {
+              "type": "p",
+              "text": "S1 e S2 são condições atuais de análise, enquanto S3 contém itens ainda não confirmados. Em especial, a conclusão de que “há necessidade” não aparece nos dados de entrada. Manter essa distinção ajuda a evitar que resultados de busca e resultados de entrevistas sejam tratados mais tarde como se fossem o mesmo tipo de evidência."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "estado atual",
+                "conteúdo",
+                "papel na pesquisa"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "condição fornecida",
+                  "Análise de um programa noturno de 60 minutos em dia útil",
+                  "Condição de formato e duração do programa"
+                ],
+                [
+                  "S2",
+                  "condição fornecida",
+                  "Público-alvo: adultos iniciantes",
+                  "Escopo do público-alvo"
+                ],
+                [
+                  "S3",
+                  "não confirmado",
+                  "Demanda real, horários de outras instituições e orçamento",
+                  "Precisa de pesquisa adicional"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "split-questions",
+          "heading": "2. Divida o objetivo em perguntas factuais, perguntas sobre experiências e perguntas de decisão",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Mesmo dentro da mesma pesquisa, o método de verificação muda conforme o tipo de pergunta. Horários de funcionamento e agendas de programas existentes podem ser verificados em fontes oficiais, mas para saber por que adultos iniciantes preferem ou evitam horários noturnos é necessário perguntar diretamente sobre a experiência dos usuários. A pergunta de decisão final deve permanecer em aberto até que as evidências anteriores sejam reunidas."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Usando somente as anotações fictícias de pesquisa abaixo, crie perguntas de pesquisa.\n\nS1: O programa em análise é um programa noturno de 60 minutos em um dia útil.\nS2: O público principal são adultos iniciantes.\nS3: A demanda real, os horários de outras instituições e o orçamento ainda não foram confirmados.\n\nRequisitos:\n1. Separe as perguntas em “perguntas factuais”, “perguntas sobre experiências” e “perguntas de decisão”.\n2. Indique que tipo de fonte é necessário para cada pergunta.\n3. Não invente fatos, estatísticas, URLs ou nomes de organizações que não estejam na entrada.\n4. Não escreva como se a busca já tivesse sido realizada.\n5. Mantenha as marcações S1, S2 e S3 sem alteração.\n6. Separe o papel das informações oficiais de funcionamento do papel das entrevistas com usuários."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Exemplo editorial criado e revisado com auxílio de IA — não é uma validação do desempenho real de um produto]\n\nPerguntas factuais\n- Quais são os horários de funcionamento da instituição nas noites de dias úteis?\n- Existe atualmente, ou existiu recentemente, algum programa voltado a adultos iniciantes?\n- Em quais horários instituições semelhantes da região realizam programas noturnos em dias úteis?\n\nPerguntas sobre experiências\n- Quais fatores influenciam a escolha de horário dos adultos iniciantes ao participar de um programa?\n- Como usuários reais percebem a duração de 60 minutos: pesada, adequada ou de outra forma?\n\nPergunta de decisão\n- Considerando em conjunto a demanda confirmada, os horários disponíveis para funcionamento e as condições de orçamento, há evidência suficiente para continuar avaliando um programa noturno em dia útil?\n\nNeste momento, apenas S1 e S2 estão confirmados. A demanda real, os horários de outras instituições e o orçamento em S3 continuam sem confirmação."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "tipo de pergunta",
+                "pergunta de exemplo",
+                "principal fonte a verificar",
+                "é possível responder agora?"
+              ],
+              "rows": [
+                [
+                  "Pergunta factual",
+                  "É possível funcionar à noite em dias úteis?",
+                  "Horário oficial de funcionamento e informações oficiais sobre programas",
+                  "Não"
+                ],
+                [
+                  "Pergunta factual",
+                  "Em quais horários instituições semelhantes operam?",
+                  "Páginas oficiais de outras instituições",
+                  "Não"
+                ],
+                [
+                  "Pergunta sobre experiências",
+                  "Quais horários os adultos iniciantes escolhem?",
+                  "Entrevistas com usuários",
+                  "Não"
+                ],
+                [
+                  "Pergunta sobre experiências",
+                  "Como os usuários percebem a duração de 60 minutos?",
+                  "Entrevistas com usuários",
+                  "Não"
+                ],
+                [
+                  "Pergunta de decisão",
+                  "Há evidência suficiente para continuar avaliando o programa?",
+                  "Evidências factuais e de experiência anteriores, além da confirmação do orçamento",
+                  "Não"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-search-plan",
+          "heading": "3. Planeje termos de busca e tipos de fonte que precisam ser verificados",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O objetivo desta etapa não é obter resultados de busca, mas criar um plano antes de pesquisar. O nome da região e a data de referência devem ser preenchidos pelo próprio leitor. Em vez de usar termos que já pressupõem uma conclusão, como “outras bibliotecas também realizam muitos programas à noite”, é mais seguro combinar elementos verificáveis, como horário de funcionamento, programas para adultos e agenda noturna."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "objetivo da verificação",
+                "termos de busca candidatos",
+                "fonte principal a verificar",
+                "fonte complementar",
+                "o que registrar depois da busca"
+              ],
+              "rows": [
+                [
+                  "Horário em que a instituição atual pode funcionar",
+                  "[nome da região] biblioteca horário de funcionamento dias úteis",
+                  "Página oficial da instituição",
+                  "Comunicados oficiais",
+                  "Dia da semana, horário de funcionamento e data de validade"
+                ],
+                [
+                  "Existência de programa para adultos iniciantes",
+                  "[nome da região] biblioteca programa adulto iniciante",
+                  "Informações oficiais do programa",
+                  "Agenda oficial",
+                  "Nome do programa, público, horário e data de publicação"
+                ],
+                [
+                  "Horários noturnos em dias úteis de outras instituições",
+                  "[nome da região] biblioteca programa adulto noite",
+                  "Página oficial de cada instituição",
+                  "Informações oficiais de eventos",
+                  "Dia da semana, horário de início, duração e data de referência"
+                ],
+                [
+                  "Experiência dos usuários",
+                  "Não substituir por termo de busca",
+                  "Entrevistas com usuários",
+                  "Coleta anônima de opiniões, se necessário",
+                  "Experiências recorrentes e exceções"
+                ],
+                [
+                  "Condições de orçamento",
+                  "Exige verificação interna",
+                  "Materiais internos aprovados",
+                  "Confirmação com o responsável",
+                  "Valor confirmado ou estado de indefinição"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "As páginas oficiais de funcionamento servem para verificar fatos públicos, como horários e agendas. As entrevistas servem para compreender experiências reais dos usuários. Uma fonte não substitui a outra. A existência de um programa noturno em uma página oficial não prova que a demanda seja alta, e a preferência de um único usuário por horários noturnos não é suficiente para determinar o horário de funcionamento."
+            }
+          ]
+        },
+        {
+          "id": "set-freshness",
+          "heading": "4. Defina primeiro os critérios de atualidade e a tabela de itens não confirmados",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Horários de funcionamento e agendas de programas podem mudar, por isso é necessário decidir antes da busca qual data será usada como referência. Aqui, nenhum período específico é apresentado como sendo obrigatoriamente o mais atual. O leitor deve escolher uma data de referência adequada ao objetivo da pesquisa. Quando uma fonte não tiver data de publicação ou não for possível confirmar se ela ainda está em vigor, não presuma que ela seja atual: mantenha-a como não confirmada."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "item",
+                "critério de verificação de atualidade",
+                "tratamento se não for possível confirmar",
+                "estado atual"
+              ],
+              "rows": [
+                [
+                  "Horário atual de funcionamento da instituição",
+                  "Verificar se a informação oficial se aplica à data de referência escolhida pelo leitor",
+                  "Registrar a data de validade como desconhecida",
+                  "Não confirmado"
+                ],
+                [
+                  "Agenda recente de programas",
+                  "Verificar tanto a data de publicação quanto a data do evento",
+                  "Marcar separadamente como agenda passada",
+                  "Não confirmado"
+                ],
+                [
+                  "Agenda de outras instituições",
+                  "Verificar individualmente as datas nas páginas oficiais de cada instituição",
+                  "Registrar o funcionamento atual como não confirmado",
+                  "Não confirmado"
+                ],
+                [
+                  "Demanda real",
+                  "Registrar a data de entrevistas ou de outra pesquisa específica",
+                  "Registrar que as entrevistas ainda não foram realizadas",
+                  "Não confirmado"
+                ],
+                [
+                  "Orçamento",
+                  "Verificar se existe uma fonte atual e aprovada",
+                  "Manter o orçamento como indefinido",
+                  "Não confirmado"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Ao marcar explicitamente o que ainda não foi confirmado, fica mais fácil perceber quando a IA preenche lacunas com números plausíveis, mas não verificados. Na etapa de planejamento da pesquisa, “ainda não sabemos” é um resultado normal e válido."
+            }
+          ]
+        },
+        {
+          "id": "fix-bad-plan",
+          "heading": "5. Encontre os problemas em um exemplo incorreto e faça uma nova solicitação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um plano de pesquisa não pode ser usado se apresentar conteúdos que nunca foram pesquisados como se já estivessem confirmados ou se gerar percentuais e URLs inexistentes na entrada. Mesmo que números e links pareçam precisos, eles não são evidência até que a fonte seja realmente verificada."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Exemplo editorial incorreto]\n72% dos adultos da região querem programas noturnos em dias úteis, e todas as 5 bibliotecas próximas oferecem programas semelhantes às 7 PM. Portanto, há demanda suficiente para um programa noturno de 60 minutos. Estatísticas detalhadas podem ser consultadas em https://example.invalid/library-survey."
+            },
+            {
+              "type": "p",
+              "text": "Há 4 problemas. A entrada não contém a estatística de 72%, não há registro de pesquisa em 5 instituições próximas e também não foi informado nenhum horário de 7 PM. O URL também não é uma fonte que tenha sido realmente verificada. Além disso, S3 declara explicitamente que a demanda ainda não foi confirmada, mas o exemplo já apresenta uma conclusão definitiva."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Reescreva a resposta anterior.\n- Remova todas as expressões que indiquem que a busca já foi realizada.\n- Exclua números, quantidades de instituições, horários e URLs que não estejam na entrada.\n- Mantenha S1 e S2 como condições fornecidas.\n- Mantenha a demanda real, os horários de outras instituições e o orçamento em S3 como “não confirmados”.\n- Em vez de resultados, apresente perguntas factuais, perguntas sobre experiências, perguntas de decisão, termos de busca candidatos, tipos de fonte a verificar e critérios de atualidade.\n- Separe o papel das páginas oficiais de funcionamento do papel das entrevistas com usuários."
+            }
+          ]
+        },
+        {
+          "id": "verify-plan",
+          "heading": "6. Checklist para o leitor antes de realizar a busca de verdade",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Quando o plano estiver concluído, não passe diretamente para uma conclusão. Verifique pessoalmente os itens abaixo. Em seguida, use a região e a data de referência que você definiu para consultar fontes oficiais reais, e investigue as perguntas sobre experiências separadamente por meio de entrevistas. Os resultados deste artigo são exemplos editoriais criados e revisados com auxílio de IA e não representam validação do desempenho de busca ou da precisão de pesquisa de um produto de IA real."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Checklist do leitor]\n□ Eu defini pessoalmente a região da pesquisa?\n□ Eu defini pessoalmente a data de referência da pesquisa?\n□ A condição de 60 minutos de S1 foi preservada?\n□ O público de adultos iniciantes de S2 foi preservado?\n□ A demanda real, os horários de outras instituições e o orçamento de S3 continuam como não confirmados?\n□ Perguntas factuais e perguntas sobre experiências estão separadas?\n□ Horários de funcionamento e agendas devem ser verificados em páginas oficiais?\n□ Experiências dos usuários devem ser verificadas por meio de entrevistas?\n□ Foram adicionadas estatísticas, organizações ou URLs inexistentes?\n□ Há um campo para registrar a data de publicação e a data de validade das fontes?\n□ A conclusão foi evitada antes da realização da pesquisa?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Escopo da revisão do exemplo editorial: foi verificado se a separação entre fatos e itens não confirmados de S1-S3, os tipos de perguntas, a estrutura do plano de busca e a separação entre fontes oficiais e entrevistas com usuários são consistentes entre si.",
+        "items": [
+          "Preservação da condição de programa de 60 minutos em S1",
+          "Preservação do público de adultos iniciantes em S2",
+          "Manutenção da demanda real, dos horários de outras instituições e do orçamento de S3 como não confirmados",
+          "Ausência de estatísticas inventadas, URLs inventados ou afirmações de que a busca foi concluída",
+          "Orientação para que o leitor defina a região e a data de referência",
+          "Separação entre o papel das páginas oficiais de funcionamento e o das entrevistas com usuários"
+        ],
+        "limits": "Nenhum produto de IA real foi usado para executar buscas ou validar precisão, atualidade ou desempenho dos resultados. Em uma pesquisa real, o leitor deve verificar diretamente a data de publicação e a data de validade das fontes oficiais. Este artigo não substitui decisões jurídicas, de política interna ou de orçamento."
+      }
+    },
+    {
+      "slug": "ai-user-interview-questions",
+      "title": "Como usar IA para criar perguntas de entrevista de pesquisa com usuários",
+      "summary": "Este exercício mostra como criar com IA um roteiro de entrevista de 15 minutos para investigar a experiência com um formulário de inscrição fictício. Você aprenderá a transformar perguntas direcionadas em perguntas neutras sobre comportamentos reais recentes e a não tratar respostas previstas como evidência antes de realizar as entrevistas.",
+      "tags": [
+        "entrevista com usuários",
+        "elaboração de perguntas",
+        "uso de IA"
+      ],
+      "audience": "Iniciantes que querem preparar perguntas curtas de entrevista com usuários antes de melhorar um serviço ou processo",
+      "prerequisites": [
+        "O cenário é uma pesquisa de experiência de uso, não uma entrevista de emprego.",
+        "Não é necessário inserir informações pessoais reais.",
+        "Mantenha o estado de que as entrevistas ainda não foram realizadas."
+      ],
+      "sections": [
+        {
+          "id": "set-interview-scope",
+          "heading": "1. Fixe primeiro o objetivo da entrevista e os assuntos que não devem ser perguntados",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Este exercício usa uma pesquisa fictícia com usuários para melhorar um formulário de inscrição em um programa. O objetivo é compreender quais dificuldades os usuários realmente tiveram em um processo recente de inscrição. Como a entrevista é curta, priorize comportamentos recentes em vez de tentar perguntar todas as opiniões possíveis, e não peça informações pessoais, de saúde ou de renda que não sejam necessárias para o objetivo."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Anotações fictícias para o planejamento da entrevista]\nS1: O objetivo é entender as dificuldades que os usuários tiveram em um processo recente de inscrição.\nS2: O tempo total da entrevista é de 15 minutos.\nS3: Não perguntar informações pessoais, informações de saúde ou informações de renda.\n\nDistribuição do tempo:\n- Introdução 2 minutos\n- Perguntas sobre a experiência 8 minutos\n- Perguntas de melhoria 3 minutos\n- Encerramento 2 minutos\nTotal 15 minutos\n\nAs entrevistas ainda não foram realizadas.\nNão é uma entrevista de emprego; é uma pesquisa sobre a experiência de uso do formulário de inscrição."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "conteúdo",
+                "impacto no planejamento das perguntas"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "Entender dificuldades no processo recente de inscrição",
+                  "Perguntar primeiro sobre comportamentos recentes reais, antes de opiniões"
+                ],
+                [
+                  "S2",
+                  "Total de 15 minutos",
+                  "Limitar a quantidade de perguntas e de perguntas complementares"
+                ],
+                [
+                  "S3",
+                  "Proibição de perguntas sobre dados pessoais, saúde ou renda",
+                  "Excluir perguntas sensíveis desnecessárias ao objetivo"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Nesta etapa, é importante não assumir antecipadamente que “os usuários acham o formulário de inscrição inconveniente”. S1 define o objetivo de verificar se houve dificuldades e onde elas ocorreram; não afirma que elas necessariamente existiram."
+            }
+          ]
+        },
+        {
+          "id": "write-neutral-questions",
+          "heading": "2. Transforme perguntas direcionadas em perguntas neutras sobre comportamentos reais recentes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Perguntas direcionadas podem levar o participante à resposta esperada pelo pesquisador. Em vez de perguntar “O formulário era complicado demais, certo?”, peça à pessoa que relembre o processo de inscrição mais recente e descreva em que etapa ela parou, voltou ou verificou algo novamente."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Crie perguntas de entrevista com usuários usando as condições abaixo.\n\nS1: Entender as dificuldades que os usuários tiveram em um processo recente de inscrição.\nS2: O tempo total é de 15 minutos.\nS3: Não perguntar informações pessoais, informações de saúde ou informações de renda.\n\nEstruture a entrevista com introdução de 2 minutos, perguntas sobre a experiência por 8 minutos, perguntas de melhoria por 3 minutos e encerramento de 2 minutos.\nRequisitos:\n1. Priorize perguntas neutras sobre comportamentos reais recentes durante a inscrição.\n2. Não use perguntas direcionadas como “Foi inconveniente, certo?” ou “Não deveria ser mais simples?”.\n3. Não invente respostas previstas como se fossem falas reais de usuários.\n4. Declare que as entrevistas ainda não foram realizadas.\n5. Não crie perguntas de entrevista de emprego."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "exemplo de pergunta direcionada",
+                "problema",
+                "versão neutra"
+              ],
+              "rows": [
+                [
+                  "O formulário de inscrição era complicado demais, certo?",
+                  "Pressupõe que ele era complicado",
+                  "Pense no seu processo de inscrição mais recente desde o início. Houve algum ponto em que você precisou reler algo ou parar? Se sim, o que estava tentando confirmar?"
+                ],
+                [
+                  "Não havia campos demais?",
+                  "Pressupõe que a quantidade de campos era o problema",
+                  "Houve algum campo que levou muito tempo para preencher ou que você teve vontade de pular?"
+                ],
+                [
+                  "A posição do botão era confusa, certo?",
+                  "Inclui uma causa específica na própria pergunta",
+                  "Ao passar para a etapa seguinte, o que você procurou e o que selecionou?"
+                ],
+                [
+                  "Seria melhor deixar tudo mais simples, certo?",
+                  "Força uma direção específica de melhoria",
+                  "Se você pudesse mudar apenas 1 parte, qual mudaria primeiro? Explique também o motivo."
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-15-minute-script",
+          "heading": "3. Monte um fluxo de entrevista que caiba em 15 minutos",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Mais importante do que criar muitas perguntas é organizar a entrevista para ouvir experiências reais com profundidade suficiente dentro do tempo disponível. O exemplo abaixo distribui exatamente 15 minutos: introdução de 2 minutos, perguntas sobre a experiência por 8 minutos, perguntas de melhoria por 3 minutos e encerramento de 2 minutos."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Exemplo editorial criado e revisado com auxílio de IA — não são resultados reais de entrevistas]\n\nIntrodução 2 minutos\n1. Hoje, esta entrevista busca entender sua experiência real com o processo de inscrição. Não há respostas certas, e você não precisa compartilhar informações pessoais, de saúde ou de renda.\n2. Pense brevemente na situação mais recente em que você usou este formulário de inscrição.\n\nPerguntas sobre a experiência 8 minutos\n3. Em que ordem você realizou as etapas desde o início da inscrição até a conclusão?\n4. Houve algum ponto em que você parou por um momento ou voltou para uma etapa anterior? Se sim, o que estava tentando confirmar?\n5. Houve alguma expressão difícil de entender ou cujo significado você precisou verificar novamente?\n6. Depois de terminar o preenchimento, houve algum item que você revisou antes de enviar?\n7. Se alguma parte aconteceu de modo diferente do que você esperava, o que ocorreu?\n\nPerguntas de melhoria 3 minutos\n8. Se você pudesse mudar apenas 1 parte, qual mudaria primeiro?\n9. Existe alguma parte que você gostaria que permanecesse exatamente como está?\n\nEncerramento 2 minutos\n10. Há algo que eu não perguntei, mas que você considera importante para entender a experiência de inscrição?\n\nEstado: As entrevistas ainda não foram realizadas. O conteúdo acima é apenas um roteiro de perguntas."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "etapa",
+                "tempo",
+                "objetivo principal",
+                "números das perguntas"
+              ],
+              "rows": [
+                [
+                  "Introdução",
+                  "2 minutos",
+                  "Explicar o objetivo e relembrar a experiência recente",
+                  "1-2"
+                ],
+                [
+                  "Perguntas sobre a experiência",
+                  "8 minutos",
+                  "Entender comportamento real, pausas e verificações repetidas",
+                  "3-7"
+                ],
+                [
+                  "Perguntas de melhoria",
+                  "3 minutos",
+                  "Identificar o que mudar e o que manter",
+                  "8-9"
+                ],
+                [
+                  "Encerramento",
+                  "2 minutos",
+                  "Verificar experiências que ainda não foram mencionadas",
+                  "10"
+                ],
+                [
+                  "Total",
+                  "15 minutos",
+                  "Atende a S2",
+                  "Todas"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "separate-evidence",
+          "heading": "4. Separe respostas previstas de evidências reais obtidas em entrevistas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao preparar perguntas, é possível imaginar que determinado participante responderá de certa forma. No entanto, uma resposta prevista é apenas uma anotação auxiliar para revisar o fluxo das perguntas, não uma evidência real de usuário. Antes de realizar entrevistas, não é possível confirmar quantidade de respostas, opiniões representativas ou dificuldades recorrentes."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "frase",
+                "pode ser usada agora?",
+                "motivo"
+              ],
+              "rows": [
+                [
+                  "Os usuários disseram que o botão de envio era difícil de encontrar.",
+                  "Não pode ser usada",
+                  "As entrevistas ainda não foram realizadas"
+                ],
+                [
+                  "Perguntar se houve confusão na etapa de envio.",
+                  "Pode ser usada",
+                  "Expressa uma pergunta a ser investigada"
+                ],
+                [
+                  "Vários usuários pediram menos campos.",
+                  "Não pode ser usada",
+                  "Não existem respostas reais"
+                ],
+                [
+                  "Verificar de forma neutra se a quantidade de campos foi um problema.",
+                  "Pode ser usada",
+                  "É planejamento de perguntas antes da entrevista"
+                ],
+                [
+                  "Depois das entrevistas, registrar separadamente experiências recorrentes e exceções.",
+                  "Pode ser usada",
+                  "É um procedimento futuro de análise"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Mesmo depois de realizar entrevistas reais, não generalize a resposta de 1 pessoa para todos os usuários. Este artigo não aborda representatividade estatística nem planejamento amostral após as entrevistas; ele se limita à etapa de criação do roteiro de perguntas."
+            }
+          ]
+        },
+        {
+          "id": "repair-leading-output",
+          "heading": "5. Ao encontrar problemas no roteiro, faça uma nova solicitação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao tentar interpretar rapidamente o objetivo da pesquisa, a IA pode criar perguntas que assumem o problema de antemão. Também pode pedir informações sensíveis ou escrever respostas previstas como se fossem resultados reais. Todos esses problemas devem ser verificados."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Exemplo editorial incorreto]\n1. O formulário de inscrição era tão complicado que você teve vontade de desistir, certo?\n2. Você prefere um formulário mais simples, certo?\n3. Qual é a sua renda anual?\n4. Houve algum motivo de saúde que tornou a inscrição difícil?\n\nResultado previsto: A maioria dos usuários dirá que o formulário é complicado e que o botão de envio é difícil de encontrar."
+            },
+            {
+              "type": "p",
+              "text": "As 2 primeiras perguntas direcionam o participante para uma resposta desejada, enquanto a 3ª e a 4ª violam as restrições de S3. A última frase também apresenta uma previsão como se fosse um resultado real, embora nenhuma entrevista tenha sido realizada. É necessário voltar o foco para comportamentos reais recentes e deixar explícito que previsões não são evidências."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Reescreva o roteiro de perguntas.\n- Transforme as perguntas em perguntas neutras sobre comportamentos reais recentes durante a inscrição.\n- Remova expressões que já fornecem a resposta esperada.\n- Remova todas as perguntas sobre informações pessoais, informações de saúde e informações de renda.\n- Declare que as entrevistas ainda não foram realizadas.\n- Não apresente respostas previstas como resultados reais.\n- Mantenha introdução 2 minutos + perguntas sobre a experiência 8 minutos + perguntas de melhoria 3 minutos + encerramento 2 minutos = total 15 minutos."
+            }
+          ]
+        },
+        {
+          "id": "verify-interview-guide",
+          "heading": "6. Checklist para o leitor antes de realizar a entrevista",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Antes da entrevista, leia pessoalmente o roteiro concluído e verifique se há expressões direcionadas, problemas na distribuição do tempo ou perguntas sobre informações sensíveis. Em uma entrevista real, o participante pode responder de uma maneira diferente da esperada, portanto é mais importante preservar o objetivo de pesquisa em S1 do que cumprir mecanicamente todas as perguntas na ordem. Os resultados deste artigo são exemplos editoriais criados e revisados com auxílio de IA e não representam validação da qualidade ou do efeito de um produto de IA real na criação de entrevistas."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Checklist do leitor]\n□ O objetivo continua sendo entender dificuldades do processo recente de inscrição?\n□ Está claramente indicado que as entrevistas ainda não foram realizadas?\n□ Introdução 2 minutos + experiência 8 minutos + melhoria 3 minutos + encerramento 2 minutos = 15 minutos?\n□ Não há expressões direcionadas como “Foi inconveniente, certo?”?\n□ Há perguntas que levam o participante a relembrar comportamentos reais recentes?\n□ O roteiro evita pedir informações pessoais?\n□ O roteiro evita pedir informações de saúde?\n□ O roteiro evita pedir informações de renda?\n□ Respostas previstas não são tratadas como evidência real de usuários?\n□ O roteiro continua sendo uma pesquisa com usuários, e não uma entrevista de emprego?\n□ Depois das entrevistas reais, estou preparado para registrar separadamente as respostas observadas e as expectativas anteriores à entrevista?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Escopo da revisão do exemplo editorial: foi verificado se o objetivo, o tempo e as restrições de informação em S1-S3, o total de 2+8+3+2 minutos, a forma de corrigir perguntas direcionadas e o estado de entrevistas ainda não realizadas são consistentes entre si.",
+        "items": [
+          "Confirmação do tempo total de entrevista de 15 minutos",
+          "Preservação de introdução 2 minutos, experiência 8 minutos, melhoria 3 minutos e encerramento 2 minutos",
+          "Exclusão de perguntas sobre informações pessoais, saúde e renda",
+          "Transformação de perguntas direcionadas em perguntas neutras sobre comportamentos reais recentes",
+          "Não utilização de respostas previstas como evidência real",
+          "Manutenção do escopo como pesquisa com usuários, não entrevista de emprego"
+        ],
+        "limits": "Nenhuma entrevista real foi realizada, e a qualidade, precisão ou eficácia da geração de entrevistas por um produto de IA não foi validada. A adequação das perguntas pode variar conforme o contexto da pesquisa e as características dos participantes. Este exemplo não substitui orientação sobre privacidade, ética em pesquisa ou aspectos jurídicos."
+      }
+    },
+    {
+      "slug": "ai-brainstorm-with-constraints",
+      "title": "Como definir restrições e usar IA para gerar ideias",
+      "summary": "Este exercício mostra como fixar primeiro restrições como quantidade de participantes, tempo, número de impressos, possibilidade de compras e equipamentos disponíveis, e depois pedir à IA 4 alternativas realmente diferentes. Em vez de decidir qual ideia é a melhor, você verifica se cada alternativa respeita as condições e aprende como fazer uma nova solicitação quando as restrições mudam.",
+      "tags": [
+        "brainstorming com IA",
+        "restrições",
+        "geração de ideias"
+      ],
+      "audience": "Iniciantes que querem obter várias alternativas que considerem condições práticas, em vez de uma lista vaga de ideias",
+      "prerequisites": [
+        "A atividade é fictícia e não exige compras nem uso real de equipamentos.",
+        "Não é usado código executável de programa.",
+        "Não presuma que a IA garante a viabilidade de uma ideia."
+      ],
+      "sections": [
+        {
+          "id": "lock-constraints",
+          "heading": "1. Escreva as condições que não podem ser alteradas antes de gerar ideias",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A tarefa fictícia deste exercício é planejar uma atividade de leitura para iniciantes em uma biblioteca. Em um brainstorming, é mais fácil revisar os resultados quando você fixa primeiro as condições que precisam ser respeitadas, em vez de simplesmente pedir “gere muitas ideias boas”. Aqui, as condições são 8 participantes, total de 30 minutos, no máximo 16 folhas impressas, nenhuma compra adicional e somente papel e caneta como equipamentos."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Condições fictícias para o planejamento da atividade]\nS1: Há 8 participantes.\nS2: O tempo total da atividade é de 30 minutos.\nS3: Podem ser usadas no máximo 16 folhas impressas.\nS4: Não serão feitas compras adicionais.\nS5: Os únicos equipamentos disponíveis são papel e caneta.\n\nObjetivo: Gerar 4 alternativas de atividades de leitura adequadas para iniciantes.\nAtenção: A tarefa não é escolher a melhor opção, mas criar alternativas diferentes entre si."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "restrição",
+                "como verificar"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "8 participantes",
+                  "Verificar se divisão de grupos e materiais distribuídos estão calculados para 8 pessoas"
+                ],
+                [
+                  "S2",
+                  "Total de 30 minutos",
+                  "Verificar se a soma do tempo de todas as etapas é de 30 minutos"
+                ],
+                [
+                  "S3",
+                  "Máximo de 16 folhas impressas",
+                  "Verificar se o total de impressos de cada ideia é de 16 folhas ou menos"
+                ],
+                [
+                  "S4",
+                  "Nenhuma compra adicional",
+                  "Verificar se são necessários novos materiais ou itens pagos"
+                ],
+                [
+                  "S5",
+                  "Somente papel e caneta",
+                  "Verificar se são exigidos equipamentos extras, como projetor, smartphone ou caixa de som"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "request-diverse-ideas",
+          "heading": "2. Peça 4 alternativas com formatos de atividade diferentes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Sem restrições explícitas, a IA pode repetir praticamente a mesma ideia com nomes diferentes. Por isso, deixe claro que as 4 ideias devem se diferenciar pelo próprio formato da atividade e peça que cada uma apresente sequência, tempo em minutos, quantidade de impressos e condições ainda não verificadas."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Crie 4 ideias de atividades de leitura para iniciantes que respeitem todas as restrições abaixo.\n\nS1: 8 participantes\nS2: Total de 30 minutos\nS3: Máximo de 16 folhas impressas\nS4: Nenhuma compra adicional\nS5: Somente papel e caneta\n\nRequisitos:\n1. As 4 ideias devem usar formatos de atividade diferentes entre si.\n2. Para cada ideia, apresente a sequência de etapas e o tempo de cada etapa em minutos.\n3. Faça com que a soma dos tempos de cada ideia seja exatamente 30 minutos.\n4. Indique o total de folhas impressas necessárias e confirme que é de 16 ou menos.\n5. Inclua pelo menos 1 condição que uma pessoa precise verificar antes da implementação.\n6. Não adicione equipamentos ou materiais por conta própria.\n7. Não classifique as ideias nem conclua que alguma delas é a melhor.\n8. Não afirme que a viabilidade está garantida."
+            },
+            {
+              "type": "p",
+              "text": "Esse pedido combina geração de ideias com verificação de restrições, mas ainda não confirma o espaço real, o nível de leitura dos participantes nem o conteúdo dos documentos disponíveis. Por isso, é importante manter um campo de “condição não verificada” no resultado."
+            }
+          ]
+        },
+        {
+          "id": "review-four-options",
+          "heading": "3. Verifique o tempo e a quantidade de impressos nas 4 alternativas editoriais",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "As 4 alternativas abaixo são exemplos editoriais criados para mostrar formatos de atividade diferentes. Todas foram ajustadas para 30 minutos e usam no máximo 16 folhas impressas, mas não foi verificado se são adequadas para participantes reais nem se funcionariam sem problemas em um ambiente real."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Exemplo editorial criado e revisado com auxílio de IA — não é uma validação do desempenho real da atividade]\n\nIdeia A: Marcar 1 frase e explicar em dupla\n- 5 minutos: Ler um texto curto e marcar 1 frase que chamou atenção\n- 8 minutos: Escrever individualmente por que escolheu essa frase\n- 10 minutos: Formar duplas e explicar a escolha um ao outro\n- 5 minutos: Cada dupla registra 1 ponto em comum\n- 2 minutos: Encerramento\nTotal 30 minutos\nImpressos: 8 cópias do texto para os participantes\nNão verificado: É necessário confirmar se a dificuldade do texto é adequada para iniciantes\n\nIdeia B: Criar o próprio cartão de pergunta\n- 5 minutos: Ler um texto curto\n- 7 minutos: Cada participante escreve 1 pergunta no papel\n- 10 minutos: Dividir em 2 grupos de 4 e responder às perguntas em rodízio\n- 6 minutos: Cada grupo escolhe e registra 1 pergunta marcante\n- 2 minutos: Encerramento\nTotal 30 minutos\nImpressos: 8 folhas de leitura + 8 folhas de instruções = 16 folhas\nNão verificado: É necessário confirmar se os participantes se sentem à vontade para criar as próprias perguntas\n\nIdeia C: Criar um resumo coletivo sem impressos\n- 5 minutos: O facilitador lê um texto curto preparado previamente, 1 frase por vez, enquanto os participantes anotam palavras-chave\n- 8 minutos: Cada participante escolhe 3 palavras-chave\n- 10 minutos: Dividir em 2 grupos de 4 e escrever um resumo coletivo\n- 5 minutos: Os 2 grupos leem seus resumos um para o outro\n- 2 minutos: Encerramento\nTotal 30 minutos\nImpressos: 0 folhas\nNão verificado: É necessário confirmar se o facilitador consegue preparar previamente um texto adequado para leitura em voz alta\n\nIdeia D: Reconstruir a ordem das cenas\n- 4 minutos: Ler uma história curta\n- 6 minutos: Cada participante anota 3 cenas principais\n- 10 minutos: Dividir em 2 grupos de 4 e discutir a ordem das cenas\n- 8 minutos: Cada grupo registra no papel a ordem escolhida e os motivos\n- 2 minutos: Encerramento\nTotal 30 minutos\nImpressos: 8 cópias do texto de leitura\nNão verificado: É necessário confirmar se a história escolhida é adequada para discutir a ordem das cenas"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "ideia",
+                "formato da atividade",
+                "tempo total",
+                "impressos",
+                "verificação das restrições",
+                "condição não verificada"
+              ],
+              "rows": [
+                [
+                  "A",
+                  "Marcação individual seguida de explicação em dupla",
+                  "30 minutos",
+                  "8 folhas",
+                  "30 minutos ou menos; 16 folhas ou menos",
+                  "Dificuldade do texto"
+                ],
+                [
+                  "B",
+                  "Criação individual de perguntas seguida de conversa em grupo",
+                  "30 minutos",
+                  "16 folhas",
+                  "30 minutos ou menos; 16 folhas ou menos",
+                  "Familiaridade com a criação de perguntas"
+                ],
+                [
+                  "C",
+                  "Anotação de palavras-chave seguida de resumo coletivo",
+                  "30 minutos",
+                  "0 folhas",
+                  "30 minutos ou menos; 16 folhas ou menos",
+                  "Possibilidade de preparar um texto adequado para leitura em voz alta"
+                ],
+                [
+                  "D",
+                  "Reconstrução da ordem das cenas",
+                  "30 minutos",
+                  "8 folhas",
+                  "30 minutos ou menos; 16 folhas ou menos",
+                  "Adequação da história"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "check-constraints",
+          "heading": "4. Verifique violações das restrições antes de avaliar se a ideia parece interessante",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao receber resultados de brainstorming, verifique primeiro os números e as condições, em vez de começar avaliando qual ideia parece mais divertida. Neste exercício, confirme se cada alternativa fica dentro de 30 minutos, usa no máximo 16 folhas impressas e não exige equipamentos ou compras adicionais."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "item de verificação",
+                "A",
+                "B",
+                "C",
+                "D"
+              ],
+              "rows": [
+                [
+                  "Baseado em 8 participantes",
+                  "Atende",
+                  "Atende",
+                  "Atende",
+                  "Atende"
+                ],
+                [
+                  "Tempo de 30 minutos ou menos",
+                  "30 minutos",
+                  "30 minutos",
+                  "30 minutos",
+                  "30 minutos"
+                ],
+                [
+                  "No máximo 16 folhas impressas",
+                  "8 folhas",
+                  "16 folhas",
+                  "0 folhas",
+                  "8 folhas"
+                ],
+                [
+                  "Nenhuma compra adicional",
+                  "Nenhuma no exemplo",
+                  "Nenhuma no exemplo",
+                  "Nenhuma no exemplo",
+                  "Nenhuma no exemplo"
+                ],
+                [
+                  "Nenhum equipamento além de papel e caneta",
+                  "Nenhum no exemplo",
+                  "Nenhum no exemplo",
+                  "Nenhum no exemplo",
+                  "Nenhum no exemplo"
+                ],
+                [
+                  "Validação de viabilidade",
+                  "Não realizada",
+                  "Não realizada",
+                  "Não realizada",
+                  "Não realizada"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Aqui, “nenhuma no exemplo” não significa que nenhum preparo adicional seria necessário em uma situação real. Significa apenas que o plano escrito não exige explicitamente itens extras. Condições do local, como espaço, ruído e nível de leitura dos participantes, ainda precisam ser verificadas separadamente por uma pessoa."
+            }
+          ]
+        },
+        {
+          "id": "revise-constraints",
+          "heading": "5. Corrija uma resposta que viola as condições ou altere as próprias restrições",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A IA pode gerar uma ideia interessante e ainda assim ignorar limites numéricos. Nesse caso, não é necessário descartar toda a ideia. Indique quais restrições foram violadas e peça para corrigir somente esses pontos. Se a situação real mudar e as próprias restrições forem alteradas, informe claramente apenas os novos valores e peça para manter as demais condições."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Exemplo editorial incorreto]\nAtividade E: Distribuir 3 cartões coloridos para cada um dos 8 participantes e usar tablets para pesquisar capas de livros.\n- Explicação 5 minutos\n- Pesquisa individual 10 minutos\n- Atividade em grupo 12 minutos\n- Apresentação 8 minutos\nTotal 35 minutos\nImpressos necessários: 24 folhas de atividade\nMateriais: cartões coloridos, tablets, papel, caneta"
+            },
+            {
+              "type": "p",
+              "text": "Essa resposta ultrapassa em 5 minutos o limite de 30 minutos de S2 e ultrapassa em 8 folhas o máximo de 16 folhas de S3. Além disso, inclui materiais incompatíveis com S4, nenhuma compra adicional, e S5, somente papel e caneta. Independentemente de a atividade parecer interessante, ela não pode ser usada dessa forma porque viola as restrições."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Revise a ideia anterior para que ela respeite as restrições.\n- Mantenha 8 participantes.\n- Recalcule o tempo total para ficar em 30 minutos ou menos.\n- Reduza os impressos para 16 folhas ou menos.\n- Remova todos os materiais que exijam compras adicionais.\n- Remova todos os equipamentos além de papel e caneta.\n- Depois da revisão, mostre novamente a soma dos tempos por etapa e o total de folhas impressas.\n- Não afirme que a viabilidade está garantida; mantenha uma condição não verificada.\n\nSe as próprias restrições forem alteradas, modifique apenas as condições que eu alterar e mantenha as demais S1-S5 sem mudanças."
+            }
+          ]
+        },
+        {
+          "id": "verify-brainstorm",
+          "heading": "6. Checklist para o leitor antes de escolher qualquer alternativa",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O objetivo deste artigo não é recomendar nem classificar 1 das 4 alternativas. O objetivo é primeiro obter ideias diferentes que respeitem as restrições e, depois, permitir que uma pessoa verifique o espaço real e as condições dos participantes antes de escolher ou revisar uma opção. Os resultados deste artigo são exemplos editoriais criados e revisados com auxílio de IA e não representam validação de satisfação real, taxa de participação, efeito educacional ou desempenho de um produto de IA."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Checklist do leitor]\n□ Há exatamente 4 ideias?\n□ As 4 ideias usam formatos de atividade realmente diferentes?\n□ O número de participantes continua sendo 8?\n□ Eu somei manualmente o tempo das etapas de cada ideia?\n□ Cada total é de 30 minutos ou menos?\n□ O total de impressos de cada ideia é de 16 folhas ou menos?\n□ Não há itens que exijam compras adicionais?\n□ Não há equipamentos além de papel e caneta?\n□ Cada ideia inclui uma condição não verificada que precisa ser confirmada antes da implementação?\n□ Nenhuma “melhor ideia” ou classificação foi adicionada arbitrariamente?\n□ Não há afirmação de que a viabilidade está garantida?\n□ Ao alterar restrições, separei as condições modificadas daquelas que devem permanecer iguais?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Escopo da revisão do exemplo editorial: as 4 alternativas foram comparadas com as restrições de 8 participantes, total de 30 minutos, máximo de 16 folhas impressas, nenhuma compra adicional e uso somente de papel e caneta.",
+        "items": [
+          "Composição com 4 ideias",
+          "Confirmação de total de 30 minutos para cada ideia",
+          "Quantidades de impressos de 8 folhas, 16 folhas, 0 folhas e 8 folhas, todas dentro do limite de 16 folhas",
+          "Nenhuma compra adicional exigida",
+          "Nenhum equipamento exigido além de papel e caneta",
+          "Inclusão de uma condição não verificada em cada ideia",
+          "Nenhuma classificação nem decisão final apresentada"
+        ],
+        "limits": "As atividades não foram realizadas em uma biblioteca real nem com participantes reais, e não foram validadas viabilidade, satisfação, eficácia, segurança ou desempenho de produto de IA. Antes do uso real, uma pessoa deve verificar diretamente o espaço, as características dos participantes e os materiais disponíveis."
+      }
+    },
+    {
+      "slug": "ai-presentation-rehearsal",
+      "title": "Como usar IA para preparar perguntas e respostas para ensaiar uma apresentação",
+      "summary": "Este exercício mostra como usar dados fictícios já organizados para preparar 6 perguntas esperadas do público, suas fontes, respostas curtas e um plano de verificação quando a resposta não for conhecida. O foco não é criar o roteiro da apresentação nem avaliar voz com IA, mas praticar respostas sem exagerar evidências limitadas.",
+      "tags": [
+        "ensaio de apresentação",
+        "perguntas e respostas",
+        "verificação de evidências"
+      ],
+      "audience": "Iniciantes que querem preparar perguntas esperadas antes de uma apresentação e praticar respostas sem exagerar números",
+      "prerequisites": [
+        "Este exercício não trata de criar uma nova estrutura para a apresentação.",
+        "Nenhuma análise real de áudio ou vídeo da apresentação é realizada.",
+        "Use apenas os dados fictícios S1-S3 como evidência."
+      ],
+      "sections": [
+        {
+          "id": "lock-presentation-facts",
+          "heading": "1. Fixe as evidências originais que serão usadas no ensaio da apresentação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Neste exercício, você não cria novo conteúdo para a apresentação. Em vez disso, prepara respostas usando apenas os números e os itens ainda não definidos que já foram fornecidos. O grupo de convidados, o grupo de participantes, os respondentes da pesquisa anônima e os respondentes que querem participar novamente são populações diferentes, portanto é necessário distinguir corretamente o denominador de cada percentual."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "[Evidências fictícias da apresentação]\nS1: 24 pessoas foram convidadas e 18 participaram.\nS2: Entre os participantes, 12 responderam a uma pesquisa anônima e, entre esses respondentes, 9 disseram que gostariam de participar novamente.\nS3: A data e o orçamento do próximo programa ainda estão indefinidos.\n\nValor calculável:\n- Percentual de respondentes que desejam participar novamente: 9/12 = 75%\n\nAtenção:\n- 75% é um valor calculado com base nos 12 respondentes da pesquisa.\n- Não diga que 75% de todos os 18 participantes desejam participar novamente.\n- Não aplique o mesmo percentual a todos os 24 convidados.\n- Não afirme que foi realizada uma avaliação real da apresentação por voz com IA."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "source ID",
+                "conteúdo confirmado",
+                "o que não pode ser afirmado"
+              ],
+              "rows": [
+                [
+                  "S1",
+                  "24 convidados, 18 participantes",
+                  "Motivos da ausência ou satisfação dos participantes"
+                ],
+                [
+                  "S2",
+                  "9 de 12 respondentes querem participar novamente",
+                  "Preferência dos 6 participantes que não responderam"
+                ],
+                [
+                  "S3",
+                  "A próxima data e o orçamento estão indefinidos",
+                  "Cronograma confirmado ou orçamento confirmado"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "generate-audience-questions",
+          "heading": "2. Relacione 6 perguntas esperadas do público às evidências originais",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Boas perguntas esperadas ajudam o apresentador a praticar até onde as evidências permitem responder, em vez de forçá-lo a preencher lacunas com suposições. Por isso, identifique para cada pergunta qual fonte, S1, S2 ou S3, é relevante e, quando os dados forem insuficientes, preserve essa incerteza na própria resposta."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Usando somente as evidências fictícias da apresentação abaixo, crie 6 perguntas esperadas do público que poderiam surgir depois da apresentação.\n\nS1: 24 pessoas foram convidadas e 18 participaram.\nS2: Entre os participantes, 12 responderam a uma pesquisa anônima e, entre esses respondentes, 9 disseram que gostariam de participar novamente.\nS3: A próxima data e o orçamento estão indefinidos.\n\nPara cada pergunta, escreva estes 4 itens:\n1. Pergunta esperada\n2. source ID da evidência original\n3. Resposta curta que o apresentador pode dar\n4. Plano de verificação se a resposta ainda não for conhecida\n\nAtenção:\n- Declare claramente que 9/12 = 75% é calculado com base nos respondentes da pesquisa.\n- Não estenda 75% para todos os 18 participantes nem para todos os 24 convidados.\n- Não invente motivos, níveis de satisfação, custos ou datas que não estejam na entrada.\n- Não crie uma nova estrutura para a apresentação.\n- Não escreva que uma avaliação real por voz com IA foi realizada."
+            }
+          ]
+        },
+        {
+          "id": "build-answer-table",
+          "heading": "3. Crie uma tabela com perguntas, evidências, respostas curtas e planos de verificação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A tabela abaixo é um exemplo editorial para ensaio de apresentação, não um registro de perguntas feitas por um público real. Mantenha as respostas tão curtas quanto possível, deixando claros os limites das evidências. Para conteúdos desconhecidos, como S3, responda que ainda estão indefinidos e determine qual fonte deverá ser verificada depois."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "[Exemplo editorial criado e revisado com auxílio de IA — não são resultados reais de apresentação nem avaliação de voz por IA]\n\nPreparar um total de 6 perguntas esperadas.\nNas respostas com números, manter separados os grupos de 24 convidados, 18 participantes, 12 respondentes da pesquisa e 9 respondentes que desejam participar novamente.\nSempre que usar 75%, acrescentar obrigatoriamente “entre os 12 respondentes da pesquisa”.\nA próxima data e o orçamento ainda estão indefinidos, portanto não criar valores estimados."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "pergunta esperada do público",
+                "evidência original",
+                "resposta curta",
+                "plano de verificação se não souber"
+              ],
+              "rows": [
+                [
+                  "Quantas pessoas foram convidadas e quantas realmente participaram?",
+                  "S1",
+                  "24 pessoas foram convidadas e 18 participaram.",
+                  "Nenhuma verificação adicional"
+                ],
+                [
+                  "Qual percentual disse que gostaria de participar novamente?",
+                  "S2",
+                  "9 dos 12 respondentes da pesquisa anônima disseram que gostariam de participar novamente, ou seja, 75% dos respondentes.",
+                  "Não inferir a preferência dos participantes que não responderam"
+                ],
+                [
+                  "Então isso significa que 75% de todos os 18 participantes querem participar novamente?",
+                  "S2",
+                  "Não. Os 75% usam somente os 12 respondentes da pesquisa como denominador.",
+                  "Para descrever a preferência de todos os participantes, seria necessária uma verificação adicional incluindo os não respondentes"
+                ],
+                [
+                  "Por que as 6 pessoas que não participaram não compareceram?",
+                  "S1",
+                  "As evidências atuais não incluem os motivos de ausência.",
+                  "Avaliar se é necessário investigar separadamente os motivos de ausência"
+                ],
+                [
+                  "Quando será realizado o próximo programa?",
+                  "S3",
+                  "A próxima data ainda está indefinida.",
+                  "Verificar a informação oficial depois que a agenda for definida"
+                ],
+                [
+                  "Qual será o orçamento do próximo programa?",
+                  "S3",
+                  "O orçamento também ainda está indefinido.",
+                  "Verificar quando existir uma fonte de orçamento aprovada"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "plan-eight-minutes",
+          "heading": "4. Divida 8 minutos de ensaio em explicação, perguntas e encerramento",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Depois de preparar perguntas e respostas, é necessário praticá-las em voz alta. Aqui, o plano de ensaio usa 4 minutos para explicação, 3 minutos para perguntas e 1 minuto para encerramento, totalizando 8 minutos. Essa é apenas uma distribuição para prática, não uma afirmação de que a apresentação real durará exatamente esse tempo. Uma pessoa deve medir a duração real e fazer os ajustes necessários."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "etapa",
+                "tempo planejado",
+                "o que praticar",
+                "o que a pessoa deve verificar"
+              ],
+              "rows": [
+                [
+                  "Explicação",
+                  "4 minutos",
+                  "Explicar os principais números e itens indefinidos de S1-S3",
+                  "Medir diretamente o tempo real de fala"
+                ],
+                [
+                  "Perguntas",
+                  "3 minutos",
+                  "Escolher algumas das 6 perguntas esperadas e responder de forma breve",
+                  "Verificar se os denominadores numéricos estão corretos"
+                ],
+                [
+                  "Encerramento",
+                  "1 minuto",
+                  "Separar fatos confirmados de itens que ainda precisam ser verificados",
+                  "Verificar se nenhuma nova conclusão foi acrescentada"
+                ],
+                [
+                  "Total",
+                  "8 minutos",
+                  "Distribuição de tempo para ensaio",
+                  "Ajustar após medir a duração real"
+                ]
+              ]
+            },
+            {
+              "type": "p",
+              "text": "Se a IA escrever que determinado texto corresponde a “4 minutos”, isso não prova que o tempo real de fala será de 4 minutos. A velocidade da fala, as pausas e a duração das perguntas variam, portanto essa parte precisa ser medida diretamente por uma pessoa."
+            }
+          ]
+        },
+        {
+          "id": "repair-overclaim",
+          "heading": "5. Encontre exageros numéricos e informações indefinidas inventadas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um dos principais erros em ensaios de apresentação é ampliar um resultado de pesquisa limitado para todo o grupo de participantes ou preencher informações indefinidas como se fossem conhecidas. O exemplo abaixo usa alguns números corretos, mas trata de forma errada o denominador e o estado de indefinição."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "[Exemplo editorial incorreto]\n75% dos participantes disseram que querem participar do próximo programa. Como foi confirmado um forte interesse em participar novamente, o próximo programa será realizado no mesmo dia da semana no mês seguinte, e o orçamento também será definido no mesmo nível anterior."
+            },
+            {
+              "type": "p",
+              "text": "As 9 pessoas não representam 75% de todos os 18 participantes; elas representam 75% dos 12 respondentes da pesquisa. A preferência dos 6 participantes que não responderam é desconhecida. Além disso, S3 informa que a próxima data e o orçamento estão indefinidos, portanto não há base para acrescentar “o mesmo dia da semana no mês seguinte” ou “o mesmo nível de orçamento anterior”."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Reescreva a resposta para que corresponda às evidências originais.\n- Declare que o denominador de 75% são os 12 respondentes da pesquisa.\n- Não generalize o mesmo percentual para todos os 18 participantes.\n- Não generalize para todos os 24 convidados.\n- Mantenha a próxima data e o orçamento como indefinidos.\n- Não invente motivos de ausência, satisfação, custos ou cronogramas que não estejam na entrada.\n- Para perguntas sem resposta conhecida, responda “as evidências atuais não permitem saber” e indique o que deve ser verificado.\n- Não afirme que a IA analisou ou avaliou uma gravação real da apresentação."
+            }
+          ]
+        },
+        {
+          "id": "verify-rehearsal",
+          "heading": "6. Checklist para o apresentador antes da apresentação real",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Por fim, leia a tabela de perguntas esperadas e verifique o denominador e o source ID de cada número. No ensaio real, meça o tempo pessoalmente, encurte respostas que ficarem longas e pratique não adivinhar quando não souber uma resposta. Os resultados deste artigo são exemplos editoriais criados e revisados com auxílio de IA e não representam validação de resultados reais de apresentação, reação do público, precisão de avaliação de voz por IA nem de qualquer função específica de produto."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "[Checklist do leitor]\n□ Eu diferenciei 24 convidados de 18 participantes?\n□ Mantive que 12 dos participantes responderam à pesquisa?\n□ Confirmei que as 9 pessoas que desejam participar novamente são 9 dos 12 respondentes?\n□ Ao dizer 9/12 = 75%, deixo claro que o percentual é baseado nos respondentes?\n□ Evitei aplicar 75% a todos os 18 participantes?\n□ Evitei aplicar 75% a todos os 24 convidados?\n□ Mantive a próxima data como indefinida?\n□ Mantive o orçamento como indefinido?\n□ Há exatamente 6 perguntas esperadas?\n□ Cada pergunta inclui evidência original, resposta curta e plano de verificação?\n□ Confirmei que 4 minutos de explicação + 3 minutos de perguntas + 1 minuto de encerramento = 8 minutos?\n□ O tempo real de ensaio deve ser medido diretamente por uma pessoa?\n□ Evitei afirmar que foi realizada uma avaliação real por voz com IA?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Escopo da revisão do exemplo editorial: foi verificado se os números e o estado de indefinição em S1-S3, o denominador de 9/12=75%, as 6 perguntas esperadas e o plano de 4+3+1=8 minutos são consistentes entre si.",
+        "items": [
+          "Distinção entre 24 convidados e 18 participantes",
+          "Distinção entre 12 respondentes da pesquisa e 9 respondentes que querem participar novamente",
+          "Expressão de 75% somente com base nos respondentes da pesquisa",
+          "Composição com 6 perguntas esperadas do público",
+          "Manutenção da data e do orçamento como indefinidos",
+          "Confirmação de 4 minutos de explicação, 3 minutos de perguntas e 1 minuto de encerramento, totalizando 8 minutos",
+          "Orientação para que a duração real seja medida diretamente por uma pessoa",
+          "Ausência de afirmação de que foi realizada avaliação de voz por IA"
+        ],
+        "limits": "Nenhuma apresentação real, sessão de perguntas do público, análise de voz ou função de avaliação de produto de IA específico foi executada ou validada. As perguntas e respostas apresentadas são exemplos editoriais baseados em evidências fictícias e não preveem desempenho real da apresentação nem reação do público."
+      }
+    }
+  ]
+}

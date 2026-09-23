@@ -1,0 +1,251 @@
+{
+  "slug": "ai-feedback-theme-map",
+  "title": "Map Free-Text Feedback into Themes with AI: Handle Multiple Labels and Unclassified Responses",
+  "summary": "This exercise classifies six short free-text comments into predefined themes and allows multiple labels when one response contains more than one topic. It also explains why the total number of labels can exceed the number of respondents and how to avoid unsupported conclusions about satisfaction or emotional intensity.",
+  "tags": [
+    "AI feedback classification",
+    "theme map",
+    "free-text analysis"
+  ],
+  "audience": "Beginners who want to organize short survey or review comments by theme but are unsure how much they can trust the counts and interpretation",
+  "prerequisites": [
+    "You only need to be able to separate short comments into individual lines.",
+    "All F1–F6 responses in this exercise are fictional.",
+    "You do not need to enter personal data from real customers, employees, or participants."
+  ],
+  "sections": [
+    {
+      "id": "prepare-feedback",
+      "heading": "1. Prepare the six comments exactly as written with IDs",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When classifying free-text feedback, first preserve each sentence as written instead of summarizing it immediately. A single short response can contain two different themes. In this example, F3 mentions both text size and insufficient location signage, so choosing only one would lose information. F6, which says no comment, should not be forced into a positive or negative category."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "F1 The information text is too small\nF2 The location guidance is difficult to follow\nF3 The information text is too small and there are not enough location signs\nF4 The facilitator's explanation is friendly\nF5 I would like to participate again\nF6 No comment"
+        },
+        {
+          "type": "p",
+          "text": "The labels used in this exercise are visual guidance, location guidance, facilitator, repeat participation, and hold for classification. Emotional scores or satisfaction levels are not present in the source, so they should not be created."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Response ID",
+            "Key expression",
+            "Possible number of labels"
+          ],
+          "rows": [
+            [
+              "F1",
+              "Information text is too small",
+              "1"
+            ],
+            [
+              "F2",
+              "Location guidance is difficult",
+              "1"
+            ],
+            [
+              "F3",
+              "Information text is too small and location signs are insufficient",
+              "2"
+            ],
+            [
+              "F4",
+              "Facilitator's explanation is friendly",
+              "1"
+            ],
+            [
+              "F5",
+              "Would like to participate again",
+              "1"
+            ],
+            [
+              "F6",
+              "No comment",
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "define-label-rules",
+      "heading": "2. State the rules for multiple labels and hold for classification",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When asking AI to classify themes, define not only the label names but also whether multiple labels are allowed. If one person's response can cover several themes, the total number of labels does not have to equal the number of respondents. In this example, the target counts are visual guidance 2, location guidance 2, facilitator 1, repeat participation 1, and hold for classification 1, for a total of 7 labels."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Classify comments F1–F6 using the 5 labels below.\n\nLabels:\n- Visual guidance\n- Location guidance\n- Facilitator\n- Repeat participation\n- Hold for classification\n\nRules:\n- Allow multiple labels when one comment clearly contains different themes.\n- If two themes are explicitly present, as in F3, assign both labels.\n- If a response has no evaluative content, such as no comment, assign hold for classification.\n- Do not infer positive or negative emotional intensity, satisfaction scores, or whether all participants were satisfied.\n- Do not add reasons that are not in the original comment.\n- Preserve each response ID and original text.\n- At the end, count the number of responses assigned to each label."
+        },
+        {
+          "type": "p",
+          "text": "If the instruction allowing multiple labels is omitted, F3 may be forced into only one category. Allowing a hold category in advance also reduces the temptation to force an empty response into an unrelated theme."
+        }
+      ]
+    },
+    {
+      "id": "review-theme-map",
+      "heading": "3. Check individual labels and totals together",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The result below is not a measurement of the classification accuracy of any particular AI system. It is an editorial example created and reviewed with AI assistance to show how the input connects to label counts. A person should read F1–F6 one by one and verify the assigned labels."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "F1 → Visual guidance\nF2 → Location guidance\nF3 → Visual guidance, Location guidance\nF4 → Facilitator\nF5 → Repeat participation\nF6 → Hold for classification\n\nLabel counts:\nVisual guidance 2\nLocation guidance 2\nFacilitator 1\nRepeat participation 1\nHold for classification 1\n\nNumber of respondents: 6\nTotal labels: 7\nBecause F3 has multiple labels, a total of 7 labels being greater than 6 respondents is not an error."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "ID",
+            "Original comment",
+            "Label",
+            "Contribution to count"
+          ],
+          "rows": [
+            [
+              "F1",
+              "The information text is too small",
+              "Visual guidance",
+              "Visual guidance +1"
+            ],
+            [
+              "F2",
+              "The location guidance is difficult to follow",
+              "Location guidance",
+              "Location guidance +1"
+            ],
+            [
+              "F3",
+              "The information text is too small and there are not enough location signs",
+              "Visual guidance, Location guidance",
+              "Visual guidance +1, Location guidance +1"
+            ],
+            [
+              "F4",
+              "The facilitator's explanation is friendly",
+              "Facilitator",
+              "Facilitator +1"
+            ],
+            [
+              "F5",
+              "I would like to participate again",
+              "Repeat participation",
+              "Repeat participation +1"
+            ],
+            [
+              "F6",
+              "No comment",
+              "Hold for classification",
+              "Hold for classification +1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "avoid-overinterpretation",
+      "heading": "4. Do not expand theme classification into unsupported satisfaction analysis",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A theme map organizes what topics were mentioned. It does not automatically determine participants' emotions or overall satisfaction. F4 says the facilitator was friendly and F5 says the respondent would like to participate again, but that does not support a claim that all 6 respondents were satisfied. The complaints in F1–F3 also do not provide a basis for assigning an intensity score."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "Overall participant satisfaction was very high. All 6 participants were positive about the event, and F1–F3 only expressed mild dissatisfaction. F6 had no particular complaints, so that respondent can also be considered satisfied."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Unsupported inference",
+            "Why it is a problem",
+            "What to record instead"
+          ],
+          "rows": [
+            [
+              "All 6 were positive",
+              "F1–F3 and F6 do not provide evidence for overall satisfaction",
+              "Record only the theme labels for each response"
+            ],
+            [
+              "Mild dissatisfaction",
+              "Emotional intensity is not stated in the source",
+              "Record only the content about text size or location guidance"
+            ],
+            [
+              "F6 was satisfied",
+              "No comment does not mean satisfied",
+              "Hold for classification"
+            ]
+          ]
+        },
+        {
+          "type": "p",
+          "text": "To reduce this type of error, treat themes, emotions, satisfaction, and behavioral intention as different analysis dimensions. This exercise classifies only themes. F5's statement about participating again is recorded only as repeat participation."
+        }
+      ]
+    },
+    {
+      "id": "request-count-correction",
+      "heading": "5. Correct missing labels or unsupported interpretation with a targeted re-request",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If F3 is classified only as location guidance or F6 is classified as positive, you can specify those IDs and ask for a correction. Providing expected totals as a check value also makes it easier for a person to verify the revised result."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Review the classification result again.\n\n- F3 contains both information text is too small and location signs are insufficient, so assign both Visual guidance and Location guidance.\n- F6 says no comment and contains no evaluative content, so assign Hold for classification.\n- Do not infer emotional intensity or satisfaction.\n\nAfter correction, check whether the counts match the following:\nVisual guidance 2\nLocation guidance 2\nFacilitator 1\nRepeat participation 1\nHold for classification 1\n\nThere are 6 respondents, but because multiple labels are allowed, the total number of labels is 7. Do not treat this difference as an error."
+        },
+        {
+          "type": "p",
+          "text": "Providing expected totals does not mean classifications should be forced to match the numbers. The totals are check values that should be recalculated from the source. The final decision should come from verifying whether each response matches the label definition."
+        }
+      ]
+    },
+    {
+      "id": "theme-checklist",
+      "heading": "6. Final check: keep respondent count and label count separate",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "With multiple labels, it is normal for the number of people and the number of labels to differ. When reporting results, do not treat 6 respondents and 7 labels as the same type of count. Use the checklist below to verify both the individual assignments and the totals."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[ ] Is F1 labeled Visual guidance?\n[ ] Is F2 labeled Location guidance?\n[ ] Does F3 have both Visual guidance and Location guidance?\n[ ] Is F4 labeled Facilitator?\n[ ] Is F5 labeled Repeat participation?\n[ ] Is F6 labeled Hold for classification?\n[ ] Are the counts Visual guidance 2, Location guidance 2, Facilitator 1, Repeat participation 1, Hold for classification 1?\n[ ] Are there 6 respondents and 7 total labels?\n[ ] Is the total of 7 labels correctly treated as not an error?\n[ ] Were unsupported interpretations such as everyone was satisfied or emotional intensity avoided?"
+        },
+        {
+          "type": "p",
+          "text": "With real free-text data, it is useful to test label definitions on a small set of examples before fixing the classification rules. This tutorial is an editorial exercise using 6 fictional comments and does not evaluate the representativeness or statistical significance of survey results."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example in which a human recalculated the multiple-label assignments and label totals for the fictional F1–F6 free-text comments",
+    "items": [
+      "Check that F3 has both Visual guidance and Location guidance",
+      "Check that F6 is Hold for classification",
+      "Check that the label counts are 2, 2, 1, 1, 1",
+      "Check that 6 respondents and 7 total labels are treated as different counts",
+      "Check that emotional intensity or universal satisfaction was not inferred"
+    ],
+    "limits": "The result is an educational editorial example created and reviewed with AI assistance. It is not the result of analyzing real survey data, measuring classification accuracy, or verifying the automatic classification performance of any specific AI product."
+  }
+}

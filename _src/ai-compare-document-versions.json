@@ -1,0 +1,240 @@
+{
+  "slug": "ai-compare-document-versions",
+  "title": "Compare Two Document Versions with AI: Separate Changed, Added, Deleted, and Unchanged Items",
+  "summary": "This exercise uses AI to compare V1 and V2 of the same event notice and classify five comparison items as changed, added, deleted, or unchanged. You will learn how to record only differences that actually appear in the documents without assuming why a deleted sentence disappeared.",
+  "tags": [
+    "AI document comparison",
+    "change tracking",
+    "prompt practice"
+  ],
+  "audience": "Beginners who want to quickly organize differences between document revisions but are not yet familiar with how to tell AI exactly what to compare",
+  "prerequisites": [
+    "You only need to be able to copy the two document versions as text.",
+    "Use only the fictional material below instead of real personal data or internal company documents.",
+    "No programming or code execution is required."
+  ],
+  "sections": [
+    {
+      "id": "prepare-source",
+      "heading": "1. Prepare the two versions with item IDs",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The first step in document comparison is to keep V1 and V2 clearly separated instead of mixing their sentences together. In this exercise, you will use a fictional event notice and assign row IDs A1–A4 and B1–B4 to each sentence. IDs make it easier to check which sentence AI used as evidence. The material below contains no personal information, and all people, events, and conditions are fictional."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "[Event Notice V1]\nA1 Event date and time: 11-14 at 14:00\nA2 Capacity: 20 people\nA3 Registration deadline: 11-10\nA4 What to bring: notebook\n\n[Event Notice V2]\nB1 Event date and time: 11-14 at 15:00\nB2 Capacity: 24 people\nB3 Registration deadline: 11-10\nB4 Online participation: not provided"
+        },
+        {
+          "type": "p",
+          "text": "The two versions contain a total of eight rows, but there are exactly five meaningful comparison items: event date and time, capacity, registration deadline, what to bring, and online participation. The fact that the what-to-bring sentence from V1 is absent in V2 and the fact that a new online participation sentence appears in V2 are different types of changes and should be treated as separate items."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Comparison item",
+            "V1 evidence",
+            "V2 evidence",
+            "What to compare"
+          ],
+          "rows": [
+            [
+              "Event date and time",
+              "A1",
+              "B1",
+              "Check whether 11-14 is unchanged and the time changed from 14:00 to 15:00"
+            ],
+            [
+              "Capacity",
+              "A2",
+              "B2",
+              "Compare 20 people and 24 people"
+            ],
+            [
+              "Registration deadline",
+              "A3",
+              "B3",
+              "Check whether 11-10 remained unchanged"
+            ],
+            [
+              "What to bring",
+              "A4",
+              "No corresponding row",
+              "Check whether the item disappeared from V2"
+            ],
+            [
+              "Online participation",
+              "No corresponding row",
+              "B4",
+              "Check whether a new item was added in V2"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "write-comparison-prompt",
+      "heading": "2. State the comparison rules explicitly in the prompt",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If you simply ask AI to compare two documents, wording differences and meaning differences can become mixed together. In this exercise, limit the comparison to exactly five items and require each status to be one of changed, added, deleted, or unchanged. In particular, the disappearance of the what-to-bring sentence in V2 does not mean that nothing needs to be brought. The reason for the deletion is unknown."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Compare V1 and V2 below.\n\nUse exactly these 5 comparison items only.\n1. Event date and time\n2. Capacity\n3. Registration deadline\n4. What to bring\n5. Online participation\n\nFor each item, label the status as changed, added, deleted, or unchanged. Include the V1 evidence ID and V2 evidence ID, and explain the difference in one sentence.\n\nImportant rules:\n- Do not guess why information is missing from a document.\n- Do not assume that no item needs to be brought just because the what-to-bring item disappeared from V2.\n- Do not change or supplement dates or numbers.\n- Do not add explanations that are unsupported by the source.\n\n[Source]\nV1: A1 Event date and time 11-14 at 14:00 / A2 Capacity 20 people / A3 Registration deadline 11-10 / A4 What to bring notebook\nV2: B1 Event date and time 11-14 at 15:00 / B2 Capacity 24 people / B3 Registration deadline 11-10 / B4 Online participation not provided"
+        },
+        {
+          "type": "p",
+          "text": "The key is to state not only what should be compared but also what should not be done. Deletion and change of meaning are different. A deleted sentence is an observable document state, while deciding whether the item is still required needs additional information."
+        }
+      ]
+    },
+    {
+      "id": "review-example-output",
+      "heading": "3. Check the five comparison items one by one in the example result",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The result below is not a test of the performance of any actual AI product. It is an editorial example created and reviewed with AI assistance to show the correspondence between the input and output in this tutorial. Readers should verify each status and number directly against the source text."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "1. Event date and time — changed\nEvidence: A1, B1\n11-14 is unchanged, but the start time changed from 14:00 to 15:00.\n\n2. Capacity — changed\nEvidence: A2, B2\nThe capacity changed from 20 people to 24 people.\n\n3. Registration deadline — unchanged\nEvidence: A3, B3\nThe registration deadline is 11-10 in both versions.\n\n4. What to bring — deleted\nEvidence: A4, no corresponding row in V2\nThe notebook item in V1 is not found in V2. The reason for deletion and whether anything still needs to be brought cannot be determined from the source.\n\n5. Online participation — added\nEvidence: no corresponding row in V1, B4\nA new item stating that online participation is not provided was added in V2."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Item",
+            "Status",
+            "Source to check",
+            "What the reader should verify"
+          ],
+          "rows": [
+            [
+              "Event date and time",
+              "Changed",
+              "A1 ↔ B1",
+              "Whether 14:00 changed to 15:00"
+            ],
+            [
+              "Capacity",
+              "Changed",
+              "A2 ↔ B2",
+              "Whether 20 people changed to 24 people"
+            ],
+            [
+              "Registration deadline",
+              "Unchanged",
+              "A3 ↔ B3",
+              "Whether both say 11-10"
+            ],
+            [
+              "What to bring",
+              "Deleted",
+              "A4 ↔ absent in V2",
+              "Whether the result only says the notebook item is absent from V2"
+            ],
+            [
+              "Online participation",
+              "Added",
+              "Absent in V1 ↔ B4",
+              "Whether the negative wording not provided is preserved"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "find-bad-comparison",
+      "heading": "4. Find the error of interpreting a deleted item without evidence",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A major risk in document comparison is confusing a change in the text with the reason behind the change. You can confirm that the what-to-bring sentence is absent in V2, but there is no evidence that the organizer no longer requires a notebook. The online participation item must also preserve the negative condition not provided rather than merely recording that an item was added."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "What to bring — changed\nA notebook is no longer required in V2, so participants do not need to bring one.\n\nOnline participation — added\nOnline participation is available starting with V2."
+        },
+        {
+          "type": "p",
+          "text": "The first sentence guesses the reason for the deletion, and the second reverses the meaning of B4. The correct record should only say that the what-to-bring item is not found in V2, while the online participation item must retain the original statement that it is not provided."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Incorrect wording",
+            "Problem",
+            "Correction rule"
+          ],
+          "rows": [
+            [
+              "A notebook is no longer required",
+              "It infers a reason from the deletion",
+              "Record only that the what-to-bring item is not found in V2"
+            ],
+            [
+              "Online participation is available",
+              "It reverses the negative meaning of not provided",
+              "Preserve the original meaning that online participation is not provided"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "request-correction",
+      "heading": "5. Re-request correction of only the incorrect parts instead of rewriting everything",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "If only one or two items are wrong, it is easier to review the correction when you specify the scope instead of asking for a full comparison again. In the correction request, state the incorrect items, their source evidence, and the facts that must not change. This makes it easier to compare before and after."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Revise only the what-to-bring and online participation items in the previous comparison.\n\nCorrection rules:\n- A4 says what to bring: notebook, but there is no what-to-bring row in V2. Therefore, label the status as deleted and remove the inference that a notebook is no longer required.\n- B4 says online participation is not provided. Do not change this to online participation being available.\n- Do not modify the existing results for event date and time, capacity, or registration deadline.\n- Keep exactly 5 items in the final result."
+        },
+        {
+          "type": "p",
+          "text": "This re-request explicitly tells AI not to alter the three items that were already correct. Even during correction, values such as dates, times, and capacity can change unintentionally, so all five items should still be checked again at the end."
+        }
+      ]
+    },
+    {
+      "id": "final-check",
+      "heading": "6. Perform a final check against the source text",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Use the AI comparison result as a draft for human review rather than as a final decision table. In revised documents, dates, numbers, negative wording, and addition or deletion status can matter more than small wording differences. Keep the checklist below next to the source and verify each item one by one."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "[ ] Are there exactly 5 comparison items: event date and time, capacity, registration deadline, what to bring, and online participation?\n[ ] Is the A1 to B1 change from 14:00 to 15:00 correct?\n[ ] Is the A2 to B2 change from 20 people to 24 people correct?\n[ ] Is the A3 to B3 registration deadline of 11-10 marked unchanged?\n[ ] Is the absence of A4 from V2 recorded as deleted?\n[ ] Is the deletion of the what-to-bring item left uninterpreted rather than treated as no longer needed?\n[ ] Is B4's negative wording that online participation is not provided preserved?\n[ ] Were no unsupported reasons or policies added?"
+        },
+        {
+          "type": "p",
+          "text": "The same method can be applied to real work documents. First define the comparison units, assign identifiers to the relevant sentences, and then check the status suggested by AI against the original text. During practice, it is safer to use fictional text instead of sensitive real-world documents."
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Editorial example reviewed by a human by comparing the fixed row IDs, five comparison items, numbers, dates, and negative wording in the fictional event notice V1 and V2",
+    "items": [
+      "Check that there are exactly 5 comparison items",
+      "Check that the values in A1–A4 and B1–B4 were not changed in the result",
+      "Check that deletion of the what-to-bring item was not interpreted as no longer needed",
+      "Check that the negative meaning of online participation not provided was preserved"
+    ],
+    "limits": "The result is an educational editorial example created and reviewed with AI assistance. It was not produced by executing or benchmarking any particular AI product, and it does not verify accuracy or performance."
+  }
+}
