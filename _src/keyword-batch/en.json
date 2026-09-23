@@ -1,0 +1,250 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "ai-presentation-outline",
+      "title": "Create an AI PPT: Turn Source Text into a 6-Slide Presentation Outline and Speaker Notes, Then Review It",
+      "summary": "Learn how to turn short source text into an AI PPT presentation structure without adding unsupported facts, create a prompt for a 6-slide outline with one key message, evidence, speaker notes, and visual suggestions, and manually review numbers, interpretations, images, and sensitive information.",
+      "tags": [
+        "AI PPT",
+        "presentation",
+        "prompt"
+      ],
+      "audience": "Beginners who want to use AI to turn meeting, event, or work-related source text into a presentation draft",
+      "prerequisites": [
+        "You should have a short piece of source text that you can copy and use.",
+        "You should be able to perform a basic numerical check of what denominator a percentage uses.",
+        "This article does not cover automatic creation of an actual PPTX file."
+      ],
+      "sections": [
+        {
+          "id": "goal-and-source",
+          "heading": "1. Fix the Source Text and Presentation Goal Before Creating an AI PPT",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When creating a PPT presentation with AI, the first step is not choosing a design but defining the boundary of what can be said from the source text. In this exercise, we will create a 6-slide presentation outline and speaker notes from three statements about a fictional library book club. Information that has not yet been decided, such as the date or budget, should be explicitly restricted in the prompt so that AI does not fill it in naturally on its own."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1. In August 2026, 24 people were invited to a library book club meeting, and 18 actually attended.\nS2. After the event, 12 of the 18 attendees each responded once to an anonymous survey, and 9 of them said they wanted to participate in the next meeting.\nS3. The date and budget for the next meeting have not yet been decided."
+            },
+            {
+              "type": "p",
+              "text": "The values that can be calculated directly from the source are an attendance rate of 18÷24=75% and a next-meeting interest rate of 9÷12=75% among survey respondents. However, we cannot know how many of all 18 attendees wanted to attend the next meeting. That is because we do not know the intentions of attendees who did not respond to the survey."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Confirmed facts: 24 invited, 18 attended, 12 survey respondents, 9 respondents interested in the next meeting",
+                "Can be calculated: 75% attendance rate, 75% next-meeting interest among respondents",
+                "Cannot be calculated: next-meeting interest rate among all attendees",
+                "Undecided items: date and budget for the next meeting"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-prompt",
+          "heading": "2. Write a Constraint-Based Prompt That Prevents Unsupported Facts",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "For a presentation prompt, it is easier to review the result if you specify the number of slides, slide order, evidence notation, and prohibited inferences instead of simply writing, 'Make a 6-slide PPT.' In presentations that contain numbers, especially, the sentence should preserve which group was used as the denominator."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Using only the source text below, create a draft 6-slide presentation.\n\nSlide order:\n1. Purpose\n2. Attendance\n3. Survey\n4. Limitations\n5. Next actions\n6. Decision\n\nFor each slide, include the following:\n- Title\n- One key message: one sentence\n- Evidence: the relevant S1, S2, or S3 number\n- Speaker notes: 2–3 sentences for the presenter to say\n- Visual suggestion: table, number, simple shape, etc.\n\nConstraints:\n- Do not invent dates, budgets, reasons, satisfaction levels, or effects that are not in the source text.\n- Express the attendance rate as 18/24=75%.\n- Express interest in the next meeting as '9 out of 12 survey respondents, 75%.'\n- Do not change this to '75% of all attendees wanted the next meeting.'\n- State that the interest rate among all attendees cannot be calculated because the intentions of survey nonrespondents are unknown.\n- Keep the date and budget undecided.\n- Separate facts from suggestions at the sentence level.\n\nSource text:\nS1. In August 2026, 24 people were invited to a library book club meeting, and 18 actually attended.\nS2. After the event, 12 of the 18 attendees each responded once to an anonymous survey, and 9 of them said they wanted to participate in the next meeting.\nS3. The date and budget for the next meeting have not yet been decided."
+            }
+          ]
+        },
+        {
+          "id": "editorial-example",
+          "heading": "3. Read a 6-Slide Presentation Result Example",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The content below is not the result of running a specific AI product. It is an example written manually by an editor to satisfy the constraints above. When you use an AI-generated draft, you can review it in the same way by comparing it line by line with the source text."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Slide",
+                "Title",
+                "One key message",
+                "Evidence",
+                "Speaker notes",
+                "Visual suggestion"
+              ],
+              "rows": [
+                [
+                  "1. Purpose",
+                  "Connect Book Club Results to the Next Operating Decision",
+                  "The purpose of this presentation is to review attendance and survey results and identify the items that need to be decided for the next meeting.",
+                  "S1, S2, S3",
+                  "This presentation focuses on organizing the numbers we can currently confirm rather than exaggerating the event's performance. At the end, we will leave the still-undecided date and budget as decision items.",
+                  "Show the purpose in one sentence and display the 6-slide flow as a simple sequence diagram"
+                ],
+                [
+                  "2. Attendance",
+                  "24 Invited, 18 Attended",
+                  "The attendance rate for the August 2026 book club meeting was 75%.",
+                  "S1",
+                  "There were 24 invited participants and 18 actual attendees. Dividing 18 by 24 gives an attendance rate of 75%. This figure only shows attendance and does not represent satisfaction or the effect of the event.",
+                  "Display 24 → 18 and 75% as large numbers"
+                ],
+                [
+                  "3. Survey",
+                  "9 of 12 Respondents Want the Next Meeting",
+                  "Among anonymous survey respondents, 75% said they wanted to participate in the next meeting.",
+                  "S2",
+                  "There were 12 survey respondents, and 9 of them wanted to participate in the next meeting. Therefore, the rate among respondents is 75%. We should not expand this into a rate for all attendees.",
+                  "Show 9 out of 12 as 9/12 or 75%"
+                ],
+                [
+                  "4. Limitations",
+                  "Respondent Results Cannot Be Converted into Results for All Attendees",
+                  "Because we do not know the intentions of attendees who did not answer the survey, we cannot conclude the interest rate among all attendees.",
+                  "S1, S2",
+                  "There were 18 attendees but only 12 survey respondents. The source text does not tell us whether the remaining attendees wanted to participate in the next meeting. Therefore, dividing 9 by 18 and presenting it as the interest rate for all attendees would be incorrect.",
+                  "Use a simple diagram that separates 18 attendees from 12 respondents"
+                ],
+                [
+                  "5. Next Actions",
+                  "More Information Is Needed to Decide the Date and Budget",
+                  "The date and budget for the next meeting are still undecided and require separate decisions.",
+                  "S3",
+                  "The current record does not allow us to specify the date or budget for the next event. Possible date options and budget proposals need to be collected before a decision is made. If any options are presented here, they should be labeled as suggestions rather than source facts.",
+                  "Show Date: Undecided and Budget: Undecided as checklist items"
+                ],
+                [
+                  "6. Decision",
+                  "Separate Confirmed Facts from Undecided Items",
+                  "Share the confirmed attendance and survey numbers, and leave the next meeting schedule and budget as separate decision items.",
+                  "S1, S2, S3",
+                  "The confirmed facts are a 75% attendance rate and a 75% next-meeting interest rate among survey respondents. In contrast, the interest rate among all attendees, the next date, and the budget cannot be confirmed. It is better to handle these three items separately in the meeting.",
+                  "Divide the slide into two columns: Confirmed facts and Decisions needed"
+                ]
+              ]
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Editor-written result example summary\n- Attendance: 24 invited, 18 attended, attendance rate 75%\n- Survey: 12 responded, 9 want the next meeting, 75% among respondents\n- Limitation: interest rate among all attendees cannot be confirmed\n- Undecided: date and budget for the next meeting\n- Presentation structure: Purpose → Attendance → Survey → Limitations → Next actions → Decision\n\nNote: This example is not an actual AI execution result. It was written by an editor to demonstrate the review method."
+            }
+          ]
+        },
+        {
+          "id": "check-numbers",
+          "heading": "4. Recheck Numbers and Denominators Against the Source Text",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "One of the most dangerous errors in AI presentation material is when the arithmetic is correct but the denominator changes. 9÷12 and 9÷18 answer different questions. The source tells us only that 9 of the 12 survey respondents wanted the next meeting."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Incorrect example:\n75% of all attendees said they wanted to participate in the next book club meeting."
+            },
+            {
+              "type": "p",
+              "text": "This sentence must be corrected. The denominator for 75% is not all 18 attendees but the 12 survey respondents. The correct wording is, '9 out of 12 survey respondents, or 75% of respondents, said they wanted to participate in the next meeting.' The interest rate among all attendees cannot be concluded because the intentions of nonrespondents are unknown."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Number review checklist\n[ ] Does the invited count of 24 match source S1?\n[ ] Does the attendance count of 18 match source S1?\n[ ] Is the attendance rate calculated as 18/24=75%?\n[ ] Does the survey response count of 12 match source S2?\n[ ] Does the next-meeting interest count of 9 match source S2?\n[ ] Is the interest rate calculated as 9/12=75%?\n[ ] Has '75% of respondents' remained separate from '75% of all attendees'?\n[ ] Have the date and budget remained unfilled rather than being invented?"
+            }
+          ]
+        },
+        {
+          "id": "separate-fact-proposal",
+          "heading": "5. Separate Facts, Interpretations, and Suggestions, and Check Images and Personal Information",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A presentation draft should be reviewed not only for numbers but also for the type of each statement. 'The attendance rate was 75%' is a fact that can be calculated from the source. In contrast, statements such as 'Saturday afternoon would be good for the next meeting' or 'Increasing the budget would increase attendance' are not supported by this source. If such statements are needed, they should be labeled separately as 'Suggestions' or 'Items for further review.'"
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Fact: information stated directly in the source or directly calculable from source numbers",
+                "Interpretation: a statement that explains the meaning of facts; check that it does not make a stronger conclusion than the source supports",
+                "Suggestion: something that must be newly decided, such as the next schedule, budget, or operating method",
+                "Images: prioritize self-created diagrams and charts or images whose usage permission has been confirmed",
+                "Sensitive information: remove names, contact details, member numbers, internal identifiers, and other unnecessary information before entering content into AI",
+                "Anonymous survey: do not infer respondents' identities or create new personal information merely because the survey is anonymous"
+              ]
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Content review checklist\n[ ] Can each key statement be linked to S1, S2, or S3 as evidence?\n[ ] Have causes or effects not contained in the source been avoided as factual claims?\n[ ] Have the undecided date and budget remained unconfirmed?\n[ ] Are suggestions labeled as 'suggestion,' 'review,' or 'decision needed' so they are distinct from facts?\n[ ] Has unnecessary personally identifiable information been removed?\n[ ] Has permission been checked for any external image used?\n[ ] Where possible, are self-created tables, number cards, or shapes used to present the information?"
+            }
+          ]
+        },
+        {
+          "id": "manual-transfer",
+          "heading": "6. Manually Transfer the Reviewed Draft into a Presentation Tool",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The final step in this exercise is to manually move the reviewed text into an actual presentation tool. This article does not assume any specific product's automatic generation feature or automatic PPTX creation. First finalize the text draft, then adjust layout and visual elements manually in the presentation tool."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "1. Copy the titles and one key message from all 6 slides first to create the basic structure of each page.",
+                "2. Use the table's 'Visual suggestion' column as a guide and manually place only the necessary number cards, simple tables, arrows, or other elements.",
+                "3. Move the reviewed notes into the speaker notes area and avoid placing too much text in the slide body.",
+                "4. On the two slides that show 75%, check again that the denominators are different: 24 and 12.",
+                "5. Search for any remaining unsupported statements such as 'interest rate among all attendees.'",
+                "6. Confirm that the date and budget are still labeled 'Undecided' or 'Decision needed.'",
+                "7. Use only images and icons you created yourself or have permission to use, and make a final check that unnecessary personal information is not visible."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "In AI PPT work, maintaining traceability between the source text and presentation material is more important than filling slides quickly. If you keep the evidence S-number for each slide, it becomes easier to return to the source when a number changes or a sentence becomes overstated. Even if you hide the evidence numbers from the final presentation screen, it is safer to retain them in your editorial review notes."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "A document-review exercise using fictional library book club source statements S1–S3 and an editor-written 6-slide presentation example",
+        "items": [
+          "Calculate 18/24 yourself and confirm that it equals 75% and that the denominator for the attendance rate is the 24 invited participants.",
+          "Calculate 9/12 yourself and confirm that it equals 75% and that the denominator for the interest rate is the 12 survey respondents.",
+          "Confirm that the explanation still states that the interest rate among all attendees cannot be determined because the intentions of survey nonrespondents are unknown.",
+          "Confirm that the 6-slide order is Purpose, Attendance, Survey, Limitations, Next actions, Decision.",
+          "Confirm that each slide example includes a title, one key message, evidence S-number, speaker notes, and visual suggestion.",
+          "Confirm that no date, budget, cause, or effect not contained in the source has been added as fact.",
+          "Confirm that facts and suggestions are separated and that image permission and sensitive-information removal are included in the review.",
+          "Confirm that the reviewed content is manually transferred into a presentation tool by a person."
+        ],
+        "limits": "The 6-slide result in the article is not output generated and verified by running a specific AI service. It is an example written by an editor to explain the prompt and review process. This article does not cover actual PPTX file creation, verification of features in a specific presentation product, or evaluation of design quality."
+      }
+    }
+  ],
+  "patches": [
+    {
+      "slug": "ai-report-review",
+      "title": "Review an AI Report: Check Numbers, Sources, and Causal Claims",
+      "summary": "Check an AI report against its source data, recalculate totals and rates, and use a copyable review prompt to flag unsupported claims and overstated causes before submission.",
+      "heading": "Ask AI for a Final Report Review Before Submission",
+      "paragraph": "When showing a report draft to AI again, it is better to limit what can be verified instead of simply asking, 'Find what is wrong.' AI cannot confirm whether facts that were not included in the provided source or external evidence are actually true, so it should not be asked to guarantee such claims as facts. Instead, it can be asked to find numerical inconsistencies between the source and draft, calculation errors, missing source references, and overstatements. Also check separately whether the draft concludes that one value caused another when the source only shows that the two appeared together.",
+      "prompt": "Compare the source text and report draft below and perform a pre-submission review.\n\nReview items:\n1. Compare every number in the source with the numbers in the report.\n2. If there are percentages, totals, averages, or other calculations, recheck the numbers used and the formula.\n3. For each key claim, indicate whether there is a corresponding sentence or evidence in the source.\n4. For facts not present in the source, do not say they have been verified. Mark them as 'Cannot be verified from the provided source.'\n5. Distinguish between two phenomena appearing together and a claim that one caused the other.\n6. Find statements that use strong wording such as 'because of,' 'had an effect,' or 'increased' when the source does not establish causality.\n7. For sentences that need revision, suggest more conservative wording that stays within the source.\n\nOrganize the result in the format 'Problem sentence / Problem type / Source evidence / Suggested revision.'"
+    },
+    {
+      "slug": "ai-weekly-report-from-log",
+      "title": "Write a Weekly Report with AI: Turn CSV Work Logs into a Checked Draft",
+      "summary": "Use AI to draft a weekly report from CSV work logs and Python to reconcile hours and completed tasks. Copy a prompt that separates completed, ongoing, planned, and blocked work.",
+      "heading": "Weekly Work Report Prompt That Separates Completed, In Progress, Planned, and Blocked Work",
+      "paragraph": "When summarizing a work log into a weekly report, it is better not to mix tasks with different statuses in one paragraph. Requesting separate sections for completed work, work still in progress, next week's plans, and blocking issues makes comparison with the source easier. A blank CSV cell can mean something different from an actual value of 0, so restrict AI from automatically interpreting blanks as zero. Also, asking it to attach the source row number or identifier to each summary item makes it easier to find omissions or duplicates later when reconciling hours and counts with Python.",
+      "prompt": "Using the CSV work log below, create a draft weekly work report.\n\nReport structure:\n1. Completed work\n2. Work in progress\n3. Next week's plans\n4. Blocking issues or items requiring confirmation\n\nRules:\n- After each item, include the source row number or provided row identifier that supports it.\n- Do not arbitrarily change completed work into in-progress work or vice versa.\n- If next week's plans are not in the source, do not invent new plans as facts. Write 'No planning information in the source.'\n- If no blocking issue is recorded, do not conclude '0 blocking issues.' Instead write 'No blocking issues recorded.'\n- Do not automatically convert blank CSV cells into the number 0 or 'none.'\n- Preserve source values for hours, counts, completed items, and other numbers. If a calculation is necessary, show the formula as well.\n- When combining tasks from different rows, check that the original meaning has not changed.\n- At the end, separately list the numeric items to be reconciled with Python under 'Items to verify.'"
+    }
+  ]
+}

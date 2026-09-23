@@ -1,0 +1,250 @@
+{
+  "lang": "es",
+  "articles": [
+    {
+      "slug": "ai-presentation-outline",
+      "title": "Crear un PPT con IA: convertir un texto original en un esquema de 6 diapositivas con notas del presentador y revisarlo",
+      "summary": "Aprende a convertir un texto breve en una estructura de presentación para un PPT con IA sin añadir hechos no respaldados, a crear un prompt para un esquema de 6 diapositivas con un mensaje principal, evidencia, notas del presentador y sugerencias visuales, y a revisar manualmente cifras, interpretaciones, imágenes e información sensible.",
+      "tags": [
+        "PPT con IA",
+        "presentación",
+        "prompt"
+      ],
+      "audience": "Personas principiantes que quieren usar IA para convertir textos originales de reuniones, eventos o trabajo en un borrador de presentación",
+      "prerequisites": [
+        "Debes disponer de un texto original breve que puedas copiar y utilizar.",
+        "Debes poder realizar una comprobación numérica básica para identificar cuál es el denominador de un porcentaje.",
+        "Este artículo no cubre la generación automática de un archivo PPTX real."
+      ],
+      "sections": [
+        {
+          "id": "goal-and-source",
+          "heading": "1. Fijar el texto original y el objetivo de la presentación antes de crear un PPT con IA",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Al crear una presentación PPT con IA, lo primero no es elegir un diseño, sino definir el límite de lo que puede afirmarse a partir del texto original. En este ejercicio, crearemos un esquema de presentación de 6 diapositivas y notas del presentador a partir de tres frases sobre un club de lectura ficticio de una biblioteca. La información que todavía no se ha decidido, como la fecha o el presupuesto, debe restringirse explícitamente en el prompt para evitar que la IA la complete por su cuenta."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1. En agosto de 2026, se invitó a 24 personas a un club de lectura de una biblioteca y asistieron realmente 18.\nS2. Después del evento, 12 de los 18 asistentes respondieron una vez cada uno a una encuesta anónima y 9 de ellas dijeron que querían participar en la próxima reunión.\nS3. La fecha y el presupuesto de la próxima reunión todavía no se han decidido."
+            },
+            {
+              "type": "p",
+              "text": "Los valores que pueden calcularse directamente a partir del texto original son una tasa de asistencia de 18÷24=75% y una tasa de interés en la próxima reunión de 9÷12=75% entre quienes respondieron la encuesta. Sin embargo, no podemos saber cuántas de las 18 personas asistentes querían participar en la próxima reunión. Esto se debe a que desconocemos la intención de quienes asistieron pero no respondieron la encuesta."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Hechos confirmados: 24 personas invitadas, 18 asistentes reales, 12 respuestas a la encuesta, 9 personas interesadas en la próxima reunión",
+                "Se puede calcular: tasa de asistencia del 75%, interés en la próxima reunión del 75% entre quienes respondieron",
+                "No se puede calcular: proporción de interés en la próxima reunión entre todas las personas asistentes",
+                "Elementos sin decidir: fecha y presupuesto de la próxima reunión"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-prompt",
+          "heading": "2. Escribir un prompt con restricciones que impida añadir hechos no respaldados",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "En un prompt para una presentación, resulta más fácil revisar el resultado si se especifican el número de diapositivas, el orden, la forma de indicar la evidencia y las inferencias prohibidas, en lugar de escribir simplemente «Hazme un PPT de 6 diapositivas». En especial, cuando una presentación contiene cifras, conviene conservar en el texto qué grupo se utilizó como denominador."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Usa únicamente el texto original de abajo para crear un borrador de presentación de 6 diapositivas.\n\nOrden de las diapositivas:\n1. Objetivo\n2. Asistencia\n3. Encuesta\n4. Limitaciones\n5. Próximas acciones\n6. Decisión\n\nPara cada diapositiva, incluye lo siguiente:\n- Título\n- Un mensaje principal: una frase\n- Evidencia: el número correspondiente S1, S2 o S3\n- Notas del presentador: 2–3 frases que pueda decir la persona que presenta\n- Sugerencia visual: tabla, cifra, forma sencilla, etc.\n\nRestricciones:\n- No inventes fechas, presupuestos, motivos, niveles de satisfacción ni efectos que no aparezcan en el texto original.\n- Expresa la tasa de asistencia como 18/24=75%.\n- Expresa el interés en la próxima reunión como «9 de 12 personas que respondieron la encuesta, 75%».\n- No lo cambies por «el 75% de todas las personas asistentes quería participar en la próxima reunión».\n- Indica que la tasa de interés entre todas las personas asistentes no puede calcularse porque se desconoce la intención de quienes no respondieron la encuesta.\n- Mantén la fecha y el presupuesto como elementos sin decidir.\n- Separa los hechos de las propuestas a nivel de frase.\n\nTexto original:\nS1. En agosto de 2026, se invitó a 24 personas a un club de lectura de una biblioteca y asistieron realmente 18.\nS2. Después del evento, 12 de los 18 asistentes respondieron una vez cada uno a una encuesta anónima y 9 de ellas dijeron que querían participar en la próxima reunión.\nS3. La fecha y el presupuesto de la próxima reunión todavía no se han decidido."
+            }
+          ]
+        },
+        {
+          "id": "editorial-example",
+          "heading": "3. Leer un ejemplo de resultado de una presentación de 6 diapositivas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El contenido siguiente no es el resultado de ejecutar un producto específico de IA. Es un ejemplo redactado manualmente por un editor para cumplir las restricciones anteriores. Cuando utilices un borrador generado por IA, puedes revisarlo del mismo modo comparándolo línea por línea con el texto original."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Diapositiva",
+                "Título",
+                "Un mensaje principal",
+                "Evidencia",
+                "Notas del presentador",
+                "Sugerencia visual"
+              ],
+              "rows": [
+                [
+                  "1. Objetivo",
+                  "Conectar los resultados del club de lectura con la siguiente decisión operativa",
+                  "El objetivo de esta presentación es revisar la asistencia y los resultados de la encuesta e identificar los elementos que deben decidirse para la próxima reunión.",
+                  "S1, S2, S3",
+                  "Esta presentación se centra en organizar las cifras que actualmente podemos confirmar, en lugar de exagerar el rendimiento del evento. Al final, dejaremos la fecha y el presupuesto, que todavía no se han decidido, como elementos para la toma de decisiones.",
+                  "Mostrar el objetivo en una frase y representar el flujo de las 6 diapositivas con un diagrama secuencial sencillo"
+                ],
+                [
+                  "2. Asistencia",
+                  "24 personas invitadas, 18 asistentes",
+                  "La tasa de asistencia al club de lectura de agosto de 2026 fue del 75%.",
+                  "S1",
+                  "Se invitó a 24 personas y asistieron realmente 18. Al dividir 18 entre 24, la tasa de asistencia es del 75%. Esta cifra solo muestra la asistencia y no representa la satisfacción ni el efecto del evento.",
+                  "Mostrar 24 → 18 y 75% como cifras grandes"
+                ],
+                [
+                  "3. Encuesta",
+                  "9 de 12 personas encuestadas quieren la próxima reunión",
+                  "Entre quienes respondieron la encuesta anónima, el 75% dijo que quería participar en la próxima reunión.",
+                  "S2",
+                  "Respondieron la encuesta 12 personas y 9 de ellas querían participar en la próxima reunión. Por tanto, la proporción entre quienes respondieron es del 75%. No debemos ampliar este dato y presentarlo como una proporción de todas las personas asistentes.",
+                  "Mostrar 9 de 12 como 9/12 o 75%"
+                ],
+                [
+                  "4. Limitaciones",
+                  "Los resultados de quienes respondieron no pueden convertirse en resultados de todas las personas asistentes",
+                  "Como desconocemos la intención de quienes asistieron pero no respondieron la encuesta, no podemos afirmar la tasa de interés entre todas las personas asistentes.",
+                  "S1, S2",
+                  "Hubo 18 asistentes, pero solo 12 personas respondieron la encuesta. El texto original no indica si las demás personas asistentes querían participar en la próxima reunión. Por tanto, sería incorrecto dividir 9 entre 18 y presentarlo como la tasa de interés de todas las personas asistentes.",
+                  "Usar un diagrama sencillo que separe a las 18 personas asistentes de las 12 que respondieron"
+                ],
+                [
+                  "5. Próximas acciones",
+                  "Se necesita más información para decidir la fecha y el presupuesto",
+                  "La fecha y el presupuesto de la próxima reunión todavía no se han decidido y requieren decisiones independientes.",
+                  "S3",
+                  "Con el registro actual no podemos especificar la fecha ni el presupuesto del próximo evento. Será necesario recopilar posibles opciones de fecha y propuestas de presupuesto antes de tomar una decisión. Si aquí se presentan opciones, deben marcarse como propuestas y no como hechos procedentes del texto original.",
+                  "Mostrar «Fecha: sin decidir» y «Presupuesto: sin decidir» en forma de lista de comprobación"
+                ],
+                [
+                  "6. Decisión",
+                  "Separar los hechos confirmados de los elementos sin decidir",
+                  "Compartir las cifras confirmadas de asistencia y encuesta y dejar el calendario y el presupuesto de la próxima reunión como elementos separados para la toma de decisiones.",
+                  "S1, S2, S3",
+                  "Los hechos confirmados son una tasa de asistencia del 75% y una tasa de interés en la próxima reunión del 75% entre quienes respondieron la encuesta. En cambio, no pueden confirmarse la tasa de interés entre todas las personas asistentes, la próxima fecha ni el presupuesto. Conviene tratar estos tres elementos por separado en la reunión.",
+                  "Dividir la diapositiva en dos columnas: Hechos confirmados y Decisiones necesarias"
+                ]
+              ]
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Resumen del ejemplo de resultado redactado por el editor\n- Asistencia: 24 personas invitadas, 18 asistentes, tasa de asistencia 75%\n- Encuesta: 12 respuestas, 9 personas quieren la próxima reunión, 75% entre quienes respondieron\n- Limitación: no puede confirmarse la tasa de interés entre todas las personas asistentes\n- Sin decidir: fecha y presupuesto de la próxima reunión\n- Estructura de la presentación: Objetivo → Asistencia → Encuesta → Limitaciones → Próximas acciones → Decisión\n\nNota: Este ejemplo no es el resultado real de ejecutar una IA. Fue redactado por un editor para mostrar el método de revisión."
+            }
+          ]
+        },
+        {
+          "id": "check-numbers",
+          "heading": "4. Volver a comprobar cifras y denominadores con el texto original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Uno de los errores más peligrosos en materiales de presentación creados con IA ocurre cuando el cálculo es correcto, pero cambia el denominador. 9÷12 y 9÷18 responden a preguntas diferentes. El texto original solo nos dice que 9 de las 12 personas que respondieron la encuesta querían la próxima reunión."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Ejemplo incorrecto:\nEl 75% de todas las personas asistentes dijo que quería participar en la próxima reunión del club de lectura."
+            },
+            {
+              "type": "p",
+              "text": "Esta frase debe corregirse. El denominador del 75% no son las 18 personas asistentes, sino las 12 personas que respondieron la encuesta. La redacción correcta es: «9 de 12 personas que respondieron la encuesta, es decir, el 75% de quienes respondieron, dijeron que querían participar en la próxima reunión». La tasa de interés entre todas las personas asistentes no puede afirmarse porque se desconoce la intención de quienes no respondieron."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Lista de comprobación de cifras\n[ ] ¿La cifra de 24 personas invitadas coincide con S1?\n[ ] ¿La cifra de 18 asistentes coincide con S1?\n[ ] ¿La tasa de asistencia está calculada como 18/24=75%?\n[ ] ¿La cifra de 12 respuestas a la encuesta coincide con S2?\n[ ] ¿La cifra de 9 personas interesadas en la próxima reunión coincide con S2?\n[ ] ¿La tasa de interés está calculada como 9/12=75%?\n[ ] ¿Se ha evitado cambiar «75% de quienes respondieron» por «75% de todas las personas asistentes»?\n[ ] ¿La fecha y el presupuesto se han mantenido sin completar en lugar de inventarlos?"
+            }
+          ]
+        },
+        {
+          "id": "separate-fact-proposal",
+          "heading": "5. Separar hechos, interpretaciones y propuestas, y revisar imágenes e información personal",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Un borrador de presentación debe revisarse no solo por sus cifras, sino también por el tipo de cada afirmación. «La tasa de asistencia fue del 75%» es un hecho que puede calcularse a partir del texto original. En cambio, frases como «la tarde del sábado sería buena para la próxima reunión» o «si se aumenta el presupuesto, aumentará la asistencia» no están respaldadas por este texto original. Si son necesarias, deben indicarse por separado como «Propuestas» o «Elementos para revisión adicional»."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Hecho: información escrita directamente en el texto original o calculable de forma directa a partir de sus cifras",
+                "Interpretación: frase que explica el significado de los hechos; hay que comprobar que no llegue a una conclusión más fuerte que la respaldada por el texto original",
+                "Propuesta: contenido que debe decidirse posteriormente, como la próxima fecha, el presupuesto o la forma de organizar la actividad",
+                "Imágenes: priorizar diagramas y gráficos creados por uno mismo o imágenes cuyo permiso de uso se haya confirmado",
+                "Información sensible: eliminar nombres, datos de contacto, números de socio, identificadores internos y otra información innecesaria antes de introducir contenido en una IA",
+                "Encuesta anónima: no inferir la identidad de las personas encuestadas ni crear nueva información personal solo porque la encuesta sea anónima"
+              ]
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Lista de comprobación del contenido\n[ ] ¿Puede vincularse cada afirmación clave con S1, S2 o S3 como evidencia?\n[ ] ¿Se ha evitado presentar como hechos causas o efectos que no aparecen en el texto original?\n[ ] ¿La fecha y el presupuesto sin decidir siguen sin presentarse como valores confirmados?\n[ ] ¿Las propuestas están marcadas como «propuesta», «revisión» o «decisión necesaria» para distinguirlas de los hechos?\n[ ] ¿Se ha eliminado la información de identificación personal innecesaria para la presentación?\n[ ] ¿Se ha comprobado el permiso de uso de las imágenes externas?\n[ ] ¿Se utilizan, cuando sea posible, tablas, tarjetas numéricas o formas creadas por uno mismo para representar la información?"
+            }
+          ]
+        },
+        {
+          "id": "manual-transfer",
+          "heading": "6. Transferir manualmente el borrador revisado a una herramienta de presentaciones",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "El último paso de este ejercicio consiste en trasladar manualmente el texto revisado a una herramienta real de presentaciones. Aquí no se presupone ninguna función de generación automática de un producto específico ni la creación automática de archivos PPTX. Primero se finaliza el borrador de texto y después se ajustan manualmente el diseño y los elementos visuales en la herramienta de presentaciones."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "1. Copia primero los títulos y el mensaje principal de las 6 diapositivas para crear la estructura básica de cada página.",
+                "2. Usa la columna «Sugerencia visual» de la tabla como referencia y coloca manualmente solo los elementos necesarios, como tarjetas numéricas, tablas sencillas, flechas u otros elementos.",
+                "3. Traslada las notas revisadas al área de notas del presentador y evita colocar demasiado texto en el cuerpo de la diapositiva.",
+                "4. En las dos diapositivas donde aparece 75%, comprueba de nuevo que los denominadores son diferentes: 24 y 12.",
+                "5. Busca si queda alguna afirmación no respaldada, como «tasa de interés entre todas las personas asistentes».",
+                "6. Confirma que la fecha y el presupuesto siguen indicados como «Sin decidir» o «Decisión necesaria».",
+                "7. Usa únicamente imágenes e iconos creados por ti o para los que tengas permiso de uso y realiza una última comprobación para asegurarte de que no quede visible información personal innecesaria."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "En el trabajo de creación de un PPT con IA, mantener la trazabilidad entre el texto original y la presentación es más importante que llenar las diapositivas rápidamente. Si conservas el número S de la evidencia de cada diapositiva, será más fácil volver al texto original cuando cambie una cifra o una frase resulte exagerada. Aunque ocultes esos números de evidencia en la presentación final, es más seguro conservarlos en las notas editoriales de revisión."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Ejercicio de revisión documental con las frases originales S1–S3 de un club de lectura ficticio de una biblioteca y un ejemplo de presentación de 6 diapositivas redactado por un editor",
+        "items": [
+          "Calcula 18/24 por tu cuenta y confirma que es 75% y que el denominador de la tasa de asistencia son las 24 personas invitadas.",
+          "Calcula 9/12 por tu cuenta y confirma que es 75% y que el denominador de la tasa de interés son las 12 personas que respondieron la encuesta.",
+          "Confirma que se mantiene la explicación de que la tasa de interés entre todas las personas asistentes no puede determinarse porque se desconoce la intención de quienes no respondieron la encuesta.",
+          "Confirma que el orden de las 6 diapositivas es Objetivo, Asistencia, Encuesta, Limitaciones, Próximas acciones, Decisión.",
+          "Confirma que cada ejemplo de diapositiva incluye un título, un mensaje principal, un número S de evidencia, notas del presentador y una sugerencia visual.",
+          "Confirma que no se haya añadido como hecho ninguna fecha, presupuesto, causa o efecto que no aparezca en el texto original.",
+          "Confirma que los hechos y las propuestas estén separados y que la comprobación del permiso de uso de imágenes y la eliminación de información sensible estén incluidas en la revisión.",
+          "Confirma que el contenido revisado se transfiera manualmente a una herramienta de presentaciones por una persona."
+        ],
+        "limits": "El resultado de 6 diapositivas del artículo no es una salida generada y verificada mediante la ejecución real de un servicio específico de IA. Es un ejemplo redactado por un editor para explicar el prompt y el proceso de revisión. Este artículo no cubre la creación real de archivos PPTX, la verificación de funciones de un producto específico de presentaciones ni la evaluación de la calidad del diseño."
+      }
+    }
+  ],
+  "patches": [
+    {
+      "slug": "ai-report-review",
+      "title": "Revisar un informe de IA: cifras, fuentes y afirmaciones causales",
+      "summary": "Compara un informe de IA con sus datos de origen, recalcula totales y porcentajes y usa una instrucción para detectar afirmaciones sin respaldo y causas exageradas antes de entregarlo.",
+      "heading": "Pedir a la IA una revisión final del informe antes de enviarlo",
+      "paragraph": "Al volver a mostrar un borrador de informe a una IA, es mejor limitar lo que puede verificarse que limitarse a pedir «Encuentra lo que está mal». La IA no puede confirmar si son verdaderos hechos que no se incluyeron en el texto original proporcionado ni en la evidencia externa, por lo que no debe pedírsele que garantice como hechos contenidos que no aparecen en el material. En cambio, se le puede pedir que busque incoherencias numéricas entre el texto original y el borrador, errores de cálculo, referencias de fuentes ausentes y expresiones excesivas. También conviene comprobar por separado si el borrador concluye que un valor causó otro cuando el texto original solo muestra que ambos aparecieron juntos.",
+      "prompt": "Compara el texto original y el borrador del informe siguientes y realiza una revisión antes del envío.\n\nElementos de revisión:\n1. Compara uno por uno los números del texto original con los números del informe.\n2. Si hay porcentajes, totales, medias u otros cálculos, vuelve a comprobar los números utilizados y la fórmula.\n3. Para cada afirmación clave, indica si existe una frase o evidencia correspondiente en el texto original.\n4. Para hechos que no aparezcan en el texto original, no digas que han sido verificados. Márcalos como «No puede verificarse únicamente con el texto original proporcionado».\n5. Distingue entre dos fenómenos que aparecen juntos y una afirmación de que uno causó al otro.\n6. Busca partes que utilicen expresiones fuertes como «debido a», «tuvo un efecto» o «aumentó» cuando el texto original no demuestra una relación causal.\n7. Para las frases que necesiten corrección, propone una redacción más prudente que permanezca dentro de los límites del texto original.\n\nOrganiza el resultado con el formato «Frase problemática / Tipo de problema / Evidencia del texto original / Propuesta de corrección»."
+    },
+    {
+      "slug": "ai-weekly-report-from-log",
+      "title": "Crear un informe semanal con IA a partir de registros CSV",
+      "summary": "Redacta un informe semanal con IA a partir de registros CSV y verifica horas y tareas completadas con Python. Usa una instrucción para separar trabajo completado, en curso, planificado y bloqueado.",
+      "heading": "Prompt para un informe semanal de trabajo que separa tareas completadas, en curso, planificadas y bloqueadas",
+      "paragraph": "Al resumir un registro de trabajo en un informe semanal, es mejor no mezclar en un mismo párrafo tareas con estados diferentes. Pedir secciones separadas para el trabajo completado, el trabajo todavía en curso, los planes de la semana siguiente y los asuntos que bloquean el avance facilita la comparación con el texto original. Una celda vacía de un CSV puede tener un significado distinto de un valor real de 0, por lo que conviene restringir que la IA interprete automáticamente los espacios vacíos como cero. Además, pedir que cada elemento resumido incluya el número de fila o el identificador del registro original facilita encontrar omisiones o duplicados al contrastar después horas y recuentos con Python.",
+      "prompt": "Usa el registro de trabajo CSV siguiente para crear un borrador de informe semanal de trabajo.\n\nEstructura del informe:\n1. Trabajo completado\n2. Trabajo en curso\n3. Planes para la próxima semana\n4. Asuntos bloqueantes o elementos que requieren confirmación\n\nReglas:\n- Después de cada elemento, incluye el número de fila del texto original o el identificador de fila proporcionado que lo respalda.\n- No cambies arbitrariamente trabajo completado por trabajo en curso ni al contrario.\n- Si los planes de la próxima semana no aparecen en el texto original, no inventes nuevos planes como hechos. Escribe «No hay información sobre planes en el texto original».\n- Si no se registra ningún asunto bloqueante, no concluyas «0 asuntos bloqueantes». Escribe «No hay asuntos bloqueantes registrados».\n- No conviertas automáticamente las celdas vacías del CSV en el número 0 ni en «ninguno».\n- Mantén los valores originales de horas, recuentos, tareas completadas y otras cifras. Si es necesario realizar un cálculo, muestra también la fórmula.\n- Al combinar tareas de filas diferentes, comprueba que no haya cambiado el significado original.\n- Al final, enumera por separado los elementos numéricos que deben contrastarse con Python bajo el encabezado «Elementos para verificar»."
+    }
+  ]
+}

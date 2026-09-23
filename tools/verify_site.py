@@ -32,11 +32,13 @@ def main():
         slugs.extend(json.loads((ROOT/'_src/verification-patches'/f'vfix_{group}.json').read_text(encoding='utf-8')))
     code_count = 0
     for slug in slugs:
-        expected = [c.text for c in documents[ROOT/'articles'/slug/'index.html'].select('pre code')]
+        expected = [c.text for c in documents[ROOT/'articles'/slug/'index.html'].select('pre code:not(#localized-report-prompt)')]
         for language in LANGS:
             path = ROOT / ('' if language=='en' else language) / 'articles' / slug / 'index.html'
             doc = documents[path]
-            assert [c.text for c in doc.select('pre code')] == expected, ('locale code mismatch', path)
+            # The added localized prose prompt is checked against its locale source
+            # by verify_keyword_articles; executable examples must stay identical.
+            assert [c.text for c in doc.select('pre code:not(#localized-report-prompt)')] == expected, ('locale code mismatch', path)
             assert doc.html['lang'] == language
             assert doc.select_one('link[rel="canonical"]')['href'] == 'https://worknotetips.com/' + path.parent.relative_to(ROOT).as_posix() + '/'
             assert len(doc.select('link[hreflang]')) == 6

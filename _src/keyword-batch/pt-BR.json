@@ -1,0 +1,250 @@
+{
+  "lang": "pt-BR",
+  "articles": [
+    {
+      "slug": "ai-presentation-outline",
+      "title": "Criar um PPT com IA: transformar o texto original em um roteiro de 6 slides com notas do apresentador e revisar",
+      "summary": "Aprenda a transformar um texto curto em uma estrutura de apresentação para PPT com IA sem acrescentar fatos sem suporte, criar um prompt para um roteiro de 6 slides com uma mensagem principal, evidências, notas do apresentador e sugestões visuais, e revisar manualmente números, interpretações, imagens e informações sensíveis.",
+      "tags": [
+        "PPT com IA",
+        "apresentação",
+        "prompt"
+      ],
+      "audience": "Iniciantes que querem usar IA para transformar textos originais de reuniões, eventos ou trabalho em um rascunho de apresentação",
+      "prerequisites": [
+        "Você deve ter um texto original curto que possa copiar e usar.",
+        "Você deve conseguir fazer uma verificação numérica básica para identificar qual é o denominador de uma porcentagem.",
+        "Este artigo não aborda a geração automática de um arquivo PPTX real."
+      ],
+      "sections": [
+        {
+          "id": "goal-and-source",
+          "heading": "1. Fixar o texto original e o objetivo da apresentação antes de criar um PPT com IA",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao criar uma apresentação em PPT com IA, o primeiro passo não é escolher um design, mas definir o limite do que pode ser afirmado a partir do texto original. Neste exercício, criaremos um roteiro de apresentação com 6 slides e notas do apresentador a partir de três frases sobre um clube do livro fictício de uma biblioteca. Informações que ainda não foram decididas, como a data ou o orçamento, devem ser explicitamente restringidas no prompt para evitar que a IA as complete por conta própria."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "S1. Em agosto de 2026, 24 pessoas foram convidadas para um clube do livro de uma biblioteca, e 18 realmente compareceram.\nS2. Após o evento, 12 dos 18 participantes responderam uma única vez cada um a uma pesquisa anônima, e 9 delas disseram que gostariam de participar do próximo encontro.\nS3. A data e o orçamento do próximo encontro ainda não foram definidos."
+            },
+            {
+              "type": "p",
+              "text": "Os valores que podem ser calculados diretamente a partir do texto original são uma taxa de presença de 18÷24=75% e uma taxa de interesse no próximo encontro de 9÷12=75% entre as pessoas que responderam à pesquisa. No entanto, não é possível saber quantas das 18 pessoas presentes queriam participar do próximo encontro. Isso ocorre porque não conhecemos a intenção das pessoas presentes que não responderam à pesquisa."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Fatos confirmados: 24 pessoas convidadas, 18 presentes, 12 respostas à pesquisa, 9 pessoas interessadas no próximo encontro",
+                "Pode ser calculado: taxa de presença de 75%, interesse no próximo encontro de 75% entre quem respondeu",
+                "Não pode ser calculado: proporção de interesse no próximo encontro entre todas as pessoas presentes",
+                "Itens não definidos: data e orçamento do próximo encontro"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "build-prompt",
+          "heading": "2. Escrever um prompt com restrições para impedir a inclusão de fatos sem suporte",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Em um prompt para apresentação, é mais fácil revisar o resultado quando se especificam o número de slides, a ordem, a forma de indicar as evidências e as inferências proibidas, em vez de simplesmente escrever “Faça um PPT de 6 slides”. Principalmente em apresentações com números, é importante manter no texto qual grupo foi usado como denominador."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Use somente o texto original abaixo para criar um rascunho de apresentação com 6 slides.\n\nOrdem dos slides:\n1. Objetivo\n2. Presença\n3. Pesquisa\n4. Limitações\n5. Próximas ações\n6. Decisão\n\nPara cada slide, inclua os seguintes itens:\n- Título\n- Uma mensagem principal: uma frase\n- Evidência: o número correspondente S1, S2 ou S3\n- Notas do apresentador: 2–3 frases para o apresentador dizer\n- Sugestão visual: tabela, número, forma simples etc.\n\nRestrições:\n- Não invente datas, orçamentos, motivos, níveis de satisfação ou efeitos que não estejam no texto original.\n- Expresse a taxa de presença como 18/24=75%.\n- Expresse o interesse no próximo encontro como “9 de 12 pessoas que responderam à pesquisa, 75%”.\n- Não transforme isso em “75% de todas as pessoas presentes queriam o próximo encontro”.\n- Informe que a taxa de interesse entre todas as pessoas presentes não pode ser calculada porque a intenção de quem não respondeu à pesquisa é desconhecida.\n- Mantenha a data e o orçamento como não definidos.\n- Separe fatos de sugestões no nível da frase.\n\nTexto original:\nS1. Em agosto de 2026, 24 pessoas foram convidadas para um clube do livro de uma biblioteca, e 18 realmente compareceram.\nS2. Após o evento, 12 dos 18 participantes responderam uma única vez cada um a uma pesquisa anônima, e 9 delas disseram que gostariam de participar do próximo encontro.\nS3. A data e o orçamento do próximo encontro ainda não foram definidos."
+            }
+          ]
+        },
+        {
+          "id": "editorial-example",
+          "heading": "3. Ler um exemplo de resultado de uma apresentação com 6 slides",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "O conteúdo abaixo não é o resultado da execução de um produto específico de IA. É um exemplo escrito manualmente por um editor para atender às restrições acima. Ao usar um rascunho gerado por IA, você pode revisá-lo da mesma forma, comparando-o linha por linha com o texto original."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Slide",
+                "Título",
+                "Uma mensagem principal",
+                "Evidência",
+                "Notas do apresentador",
+                "Sugestão visual"
+              ],
+              "rows": [
+                [
+                  "1. Objetivo",
+                  "Conectar os resultados do clube do livro à próxima decisão operacional",
+                  "O objetivo desta apresentação é revisar a presença e os resultados da pesquisa e identificar os itens que precisam ser decididos para o próximo encontro.",
+                  "S1, S2, S3",
+                  "Esta apresentação se concentra em organizar os números que podemos confirmar atualmente, em vez de exagerar o desempenho do evento. No final, deixaremos a data e o orçamento, que ainda não foram definidos, como itens de decisão.",
+                  "Mostrar o objetivo em uma frase e exibir o fluxo dos 6 slides em um diagrama sequencial simples"
+                ],
+                [
+                  "2. Presença",
+                  "24 pessoas convidadas, 18 presentes",
+                  "A taxa de presença no clube do livro de agosto de 2026 foi de 75%.",
+                  "S1",
+                  "Foram convidadas 24 pessoas e 18 realmente compareceram. Dividindo 18 por 24, a taxa de presença é de 75%. Esse número mostra apenas a presença e não representa satisfação nem o efeito do evento.",
+                  "Exibir 24 → 18 e 75% como números grandes"
+                ],
+                [
+                  "3. Pesquisa",
+                  "9 de 12 respondentes querem o próximo encontro",
+                  "Entre as pessoas que responderam à pesquisa anônima, 75% disseram que gostariam de participar do próximo encontro.",
+                  "S2",
+                  "A pesquisa teve 12 respondentes, e 9 deles gostariam de participar do próximo encontro. Portanto, a taxa entre quem respondeu é de 75%. Não devemos ampliar esse dado e apresentá-lo como uma taxa de todas as pessoas presentes.",
+                  "Mostrar 9 de 12 como 9/12 ou 75%"
+                ],
+                [
+                  "4. Limitações",
+                  "Os resultados de quem respondeu não podem ser convertidos em resultados de todas as pessoas presentes",
+                  "Como não conhecemos a intenção das pessoas presentes que não responderam à pesquisa, não podemos concluir a taxa de interesse entre todas as pessoas presentes.",
+                  "S1, S2",
+                  "Houve 18 pessoas presentes, mas apenas 12 responderam à pesquisa. O texto original não informa se as demais pessoas presentes queriam participar do próximo encontro. Portanto, seria incorreto dividir 9 por 18 e apresentar esse valor como a taxa de interesse entre todas as pessoas presentes.",
+                  "Usar um diagrama simples que separe as 18 pessoas presentes das 12 respondentes"
+                ],
+                [
+                  "5. Próximas ações",
+                  "São necessárias mais informações para decidir a data e o orçamento",
+                  "A data e o orçamento do próximo encontro ainda não foram definidos e exigem decisões separadas.",
+                  "S3",
+                  "O registro atual não permite especificar a data ou o orçamento do próximo evento. Será necessário coletar possíveis opções de datas e propostas de orçamento antes de tomar uma decisão. Se alguma opção for apresentada aqui, ela deve ser identificada como sugestão, e não como fato do texto original.",
+                  "Mostrar “Data: não definida” e “Orçamento: não definido” como itens de checklist"
+                ],
+                [
+                  "6. Decisão",
+                  "Separar fatos confirmados de itens ainda não definidos",
+                  "Compartilhar os números confirmados de presença e pesquisa e deixar o cronograma e o orçamento do próximo encontro como itens separados de decisão.",
+                  "S1, S2, S3",
+                  "Os fatos confirmados são uma taxa de presença de 75% e uma taxa de interesse no próximo encontro de 75% entre quem respondeu à pesquisa. Por outro lado, não podem ser confirmados a taxa de interesse entre todas as pessoas presentes, a próxima data e o orçamento. É melhor tratar esses três itens separadamente na reunião.",
+                  "Dividir o slide em duas colunas: Fatos confirmados e Decisões necessárias"
+                ]
+              ]
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Resumo do exemplo de resultado escrito pelo editor\n- Presença: 24 pessoas convidadas, 18 presentes, taxa de presença 75%\n- Pesquisa: 12 respostas, 9 pessoas querem o próximo encontro, 75% entre quem respondeu\n- Limitação: a taxa de interesse entre todas as pessoas presentes não pode ser confirmada\n- Não definido: data e orçamento do próximo encontro\n- Estrutura da apresentação: Objetivo → Presença → Pesquisa → Limitações → Próximas ações → Decisão\n\nObservação: Este exemplo não é o resultado real da execução de uma IA. Foi escrito por um editor para demonstrar o método de revisão."
+            }
+          ]
+        },
+        {
+          "id": "check-numbers",
+          "heading": "4. Conferir novamente os números e denominadores com o texto original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um dos erros mais perigosos em materiais de apresentação produzidos com IA ocorre quando o cálculo está correto, mas o denominador muda. 9÷12 e 9÷18 respondem a perguntas diferentes. O texto original informa apenas que 9 das 12 pessoas que responderam à pesquisa queriam o próximo encontro."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Exemplo incorreto:\n75% de todas as pessoas presentes disseram que gostariam de participar do próximo encontro do clube do livro."
+            },
+            {
+              "type": "p",
+              "text": "Essa frase precisa ser corrigida. O denominador de 75% não são as 18 pessoas presentes, mas as 12 pessoas que responderam à pesquisa. A formulação correta é: “9 de 12 pessoas que responderam à pesquisa, ou 75% de quem respondeu, disseram que gostariam de participar do próximo encontro”. A taxa de interesse entre todas as pessoas presentes não pode ser concluída porque a intenção de quem não respondeu é desconhecida."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Checklist de revisão dos números\n[ ] O número de 24 pessoas convidadas corresponde ao S1?\n[ ] O número de 18 pessoas presentes corresponde ao S1?\n[ ] A taxa de presença foi calculada como 18/24=75%?\n[ ] O número de 12 respostas à pesquisa corresponde ao S2?\n[ ] O número de 9 pessoas interessadas no próximo encontro corresponde ao S2?\n[ ] A taxa de interesse foi calculada como 9/12=75%?\n[ ] Foi evitado transformar “75% de quem respondeu” em “75% de todas as pessoas presentes”?\n[ ] A data e o orçamento foram mantidos sem preenchimento, em vez de serem inventados?"
+            }
+          ]
+        },
+        {
+          "id": "separate-fact-proposal",
+          "heading": "5. Separar fatos, interpretações e sugestões e revisar imagens e informações pessoais",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Um rascunho de apresentação deve ser revisado não apenas pelos números, mas também pelo tipo de cada afirmação. “A taxa de presença foi de 75%” é um fato que pode ser calculado a partir do texto original. Por outro lado, frases como “sábado à tarde seria um bom horário para o próximo encontro” ou “aumentar o orçamento aumentaria a presença” não são confirmadas pelo texto original deste exercício. Se forem necessárias, devem ser indicadas separadamente como “Sugestões” ou “Itens para análise adicional”."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Fato: informação escrita diretamente no texto original ou calculável diretamente a partir dos números do texto original",
+                "Interpretação: frase que explica o significado dos fatos; verifique se não apresenta uma conclusão mais forte do que o texto original permite",
+                "Sugestão: algo que ainda precisa ser decidido, como a próxima data, o orçamento ou a forma de operação",
+                "Imagens: priorize diagramas e gráficos criados por você ou imagens cuja permissão de uso tenha sido confirmada",
+                "Informações sensíveis: remova nomes, dados de contato, números de associados, identificadores internos e outras informações desnecessárias antes de inserir o conteúdo em uma IA",
+                "Pesquisa anônima: não tente inferir a identidade de quem respondeu nem criar novas informações pessoais apenas porque a pesquisa é anônima"
+              ]
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Checklist de revisão do conteúdo\n[ ] Cada afirmação principal pode ser vinculada ao S1, S2 ou S3 como evidência?\n[ ] Foi evitado apresentar como fatos causas ou efeitos que não aparecem no texto original?\n[ ] A data e o orçamento ainda não definidos continuam sem ser apresentados como valores confirmados?\n[ ] As sugestões estão identificadas como “sugestão”, “revisão” ou “decisão necessária” para distingui-las dos fatos?\n[ ] As informações de identificação pessoal desnecessárias para a apresentação foram removidas?\n[ ] A permissão de uso de imagens externas foi verificada?\n[ ] Sempre que possível, são usadas tabelas, cartões numéricos ou formas criadas pelo próprio autor para apresentar as informações?"
+            }
+          ]
+        },
+        {
+          "id": "manual-transfer",
+          "heading": "6. Transferir manualmente o rascunho revisado para uma ferramenta de apresentação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A última etapa deste exercício é mover manualmente o texto revisado para uma ferramenta real de apresentação. Aqui não presumimos nenhum recurso de geração automática de um produto específico nem a criação automática de PPTX. Primeiro, finalize o rascunho de texto e depois ajuste manualmente o layout e os elementos visuais na ferramenta de apresentação."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "1. Copie primeiro os títulos e a mensagem principal dos 6 slides para criar a estrutura básica de cada página.",
+                "2. Use a coluna “Sugestão visual” da tabela como referência e coloque manualmente apenas os elementos necessários, como cartões numéricos, tabelas simples, setas ou outros elementos.",
+                "3. Transfira as notas revisadas para a área de notas do apresentador e evite colocar texto demais no corpo do slide.",
+                "4. Nos dois slides que mostram 75%, confira novamente se os denominadores são diferentes: 24 e 12.",
+                "5. Procure por qualquer afirmação sem suporte que ainda tenha permanecido, como “taxa de interesse entre todas as pessoas presentes”.",
+                "6. Confirme se a data e o orçamento ainda estão marcados como “Não definido” ou “Decisão necessária”.",
+                "7. Use apenas imagens e ícones criados por você ou para os quais você tenha permissão de uso e faça uma última verificação para garantir que nenhuma informação pessoal desnecessária esteja visível."
+              ]
+            },
+            {
+              "type": "p",
+              "text": "No trabalho de criação de PPT com IA, manter a rastreabilidade entre o texto original e a apresentação é mais importante do que preencher os slides rapidamente. Se você mantiver o número S da evidência de cada slide, será mais fácil voltar ao texto original quando um número mudar ou uma frase ficar exagerada. Mesmo que os números das evidências sejam ocultados na apresentação final, é mais seguro mantê-los nas notas editoriais de revisão."
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Exercício de revisão documental usando as frases originais S1–S3 de um clube do livro fictício de uma biblioteca e um exemplo de apresentação de 6 slides escrito por um editor",
+        "items": [
+          "Calcule 18/24 por conta própria e confirme que o resultado é 75% e que o denominador da taxa de presença são as 24 pessoas convidadas.",
+          "Calcule 9/12 por conta própria e confirme que o resultado é 75% e que o denominador da taxa de interesse são as 12 pessoas que responderam à pesquisa.",
+          "Confirme que a explicação continua informando que a taxa de interesse entre todas as pessoas presentes não pode ser determinada porque a intenção de quem não respondeu à pesquisa é desconhecida.",
+          "Confirme que a ordem dos 6 slides é Objetivo, Presença, Pesquisa, Limitações, Próximas ações, Decisão.",
+          "Confirme que cada exemplo de slide inclui título, uma mensagem principal, número S da evidência, notas do apresentador e sugestão visual.",
+          "Confirme que nenhuma data, orçamento, causa ou efeito que não esteja no texto original foi acrescentado como fato.",
+          "Confirme que fatos e sugestões estão separados e que a verificação da permissão de uso de imagens e a remoção de informações sensíveis estão incluídas na revisão.",
+          "Confirme que o conteúdo revisado é transferido manualmente para uma ferramenta de apresentação por uma pessoa."
+        ],
+        "limits": "O resultado de 6 slides apresentado no artigo não é uma saída gerada e verificada pela execução real de um serviço específico de IA. É um exemplo escrito por um editor para explicar o prompt e o processo de revisão. Este artigo não aborda a criação real de arquivos PPTX, a verificação de recursos de um produto específico de apresentação nem a avaliação da qualidade do design."
+      }
+    }
+  ],
+  "patches": [
+    {
+      "slug": "ai-report-review",
+      "title": "Revisar um relatório de IA: números, fontes e afirmações causais",
+      "summary": "Compare um relatório de IA com os dados de origem, recalcule totais e percentuais e use um prompt para identificar afirmações sem respaldo e causas exageradas antes da entrega.",
+      "heading": "Pedir à IA uma revisão final do relatório antes do envio",
+      "paragraph": "Ao mostrar novamente um rascunho de relatório para uma IA, é melhor limitar o que pode ser verificado do que simplesmente pedir “Encontre o que está errado”. A IA não pode confirmar se são verdadeiros fatos que não foram incluídos no texto original fornecido nem em evidências externas, portanto não deve ser solicitada a garantir como fatos conteúdos que não aparecem no material. Em vez disso, pode-se pedir que ela encontre inconsistências numéricas entre o texto original e o rascunho, erros de cálculo, referências de fontes ausentes e expressões exageradas. Também é importante verificar separadamente se o rascunho conclui que um valor causou outro quando o texto original mostra apenas que os dois apareceram juntos.",
+      "prompt": "Compare o texto original e o rascunho do relatório abaixo e faça uma revisão antes do envio.\n\nItens de revisão:\n1. Compare um a um os números do texto original com os números do relatório.\n2. Se houver porcentagens, totais, médias ou outros cálculos, confira novamente os números usados e a fórmula.\n3. Para cada afirmação principal, indique se existe uma frase ou evidência correspondente no texto original.\n4. Para fatos que não estejam no texto original, não diga que foram verificados. Marque-os como “Não pode ser verificado apenas com o texto original fornecido”.\n5. Diferencie dois fenômenos que aparecem juntos de uma afirmação de que um causou o outro.\n6. Encontre trechos que usem expressões fortes como “por causa de”, “teve efeito” ou “aumentou” quando o texto original não comprova uma relação causal.\n7. Para frases que precisem de correção, sugira uma redação mais cautelosa que permaneça dentro dos limites do texto original.\n\nOrganize o resultado no formato “Frase problemática / Tipo de problema / Evidência do texto original / Sugestão de correção”."
+    },
+    {
+      "slug": "ai-weekly-report-from-log",
+      "title": "Criar um relatório semanal com IA a partir de registros CSV",
+      "summary": "Crie um relatório semanal com IA a partir de registros CSV e confira horas e tarefas concluídas com Python. Use um prompt para separar trabalho concluído, em andamento, planejado e bloqueado.",
+      "heading": "Prompt de relatório semanal de trabalho que separa tarefas concluídas, em andamento, planejadas e bloqueadas",
+      "paragraph": "Ao resumir um registro de trabalho em um relatório semanal, é melhor não misturar em um mesmo parágrafo tarefas com status diferentes. Solicitar seções separadas para trabalho concluído, trabalho ainda em andamento, planos para a próxima semana e questões que bloqueiam o progresso facilita a comparação com o texto original. Uma célula vazia em um CSV pode ter um significado diferente de um valor real 0, por isso é importante impedir que a IA interprete automaticamente campos em branco como zero. Além disso, pedir que cada item resumido inclua o número da linha ou o identificador do registro original facilita encontrar omissões ou duplicações ao conferir posteriormente horas e contagens com Python.",
+      "prompt": "Use o registro de trabalho CSV abaixo para criar um rascunho de relatório semanal de trabalho.\n\nEstrutura do relatório:\n1. Trabalho concluído\n2. Trabalho em andamento\n3. Planos para a próxima semana\n4. Questões bloqueadoras ou itens que precisam de confirmação\n\nRegras:\n- Depois de cada item, inclua o número da linha do texto original ou o identificador de linha fornecido que o sustenta.\n- Não transforme arbitrariamente trabalho concluído em trabalho em andamento nem o contrário.\n- Se os planos para a próxima semana não estiverem no texto original, não invente novos planos como fatos. Escreva “Não há informações de planejamento no texto original”.\n- Se nenhuma questão bloqueadora estiver registrada, não conclua “0 questões bloqueadoras”. Escreva “Nenhuma questão bloqueadora registrada”.\n- Não converta automaticamente células vazias do CSV no número 0 nem em “nenhum”.\n- Preserve os valores originais de horas, contagens, tarefas concluídas e outros números. Se for necessário fazer um cálculo, mostre também a fórmula.\n- Ao combinar tarefas de linhas diferentes, verifique se o significado original não mudou.\n- No final, liste separadamente os itens numéricos que devem ser conferidos com Python sob o título “Itens para verificar”."
+    }
+  ]
+}
