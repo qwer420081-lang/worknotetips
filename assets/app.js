@@ -39,11 +39,14 @@ if(location.protocol==='http:'&&location.hostname==='worknotetips.com'){location
  document.head.appendChild(script);
 })();
 
+// Count an article only once it has actually loaded, including search entries.
+const openedArticle=location.pathname.match(/\/articles\/([a-z0-9-]+)\/$/);
+if(openedArticle)window.worknoteTrack('tutorial_open',{article_id:openedArticle[1]});
 document.addEventListener('click',event=>{
  const link=event.target.closest?.('a[href]');if(!link)return;
  const url=new URL(link.href,location.href);
  const match=url.pathname.match(/^\/(?:ko\/|ja\/|es\/|pt-BR\/)?articles\/([a-z0-9-]+)\/$/);
- if(url.origin===location.origin&&match)window.worknoteTrack(link.hasAttribute('data-starter')?'starter_select':'tutorial_open',{article_id:match[1]});
+ if(url.origin===location.origin&&match&&link.hasAttribute('data-starter'))window.worknoteTrack('starter_select',{article_id:match[1]});
 });
 
 const input=document.querySelector('#search-input');

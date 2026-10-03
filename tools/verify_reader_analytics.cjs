@@ -30,4 +30,12 @@ for(const options of [{stored:'1'},{url:'https://worknotetips.com/?internal=1&q=
  r=run(options);assert.equal(r.scripts.length,0);r.context.worknoteTrack('example_copy',{});assert.equal(r.context.dataLayer,undefined);
 }
 r=run({stored:'1',url:'https://worknotetips.com/ko/?internal=0#section'});assert.equal(r.scripts.length,1);assert.equal(r.value,'0');assert.equal(r.context.location.hash,'#section');assert.equal(r.context.location.search,'');
+for(const prefix of ['', 'ko/', 'ja/', 'es/', 'pt-BR/']){
+ r=run({url:'https://worknotetips.com/'+prefix+'articles/ai-clear-request/'});
+ assert.equal(r.context.dataLayer[2][1],'tutorial_open');
+ assert.equal(r.context.dataLayer[2][2].article_id,'ai-clear-request');
+ r.docEvents.click({target:{closest:()=>({href:'https://worknotetips.com/articles/ai-clear-request/',hasAttribute:()=>false})}});
+ assert.equal(r.context.dataLayer.length,3); // a click is not another article load
+}
+r=run({stored:'1',url:'https://worknotetips.com/articles/ai-clear-request/'});assert.equal(r.context.dataLayer,undefined);
 console.log('PASS: exclusion before GA load, persistence, storage denial, resume, query sanitization, local preview, safe click/copy events. No network requests made.');

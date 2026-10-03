@@ -12,6 +12,14 @@ COPY = {
  'pt-BR': ['O que você quer criar com IA hoje?', 'Escolha uma tarefa pequena. Leia o exemplo, copie o pedido e confira o resultado.', 'Um pedido claro para a IA', 'Um roteiro de apresentação', 'Uma lista de alterações no documento', 'A primeira tarefa com IA da sua equipe', 'Começar com um exemplo →', 'Estatísticas neste navegador', 'Medimos a abertura de tutoriais e as cópias concluídas, sem enviar o texto copiado ou os termos de busca nesses eventos. Você pode desativar as estatísticas neste navegador. A preferência fica salva localmente e também permite excluir as verificações da equipe editorial. Limpar os dados do navegador redefine a preferência.', 'Desativar estatísticas', 'Ativar estatísticas', 'Desativadas', 'Ativadas'],
 }
 
+HERO = {
+ 'en': ['Use AI for everyday tasks—with examples you can check', 'Write a clearer request, outline a presentation or compare documents. Start with a fictional sample, then check the result before using it.', 'Try your first AI prompt →', 'Browse all tutorials', 'Browse by topic', ['A reusable goal–facts–constraints–format prompt.', 'A six-slide outline with speaker notes.', 'A table of additions, removals and changes.', 'A shortlist of team tasks with review needs.']],
+ 'ko': ['AI로 일상과 업무를 바꾸는 작은 실습', '요청문 작성, 발표 개요, 문서 비교부터 시작하세요. 가상 예제로 따라 하고, 결과를 확인한 뒤 내 업무에 적용합니다.', '첫 AI 요청문 만들어 보기 →', '전체 글 찾아보기', '주제별 찾아보기', ['목적·사실·조건·형식을 담은 재사용 요청문.', '발표자 노트가 있는 6장 슬라이드 개요.', '추가·삭제·변경을 나눈 문서 비교표.', '검토 부담까지 비교한 팀 업무 후보.']],
+ 'ja': ['AIを日常や仕事に活用する小さな実習', '依頼文、プレゼン構成、文書比較から始めましょう。架空の例で試し、結果を確認してから自分の仕事に使います。', '最初のAI依頼文を作る →', 'すべての記事を見る', 'テーマから探す', ['目的・事実・条件・形式をまとめた依頼文。', '発表者ノート付きの6枚のスライド構成。', '追加・削除・変更を分けた比較表。', '確認の負担も比較したチーム業務の候補。']],
+ 'es': ['Usa IA en tareas cotidianas con ejemplos que puedes comprobar', 'Empieza con una petición, un esquema de presentación o una comparación de documentos. Practica con datos ficticios y revisa el resultado antes de aplicarlo.', 'Crear tu primera petición para IA →', 'Ver todos los tutoriales', 'Explorar por tema', ['Una petición con objetivo, hechos, límites y formato.', 'Un esquema de seis diapositivas con notas.', 'Una tabla de adiciones, eliminaciones y cambios.', 'Tareas del equipo comparadas con sus necesidades de revisión.']],
+ 'pt-BR': ['Use IA em tarefas do dia a dia com exemplos que você pode conferir', 'Comece com um pedido, um roteiro de apresentação ou uma comparação de documentos. Pratique com dados fictícios e confira o resultado antes de aplicar.', 'Criar seu primeiro pedido para IA →', 'Ver todos os tutoriais', 'Explorar por tema', ['Um pedido com objetivo, fatos, limites e formato.', 'Um roteiro de seis slides com notas.', 'Uma tabela de inclusões, exclusões e alterações.', 'Tarefas da equipe comparadas com as necessidades de revisão.']],
+}
+
 def build():
  for lang, c in COPY.items():
   prefix = '' if lang == 'en' else lang + '/'
@@ -30,6 +38,24 @@ def build():
    small=s.new_tag('span'); small.string=c[6]; a.append(small); grid.append(a)
   section.append(grid)
   s.select_one('#search').insert_before(section)
+  hero=HERO[lang]
+  s.body['class']=list(dict.fromkeys(s.body.get('class',[])+['reader-home']))
+  s.select_one('main h1').string=hero[0]
+  s.select_one('main .page-intro').string=hero[1]
+  for old in s.select('.hero-actions, .mobile-browse'): old.decompose()
+  actions=s.new_tag('div',attrs={'class':'hero-actions'})
+  primary=s.new_tag('a',href=f'/{prefix}articles/ai-clear-request/',attrs={'class':'primary-start','data-starter':'ai-clear-request'})
+  primary.string=hero[2];actions.append(primary)
+  all_link=s.new_tag('a',href='#search');all_link.string=hero[3];actions.append(all_link)
+  s.select_one('main .page-intro').insert_after(actions)
+  for i,a in enumerate(s.select('#start-here .starter-card')):
+   outcome=s.new_tag('p');outcome.string=hero[5][i];a.strong.insert_after(outcome)
+  browse=s.new_tag('details',attrs={'class':'mobile-browse'})
+  summary=s.new_tag('summary');summary.string=hero[4];browse.append(summary)
+  nav=s.new_tag('nav',attrs={'aria-label':hero[4]})
+  for a in s.select('.category-rail .category-link'):
+   link=s.new_tag('a',href=a['href']);link.string=a.get_text(' ',strip=True);nav.append(link)
+  browse.append(nav);section.insert_after(browse)
   p.write_text(str(s), encoding='utf-8')
   p=ROOT / prefix / 'privacy/index.html'
   s=BeautifulSoup(p.read_text(encoding='utf-8'), 'html.parser')
