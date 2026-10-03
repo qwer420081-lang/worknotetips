@@ -1,0 +1,164 @@
+{
+  "slug": "ai-answer-comparison-rubric",
+  "title": "Comparing AI Answers: A Rubric for Checking Facts, Conditions, and Omissions Using the Same Material",
+  "summary": "This hands-on exercise compares two AI answers using the same input and the same prompt, checking them against predefined factual criteria rather than writing preference or brand impression. Separately from the score, unsupported additional claims are checked as a gate for whether the result is suitable for publication.",
+  "audience": "General users who want to compare multiple models or prompt versions on their own tasks while systematically checking factual correctness, preservation of conditions, and omissions",
+  "prerequisites": [
+    "Basic document review ability to compare AI answers side by side with the source text",
+    "Spreadsheet or table-writing ability sufficient to use a simple 0·1 rubric",
+    "Practice with fictional material first, and for real materials, confirm that you have permission to enter the data and check whether it contains personal or confidential information"
+  ],
+  "tags": [
+    "AI comparison",
+    "rubric",
+    "fact checking"
+  ],
+  "sections": [
+    {
+      "id": "fix-rubric-before-testing",
+      "heading": "1. Fix the evaluation criteria before viewing the answers",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When comparing AI answers, judging only by the impression that one sentence sounds more natural can cause the criteria to change after seeing the results. First define the facts and conditions from the source that must be preserved, then apply the same criteria to every answer. This article is not a benchmark for ranking brands; it is an exercise in creating a verifiable comparison table for your specific task. Do not expand a single result into a conclusion about overall model superiority or general performance differences."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "DOC-01/v1\n[L1] Only registered members of the fictional workshop may apply.\n[L2] Applications are accepted until October 18 at 18:00.\n[L3] Capacity is 12 people.\n[L4] The participation fee is KRW 8,000.\n[L5] Application cancellations may be requested until October 16 at 18:00.\n[L6] If capacity is exceeded, applicants are placed on a waiting list, which does not mean participation is confirmed."
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Evaluation item",
+            "Condition for meeting criterion",
+            "Score"
+          ],
+          "rows": [
+            [
+              "Registered-member restriction",
+              "Only registered members may apply",
+              "1 or 0"
+            ],
+            [
+              "Application deadline",
+              "October 18 at 18:00",
+              "1 or 0"
+            ],
+            [
+              "Capacity",
+              "12 people",
+              "1 or 0"
+            ],
+            [
+              "Participation fee",
+              "KRW 8,000",
+              "1 or 0"
+            ],
+            [
+              "Cancellation deadline",
+              "October 16 at 18:00",
+              "1 or 0"
+            ],
+            [
+              "Waiting status",
+              "Waiting does not mean confirmed participation",
+              "1 or 0"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "control-input-and-version",
+      "heading": "2. Record the input, prompt, and version under the same conditions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For a comparison, change only one variable at a time. If comparing models, keep DOC-01/v1 and the prompt the same and change only the model. If comparing prompt versions, use the same material and the same model and change only the prompt. If an answer is additionally edited after viewing the result, record it separately from the original. Also record the execution date, displayed tool·model, prompt version, and any human edits. Anonymizing output names as A and B can help reduce preconceptions based on names, but it does not completely eliminate bias."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Using only DOC-01/v1 as evidence, write an application notice.\nDo not omit eligibility, application deadline, capacity, participation fee, cancellation deadline, or waiting status.\nDo not add benefits, policies, years, or days of the week that do not appear in the source.\nDo not guess information for which no source material is provided."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "Comparison record\nMaterial: DOC-01/v1\nPrompt version: P1\nOutput label: A / B\nExecution date: record manually\nTool·model label: record manually\nHuman edit history: record manually\nTime evaluation criteria were written: before viewing the results"
+        }
+      ]
+    },
+    {
+      "id": "score-example-outputs",
+      "heading": "3. Score the six facts as 0·1, and handle additional claims with a separate gate",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "For each of the six evaluation items, record 1 if the criterion is met and 0 if it is not. The important point is not to mix 'no unsupported additional claims' into the rubric as a seventh score. Even if the factual score is high, if a policy or benefit not found in the source has been added, publication eligibility should be blocked separately. This allows fact-preservation scores and unsupported-generation problems to be treated as different failure types."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "Edited example · not an actual product execution result\nResult A: Only registered members may apply. Applications are accepted until October 18 at 18:00, capacity is 12 people, and the participation fee is KRW 8,000. Cancellations may be requested until October 16 at 18:00. Waiting-list registration does not mean participation is confirmed.\nEvaluation: 6/6\nAdditional-claim gate: no unsupported additions → pass"
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "Edited example · not an actual product execution result\nResult B: Anyone may apply. Applications are accepted until October 18 at 18:00, capacity is 12 people, and the participation fee is KRW 8,000. Cancellations are also available until October 18 at 18:00. Waiting-list registration means participation is confirmed, and free materials are provided.\nEvaluation: 3/6\nErrors: registered-member restriction, cancellation deadline, waiting≠confirmed condition not met\nAdditional-claim gate: 'free materials are provided' has no supporting evidence → not publishable"
+        }
+      ]
+    },
+    {
+      "id": "repair-with-source",
+      "heading": "4. Correct against the source rather than simply trying to raise the score",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When revising B, setting the goal merely as 'fix it so it gets 6 points' may encourage generation of sentences that force-fit the rubric. Instead, identify which items conflict with the source down to the line number and request corrections by returning to DOC-01. After revision, a person must compare the answer against the answer key again. Asking AI to score its own answer can be used as a supporting method, but the final evaluator is a person, and source-text review cannot be skipped."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Compare Result B against DOC-01/v1 again and revise it.\nRestore the application eligibility in L1, the cancellation deadline in L5, and the waiting status in L6 exactly according to the source.\nDelete the sentence 'free materials are provided,' which does not appear in the source.\nDo not arbitrarily add a year or day of the week to the October dates.\nAfter revision, mark that you checked each of the six items L1~L6 one by one."
+        },
+        {
+          "type": "ul",
+          "items": [
+            "Check that the registered-member restriction has not been changed to 'anyone.'",
+            "Review the application deadline and cancellation deadline as separate items.",
+            "Do not interpret the waiting list as confirmed participation.",
+            "Do not add free offerings, refunds, payment methods, or other details absent from the source."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "handle-uncertain-cases",
+      "heading": "5. In variant cases, do not force unknowns into a score",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "A rubric is especially useful when the source has clearly defined answers, but not every situation can be reduced to 0 and 1. If the input is empty or contains mutually conflicting information, leave the case as 'needs confirmation' rather than inventing an answer and calculating a score. In the next exercise, you can test when the rubric should stop by using empty input, conflicting content from different versions, and material with some missing lines. Used together with the chunk-verification procedure from the previous article, this creates a workflow in which you first confirm that all evidence has been collected without omissions and then verify the result using the same fixed rubric."
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "Follow-up exercise\n[ ] Revise B against the source\n[ ] Have a person compare the revised version against the 6 answer-key items again\n[ ] Check the unsupported-additional-claim gate separately\n[ ] For empty input, leave 'needs confirmation' instead of generating an arbitrary answer\n[ ] For conflicting material, do not guess which version is correct\n[ ] Do not generalize a single A/B result into overall model superiority or a benchmark"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Compare the fictional material and edited examples against the source text and checklist. These are not results executed in an AI product.",
+    "items": [
+      "Directly compare A with the source to confirm that it satisfies all six evaluation items and scores 6/6",
+      "Confirm that B scores 3/6 because the application eligibility, cancellation deadline, and waiting status are incorrect",
+      "Confirm that 'free materials are provided' in B is a separate additional claim not found in the source",
+      "Confirm that the presence of additional claims is not mixed into the 6-point rubric and is instead separated as a publication-eligibility gate",
+      "Confirm the comparison condition that A/B use the same DOC-01/v1 and the same prompt",
+      "Confirm that empty input or conflicting material is left as needing confirmation rather than being assigned an invented answer"
+    ],
+    "limits": "This rubric is an example for comparing a specific task based on fictional DOC-01. It is not a benchmark for judging the general performance, superiority, or stability of actual models or products, and a single execution result cannot be generalized to other tasks or times. AI self-scoring should be used only as a supporting method, and the final review must be performed by a person against the source text."
+  }
+}

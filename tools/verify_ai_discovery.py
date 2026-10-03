@@ -25,7 +25,7 @@ def main():
     target=ROOT/link['href'].strip('/')/'index.html'
     assert target.exists() and target!=page
    sections+=1
-  for page,count in [(base/'index.html','82'),(base/'category/ai/index.html','51')]:
+  for page,count in [(base/'index.html',str(len(json.loads((ROOT/'_src/_index.json').read_text(encoding='utf-8'))))),(base/'category/ai/index.html',str(len(BeautifulSoup((base/'category/ai/index.html').read_text(encoding='utf-8'),'html.parser').select('main .article-grid > .article-card'))))]:
    doc=BeautifulSoup(page.read_text(encoding='utf-8'),'html.parser'); assert doc.select_one('#result-count').text==count
  print(json.dumps({'theory_pages':5,'discovery_sections':sections,'translations_structure':'PASS','prompt_rendering':'PASS','related_routes_and_counts':'PASS'},indent=2))
 if __name__=='__main__': main()

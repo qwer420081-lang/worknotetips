@@ -38,7 +38,7 @@ def main():
                 if ld.get('@type')=='TechArticle': assert ld['datePublished']=='2026-09-23'
             pages+=1;blocks+=len(expected)
         base=ROOT/('' if lang=='en' else lang)
-        for p,n in [(base/'index.html',82),(base/'category/ai/index.html',51)]:
+        for p,n in [(base/'index.html',len(json.loads((ROOT/'_src/_index.json').read_text(encoding='utf-8')))),(base/'category/ai/index.html',len(BeautifulSoup((base/'category/ai/index.html').read_text(encoding='utf-8'),'html.parser').select('main .article-grid > .article-card')))]:
             doc=BeautifulSoup(p.read_text(encoding='utf-8'),'html.parser')
             assert int(doc.select_one('#result-count').text)==n
     # Independent worked-example calculations, not claims of AI product execution.

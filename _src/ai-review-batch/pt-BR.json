@@ -1,0 +1,334 @@
+{
+  "lang": "pt-BR",
+  "articles": [
+    {
+      "slug": "ai-long-document-chunks",
+      "title": "Revisar documentos longos com IA em partes: verificar condições que podem se perder ao combinar resumos parciais",
+      "summary": "Este exercício mostra como verificar o ID e a versão do documento, a sobreposição nas fronteiras dos chunks, prazos diferentes e o escopo completo ao dividir um material longo em vários chunks para revisão. O foco não está apenas em dividir o documento, mas no procedimento de retornar ao texto original para revisar o resultado combinado.",
+      "audience": "Usuários em geral que desejam dividir documentos longos ou materiais com várias seções para revisão com IA e verificar condições ausentes e duplicações no resultado final",
+      "prerequisites": [
+        "Conhecimento básico para colar texto em um chat de IA",
+        "Capacidade de revisão de documentos suficiente para comparar linhas de uma tabela com o texto original",
+        "Praticar primeiro com dados fictícios e, para materiais reais, verificar a autorização de entrada e se contêm dados pessoais ou informações confidenciais"
+      ],
+      "tags": [
+        "documento longo",
+        "revisão com IA",
+        "chunk"
+      ],
+      "sections": [
+        {
+          "id": "understand-context-and-chunks",
+          "heading": "1. Entender primeiro o contexto e os chunks",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "É útil pensar no contexto como o intervalo de entrada que um modelo de IA consulta para produzir uma resposta em uma solicitação. Quando é difícil inserir um material longo de uma só vez ou é necessário revisar cada trecho separadamente, o documento pode ser dividido em vários chunks. No entanto, os limites de tamanho de entrada e a qualidade do processamento de documentos longos variam de acordo com o produto e o modelo, e o simples fato de dividir um documento não garante precisão. O DOC-01 deste exercício é apenas um exemplo fictício criado para reproduzir em pequena escala um procedimento de processamento de documentos longos, e não é um documento longo real."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "DOC-01/v1\nC1: [L1] Somente membros registrados da oficina fictícia podem se inscrever. [L2] As inscrições são aceitas até 18 de outubro 18:00.\nC2: [L2] As inscrições são aceitas até 18 de outubro 18:00. [L3] A capacidade é de 12 pessoas. [L4] A taxa de participação é de 8,000 KRW.\nC3: [L5] O cancelamento da inscrição pode ser solicitado até 16 de outubro 18:00. [L6] Se a capacidade for excedida, a pessoa será colocada na lista de espera, o que não significa confirmação de participação."
+            },
+            {
+              "type": "p",
+              "text": "Em um estudo da Anthropic de 2023, foi testada uma abordagem que primeiro localiza, em entradas longas, as evidências necessárias para responder. Como se trata de um experimento específico, ele não deve ser generalizado como garantia de desempenho dos modelos atuais."
+            }
+          ]
+        },
+        {
+          "id": "extract-each-chunk",
+          "heading": "2. Extrair primeiro as evidências de cada chunk",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Em vez de criar desde o início um resumo de todo o conteúdo, extraia de cada chunk as afirmações e condições linha por linha. Registrar DOC-01 e v1 juntos facilita verificar se conteúdo de outro documento ou de uma versão anterior foi misturado. Se você continuar as próximas etapas em um novo chat, é mais seguro fornecer novamente os dados de entrada e as instruções necessárias, sem presumir que a conversa anterior continuará automaticamente."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Use apenas os dados abaixo para extrair as evidências de cada chunk.\nEm cada linha, informe o ID do documento, a versão, o chunk, o número da linha original e o fato.\nNão suponha ano, dia da semana, forma de pagamento ou condições de reembolso que não estejam no original.\nMesmo que a mesma frase apareça em vários chunks, ainda não a exclua; apenas sinalize-a.\n\n[Cole novamente aqui todo o conteúdo de C1~C3 de DOC-01/v1]"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Chunk",
+                "Linha",
+                "Fato a extrair",
+                "Ponto de verificação"
+              ],
+              "rows": [
+                [
+                  "C1",
+                  "L1",
+                  "Somente membros registrados podem se inscrever",
+                  "Restrição de público"
+                ],
+                [
+                  "C1·C2",
+                  "L2",
+                  "Prazo de inscrição 18 de outubro 18:00",
+                  "Candidato a duplicação"
+                ],
+                [
+                  "C2",
+                  "L3",
+                  "Capacidade de 12 pessoas",
+                  "Manter o número"
+                ],
+                [
+                  "C2",
+                  "L4",
+                  "Taxa de participação de 8,000 KRW",
+                  "Manter o valor"
+                ],
+                [
+                  "C3",
+                  "L5",
+                  "Prazo para solicitar cancelamento 16 de outubro 18:00",
+                  "Distinguir do prazo de inscrição"
+                ],
+                [
+                  "C3",
+                  "L6",
+                  "Quando a capacidade é excedida, entra na lista de espera; participação não confirmada",
+                  "Condição de status"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "merge-with-boundary-checks",
+          "heading": "3. Remover duplicações sem combinar condições diferentes",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao combinar as extrações parciais, primeiro verifique se DOC e version são os mesmos em todos os itens. Em seguida, consolide apenas L2, que se repete em C1 e C2, deixando uma única ocorrência. Por outro lado, o prazo de inscrição e o prazo de cancelamento têm datas e significados diferentes, portanto não devem ser combinados em um único prazo. Nas fronteiras dos chunks, também é necessário verificar não apenas frases repetidas, mas se condições anteriores ou posteriores foram cortadas e alteraram o significado."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Combine os resultados das extrações parciais em um único resultado.\n1. Verificar se todos os itens são DOC-01/v1\n2. Remover apenas a duplicação da mesma evidência L2\n3. Manter o prazo de inscrição e o prazo de cancelamento como itens separados\n4. Verificar se as seis evidências L1~L6 estão todas refletidas no resultado final\n5. Não adicionar forma de pagamento, política de reembolso, ano ou dia da semana que não estejam no original\nAo final, indique os números das linhas de evidência utilizadas."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Exemplo editado · não é resultado de execução real em um produto\n- Público: somente membros registrados podem se inscrever. [L1]\n- Prazo de inscrição: até 18 de outubro 18:00. [L2]\n- Capacidade: 12 pessoas. [L3]\n- Taxa de participação: 8,000 KRW. [L4]\n- Prazo para solicitar cancelamento: até 16 de outubro 18:00. [L5]\n- Se a capacidade for excedida, a pessoa entra na lista de espera, mas isso não significa que a participação esteja confirmada. [L6]\nVerificação: DOC-01/v1, duplicação de L2 removida, L1~L6 preservadas."
+            }
+          ]
+        },
+        {
+          "id": "find-missing-chunks",
+          "heading": "4. Criar uma falha por omissão e voltar ao original",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Mesmo que um resumo de cada chunk pareça natural ao ser lido, isso não garante que ele cubra todo o escopo. Por exemplo, se C3 for omitido, o texto resultante continuará fluido, mas o prazo de cancelamento e a condição da lista de espera desaparecerão por completo. Portanto, não revise apenas lendo o texto final; compare também, em sentido inverso, a lista de chunks originalmente planejada e a lista de linhas de evidência."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Exemplo editado · não é resultado de execução real em um produto\nSomente membros registrados podem se inscrever, e as inscrições são aceitas até 18 de outubro 18:00. A capacidade é de 12 pessoas e a taxa de participação é de 8,000 KRW.\nProblema: C3 foi omitido, portanto não é possível verificar o prazo de cancelamento de L5 nem a condição de espera de L6."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare novamente o resultado anterior com o original DOC-01/v1.\nPrimeiro verifique se C1, C2 e C3 foram todos usados e encontre quais linhas entre L1~L6 estão ausentes.\nRestaure o conteúdo ausente sem alterar o significado das expressões do original.\nNão complemente com ano, dia da semana, pagamento ou condições de reembolso que não estejam no original."
+            }
+          ]
+        },
+        {
+          "id": "final-range-check",
+          "heading": "5. Verificar todo o escopo antes de encaminhar para a próxima revisão",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Na etapa final, o objetivo é verificar a rastreabilidade, e não apenas a qualidade das frases do resumo. Registrar DOC e versão, todos os chunks planejados, o intervalo das linhas de evidência e o histórico de remoção de duplicações facilita identificar novamente o que ficou de fora. Em documentos longos, esse registro se torna mais importante à medida que aumenta o número de chunks. Ao conectar esse procedimento ao método de tabela de avaliação do próximo artigo, é possível avaliar novamente o resultado com base em fatos e condições fixos e distinguir um 'resumo plausível' de um 'resultado passível de revisão'."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Verificação final\n[ ] Todos os materiais são DOC-01/v1?\n[ ] C1·C2·C3 foram todos processados?\n[ ] Apenas a duplicação de L2 foi removida?\n[ ] As seis evidências L1~L6 foram todas preservadas?\n[ ] O prazo de inscrição 18 de outubro 18:00 foi distinguido do prazo de cancelamento 16 de outubro 18:00?\n[ ] A lista de espera não foi transformada em participação confirmada?\n[ ] Pagamento, reembolso, ano ou dia da semana não foram presumidos?\n[ ] Em um novo chat, os dados de entrada e as instruções foram fornecidos novamente?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Os dados fictícios e os exemplos editados são comparados com o original e com a checklist. Não são resultados executados em um produto de IA.",
+        "items": [
+          "Verificar se DOC-01 e a versão v1 são mantidos em todas as etapas",
+          "Comparar o escopo completo de C1·C2·C3 e L1~L6",
+          "Verificar se apenas L2 foi deduplicada e se L5·L6 foram preservadas",
+          "Verificar se o prazo de inscrição e o prazo de cancelamento não foram trocados nem combinados",
+          "Verificar se pagamento, reembolso, ano ou dia da semana que não existem no original não foram gerados"
+        ],
+        "limits": "Este é um exemplo que reduz a escala de um procedimento de revisão de documentos longos usando dados fictícios pequenos. A qualidade de processamento de documentos longos reais, o tamanho de entrada permitido e o alcance de memória podem variar conforme o produto, o modelo e as configurações, e a divisão em chunks, por si só, não garante precisão."
+      }
+    },
+    {
+      "slug": "ai-answer-comparison-rubric",
+      "title": "Comparar respostas de IA: tabela de avaliação para verificar fatos, condições e omissões com os mesmos dados",
+      "summary": "Este exercício mostra como comparar duas respostas de IA não pela preferência de redação ou pela impressão da marca, mas usando a mesma entrada e a mesma solicitação e verificando-as com critérios factuais definidos previamente. Separadamente da pontuação, afirmações adicionais sem fundamento são verificadas como um gate para decidir se o conteúdo pode ser publicado.",
+      "audience": "Usuários em geral que desejam comparar vários modelos ou versões de solicitações em suas próprias tarefas e verificar sistematicamente a factualidade, a preservação de condições e a presença de omissões nos resultados",
+      "prerequisites": [
+        "Capacidade básica de revisão de documentos para comparar lado a lado uma resposta de IA e o texto original",
+        "Capacidade de usar uma planilha ou criar uma tabela suficiente para aplicar uma avaliação simples de 0·1",
+        "Praticar primeiro com dados fictícios e, para materiais reais, verificar a autorização de entrada e se contêm dados pessoais ou informações confidenciais"
+      ],
+      "tags": [
+        "comparação de IA",
+        "tabela de avaliação",
+        "revisão factual"
+      ],
+      "sections": [
+        {
+          "id": "fix-rubric-before-testing",
+          "heading": "1. Fixar primeiro os critérios de avaliação antes de ver as respostas",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao comparar respostas de IA, se você decidir apenas pela impressão de que uma frase parece mais natural, os critérios podem mudar depois de ver os resultados. Primeiro defina os fatos e as condições do original que obrigatoriamente devem ser preservados e aplique os mesmos critérios a todas as respostas. Este artigo não é um benchmark para classificar marcas, mas um exercício para criar uma tabela comparativa passível de revisão em uma tarefa específica. Não interprete o resultado de uma única execução como evidência de superioridade geral entre modelos ou de diferenças gerais de desempenho."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "DOC-01/v1\n[L1] Somente membros registrados da oficina fictícia podem se inscrever.\n[L2] As inscrições são aceitas até 18 de outubro 18:00.\n[L3] A capacidade é de 12 pessoas.\n[L4] A taxa de participação é de 8,000 KRW.\n[L5] O cancelamento da inscrição pode ser solicitado até 16 de outubro 18:00.\n[L6] Se a capacidade for excedida, a pessoa será colocada na lista de espera, o que não significa confirmação de participação."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Item de avaliação",
+                "Condição para atender",
+                "Pontuação"
+              ],
+              "rows": [
+                [
+                  "Restrição a membros registrados",
+                  "Somente membros registrados podem se inscrever",
+                  "1 ou 0"
+                ],
+                [
+                  "Prazo de inscrição",
+                  "18 de outubro 18:00",
+                  "1 ou 0"
+                ],
+                [
+                  "Capacidade",
+                  "12 pessoas",
+                  "1 ou 0"
+                ],
+                [
+                  "Taxa de participação",
+                  "8,000 KRW",
+                  "1 ou 0"
+                ],
+                [
+                  "Prazo de cancelamento",
+                  "16 de outubro 18:00",
+                  "1 ou 0"
+                ],
+                [
+                  "Status de espera",
+                  "Estar na espera não significa participação confirmada",
+                  "1 ou 0"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "control-input-and-version",
+          "heading": "2. Registrar entrada, solicitação e versão nas mesmas condições",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Em uma comparação, defina apenas uma variável para alterar de cada vez. Se estiver comparando modelos, mantenha DOC-01/v1 e a solicitação iguais e altere somente o modelo. Se estiver comparando versões da solicitação, use os mesmos dados e o mesmo modelo e altere somente a solicitação. Uma resposta corrigida depois de ver o resultado deve ser registrada separadamente da saída original. Registre também a data de execução, a identificação da ferramenta·modelo, a versão da solicitação e as alterações feitas por uma pessoa. Anonimizar os nomes das saídas como A e B pode ajudar a reduzir preconceitos associados aos nomes, mas não elimina completamente o viés."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Com base apenas em DOC-01/v1, escreva um aviso de inscrição.\nNão omita o público elegível, o prazo de inscrição, a capacidade, a taxa de participação, o prazo de cancelamento e o status da lista de espera.\nNão adicione benefícios, políticas, ano ou dia da semana que não estejam no original.\nNão suponha informações para as quais não há dados."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Registro da comparação\nDados: DOC-01/v1\nVersão da solicitação: P1\nIdentificação das saídas: A / B\nData de execução: registrar manualmente\nIdentificação da ferramenta·modelo: registrar manualmente\nAlterações feitas por uma pessoa: registrar manualmente\nMomento de criação dos critérios de avaliação: antes de ver os resultados"
+            }
+          ]
+        },
+        {
+          "id": "score-example-outputs",
+          "heading": "3. Avaliar os seis fatos com 0·1 e tratar afirmações adicionais em um gate separado",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Registre 1 quando cada um dos seis itens de avaliação for atendido e 0 quando não for. O ponto importante é não misturar 'ausência de afirmações adicionais sem fundamento' como uma sétima pontuação. Mesmo que a pontuação factual seja alta, se uma política ou benefício que não existe no original tiver sido adicionado, a possibilidade de publicação deve ser bloqueada separadamente. Dessa forma, a pontuação de preservação factual e o problema de geração sem fundamento podem ser tratados como tipos distintos de falha."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Exemplo editado · não é resultado de execução real em um produto\nResultado A: Somente membros registrados podem se inscrever. As inscrições são aceitas até 18 de outubro 18:00, a capacidade é de 12 pessoas e a taxa de participação é de 8,000 KRW. O cancelamento pode ser solicitado até 16 de outubro 18:00. A inscrição na lista de espera não significa participação confirmada.\nAvaliação: 6/6\nGate de afirmações adicionais: nenhuma adição sem fundamento → aprovado"
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Exemplo editado · não é resultado de execução real em um produto\nResultado B: Qualquer pessoa pode se inscrever. As inscrições são aceitas até 18 de outubro 18:00, a capacidade é de 12 pessoas e a taxa de participação é de 8,000 KRW. O cancelamento também pode ser feito até 18 de outubro 18:00. Entrar na lista de espera significa participação confirmada, e são fornecidos materiais gratuitos.\nAvaliação: 3/6\nErros: restrição a membros registrados, prazo de cancelamento e condição espera≠confirmação não atendidos\nGate de afirmações adicionais: 'fornecimento de materiais gratuitos' não tem fundamento → publicação não permitida"
+            }
+          ]
+        },
+        {
+          "id": "repair-with-source",
+          "heading": "4. Corrigir com base no original, não apenas para aumentar a pontuação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Ao corrigir B, se o objetivo for simplesmente 'corrija para obter 6 pontos', pode ser gerada artificialmente uma frase apenas para satisfazer a tabela de avaliação. Em vez disso, indique até os números das linhas em que o resultado entra em conflito com o original e solicite a correção retornando ao DOC-01. Depois da correção, uma pessoa deve comparar novamente o resultado com o gabarito. Pedir que a IA avalie a própria resposta pode ser usado como recurso auxiliar, mas o avaliador final é uma pessoa, e a revisão do original não pode ser omitida."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare novamente o resultado B com DOC-01/v1 e corrija-o.\nRestaure conforme o original o público de inscrição de L1, o prazo de cancelamento de L5 e o status de espera de L6.\nExclua a frase 'fornecimento de materiais gratuitos', que não está no original.\nNão adicione arbitrariamente ano ou dia da semana às datas de October.\nApós a correção, indique que verificou um por um os seis itens L1~L6."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Verifique se a restrição a membros registrados não foi alterada para 'qualquer pessoa'.",
+                "Revise o prazo de inscrição e o prazo de cancelamento como itens independentes.",
+                "Não interprete a lista de espera como participação confirmada.",
+                "Não adicione fornecimento gratuito, reembolso, forma de pagamento ou outros elementos que não estejam no original."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "handle-uncertain-cases",
+          "heading": "5. Em casos variantes, não transformar à força o que é desconhecido em uma pontuação",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A tabela de avaliação é especialmente útil quando os dados têm respostas claramente definidas, mas nem todas as situações podem ser reduzidas a 0 e 1. Se a entrada estiver vazia ou houver dados conflitantes entre si, em vez de inventar uma resposta e calcular uma pontuação, o item deve permanecer como 'necessita verificação'. No exercício seguinte, você pode inserir uma entrada vazia, conteúdo conflitante de versões diferentes e materiais com algumas linhas ausentes para verificar quando a tabela de avaliação deve parar. Usada em conjunto com o procedimento de revisão por chunks do artigo anterior, essa abordagem permite primeiro confirmar se todas as evidências foram reunidas sem omissões e, depois, revisar os resultados com a mesma tabela de critérios."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Exercício de acompanhamento\n[ ] Corrigir B com base no original\n[ ] Uma pessoa compara novamente a versão corrigida com os 6 itens do gabarito\n[ ] Verificar separadamente o gate de afirmações adicionais sem fundamento\n[ ] Em entrada vazia, deixar como 'necessita verificação' em vez de criar uma resposta arbitrária\n[ ] Em materiais conflitantes, não adivinhar qual versão está correta\n[ ] Não generalizar um único resultado A/B como superioridade geral dos modelos ou como benchmark"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Os dados fictícios e os exemplos editados são comparados com o original e com a checklist. Não são resultados executados em um produto de IA.",
+        "items": [
+          "Comparar diretamente com o original se A atende a todos os seis itens de avaliação e obtém 6/6",
+          "Verificar se B obtém 3/6 porque o público de inscrição, o prazo de cancelamento e o status de espera estão incorretos",
+          "Verificar se 'fornecimento de materiais gratuitos' em B é uma afirmação adicional separada que não existe no original",
+          "Verificar se a presença de afirmações adicionais não é misturada à tabela de 6 pontos e é separada como gate de possibilidade de publicação",
+          "Verificar a condição de comparação de que A/B usam o mesmo DOC-01/v1 e a mesma solicitação",
+          "Verificar se, em entrada vazia ou dados conflitantes, não é criada arbitrariamente uma resposta e o item permanece como necessita verificação"
+        ],
+        "limits": "Esta tabela de avaliação é um exemplo para comparar uma tarefa específica do DOC-01 fictício. Não é um benchmark para determinar o desempenho geral, a superioridade ou a estabilidade de modelos ou produtos reais, e o resultado de uma única execução não pode ser generalizado para outras tarefas ou momentos. A autoavaliação da IA deve ser usada apenas como recurso auxiliar, e a revisão final deve ser feita por uma pessoa comparando o resultado com o texto original."
+      }
+    }
+  ]
+}

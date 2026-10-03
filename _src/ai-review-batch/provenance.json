@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-03",
+  "workflow": "Drafts and translations written in GPT regular Chat. Editorial revisions and local structure/number checks; no execution in AI products. Fictional inputs only.",
+  "languages": [
+    "ko",
+    "en",
+    "ja",
+    "es",
+    "pt-BR"
+  ],
+  "topics": [
+    "ai-long-document-chunks",
+    "ai-answer-comparison-rubric"
+  ]
+}

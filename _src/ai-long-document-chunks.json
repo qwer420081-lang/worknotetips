@@ -1,0 +1,165 @@
+{
+  "slug": "ai-long-document-chunks",
+  "title": "Reviewing Long Documents with AI in Chunks: Check for Missing Conditions When Merging Partial Summaries",
+  "summary": "This hands-on exercise covers reviewing long material by dividing it into multiple chunks, while checking the document ID and version, overlap at chunk boundaries, different deadlines, and the full scope. Rather than focusing on splitting itself, it emphasizes returning to the source text to verify the merged result.",
+  "audience": "General users who want to review long documents or multi-section materials with AI in chunks and check the final result for missing conditions and duplicates",
+  "prerequisites": [
+    "Basic ability to paste text into an AI chat",
+    "Document review ability sufficient to compare table rows against the source text",
+    "Practice with fictional material first, and for real materials, confirm that you have permission to enter the data and check whether it contains personal or confidential information"
+  ],
+  "tags": [
+    "long documents",
+    "AI verification",
+    "chunks"
+  ],
+  "sections": [
+    {
+      "id": "understand-context-and-chunks",
+      "heading": "1. Understand context and chunks first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "It is useful to think of context as the range of input that an AI model refers to when generating a response to a request. If it is difficult to provide long material all at once or if section-by-section review is needed, a document can be divided into multiple chunks. However, input-length limits and long-document processing quality vary by product and model, and simply dividing a document does not guarantee accuracy. DOC-01 in this exercise is only fictional material designed to reproduce a long-document review procedure on a small scale; it is not an actual long document."
+        },
+        {
+          "type": "code",
+          "role": "input",
+          "text": "DOC-01/v1\nC1: [L1] Only registered members of the fictional workshop may apply. [L2] Applications are accepted until October 18 at 18:00.\nC2: [L2] Applications are accepted until October 18 at 18:00. [L3] Capacity is 12 people. [L4] The participation fee is KRW 8,000.\nC3: [L5] Application cancellations may be requested until October 16 at 18:00. [L6] If capacity is exceeded, applicants are placed on a waiting list, which does not mean participation is confirmed."
+        },
+        {
+          "type": "p",
+          "text": "A 2023 Anthropic study tested a method of first finding the evidence needed to answer questions in long inputs. Because this was a specific experiment, it should not be generalized as a guarantee of current model performance."
+        }
+      ]
+    },
+    {
+      "id": "extract-each-chunk",
+      "heading": "2. Extract evidence from each chunk first",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Instead of creating a full summary from the beginning, extract claims and conditions from each chunk row by row. Recording DOC-01 and v1 together makes it easier to check whether content from another document or an earlier version has been mixed in. If you continue the next step in a new chat, do not assume that the previous conversation will automatically carry over; it is safer to provide the necessary input material and instructions again."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Use only the material below to extract evidence by chunk.\nFor each row, record the document ID, version, chunk, source line number, and fact.\nDo not guess any year, day of the week, payment method, or refund condition that does not appear in the source.\nEven if the same sentence appears in multiple chunks, do not delete it yet; mark it instead.\n\n[Paste the entire C1~C3 of DOC-01/v1 here again]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Chunk",
+            "Line",
+            "Fact to extract",
+            "Check point"
+          ],
+          "rows": [
+            [
+              "C1",
+              "L1",
+              "Only registered members may apply",
+              "Eligibility restriction"
+            ],
+            [
+              "C1·C2",
+              "L2",
+              "Application deadline October 18 at 18:00",
+              "Duplicate candidate"
+            ],
+            [
+              "C2",
+              "L3",
+              "Capacity 12 people",
+              "Preserve number"
+            ],
+            [
+              "C2",
+              "L4",
+              "Participation fee KRW 8,000",
+              "Preserve amount"
+            ],
+            [
+              "C3",
+              "L5",
+              "Cancellation request deadline October 16 at 18:00",
+              "Distinguish from application deadline"
+            ],
+            [
+              "C3",
+              "L6",
+              "If capacity is exceeded, waiting list; participation is not confirmed",
+              "Status condition"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "merge-with-boundary-checks",
+      "heading": "3. Remove duplicates without merging different conditions",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "When merging partial extractions, first confirm that every item has the same DOC and version. Next, consolidate only the repeated L2 in C1 and C2 into one item. In contrast, the application deadline and cancellation deadline differ in both date and meaning, so they must not be merged into a single deadline. At chunk boundaries, check not only repeated sentences but also whether surrounding conditions were cut off in a way that changed the meaning."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Merge the partial extraction results into one result.\n1. Confirm that every item is DOC-01/v1\n2. Remove only the duplicate based on the same evidence L2\n3. Keep the application deadline and cancellation deadline as separate items\n4. Check that all six pieces of evidence L1~L6 are reflected in the final result\n5. Do not add payment methods, refund policies, years, or days of the week that do not appear in the source\nAt the end, show the evidence line numbers used."
+        },
+        {
+          "type": "code",
+          "role": "output",
+          "text": "Edited example · not an actual product execution result\n- Eligibility: Only registered members may apply. [L1]\n- Application deadline: Until October 18 at 18:00. [L2]\n- Capacity: 12 people. [L3]\n- Participation fee: KRW 8,000. [L4]\n- Cancellation request deadline: Until October 16 at 18:00. [L5]\n- If capacity is exceeded, applicants are placed on a waiting list, but participation is not confirmed. [L6]\nCheck: DOC-01/v1, L2 duplicate removed, L1~L6 preserved."
+        }
+      ]
+    },
+    {
+      "id": "find-missing-chunks",
+      "heading": "4. Create a missing-chunk failure and return to the source",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Even if summaries of individual chunks read naturally, that does not guarantee that they cover the full scope. For example, if C3 is omitted, the result may read smoothly while completely losing the cancellation deadline and waiting-list condition. Therefore, do not verify the result merely by reading the completed sentences; compare it backward against the originally planned chunk list and evidence-line list."
+        },
+        {
+          "type": "code",
+          "role": "bad_output",
+          "text": "Edited example · not an actual product execution result\nOnly registered members may apply, and applications are accepted until October 18 at 18:00. Capacity is 12 people and the participation fee is KRW 8,000.\nProblem: C3 is missing, so the cancellation deadline in L5 and the waiting-list condition in L6 cannot be verified."
+        },
+        {
+          "type": "code",
+          "role": "prompt",
+          "text": "Compare the result you just produced against the DOC-01/v1 source again.\nFirst confirm whether C1, C2, and C3 were all used, then find any missing lines among L1~L6.\nRestore the missing content without changing the meaning of the source wording.\nDo not supplement it with any year, day of the week, payment, or refund condition that does not appear in the source."
+        }
+      ]
+    },
+    {
+      "id": "final-range-check",
+      "heading": "5. Check the full scope before passing the result to the next verification step",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The final step is to check traceability rather than the writing quality of the summary. Recording the DOC and version, all planned chunks, the evidence-line range, and the duplicate-removal history makes it easier to identify what is missing later. This record becomes more important as the number of chunks increases in long documents. When connected with the rubric method in the next article, the result created here can be scored again against fixed facts and conditions, allowing you to distinguish between a 'plausible summary' and a 'verifiable output.'"
+        },
+        {
+          "type": "code",
+          "role": "checklist",
+          "text": "Final check\n[ ] Are all materials DOC-01/v1?\n[ ] Have C1·C2·C3 all been processed?\n[ ] Was only the L2 duplicate removed?\n[ ] Are all six pieces of evidence L1~L6 still present?\n[ ] Are the application deadline October 18 at 18:00 and the cancellation deadline October 16 at 18:00 distinguished?\n[ ] Has the waiting list not been changed into confirmed participation?\n[ ] Were payment, refund, year, and day of the week not guessed?\n[ ] In a new chat, were the input materials and instructions provided again?"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "env": "Compare the fictional material and edited examples against the source text and checklist. These are not results executed in an AI product.",
+    "items": [
+      "Confirm that DOC-01 and version v1 are maintained throughout all steps",
+      "Compare the full scope of C1·C2·C3 and L1~L6",
+      "Confirm that only L2 is deduplicated and that L5·L6 are preserved",
+      "Confirm that the application deadline and cancellation deadline have not been swapped or merged",
+      "Confirm that no payment, refund, year, or day of the week absent from the source has been generated"
+    ],
+    "limits": "This example uses small fictional material to practice a scaled-down long-document review procedure. Actual long-document processing quality, allowed input length, and memory scope may vary by product, model, and settings, and chunking alone cannot guarantee accuracy."
+  }
+}

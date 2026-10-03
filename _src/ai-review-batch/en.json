@@ -1,0 +1,334 @@
+{
+  "lang": "en",
+  "articles": [
+    {
+      "slug": "ai-long-document-chunks",
+      "title": "Reviewing Long Documents with AI in Chunks: Check for Missing Conditions When Merging Partial Summaries",
+      "summary": "This hands-on exercise covers reviewing long material by dividing it into multiple chunks, while checking the document ID and version, overlap at chunk boundaries, different deadlines, and the full scope. Rather than focusing on splitting itself, it emphasizes returning to the source text to verify the merged result.",
+      "audience": "General users who want to review long documents or multi-section materials with AI in chunks and check the final result for missing conditions and duplicates",
+      "prerequisites": [
+        "Basic ability to paste text into an AI chat",
+        "Document review ability sufficient to compare table rows against the source text",
+        "Practice with fictional material first, and for real materials, confirm that you have permission to enter the data and check whether it contains personal or confidential information"
+      ],
+      "tags": [
+        "long documents",
+        "AI verification",
+        "chunks"
+      ],
+      "sections": [
+        {
+          "id": "understand-context-and-chunks",
+          "heading": "1. Understand context and chunks first",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "It is useful to think of context as the range of input that an AI model refers to when generating a response to a request. If it is difficult to provide long material all at once or if section-by-section review is needed, a document can be divided into multiple chunks. However, input-length limits and long-document processing quality vary by product and model, and simply dividing a document does not guarantee accuracy. DOC-01 in this exercise is only fictional material designed to reproduce a long-document review procedure on a small scale; it is not an actual long document."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "DOC-01/v1\nC1: [L1] Only registered members of the fictional workshop may apply. [L2] Applications are accepted until October 18 at 18:00.\nC2: [L2] Applications are accepted until October 18 at 18:00. [L3] Capacity is 12 people. [L4] The participation fee is KRW 8,000.\nC3: [L5] Application cancellations may be requested until October 16 at 18:00. [L6] If capacity is exceeded, applicants are placed on a waiting list, which does not mean participation is confirmed."
+            },
+            {
+              "type": "p",
+              "text": "A 2023 Anthropic study tested a method of first finding the evidence needed to answer questions in long inputs. Because this was a specific experiment, it should not be generalized as a guarantee of current model performance."
+            }
+          ]
+        },
+        {
+          "id": "extract-each-chunk",
+          "heading": "2. Extract evidence from each chunk first",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Instead of creating a full summary from the beginning, extract claims and conditions from each chunk row by row. Recording DOC-01 and v1 together makes it easier to check whether content from another document or an earlier version has been mixed in. If you continue the next step in a new chat, do not assume that the previous conversation will automatically carry over; it is safer to provide the necessary input material and instructions again."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Use only the material below to extract evidence by chunk.\nFor each row, record the document ID, version, chunk, source line number, and fact.\nDo not guess any year, day of the week, payment method, or refund condition that does not appear in the source.\nEven if the same sentence appears in multiple chunks, do not delete it yet; mark it instead.\n\n[Paste the entire C1~C3 of DOC-01/v1 here again]"
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Chunk",
+                "Line",
+                "Fact to extract",
+                "Check point"
+              ],
+              "rows": [
+                [
+                  "C1",
+                  "L1",
+                  "Only registered members may apply",
+                  "Eligibility restriction"
+                ],
+                [
+                  "C1·C2",
+                  "L2",
+                  "Application deadline October 18 at 18:00",
+                  "Duplicate candidate"
+                ],
+                [
+                  "C2",
+                  "L3",
+                  "Capacity 12 people",
+                  "Preserve number"
+                ],
+                [
+                  "C2",
+                  "L4",
+                  "Participation fee KRW 8,000",
+                  "Preserve amount"
+                ],
+                [
+                  "C3",
+                  "L5",
+                  "Cancellation request deadline October 16 at 18:00",
+                  "Distinguish from application deadline"
+                ],
+                [
+                  "C3",
+                  "L6",
+                  "If capacity is exceeded, waiting list; participation is not confirmed",
+                  "Status condition"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "merge-with-boundary-checks",
+          "heading": "3. Remove duplicates without merging different conditions",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When merging partial extractions, first confirm that every item has the same DOC and version. Next, consolidate only the repeated L2 in C1 and C2 into one item. In contrast, the application deadline and cancellation deadline differ in both date and meaning, so they must not be merged into a single deadline. At chunk boundaries, check not only repeated sentences but also whether surrounding conditions were cut off in a way that changed the meaning."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Merge the partial extraction results into one result.\n1. Confirm that every item is DOC-01/v1\n2. Remove only the duplicate based on the same evidence L2\n3. Keep the application deadline and cancellation deadline as separate items\n4. Check that all six pieces of evidence L1~L6 are reflected in the final result\n5. Do not add payment methods, refund policies, years, or days of the week that do not appear in the source\nAt the end, show the evidence line numbers used."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Edited example · not an actual product execution result\n- Eligibility: Only registered members may apply. [L1]\n- Application deadline: Until October 18 at 18:00. [L2]\n- Capacity: 12 people. [L3]\n- Participation fee: KRW 8,000. [L4]\n- Cancellation request deadline: Until October 16 at 18:00. [L5]\n- If capacity is exceeded, applicants are placed on a waiting list, but participation is not confirmed. [L6]\nCheck: DOC-01/v1, L2 duplicate removed, L1~L6 preserved."
+            }
+          ]
+        },
+        {
+          "id": "find-missing-chunks",
+          "heading": "4. Create a missing-chunk failure and return to the source",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "Even if summaries of individual chunks read naturally, that does not guarantee that they cover the full scope. For example, if C3 is omitted, the result may read smoothly while completely losing the cancellation deadline and waiting-list condition. Therefore, do not verify the result merely by reading the completed sentences; compare it backward against the originally planned chunk list and evidence-line list."
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Edited example · not an actual product execution result\nOnly registered members may apply, and applications are accepted until October 18 at 18:00. Capacity is 12 people and the participation fee is KRW 8,000.\nProblem: C3 is missing, so the cancellation deadline in L5 and the waiting-list condition in L6 cannot be verified."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare the result you just produced against the DOC-01/v1 source again.\nFirst confirm whether C1, C2, and C3 were all used, then find any missing lines among L1~L6.\nRestore the missing content without changing the meaning of the source wording.\nDo not supplement it with any year, day of the week, payment, or refund condition that does not appear in the source."
+            }
+          ]
+        },
+        {
+          "id": "final-range-check",
+          "heading": "5. Check the full scope before passing the result to the next verification step",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "The final step is to check traceability rather than the writing quality of the summary. Recording the DOC and version, all planned chunks, the evidence-line range, and the duplicate-removal history makes it easier to identify what is missing later. This record becomes more important as the number of chunks increases in long documents. When connected with the rubric method in the next article, the result created here can be scored again against fixed facts and conditions, allowing you to distinguish between a 'plausible summary' and a 'verifiable output.'"
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Final check\n[ ] Are all materials DOC-01/v1?\n[ ] Have C1·C2·C3 all been processed?\n[ ] Was only the L2 duplicate removed?\n[ ] Are all six pieces of evidence L1~L6 still present?\n[ ] Are the application deadline October 18 at 18:00 and the cancellation deadline October 16 at 18:00 distinguished?\n[ ] Has the waiting list not been changed into confirmed participation?\n[ ] Were payment, refund, year, and day of the week not guessed?\n[ ] In a new chat, were the input materials and instructions provided again?"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Compare the fictional material and edited examples against the source text and checklist. These are not results executed in an AI product.",
+        "items": [
+          "Confirm that DOC-01 and version v1 are maintained throughout all steps",
+          "Compare the full scope of C1·C2·C3 and L1~L6",
+          "Confirm that only L2 is deduplicated and that L5·L6 are preserved",
+          "Confirm that the application deadline and cancellation deadline have not been swapped or merged",
+          "Confirm that no payment, refund, year, or day of the week absent from the source has been generated"
+        ],
+        "limits": "This example uses small fictional material to practice a scaled-down long-document review procedure. Actual long-document processing quality, allowed input length, and memory scope may vary by product, model, and settings, and chunking alone cannot guarantee accuracy."
+      }
+    },
+    {
+      "slug": "ai-answer-comparison-rubric",
+      "title": "Comparing AI Answers: A Rubric for Checking Facts, Conditions, and Omissions Using the Same Material",
+      "summary": "This hands-on exercise compares two AI answers using the same input and the same prompt, checking them against predefined factual criteria rather than writing preference or brand impression. Separately from the score, unsupported additional claims are checked as a gate for whether the result is suitable for publication.",
+      "audience": "General users who want to compare multiple models or prompt versions on their own tasks while systematically checking factual correctness, preservation of conditions, and omissions",
+      "prerequisites": [
+        "Basic document review ability to compare AI answers side by side with the source text",
+        "Spreadsheet or table-writing ability sufficient to use a simple 0·1 rubric",
+        "Practice with fictional material first, and for real materials, confirm that you have permission to enter the data and check whether it contains personal or confidential information"
+      ],
+      "tags": [
+        "AI comparison",
+        "rubric",
+        "fact checking"
+      ],
+      "sections": [
+        {
+          "id": "fix-rubric-before-testing",
+          "heading": "1. Fix the evaluation criteria before viewing the answers",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When comparing AI answers, judging only by the impression that one sentence sounds more natural can cause the criteria to change after seeing the results. First define the facts and conditions from the source that must be preserved, then apply the same criteria to every answer. This article is not a benchmark for ranking brands; it is an exercise in creating a verifiable comparison table for your specific task. Do not expand a single result into a conclusion about overall model superiority or general performance differences."
+            },
+            {
+              "type": "code",
+              "role": "input",
+              "text": "DOC-01/v1\n[L1] Only registered members of the fictional workshop may apply.\n[L2] Applications are accepted until October 18 at 18:00.\n[L3] Capacity is 12 people.\n[L4] The participation fee is KRW 8,000.\n[L5] Application cancellations may be requested until October 16 at 18:00.\n[L6] If capacity is exceeded, applicants are placed on a waiting list, which does not mean participation is confirmed."
+            },
+            {
+              "type": "table",
+              "headers": [
+                "Evaluation item",
+                "Condition for meeting criterion",
+                "Score"
+              ],
+              "rows": [
+                [
+                  "Registered-member restriction",
+                  "Only registered members may apply",
+                  "1 or 0"
+                ],
+                [
+                  "Application deadline",
+                  "October 18 at 18:00",
+                  "1 or 0"
+                ],
+                [
+                  "Capacity",
+                  "12 people",
+                  "1 or 0"
+                ],
+                [
+                  "Participation fee",
+                  "KRW 8,000",
+                  "1 or 0"
+                ],
+                [
+                  "Cancellation deadline",
+                  "October 16 at 18:00",
+                  "1 or 0"
+                ],
+                [
+                  "Waiting status",
+                  "Waiting does not mean confirmed participation",
+                  "1 or 0"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "id": "control-input-and-version",
+          "heading": "2. Record the input, prompt, and version under the same conditions",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "For a comparison, change only one variable at a time. If comparing models, keep DOC-01/v1 and the prompt the same and change only the model. If comparing prompt versions, use the same material and the same model and change only the prompt. If an answer is additionally edited after viewing the result, record it separately from the original. Also record the execution date, displayed tool·model, prompt version, and any human edits. Anonymizing output names as A and B can help reduce preconceptions based on names, but it does not completely eliminate bias."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Using only DOC-01/v1 as evidence, write an application notice.\nDo not omit eligibility, application deadline, capacity, participation fee, cancellation deadline, or waiting status.\nDo not add benefits, policies, years, or days of the week that do not appear in the source.\nDo not guess information for which no source material is provided."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Comparison record\nMaterial: DOC-01/v1\nPrompt version: P1\nOutput label: A / B\nExecution date: record manually\nTool·model label: record manually\nHuman edit history: record manually\nTime evaluation criteria were written: before viewing the results"
+            }
+          ]
+        },
+        {
+          "id": "score-example-outputs",
+          "heading": "3. Score the six facts as 0·1, and handle additional claims with a separate gate",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "For each of the six evaluation items, record 1 if the criterion is met and 0 if it is not. The important point is not to mix 'no unsupported additional claims' into the rubric as a seventh score. Even if the factual score is high, if a policy or benefit not found in the source has been added, publication eligibility should be blocked separately. This allows fact-preservation scores and unsupported-generation problems to be treated as different failure types."
+            },
+            {
+              "type": "code",
+              "role": "output",
+              "text": "Edited example · not an actual product execution result\nResult A: Only registered members may apply. Applications are accepted until October 18 at 18:00, capacity is 12 people, and the participation fee is KRW 8,000. Cancellations may be requested until October 16 at 18:00. Waiting-list registration does not mean participation is confirmed.\nEvaluation: 6/6\nAdditional-claim gate: no unsupported additions → pass"
+            },
+            {
+              "type": "code",
+              "role": "bad_output",
+              "text": "Edited example · not an actual product execution result\nResult B: Anyone may apply. Applications are accepted until October 18 at 18:00, capacity is 12 people, and the participation fee is KRW 8,000. Cancellations are also available until October 18 at 18:00. Waiting-list registration means participation is confirmed, and free materials are provided.\nEvaluation: 3/6\nErrors: registered-member restriction, cancellation deadline, waiting≠confirmed condition not met\nAdditional-claim gate: 'free materials are provided' has no supporting evidence → not publishable"
+            }
+          ]
+        },
+        {
+          "id": "repair-with-source",
+          "heading": "4. Correct against the source rather than simply trying to raise the score",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "When revising B, setting the goal merely as 'fix it so it gets 6 points' may encourage generation of sentences that force-fit the rubric. Instead, identify which items conflict with the source down to the line number and request corrections by returning to DOC-01. After revision, a person must compare the answer against the answer key again. Asking AI to score its own answer can be used as a supporting method, but the final evaluator is a person, and source-text review cannot be skipped."
+            },
+            {
+              "type": "code",
+              "role": "prompt",
+              "text": "Compare Result B against DOC-01/v1 again and revise it.\nRestore the application eligibility in L1, the cancellation deadline in L5, and the waiting status in L6 exactly according to the source.\nDelete the sentence 'free materials are provided,' which does not appear in the source.\nDo not arbitrarily add a year or day of the week to the October dates.\nAfter revision, mark that you checked each of the six items L1~L6 one by one."
+            },
+            {
+              "type": "ul",
+              "items": [
+                "Check that the registered-member restriction has not been changed to 'anyone.'",
+                "Review the application deadline and cancellation deadline as separate items.",
+                "Do not interpret the waiting list as confirmed participation.",
+                "Do not add free offerings, refunds, payment methods, or other details absent from the source."
+              ]
+            }
+          ]
+        },
+        {
+          "id": "handle-uncertain-cases",
+          "heading": "5. In variant cases, do not force unknowns into a score",
+          "blocks": [
+            {
+              "type": "p",
+              "text": "A rubric is especially useful when the source has clearly defined answers, but not every situation can be reduced to 0 and 1. If the input is empty or contains mutually conflicting information, leave the case as 'needs confirmation' rather than inventing an answer and calculating a score. In the next exercise, you can test when the rubric should stop by using empty input, conflicting content from different versions, and material with some missing lines. Used together with the chunk-verification procedure from the previous article, this creates a workflow in which you first confirm that all evidence has been collected without omissions and then verify the result using the same fixed rubric."
+            },
+            {
+              "type": "code",
+              "role": "checklist",
+              "text": "Follow-up exercise\n[ ] Revise B against the source\n[ ] Have a person compare the revised version against the 6 answer-key items again\n[ ] Check the unsupported-additional-claim gate separately\n[ ] For empty input, leave 'needs confirmation' instead of generating an arbitrary answer\n[ ] For conflicting material, do not guess which version is correct\n[ ] Do not generalize a single A/B result into overall model superiority or a benchmark"
+            }
+          ]
+        }
+      ],
+      "verification": {
+        "env": "Compare the fictional material and edited examples against the source text and checklist. These are not results executed in an AI product.",
+        "items": [
+          "Directly compare A with the source to confirm that it satisfies all six evaluation items and scores 6/6",
+          "Confirm that B scores 3/6 because the application eligibility, cancellation deadline, and waiting status are incorrect",
+          "Confirm that 'free materials are provided' in B is a separate additional claim not found in the source",
+          "Confirm that the presence of additional claims is not mixed into the 6-point rubric and is instead separated as a publication-eligibility gate",
+          "Confirm the comparison condition that A/B use the same DOC-01/v1 and the same prompt",
+          "Confirm that empty input or conflicting material is left as needing confirmation rather than being assigned an invented answer"
+        ],
+        "limits": "This rubric is an example for comparing a specific task based on fictional DOC-01. It is not a benchmark for judging the general performance, superiority, or stability of actual models or products, and a single execution result cannot be generalized to other tasks or times. AI self-scoring should be used only as a supporting method, and the final review must be performed by a person against the source text."
+      }
+    }
+  ]
+}
